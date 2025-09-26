@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 interface FormData {
   name: string
@@ -70,40 +68,27 @@ export default function ContactForm() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="max-w-2xl mx-auto"
-    >
-      <div className="card p-8">
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-navy mb-4">Get Started Today</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Get Started Today</h2>
           <p className="text-gray-600">
             Tell us about your project and we'll create a custom campaign proposal for you.
           </p>
         </div>
 
         {submitStatus === 'success' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center"
-          >
-            <CheckIcon className="w-5 h-5 text-green-600 mr-3" />
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
+            <span className="text-green-600 mr-3">✅</span>
             <span className="text-green-800">Thank you! We'll get back to you within 24 hours.</span>
-          </motion.div>
+          </div>
         )}
 
         {submitStatus === 'error' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center"
-          >
-            <XMarkIcon className="w-5 h-5 text-red-600 mr-3" />
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center">
+            <span className="text-red-600 mr-3">❌</span>
             <span className="text-red-800">Something went wrong. Please try again or email us directly.</span>
-          </motion.div>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -119,7 +104,7 @@ export default function ContactForm() {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="John Doe"
               />
             </div>
@@ -135,7 +120,7 @@ export default function ContactForm() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="john@company.com"
               />
             </div>
@@ -166,7 +151,7 @@ export default function ContactForm() {
                 name="serviceType"
                 value={formData.serviceType}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 <option value="starter">Starter ($199/campaign)</option>
                 <option value="professional">Professional ($399/campaign)</option>
@@ -184,7 +169,7 @@ export default function ContactForm() {
                 name="budget"
                 value={formData.budget}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 <option value="500-1000">$500 - $1,000</option>
                 <option value="1000-5000">$1,000 - $5,000</option>
@@ -212,7 +197,7 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Sending...' : 'Get Custom Proposal'}
           </button>
@@ -222,6 +207,6 @@ export default function ContactForm() {
           <p>We typically respond within 24 hours with a custom proposal.</p>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
