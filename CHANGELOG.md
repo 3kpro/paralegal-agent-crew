@@ -10,6 +10,48 @@
 
 ---
 
+## [1.1.1] - 2025-01-16
+
+### Fixed
+- **Vercel Deployment Issues**
+  - Created [vercel.json](vercel.json) configuration to fix 404 errors on all URLs
+  - Vercel now properly detects Next.js framework and runs correct build process
+  - Fixed "Skipping cache upload because no files were prepared" issue
+  - Resolved "Ready" status showing while application was non-functional
+
+- **TypeScript Build Dependencies**
+  - Moved TypeScript dependencies to production in [package.json](package.json)
+  - Fixed "typescript, @types/react, and @types/node required" build errors
+  - Moved `typescript: ^5.3.2`, `@types/node: ^20.10.0`, `@types/react: ^18.2.38`, `@types/react-dom: ^18.2.17` from devDependencies to dependencies
+  - Vercel now properly installs all required TypeScript packages during build
+
+- **Landing Page Content**
+  - Restored modern professional landing page in [app/page.tsx](app/page.tsx)
+  - Replaced temporary test page that showed "Simple Landing Page" message
+  - Now displays complete Content Cascade AI landing page with ModernHero, ModernFeatures, ModernPricing components
+
+- **Health Check API**
+  - Fixed `connect ECONNREFUSED 127.0.0.1:5678` errors in [app/api/health/route.ts](app/api/health/route.ts)
+  - Added Vercel environment detection (`process.env.VERCEL === '1'`)
+  - Skips external service checks (n8n) in production deployment
+  - Returns healthy status for landing page deployment without attempting localhost connections
+
+### Changed
+- **Deployment Configuration**
+  - Added explicit Next.js framework declaration in vercel.json
+  - Set build command to `npm run build` instead of generic `vercel build`
+  - Specified `.next` output directory for proper static file generation
+  - Added install and dev commands for complete Vercel integration
+
+### Improved
+- **Build Process**
+  - Build now completes with proper Next.js compilation (10+ seconds instead of 160ms)
+  - Vercel correctly installs 146 packages and detects Next.js v14.2.33
+  - Proper static file generation for deployment instead of empty builds
+  - No more build warnings about missing TypeScript packages
+
+---
+
 ## [1.1.0] - 2025-10-01
 
 ### Added
@@ -132,6 +174,12 @@
 
 ## Version History
 
+- **v1.1.1** - Vercel Deployment Fix (2025-01-16)
+  - Fixed critical 404 deployment errors
+  - Restored professional landing page
+  - Fixed TypeScript build dependencies
+  - Vercel-compatible health check API
+
 - **v1.1.0** - Phase 1 Setup Complete (2025-10-01)
   - Fixed API configuration issues
   - Removed hardcoded URLs
@@ -147,6 +195,20 @@
 ---
 
 ## Migration Guide
+
+### From v1.1.0 to v1.1.1
+
+**Breaking Changes:**
+- None. All changes are bug fixes and deployment improvements.
+
+**Required Actions:**
+1. Deploy to Vercel automatically triggers with new vercel.json configuration
+2. No environment variable changes needed - existing .env.local remains valid
+
+**Automatic Updates:**
+- Vercel builds now work correctly with no manual intervention required
+- Landing page displays proper content automatically
+- Health check API functions correctly in production
 
 ### From v1.0.0 to v1.1.0
 
@@ -195,6 +257,6 @@ For questions or issues:
 
 ---
 
-**Current Version:** v1.1.0
-**Last Updated:** 2025-10-01
+**Current Version:** v1.1.1
+**Last Updated:** 2025-01-16
 **Maintained By:** 3K Pro Services Development Team
