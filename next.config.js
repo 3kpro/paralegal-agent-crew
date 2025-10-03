@@ -3,7 +3,7 @@ const nextConfig = {
   images: {
     domains: ['yourdomain.com', '3kpro.services'],
   },
-  // Optimized for Vercel deployment
+  // Optimized for Vercel deployment - TypeScript fixes applied
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react']
   },
