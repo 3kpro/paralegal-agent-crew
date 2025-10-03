@@ -76,7 +76,7 @@ export default function TrendDiscovery() {
 
       if (result.success) {
         setTrends({
-          trending: result.data,
+          trending: Array.isArray(result.data) ? result.data : result.data.trending || [],
           relatedQueries: [],
           relatedTopics: [],
         })

@@ -29,7 +29,7 @@ const mockTrendingTopics = [
   },
   {
     title: "Influencer Marketing",
-    formattedTrafficFormat: "90K searches",
+    formattedTraffic: "90K searches",
     relatedQueries: ["Micro influencers", "Influencer outreach", "Creator economy"]
   }
 ]
@@ -59,23 +59,58 @@ export async function GET(request: NextRequest) {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000))
 
-    // Filter trending topics based on keyword if provided
+    // Handle different modes
+    if (mode === 'trending') {
+      // For daily trends, return just the trending topics array
+      const response = {
+        success: true,
+        data: mockTrendingTopics,
+        meta: {
+          mode,
+          totalResults: mockTrendingTopics.length,
+          timestamp: new Date().toISOString()
+        }
+      }
+      return NextResponse.json(response)
+    }
+
+    // For keyword search (mode = 'ideas')
     let filteredTrending = mockTrendingTopics
+    let keywordSpecificQueries = mockRelatedQueries
+    let keywordSpecificTopics = mockRelatedTopics
+
     if (keyword.trim()) {
+      // Filter trending topics based on keyword
       filteredTrending = mockTrendingTopics.filter(topic =>
         topic.title.toLowerCase().includes(keyword.toLowerCase()) ||
         topic.relatedQueries?.some(query => 
           query.toLowerCase().includes(keyword.toLowerCase())
         )
       )
+
+      // Generate keyword-specific queries and topics
+      const searchTerm = keyword.toLowerCase()
+      keywordSpecificQueries = [
+        { query: `${keyword} tools`, value: 100, formattedValue: "100%" },
+        { query: `${keyword} automation`, value: 85, formattedValue: "85%" },
+        { query: `${keyword} strategies`, value: 70, formattedValue: "70%" },
+        { query: `${keyword} tips`, value: 60, formattedValue: "60%" }
+      ]
+
+      keywordSpecificTopics = [
+        { query: `${keyword} trends`, value: 100, formattedValue: "100%" },
+        { query: `${keyword} marketing`, value: 90, formattedValue: "90%" },
+        { query: `${keyword} best practices`, value: 80, formattedValue: "80%" },
+        { query: `${keyword} guide`, value: 75, formattedValue: "75%" }
+      ]
     }
 
     const response = {
       success: true,
       data: {
         trending: filteredTrending,
-        relatedQueries: mockRelatedQueries,
-        relatedTopics: mockRelatedTopics
+        relatedQueries: keywordSpecificQueries,
+        relatedTopics: keywordSpecificTopics
       },
       meta: {
         keyword,

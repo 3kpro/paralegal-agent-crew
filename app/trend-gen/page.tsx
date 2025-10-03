@@ -10,7 +10,7 @@ export default function TrendGenPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <button 
-              onClick={() => window.location.href = '/'}
+              onClick={() => window.location.href = '/#top'}
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
