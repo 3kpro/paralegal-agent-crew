@@ -1,0 +1,363 @@
+{
+  "name": "AI Content Repurposing Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "={{ $json.youtube_channel_rss }}"
+      },
+      "id": "rss-trigger",
+      "name": "RSS Feed Monitor",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://www.youtube.com/watch?v={{ $json.id }}",
+        "options": {}
+      },
+      "id": "get-video-data",
+      "name": "Get Video Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "model": "gemini-1.5-flash",
+        "prompt": "=Extract the main talking points and key insights from this video transcript:\n\nTitle: {{ $json.title }}\n\nTranscript: {{ $json.transcript }}\n\nProvide a structured summary with:\n1. Main topic/thesis\n2. Key points (3-5)\n3. Actionable takeaways\n4. Target audience"
+      },
+      "id": "analyze-content",
+      "name": "AI Content Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "model": "gemini-1.5-flash",
+        "prompt": "=Based on this content summary, generate platform-specific content:\n\n{{ $json.summary }}\n\nCreate:\n\n1. TWITTER THREAD (5-7 tweets):\n- Hook tweet with question/bold statement\n- Each tweet max 280 chars\n- Include relevant emojis\n- End with CTA\n\n2. LINKEDIN POST:\n- Professional tone\n- 1300-1500 characters\n- Include 3-5 relevant hashtags\n- Personal anecdote or question to drive engagement\n\n3. INSTAGRAM CAPTION:\n- Attention-grabbing first line\n- Story-driven middle\n- CTA at end\n- 10-15 relevant hashtags\n\n4. TIKTOK SCRIPT (60 seconds):\n- Hook (first 3 seconds)\n- Value delivery (30 seconds)\n- Call to action (final 5 seconds)\n- Include visual suggestions\n\n5. BLOG EXCERPT (300 words):\n- SEO-optimized intro paragraph\n- Bullet points of key insights\n- Link back to full video\n\nFormat each section clearly with headers."
+      },
+      "id": "generate-variants",
+      "name": "AI Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "={{ $('Globals').item.json.sheet_id }}",
+        "range": "Content Calendar!A:H",
+        "options": {
+          "valueInputMode": "USER_ENTERED"
+        }
+      },
+      "id": "log-to-sheets",
+      "name": "Save to Content Calendar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1050, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Globals').item.json.telegram_chat_id }}",
+        "text": "=🎬 **New Content Ready for Approval!**\n\n📹 Video: {{ $json.title }}\n\n✅ Generated:\n- Twitter Thread\n- LinkedIn Post\n- Instagram Caption\n- TikTok Script\n- Blog Excerpt\n\n👉 Review in Google Sheets and approve: {{ $('Globals').item.json.sheet_url }}\n\nOr reply 'APPROVE' to schedule all platforms automatically.",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "✅ Approve All",
+                  "callback_data": "approve_all"
+                },
+                {
+                  "text": "📝 Edit First",
+                  "url": "={{ $('Globals').item.json.sheet_url }}"
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "send-notification",
+      "name": "Send Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "content-approval",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "approval-webhook",
+      "name": "Approval Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 500],
+      "webhookId": "content-approval-hook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.action }}",
+              "operation": "equals",
+              "value2": "approve_all"
+            }
+          ]
+        }
+      },
+      "id": "check-approval",
+      "name": "Check Approval",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "text": "={{ $json.twitter_thread }}",
+        "additionalFields": {
+          "thread": true
+        }
+      },
+      "id": "post-twitter",
+      "name": "Post to Twitter",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [650, 400],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "3",
+          "name": "Twitter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "post",
+        "text": "={{ $json.linkedin_post }}"
+      },
+      "id": "post-linkedin",
+      "name": "Post to LinkedIn",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [650, 500],
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "4",
+          "name": "LinkedIn account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": "={{ $('Globals').item.json.slack_channel_id }}",
+        "text": "=✅ **Content Published Successfully!**\n\n📹 Video: {{ $json.title }}\n\n Published to:\n✓ Twitter\n✓ LinkedIn\n\nInstagram & TikTok scripts ready in Google Sheets for manual posting.",
+        "otherOptions": {}
+      },
+      "id": "success-notification",
+      "name": "Success Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [850, 450],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "5",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "youtube_channel_rss",
+              "value": "https://www.youtube.com/feeds/videos.xml?channel_id=YOUR_CHANNEL_ID"
+            },
+            {
+              "name": "sheet_id",
+              "value": "YOUR_GOOGLE_SHEET_ID"
+            },
+            {
+              "name": "sheet_url",
+              "value": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID"
+            },
+            {
+              "name": "telegram_chat_id",
+              "value": "YOUR_TELEGRAM_CHAT_ID"
+            },
+            {
+              "name": "slack_channel_id",
+              "value": "YOUR_SLACK_CHANNEL_ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "globals",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [50, 300]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Monitor": {
+      "main": [
+        [
+          {
+            "node": "Get Video Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video Details": {
+      "main": [
+        [
+          {
+            "node": "AI Content Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Content Analyzer": {
+      "main": [
+        [
+          {
+            "node": "AI Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Content Generator": {
+      "main": [
+        [
+          {
+            "node": "Save to Content Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Content Calendar": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approval": {
+      "main": [
+        [
+          {
+            "node": "Post to Twitter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post to LinkedIn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Twitter": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to LinkedIn": {
+      "main": [
+        [
+          {
+            "node": "Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Monitor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "id": "content-repurposing-engine",
+  "meta": {
+    "instanceId": "your-n8n-instance-id"
+  },
+  "tags": []
+}

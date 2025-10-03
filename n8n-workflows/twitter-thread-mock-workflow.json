@@ -1,0 +1,115 @@
+{
+  "name": "Twitter Thread Generator - MOCK (FREE)",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "twitter-demo",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "twitter-demo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "trackingId",
+              "name": "trackingId",
+              "value": "={{ $json.body.trackingId }}",
+              "type": "string"
+            },
+            {
+              "id": "content",
+              "name": "content",
+              "value": "={{ $json.body.content }}",
+              "type": "string"
+            },
+            {
+              "id": "style",
+              "name": "style",
+              "value": "={{ $json.body.style || 'professional' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "parse-request",
+      "name": "Parse Request Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const trackingId = $input.item.json.trackingId;\nconst content = $input.item.json.content;\nconst style = $input.item.json.style || 'professional';\n\n// Mock Twitter thread based on style\nconst mockThreads = {\n  professional: `🚀 Transform Your Content Marketing with AI\n\nThis is exactly what Content Cascade AI does for businesses every day.\n\n🧵 1/6\n\n🎯 The Problem:\nCreating platform-specific content takes hours. Different formats, different audiences, different tone requirements.\n\nSound familiar?\n\n🧵 2/6\n\n💡 The Solution:\nContent Cascade AI transforms your single piece of content into:\n• Twitter threads\n• LinkedIn posts\n• Email campaigns\n• Video scripts\n\nAll automatically optimized for each platform.\n\n🧵 3/6\n\n⚡ How It Works:\n1. Upload your content (text, URL, video, audio)\n2. AI analyzes your brand voice\n3. Generates platform-optimized versions\n4. Maintains consistency across channels\n\n🧵 4/6\n\n📈 Real Results:\n• 10x faster content creation\n• 95% time savings\n• Consistent brand messaging\n• Multi-platform reach\n\n🧵 5/6\n\n🎉 Ready to transform your content marketing?\n\n✅ Test it locally (this is a mock response!)\n✅ No API costs during testing\n✅ Add real AI later\n\n🧵 6/6\n\n#ContentMarketing #AI #Testing`,\n\n  casual: `Hey! 👋 Just tested something cool...\n\nThis is a MOCK Twitter thread to show you the flow works!\n\n🧵 1/5\n\nOkay so picture this...\n\nYou write ONE piece of content.\n\nThen BOOM! 💥\n\nGet it optimized for:\n- Twitter\n- LinkedIn\n- Email\n- Video\n\nAll automatically. All on-brand.\n\n🧵 2/5\n\nThis is totally working right now!\n\nYou're seeing this mock response which means:\n✅ Next.js → n8n connection works\n✅ Webhook is receiving data\n✅ Response is formatting correctly\n\n🧵 3/5\n\nThe crazy part?\n\nThis costs $0.00 to test!\n\nNo API calls. No credits used.\n\nJust proving the flow works. 🎉\n\n🧵 4/5\n\nNext step? Add the real Claude AI when you're ready.\n\nBut for now, celebrate that localhost testing works!\n\nDrop a 🔥 if you're excited!\n\n🧵 5/5`,\n\n  educational: `📚 DEMO: How Localhost Testing Works\n\nLet's break down what just happened when you generated this thread.\n\n🧵 THREAD 1/6\n\n📖 Step 1: Request Initiated\n\nYour Next.js app (localhost:3000) sent a POST request to /api/twitter-thread with your content and preferences.\n\n🧵 2/6\n\n🔬 Step 2: Webhook Called\n\nThe API route forwarded your request to n8n webhook at localhost:5678/webhook/twitter-demo.\n\nNo external APIs called yet!\n\n🧵 3/6\n\n⚙️ Step 3: Mock Processing\n\nn8n received your request and returned this hardcoded thread instead of calling Claude API.\n\nThis saves you money during testing!\n\n🧵 4/6\n\n📊 Step 4: Response Formatted\n\nThe thread you're reading was formatted with:\n• trackingId: ${trackingId}\n• status: completed\n• Cost: $0.00\n\n🧵 5/6\n\n🎯 Step 5: UI Display\n\nNext.js received the mock thread and displayed it in your browser.\n\nThe entire flow works WITHOUT any paid APIs!\n\n🧵 6/6\n\n📝 What You Learned:\n\nLocalhost testing proves your infrastructure works before spending on API calls.\n\nNext: Add real Claude AI only when ready!\n\n#Development #Testing #LocalFirst`\n};\n\n// Return mock thread based on style\nreturn {\n  json: {\n    thread: mockThreads[style] || mockThreads.professional,\n    status: 'completed',\n    trackingId: trackingId,\n    timestamp: new Date().toISOString(),\n    mock: true\n  }\n};"
+      },
+      "id": "mock-response",
+      "name": "Generate Mock Thread",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Request Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Request Data": {
+      "main": [
+        [
+          {
+            "node": "Generate Mock Thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Mock Thread": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-10-01T00:00:00.000Z",
+  "versionId": "1"
+}

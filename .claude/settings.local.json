@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)",
+      "Bash(npm test:*)",
+      "Read(//c/DEV/3K-Pro-Services/docs/chat_history/**)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(for i in {1..3})",
+      "Bash(do curl -s -X POST http://localhost:3000/api/twitter-thread -H \"Content-Type: application/json\" -d '{\"\"\"\"content\"\"\"\":\"\"\"\"Test content for rate limiting with sufficient length\"\"\"\"}')",
+      "Bash(done)",
+      "Read(//c/DEV/3K-Pro-Services/docs/**)",
+      "Bash(tasklist)",
+      "Read(//c/DEV/PowerShell-Playground/**)",
+      "Bash(cat:*)",
+      "Bash(powershell:*)",
+      "Read(//c/DEV/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

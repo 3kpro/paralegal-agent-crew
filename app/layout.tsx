@@ -2,21 +2,21 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '3K Pro Services - AI-Powered Content Marketing Platform',
-  description: 'Transform any content into complete multi-channel campaigns with professional UGC videos. AI-powered content creation for modern businesses.',
-  keywords: 'AI content marketing, UGC videos, content automation, social media content, video marketing',
+  title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
+  description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes across Twitter, LinkedIn, and email—automatically.',
+  keywords: 'AI content creation, trend discovery, Twitter threads, LinkedIn posts, email marketing, content automation, social media automation, TrendPulse, AI Cascade, OmniFormat',
   authors: [{ name: '3K Pro Services' }],
   openGraph: {
-    title: '3K Pro Services - AI Content Marketing Platform',
-    description: 'Transform any content into complete multi-channel campaigns with professional UGC videos.',
+    title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
+    description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes everywhere—automatically.',
     url: 'https://3kpro.services',
-    siteName: '3K Pro Services',
+    siteName: 'Content Cascade AI',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: '3K Pro Services - AI Content Marketing Platform',
-    description: 'Transform any content into complete multi-channel campaigns with professional UGC videos.',
+    title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
+    description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes everywhere—automatically.',
   },
   robots: {
     index: true,
