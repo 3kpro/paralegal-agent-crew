@@ -46,6 +46,9 @@ interface HealthCheck {
 let serviceStartTime = Date.now()
 
 export async function GET(): Promise<NextResponse> {
+  const isProduction = process.env.NODE_ENV === 'production'
+  const isVercel = process.env.VERCEL === '1'
+  
   const healthCheck: HealthCheck = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -64,8 +67,18 @@ export async function GET(): Promise<NextResponse> {
     }
   }
 
+  // Skip external service checks in Vercel deployment
+  if (isVercel || isProduction) {
+    healthCheck.services.n8n = {
+      status: 'disconnected', // Not available in Vercel
+      lastChecked: new Date().toISOString()
+    }
+    healthCheck.status = 'healthy' // Landing page only, so healthy
+    return NextResponse.json(healthCheck, { status: 200 })
+  }
+
   try {
-    // Check n8n connectivity with retry
+    // Check n8n connectivity with retry (local development only)
     const n8nUrl = process.env.N8N_BASE_URL || 'http://localhost:5678'
     const n8nStartTime = Date.now()
 
