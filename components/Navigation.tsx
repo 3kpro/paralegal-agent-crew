@@ -37,7 +37,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
               Pricing
             </button>
             <button
-              onClick={() => scrollToSection('about')}
+              onClick={() => scrollToSection('contact')}
               className="text-gray-600 hover:text-blue-600 transition-colors"
             >
               About

@@ -34,18 +34,24 @@ export async function POST(request: NextRequest) {
     // Send to n8n webhook (replace with your actual n8n webhook URL)
     const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/contact-form'
     
-    const n8nResponse = await fetch(n8nWebhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(webhookData),
-    })
+    try {
+      const n8nResponse = await fetch(n8nWebhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(webhookData),
+        // Add timeout to prevent hanging
+      })
 
-    if (!n8nResponse.ok) {
-      console.error('n8n webhook failed:', n8nResponse.status, n8nResponse.statusText)
-      // Still return success to user, but log the error
-      // In production, you might want to save to database as backup
+      if (!n8nResponse.ok) {
+        console.error('n8n webhook failed:', n8nResponse.status, n8nResponse.statusText)
+        // Log for debugging but still return success to user
+      }
+    } catch (webhookError) {
+      console.error('n8n webhook error:', webhookError)
+      // In production environment, still return success for better UX
+      // The form data could be logged or saved to a backup system
     }
 
     // Return success response

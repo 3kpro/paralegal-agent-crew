@@ -150,7 +150,20 @@ export default function ModernPricing() {
                   </div>
 
                   {/* CTA Button */}
-                  <button className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
+                  <button 
+                    onClick={() => {
+                      if (plan.cta === 'Contact Sales') {
+                        const contactElement = document.getElementById('contact')
+                        if (contactElement) {
+                          contactElement.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      } else if (plan.cta === 'Start 14-Day Trial') {
+                        window.open('/trend-gen', '_blank')
+                      } else {
+                        window.open('/trend-gen', '_blank')
+                      }
+                    }}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
                     plan.popular
                       ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105'
                       : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
@@ -194,7 +207,14 @@ export default function ModernPricing() {
                   Custom solutions for large organizations. Self-hosted options, SLAs, and dedicated support.
                 </p>
               </div>
-              <button className="flex-shrink-0 px-8 py-4 bg-white text-purple-600 rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+              <button 
+                onClick={() => {
+                  const contactElement = document.getElementById('contact')
+                  if (contactElement) {
+                    contactElement.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
+                className="flex-shrink-0 px-8 py-4 bg-white text-purple-600 rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
                 Contact Sales
               </button>
             </div>

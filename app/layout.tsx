@@ -12,11 +12,20 @@ export const metadata: Metadata = {
     url: 'https://3kpro.services',
     siteName: 'Content Cascade AI',
     type: 'website',
+    images: [
+      {
+        url: 'https://3kpro.services/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Content Cascade AI - AI-powered content creation platform',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
     description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes everywhere—automatically.',
+    images: ['https://3kpro.services/og-image.png'],
   },
   robots: {
     index: true,

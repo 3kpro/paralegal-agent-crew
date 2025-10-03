@@ -210,10 +210,24 @@ export default function FAQSection() {
               your content strategy and see if Content Cascade AI is right for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+              <button 
+                onClick={() => {
+                  const contactElement = document.getElementById('contact')
+                  if (contactElement) {
+                    contactElement.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
+                className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
                 Book Free Consultation
               </button>
-              <button className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white hover:bg-white hover:text-indigo-600 transition-all duration-200">
+              <button 
+                onClick={() => {
+                  const contactElement = document.getElementById('contact')
+                  if (contactElement) {
+                    contactElement.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
+                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white hover:bg-white hover:text-indigo-600 transition-all duration-200">
                 Contact Support
               </button>
             </div>
