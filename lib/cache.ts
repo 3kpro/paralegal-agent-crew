@@ -53,13 +53,20 @@ class SimpleCache<T> {
   cleanup(): number {
     let removed = 0
     const now = Date.now()
+    const keysToDelete: string[] = []
 
-    for (const [key, entry] of this.cache.entries()) {
+    // Collect keys to delete first to avoid modifying map during iteration
+    this.cache.forEach((entry, key) => {
       if (now > entry.expiresAt) {
-        this.cache.delete(key)
-        removed++
+        keysToDelete.push(key)
       }
-    }
+    })
+
+    // Delete expired keys
+    keysToDelete.forEach(key => {
+      this.cache.delete(key)
+      removed++
+    })
 
     return removed
   }

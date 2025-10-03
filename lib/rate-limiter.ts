@@ -103,13 +103,20 @@ export class RateLimiter {
     let removed = 0
     const now = Date.now()
     const staleThreshold = 3600000 // 1 hour
+    const keysToDelete: string[] = []
 
-    for (const [key, entry] of this.buckets.entries()) {
+    // Collect keys to delete first to avoid modifying map during iteration
+    this.buckets.forEach((entry, key) => {
       if (entry.tokens === this.maxTokens && (now - entry.lastRefill) > staleThreshold) {
-        this.buckets.delete(key)
-        removed++
+        keysToDelete.push(key)
       }
-    }
+    })
+
+    // Delete stale keys
+    keysToDelete.forEach(key => {
+      this.buckets.delete(key)
+      removed++
+    })
 
     return removed
   }

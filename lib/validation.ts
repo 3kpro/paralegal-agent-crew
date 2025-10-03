@@ -23,7 +23,7 @@ export type TwitterThreadRequest = z.infer<typeof twitterThreadSchema>
 
 // Validation error formatter
 export function formatValidationError(error: z.ZodError): string {
-  const errors = error.errors.map(err => {
+  const errors = error.issues.map(err => {
     const field = err.path.join('.')
     return `${field}: ${err.message}`
   })
@@ -35,7 +35,7 @@ export function formatValidationError(error: z.ZodError): string {
 export function getValidationErrorMessage(error: z.ZodError): string {
   try {
     // Zod errors have an issues array
-    const issues = error.issues || error.errors || []
+    const issues = error.issues || []
 
     if (issues.length === 0) {
       return 'Invalid request data'
