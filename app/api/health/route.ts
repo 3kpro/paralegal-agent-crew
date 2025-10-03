@@ -1,5 +1,23 @@
 import { NextResponse } from 'next/server'
-import { fetchWithRetry } from '@/lib/fetch-with-retry'
+
+// Simple fetch with retry implementation
+async function fetchWithRetry(url: string, options: { retries: number; retryDelay: number }) {
+  let lastError: Error | null = null
+  
+  for (let i = 0; i <= options.retries; i++) {
+    try {
+      const response = await fetch(url)
+      return response
+    } catch (error) {
+      lastError = error as Error
+      if (i < options.retries) {
+        await new Promise(resolve => setTimeout(resolve, options.retryDelay))
+      }
+    }
+  }
+  
+  throw lastError
+}
 
 interface HealthCheck {
   status: 'healthy' | 'degraded' | 'unhealthy'
