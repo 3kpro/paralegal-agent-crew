@@ -2,6 +2,8 @@
 
 Modern, sleek landing page for 3K Pro Services AI-powered content marketing platform.
 
+🔧 **Fixed Vercel deployment configuration - now deploys properly with Next.js**
+
 ## 🚀 Features
 
 - **Modern Design**: Clean, professional UI with smooth animations
