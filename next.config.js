@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['yourdomain.com', 'content-cascade-ai:3000'],
+    domains: ['yourdomain.com', '3kpro.services'],
   },
-  // Enable standalone output for Docker optimization
-  output: 'standalone',
+  // Optimized for Vercel deployment
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react']
+  },
 }
 
 module.exports = nextConfig
