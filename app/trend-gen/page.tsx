@@ -9,12 +9,15 @@ export default function TrendGenPage() {
       <nav className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-2">
+            <button 
+              onClick={() => window.location.href = '/'}
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
+            >
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">3K</span>
               </div>
               <span className="text-xl font-bold text-gray-800">Content Cascade AI</span>
-            </div>
+            </button>
             <div className="flex items-center space-x-4">
               <a 
                 href="/"
