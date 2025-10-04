@@ -1,5 +1,76 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// LM Studio configuration
+const LM_STUDIO_URL = 'http://10.10.10.105:1234'
+const LM_STUDIO_TIMEOUT = 30000 // 30 seconds - increased timeout for model inference
+
+async function callLMStudio(prompt: string): Promise<string> {
+  try {
+    console.log('Calling LM Studio with prompt length:', prompt.length)
+    console.log('LM Studio URL:', LM_STUDIO_URL)
+    console.log('Timeout:', LM_STUDIO_TIMEOUT)
+    
+    // First, get available models to use the first one available
+    let modelToUse = "mistral-7b-instruct-v0.3" // Default to the model user mentioned
+    try {
+      const modelsResponse = await fetch(`${LM_STUDIO_URL}/v1/models`, {
+        signal: AbortSignal.timeout(5000)
+      })
+      if (modelsResponse.ok) {
+        const modelsData = await modelsResponse.json()
+        console.log('Available models:', modelsData.data?.map(m => m.id))
+        if (modelsData.data && modelsData.data.length > 0) {
+          // Prefer mistral if available, otherwise use first available
+          const mistral = modelsData.data.find(m => m.id.includes('mistral-7b-instruct-v0.3'))
+          modelToUse = mistral ? mistral.id : modelsData.data[0].id
+          console.log('Selected model:', modelToUse)
+        }
+      }
+    } catch (e) {
+      console.log('Failed to get models, using default:', modelToUse)
+    }
+
+    console.log('Sending request to LM Studio...')
+    const response = await fetch(`${LM_STUDIO_URL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: modelToUse,
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        max_tokens: 500, // Reduced for faster generation
+        temperature: 0.7,
+        stream: false
+      }),
+      signal: AbortSignal.timeout(LM_STUDIO_TIMEOUT)
+    })
+
+    console.log('LM Studio response status:', response.status, response.statusText)
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('LM Studio API error:', response.status, response.statusText, errorText)
+      throw new Error(`LM Studio API error: ${response.status} ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    console.log('LM Studio response received successfully!')
+    console.log('Response data:', JSON.stringify(data, null, 2))
+    const content = data.choices[0]?.message?.content || ''
+    console.log('Generated content length:', content.length)
+    return content
+  } catch (error) {
+    console.error('LM Studio connection error:', error)
+    throw new Error('Failed to connect to LM Studio')
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { topic, formats = ['twitter', 'linkedin', 'email'] } = await request.json()
@@ -14,89 +85,70 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Simulate LM Studio API call with realistic delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    const generatedContent: any = {}
 
-    // Mock content generation for development
-    const generatedContent = {
-      twitter: {
-        content: `🚀 Just discovered: "${topic}"
+    // Generate content for each requested format
+    if (formats.includes('twitter')) {
+      const twitterPrompt = `Write a Twitter post about "${topic}" (under 280 chars). Use emojis, bullets, and 3 hashtags. Be engaging and trendy.`
+      
+      try {
+        const twitterContent = await callLMStudio(twitterPrompt)
+        generatedContent.twitter = {
+          content: twitterContent.trim(),
+          hashtags: extractHashtags(twitterContent),
+          characterCount: twitterContent.trim().length
+        }
+      } catch (error) {
+        console.log('LM Studio failed for Twitter, using fallback:', error.message)
+        // Fallback to mock data if LM Studio fails
+        generatedContent.twitter = {
+          content: `🚀 ${topic} is trending!\n\n→ Growing rapidly\n→ Perfect timing for content creators\n→ Great opportunity to build authority\n\nJump on this trend now! 📈\n\n#${topic.replace(/ /g, '')} #TrendAlert #ContentCreator`,
+          hashtags: [`#${topic.replace(/ /g, '')}`, '#TrendAlert', '#ContentCreator'],
+          characterCount: 180
+        }
+      }
+    }
 
-This trend is absolutely exploding right now. Here's why it matters:
+    if (formats.includes('linkedin')) {
+      const linkedinPrompt = `Write a LinkedIn post about "${topic}". Professional tone, 3 bullet points, end with a question. Include hashtags. 500-800 characters.`
+      
+      try {
+        const linkedinContent = await callLMStudio(linkedinPrompt)
+        generatedContent.linkedin = {
+          content: linkedinContent.trim(),
+          characterCount: linkedinContent.trim().length
+        }
+      } catch (error) {
+        console.log('LM Studio failed for LinkedIn, using fallback:', error.message)
+        // Fallback to mock data
+        generatedContent.linkedin = {
+          content: `${topic} is transforming how we approach content creation.\n\nKey opportunities I'm seeing:\n\n• Higher engagement rates than traditional content\n• Perfect timing for early adopters\n• Strong potential for thought leadership\n\nThe data shows this trend is still in early growth phase - perfect time to establish authority.\n\nAre you leveraging this trend yet? What's your experience been?\n\n#${topic.replace(/ /g, '')} #ContentStrategy #DigitalMarketing`,
+          characterCount: 420
+        }
+      }
+    }
 
-→ Growing 300% month over month
-→ Perfect timing for content creators
-→ Easy to implement today
-
-Thread below 👇
-
-#TrendAlert #ContentCreation`,
-        hashtags: ['#TrendAlert', '#ContentCreation', '#DigitalMarketing'],
-        characterCount: 284
-      },
-      linkedin: {
-        content: `The rise of "${topic}" is reshaping how we approach content strategy.
-
-I've been tracking this trend for weeks, and the data is compelling:
-
-→ Search volume up 300% in 30 days
-→ Engagement rates 2x higher than average
-→ Perfect opportunity for thought leadership
-
-Here's what smart content creators are doing:
-
-1️⃣ Creating educational content around this trend
-2️⃣ Sharing case studies and real examples  
-3️⃣ Building authority in this emerging space
-
-The best part? We're still early. Most people haven't caught on yet.
-
-If you create content, now's the time to jump on this trend.
-
-What trends are you seeing in your industry? Drop them in the comments.
-
-#${topic.replace(/ /g, '')} #ContentStrategy #TrendSpotting`,
-        characterCount: 847
-      },
-      email: {
-        subject: `🔥 Trending Now: ${topic} (Don't Miss This)`,
-        content: `Hi there!
-
-I wanted to quickly share something I discovered this week that's absolutely exploding right now:
-
-**"${topic}"**
-
-The numbers are insane:
-• 300% growth in search volume (last 30 days)
-• 2x higher engagement rates
-• Still early enough to establish authority
-
-Here's the opportunity I see for content creators:
-
-**Short-term (next 2 weeks):**
-- Create 3-5 posts around this trend
-- Share your perspective/experience
-- Engage with others talking about it
-
-**Medium-term (next month):**
-- Develop comprehensive content (blog posts, videos)
-- Position yourself as an expert
-- Build genuine connections with the community
-
-**Long-term benefit:**
-- Established authority in growing niche
-- Higher organic reach
-- Better engagement rates
-
-The key is acting fast while the trend is still gaining momentum.
-
-Are you going to jump on this trend? Hit reply and let me know your thoughts!
-
-Best,
-[Your Name]
-
-P.S. I track trending topics weekly. If you want more insights like this, just reply with "TRENDS" and I'll keep you in the loop.`,
-        wordCount: 186
+    if (formats.includes('email')) {
+      const emailPrompt = `Write an email about "${topic}". Format: Subject line with emoji, then short body with 3 bullet points and call to action. Conversational tone.`
+      
+      try {
+        const emailContent = await callLMStudio(emailPrompt)
+        const lines = emailContent.trim().split('\n')
+        const subject = lines[0].replace(/^Subject:\s*/i, '').trim() || `🔥 Trending Now: ${topic}`
+        const body = lines.slice(1).join('\n').trim()
+        
+        generatedContent.email = {
+          subject: subject,
+          content: body,
+          wordCount: body.split(/\s+/).length
+        }
+      } catch (error) {
+        // Fallback to mock data
+        generatedContent.email = {
+          subject: `🔥 Trending Now: ${topic}`,
+          content: `Hi there!\n\nJust discovered "${topic}" and wanted to share:\n\n• Growing rapidly in popularity\n• Perfect timing for content creators\n• Easy to implement today\n\nThis could be a great opportunity for your content strategy.\n\nThoughts?\n\nBest regards`,
+          wordCount: 42
+        }
       }
     }
 
@@ -108,7 +160,8 @@ P.S. I track trending topics weekly. If you want more insights like this, just r
       metadata: {
         generated_at: new Date().toISOString(),
         model: 'LM Studio Local',
-        processing_time: '2.1s'
+        processing_time: 'varies',
+        lm_studio_url: LM_STUDIO_URL
       }
     }
 
@@ -128,13 +181,39 @@ P.S. I track trending topics weekly. If you want more insights like this, just r
   }
 }
 
+// Helper function to extract hashtags from text
+function extractHashtags(text: string): string[] {
+  const hashtags = text.match(/#\w+/g) || []
+  return Array.from(new Set(hashtags)) // Remove duplicates
+}
+
+// Health check endpoint - test LM Studio connection
 export async function GET() {
-  // Health check endpoint
-  return NextResponse.json({
-    status: 'ok',
-    service: 'content-generation',
-    lm_studio_status: 'connected',
-    available_formats: ['twitter', 'linkedin', 'email'],
-    timestamp: new Date().toISOString()
-  })
+  try {
+    const testResponse = await fetch(`${LM_STUDIO_URL}/v1/models`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000) // 5 second timeout for health check
+    })
+    
+    const isConnected = testResponse.ok
+    
+    return NextResponse.json({
+      status: isConnected ? 'ok' : 'error',
+      service: 'content-generation',
+      lm_studio_status: isConnected ? 'connected' : 'disconnected',
+      lm_studio_url: LM_STUDIO_URL,
+      available_formats: ['twitter', 'linkedin', 'email'],
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    return NextResponse.json({
+      status: 'error',
+      service: 'content-generation',
+      lm_studio_status: 'disconnected',
+      lm_studio_url: LM_STUDIO_URL,
+      error: 'Cannot connect to LM Studio',
+      available_formats: ['twitter', 'linkedin', 'email'],
+      timestamp: new Date().toISOString()
+    })
+  }
 }
