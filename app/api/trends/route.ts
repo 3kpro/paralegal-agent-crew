@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// PowerShell microservice URL from environment
+// API Gateway URL (ngrok tunnel) - Used in production to access local services
+const API_GATEWAY_URL = process.env.API_GATEWAY_URL || ''
+
+// PowerShell microservice URL from environment - Used in local development
 const POWERSHELL_TRENDS_URL = process.env.POWERSHELL_TRENDS_URL || 'http://localhost:5003'
+
+// Choose which URL to use: Gateway (production) or direct (local dev)
+const TRENDS_API_URL = API_GATEWAY_URL
+  ? `${API_GATEWAY_URL}/api/trends`
+  : `${POWERSHELL_TRENDS_URL}/trends`
 
 // Fallback mock data (only used if PowerShell service is unavailable)
 const mockTrendingTopics = [
@@ -58,29 +66,34 @@ interface TrendingTopic {
   relatedQueries: string[]
 }
 
-// Call PowerShell microservice for trends
-async function getPowerShellTrends(keyword: string): Promise<PowerShellResponse> {
+// Call PowerShell microservice or API Gateway for trends
+async function getTrendsData(keyword: string): Promise<PowerShellResponse> {
   try {
-    console.log(`[Trends API] Calling PowerShell microservice: ${POWERSHELL_TRENDS_URL}`)
-    console.log(`[Trends API] Keyword: "${keyword}"`)
+    const url = API_GATEWAY_URL
+      ? `${API_GATEWAY_URL}/api/trends?keyword=${encodeURIComponent(keyword)}`
+      : `${POWERSHELL_TRENDS_URL}/trends?keyword=${encodeURIComponent(keyword)}`
 
-    const response = await fetch(`${POWERSHELL_TRENDS_URL}/trends?keyword=${encodeURIComponent(keyword)}`, {
+    console.log(`[Trends API] Calling: ${url}`)
+    console.log(`[Trends API] Mode: ${API_GATEWAY_URL ? 'PRODUCTION (via ngrok)' : 'LOCAL DEV (direct)'}`)
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'ngrok-skip-browser-warning': 'true' // Skip ngrok browser warning
       },
-      signal: AbortSignal.timeout(10000) // 10 second timeout
+      signal: AbortSignal.timeout(15000) // 15 second timeout for ngrok latency
     })
 
     if (!response.ok) {
-      throw new Error(`PowerShell microservice returned ${response.status}`)
+      throw new Error(`Trends service returned ${response.status}`)
     }
 
     const data = await response.json()
-    console.log(`[Trends API] PowerShell microservice returned ${data.trends?.length || 0} topics`)
+    console.log(`[Trends API] Received ${data.trends?.length || 0} topics`)
     return data
   } catch (error) {
-    console.error('[Trends API] PowerShell microservice error:', error)
+    console.error('[Trends API] Service error:', error)
     throw error
   }
 }
@@ -109,8 +122,8 @@ export async function GET(request: NextRequest) {
     // Mode: Daily trending topics (no keyword search)
     if (mode === 'trending') {
       try {
-        // Call PowerShell with default keyword "content creation"
-        const psResponse = await getPowerShellTrends('content creation')
+        // Call trends service with default keyword "content creation"
+        const psResponse = await getTrendsData('content creation')
         const trending = convertToTrendingTopics(psResponse)
 
         return NextResponse.json({
@@ -143,8 +156,8 @@ export async function GET(request: NextRequest) {
     if (mode === 'ideas') {
       if (keyword) {
         try {
-          // User provided a search keyword - use PowerShell microservice with their keyword
-          const psResponse = await getPowerShellTrends(keyword)
+          // User provided a search keyword - use trends service with their keyword
+          const psResponse = await getTrendsData(keyword)
           const trending = convertToTrendingTopics(psResponse)
 
           return NextResponse.json({

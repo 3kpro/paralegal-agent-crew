@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// LM Studio configuration
-const LM_STUDIO_URL = 'http://10.10.10.105:1234'
+// API Gateway URL (ngrok tunnel) - Used in production to access local services
+const API_GATEWAY_URL = process.env.API_GATEWAY_URL || ''
+
+// LM Studio configuration - Used in local development
+const LM_STUDIO_URL = process.env.LM_STUDIO_URL || 'http://10.10.10.105:1234'
 const LM_STUDIO_TIMEOUT = 30000 // 30 seconds - increased timeout for model inference
+
+// Choose which URL to use for content generation
+const GENERATE_API_URL = API_GATEWAY_URL ? `${API_GATEWAY_URL}/api/generate` : ''
 
 async function callLMStudio(prompt: string): Promise<string> {
   try {
@@ -83,6 +89,32 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       )
+    }
+
+    // If using API Gateway (production), proxy the entire request
+    if (GENERATE_API_URL) {
+      try {
+        console.log(`[Generate API] Using API Gateway: ${GENERATE_API_URL}`)
+        const response = await fetch(GENERATE_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          },
+          body: JSON.stringify({ topic, formats }),
+          signal: AbortSignal.timeout(45000) // 45 seconds for AI generation
+        })
+
+        if (!response.ok) {
+          throw new Error(`API Gateway returned ${response.status}`)
+        }
+
+        const data = await response.json()
+        return NextResponse.json(data)
+      } catch (error) {
+        console.error('[Generate API] API Gateway failed, using fallback')
+        // Fall through to local LM Studio or mock data
+      }
     }
 
     const generatedContent: any = {}
