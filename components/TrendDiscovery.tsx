@@ -27,6 +27,8 @@ export default function TrendDiscovery() {
   const [trends, setTrends] = useState<TrendsData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
+  const [generatedContent, setGeneratedContent] = useState<any>(null)
+  const [generating, setGenerating] = useState(false)
 
   const searchTrends = async () => {
     if (!keyword.trim()) {
@@ -87,6 +89,42 @@ export default function TrendDiscovery() {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const generateContent = async () => {
+    if (!selectedTopic) return
+
+    setGenerating(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/generate-local', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topic: selectedTopic,
+          formats: ['twitter', 'linkedin', 'email']
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate content')
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        setGeneratedContent(result)
+      } else {
+        setError(result.error || 'Failed to generate content')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate content')
+    } finally {
+      setGenerating(false)
     }
   }
 
@@ -261,18 +299,107 @@ export default function TrendDiscovery() {
               </p>
             </div>
             <button
-              onClick={() => {
-                // This will be connected to content generation
-                window.dispatchEvent(
-                  new CustomEvent('generateContent', {
-                    detail: { topic: selectedTopic },
-                  })
-                )
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              onClick={generateContent}
+              disabled={generating}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-md"
             >
-              Generate Content
+              {generating ? '🔄 Generating...' : '✨ Generate Content'}
             </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Generated Content */}
+      {generatedContent && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8"
+        >
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 border-b">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                🎉 Content Generated Successfully!
+              </h3>
+              <p className="text-gray-600">
+                Topic: <span className="font-semibold">{generatedContent.topic}</span>
+              </p>
+            </div>
+            
+            {/* Content Tabs */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Twitter Content */}
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-3 flex items-center">
+                    🐦 Twitter Post
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border">
+                    <pre className="whitespace-pre-wrap font-sans">
+                      {generatedContent.content.twitter.content}
+                    </pre>
+                  </div>
+                  <div className="mt-2 text-xs text-blue-600">
+                    Characters: {generatedContent.content.twitter.characterCount}/280
+                  </div>
+                </div>
+
+                {/* LinkedIn Content */}
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <h4 className="font-semibold text-purple-800 mb-3 flex items-center">
+                    💼 LinkedIn Post
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border max-h-60 overflow-y-auto">
+                    <pre className="whitespace-pre-wrap font-sans">
+                      {generatedContent.content.linkedin.content}
+                    </pre>
+                  </div>
+                  <div className="mt-2 text-xs text-purple-600">
+                    Characters: {generatedContent.content.linkedin.characterCount}
+                  </div>
+                </div>
+
+                {/* Email Content */}
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-3 flex items-center">
+                    📧 Email Newsletter
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border">
+                    <div className="font-semibold text-gray-800 mb-2">
+                      Subject: {generatedContent.content.email.subject}
+                    </div>
+                    <div className="max-h-48 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap font-sans">
+                        {generatedContent.content.email.content}
+                      </pre>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-green-600">
+                    Words: {generatedContent.content.email.wordCount}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                <button
+                  onClick={() => {
+                    setGeneratedContent(null)
+                    setSelectedTopic(null)
+                  }}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  ✨ New Topic
+                </button>
+                <button
+                  onClick={generateContent}
+                  disabled={generating}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+                >
+                  {generating ? '🔄 Regenerating...' : '🔄 Regenerate'}
+                </button>
+              </div>
+            </div>
           </div>
         </motion.div>
       )}
