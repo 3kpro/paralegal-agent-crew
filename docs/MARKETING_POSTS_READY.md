@@ -2,7 +2,7 @@
 
 **Created:** 2025-10-03
 **Product:** AI Content Repurposing Engine
-**Gumroad Link:** [ADD YOUR LINK]
+**Gumroad Link:** https://3kpro.gumroad.com/l/pmbwp
 
 ---
 
@@ -46,7 +46,7 @@ When I publish a YouTube video, this workflow:
 
 **Cost to run:** $0-5/month (all free tiers work)
 
-I packaged it as a ready-to-use workflow: [YOUR GUMROAD LINK]
+I packaged it as a ready-to-use workflow: https://3kpro.gumroad.com/l/pmbwp
 
 Figured other content creators might find it useful.
 
@@ -76,7 +76,7 @@ I spent 15 hours every week repurposing my YouTube videos.
 
 Now AI does it in 5 minutes.
 
-Here's the n8n workflow I built (and you can steal):
+Here's the n8n workflow I built:
 
 🧵👇
 ```
@@ -180,7 +180,7 @@ If you create long-form content, this will change your workflow.
 
 **Tweet 9 (CTA):**
 ```
-Get it here: [YOUR GUMROAD LINK]
+Get it here: https://3kpro.gumroad.com/l/pmbwp
 
 14-day money-back guarantee.
 First 50 buyers get free setup call.
@@ -331,7 +331,7 @@ Questions about the tech stack or how it works? Drop them below and I'll answer.
 **UPDATE THIS IN ALL POSTS ABOVE:**
 
 ```
-[YOUR GUMROAD LINK]
+https://3kpro.gumroad.com/l/pmbwp
 ```
 
 Replace with your actual link!

@@ -441,4 +441,4 @@ P.S. - I'm building more workflows. Reply with "BUNDLE" if you want first access
 
 ---
 
-**READY TO UPLOAD TO GUMROAD!** ✅
+

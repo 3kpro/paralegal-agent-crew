@@ -17,7 +17,21 @@
       "Read(//c/DEV/PowerShell-Playground/**)",
       "Bash(cat:*)",
       "Bash(powershell:*)",
-      "Read(//c/DEV/**)"
+      "Read(//c/DEV/**)",
+      "Bash(git log:*)",
+      "Bash(vercel env:*)",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix /trend-gen page: Integrate PowerShell microservice and LM Studio\n\n- Replace mock-only trends API with real PowerShell microservice integration\n- Add graceful fallback to mock data when services unavailable (production)\n- Update content generation to use LM Studio local AI\n- Fix TypeScript compilation error in extractHashtags function\n- Local dev: Uses PowerShell (port 5003) + LM Studio (10.10.10.105:1234)\n- Production: Uses mock data fallback when localhost services unreachable\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(ipconfig)",
+      "Bash(where ngrok)",
+      "Bash(where cloudflared)",
+      "Bash(ngrok config:*)",
+      "Bash(ngrok:*)",
+      "Bash(node:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nAdd API Gateway for production access to local services\n\n- Create Node.js API gateway that proxies PowerShell + LM Studio services\n- Set up ngrok tunnel to expose local services to production Vercel deployment\n- Update /api/trends to use gateway URL when API_GATEWAY_URL env var is set\n- Update /api/generate-local to proxy through gateway in production\n- Add ngrok-skip-browser-warning header to bypass ngrok interstitial page\n- Fallback to mock data if gateway unavailable\n- Local dev: Direct access to localhost:5003 and 10.10.10.105:1234\n- Production: Access via ngrok tunnel (requires API_GATEWAY_URL in Vercel env)\n\nGateway URL: https://nonreproducible-ryan-hazier.ngrok-free.dev\nServices: PowerShell (port 5003) + LM Studio (10.10.10.105:1234)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []
