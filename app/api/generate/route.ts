@@ -380,7 +380,7 @@ function formatContent(format: string, generatedText: string, topic: string): an
 
     case 'email':
       const subjectMatch = cleaned.match(/SUBJECT:\s*(.+?)(?:\n|$)/i)
-      const bodyMatch = cleaned.match(/BODY:\s*(.+)/is)
+      const bodyMatch = cleaned.match(/BODY:\s*([\s\S]+)/i)
       return {
         subject: subjectMatch ? subjectMatch[1].trim() : `About ${topic}`,
         content: bodyMatch ? bodyMatch[1].trim() : cleaned,
