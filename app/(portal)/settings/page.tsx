@@ -308,6 +308,12 @@ export default function SettingsPage() {
   async function handleApiKeyUpdate(provider: string, value: string) {
     if (!value.trim()) return
 
+    // Clear any previous test results for this provider
+    setTestResults(prev => ({
+      ...prev,
+      [provider]: undefined
+    }))
+
     try {
       // Get provider ID from list
       const listResponse = await fetch('/api/ai-tools/list')

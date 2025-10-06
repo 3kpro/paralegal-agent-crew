@@ -1,15 +1,20 @@
 import { Button } from './ui/Button'
+import Link from 'next/link'
+import { useState } from 'react'
 
 interface NavigationProps {
   onContactClick: () => void
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+    setMobileMenuOpen(false) // Close mobile menu after navigation
   }
 
   return (
@@ -45,6 +50,11 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
             >
               About
             </button>
+            <Link href="/login">
+              <Button variant="outline">
+                Login
+              </Button>
+            </Link>
             <Button
               onClick={onContactClick}
               variant="primary"
@@ -52,7 +62,61 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
               Get Started
             </Button>
           </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-600 hover:text-blue-600 transition-colors p-2"
+            >
+              <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                <path d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}></path>
+              </svg>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 py-4">
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => scrollToSection('services')}
+                className="text-gray-600 hover:text-blue-600 transition-colors text-left px-4"
+              >
+                Services
+              </button>
+              <button
+                onClick={() => scrollToSection('pricing')}
+                className="text-gray-600 hover:text-blue-600 transition-colors text-left px-4"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="text-gray-600 hover:text-blue-600 transition-colors text-left px-4"
+              >
+                About
+              </button>
+              <div className="flex flex-col space-y-2 px-4">
+                <Link href="/login">
+                  <Button variant="outline" onClick={() => setMobileMenuOpen(false)}>
+                    Login
+                  </Button>
+                </Link>
+                <Button
+                  onClick={() => {
+                    onContactClick()
+                    setMobileMenuOpen(false)
+                  }}
+                  variant="primary"
+                >
+                  Get Started
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   )

@@ -65,11 +65,17 @@ npm start
 - Component E2E tests (`__tests__/components/`)
 - API route tests (`__tests__/api/`)
 - Custom hook tests (`__tests__/hooks/`)
+- Functional E2E tests (`__tests__/e2e/`)
+**Key Test Suites**:
+- `premium-upgrade-functional.test.tsx`: End-to-end tests for Premium upgrade flow
+- `stripe-checkout-basic.test.ts`: API structure validation for Stripe integration
 **Run Commands**:
 ```bash
 npm test
 npm run test:watch
 npm run test:coverage
+npm test -- __tests__/e2e/premium-upgrade-functional.test.tsx
+npm test -- __tests__/api/stripe-checkout-basic.test.ts
 ```
 
 ## API Routes

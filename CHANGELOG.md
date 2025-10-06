@@ -12,6 +12,96 @@
 
 ---
 
+## [1.6.3] - 2025-01-21
+
+### 🔐 **AUTHENTICATION FLOW FIXES & PASSWORD RESET SYSTEM**
+
+### Fixed
+- **Logout Redirect Issue**: Critical bug fix for authentication flow
+  - **Problem**: Logout button redirected users to unreachable `localhost:3002/login` causing "This site cannot be reached" error
+  - **Root Cause**: Incorrect port configuration in environment variables (3002 vs 3000)
+  - **Solution**: Corrected `.env.local` environment variables:
+    - `NEXT_PUBLIC_APP_URL`: `http://localhost:3002` → `http://localhost:3000`
+    - `NEXT_PUBLIC_BASE_URL`: `http://localhost:3002` → `http://localhost:3000`  
+    - **Added**: `NEXT_PUBLIC_SITE_URL=http://localhost:3000` (required by signout route)
+  - **Result**: Logout now properly redirects to accessible login page
+
+### Added
+- **Complete Password Reset System**: Full forgot password functionality
+  - **Forgot Password Page** (`/forgot-password`):
+    - Email input form with validation
+    - Supabase `auth.resetPasswordForEmail()` integration
+    - Success state with email confirmation
+    - "Try again" functionality for failed attempts
+    - Consistent 3K Content Cascade AI branding
+    - Responsive design with mobile optimization
+    
+  - **Reset Password Page** (`/reset-password`):
+    - New password input with confirmation field
+    - Client-side password validation (minimum 6 characters)
+    - Password mismatch detection
+    - Supabase `auth.updateUser()` integration
+    - Success state with login redirect
+    - Password requirements display
+    - Consistent branding and responsive design
+
+- **Homepage Login Navigation**: Enhanced main navigation
+  - **Desktop**: Added "Login" button to top-right navigation bar
+  - **Mobile**: Integrated login link into hamburger menu
+  - **UI Enhancement**: Improved Button component `outline` variant styling
+  - **Responsive**: Mobile-first responsive design with proper breakpoints
+
+- **Authentication Flow Integration**:
+  - Connected "Forgot password?" link from `/login` to `/forgot-password`
+  - Seamless navigation flow: Login → Forgot Password → Email → Reset → Login
+  - Proper success/error state management throughout
+  - Back navigation links on all auth pages
+
+### Testing
+- **Comprehensive E2E Test Coverage**: Jest + React Testing Library
+  - **Framework**: Jest (matching project conventions)
+  - **Test Suites**: 
+    - `password-reset-functional.test.tsx` - 12 comprehensive functional tests covering complete user journey
+    - `password-reset-basic.test.tsx` - 15 basic rendering and integration tests
+  - **Coverage Areas**:
+    - UI rendering and component structure validation  
+    - Form validation and input handling
+    - Navigation flow testing (Login → Forgot → Reset → Login)
+    - Accessibility testing (proper labels, ARIA attributes)
+    - Responsive design validation
+    - Branding consistency across all auth pages
+    - Error handling and success states
+    - Complete user journey simulation
+
+### Technical Implementation
+- **Environment Configuration**: Proper Next.js environment variable setup
+- **Supabase Integration**: Full auth flow integration with proper error handling
+- **UI/UX**: Consistent design language across all authentication pages
+- **Form Handling**: Client-side validation with server-side integration
+- **State Management**: Proper loading states, success/error feedback
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+
+### Files Added/Modified
+- [`.env.local`](.env.local) - Fixed port configurations and added missing SITE_URL
+- [`app/forgot-password/page.tsx`](app/forgot-password/page.tsx) - New forgot password page with email input
+- [`app/reset-password/page.tsx`](app/reset-password/page.tsx) - New password reset page with validation
+- [`components/Navigation.tsx`](components/Navigation.tsx) - Added login button to main navigation
+- [`components/Button.tsx`](components/Button.tsx) - Enhanced outline variant styling
+- [`__tests__/e2e/password-reset-functional.test.tsx`](__tests__/e2e/password-reset-functional.test.tsx) - Comprehensive E2E test suite
+- [`__tests__/e2e/password-reset-basic.test.tsx`](__tests__/e2e/password-reset-basic.test.tsx) - Basic functionality tests
+
+### 🎯 **Authentication Status**
+- ✅ **Logout Flow**: Fixed redirect issue, properly returns to login
+- ✅ **Password Reset**: Complete forgot password functionality
+- ✅ **Navigation**: Login accessible from homepage  
+- ✅ **Testing**: Comprehensive E2E test coverage (27 total tests)
+- ✅ **UI/UX**: Consistent branding and responsive design
+- ✅ **Integration**: Full Supabase auth integration
+
+**Critical authentication bugs resolved and complete password recovery system implemented with robust test coverage.**
+
+---
+
 ## [1.6.2] - 2025-01-21
 
 ### 🛡️ **FRONTEND PRODUCTION HARDENING - COMPLETE**
