@@ -7,12 +7,7 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <ErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error('Auth Layout Error:', error);
-        console.error('Error Info:', errorInfo);
-      }}
-    >
+    <ErrorBoundary>
       {children}
     </ErrorBoundary>
   )
