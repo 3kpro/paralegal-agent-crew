@@ -73,9 +73,6 @@ async function getTrendsData(keyword: string): Promise<PowerShellResponse> {
       ? `${API_GATEWAY_URL}/api/trends?keyword=${encodeURIComponent(keyword)}`
       : `${POWERSHELL_TRENDS_URL}/trends?keyword=${encodeURIComponent(keyword)}`
 
-    console.log(`[Trends API] Calling: ${url}`)
-    console.log(`[Trends API] Mode: ${API_GATEWAY_URL ? 'PRODUCTION (via ngrok)' : 'LOCAL DEV (direct)'}`)
-
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -90,7 +87,6 @@ async function getTrendsData(keyword: string): Promise<PowerShellResponse> {
     }
 
     const data = await response.json()
-    console.log(`[Trends API] Received ${data.trends?.length || 0} topics`)
     return data
   } catch (error) {
     console.error('[Trends API] Service error:', error)
@@ -116,8 +112,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const keyword = searchParams.get('keyword') || ''
     const mode = searchParams.get('mode') || 'ideas'
-
-    console.log(`[Trends API] Request - Keyword: "${keyword}", Mode: ${mode}`)
 
     // Mode: Daily trending topics (no keyword search)
     if (mode === 'trending') {

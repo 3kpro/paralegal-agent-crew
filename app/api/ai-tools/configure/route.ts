@@ -1,6 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { encryptAPIKey } from '@/lib/encryption'
+import { z } from 'zod'
+
+// AI tool configuration validation schema
+const configureToolSchema = z.object({
+  providerId: z.string().uuid('Provider ID must be a valid UUID'),
+  apiKey: z.string().min(1).optional(),
+  configuration: z.record(z.string(), z.any()).optional()
+})
 
 export async function POST(request: Request) {
   try {
@@ -12,12 +20,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { providerId, apiKey, configuration } = body
-
-    // Validate required fields
-    if (!providerId) {
-      return NextResponse.json({ error: 'Provider ID is required' }, { status: 400 })
+    
+    // Validate input
+    const validation = configureToolSchema.safeParse(body)
+    if (!validation.success) {
+      return NextResponse.json({
+        error: 'Invalid configuration data',
+        details: validation.error.issues.map(e => `${e.path.join('.')}: ${e.message}`)
+      }, { status: 400 })
     }
+
+    const { providerId, apiKey, configuration } = validation.data
 
     // Verify provider exists and check tier access
     const { data: provider, error: providerError } = await supabase

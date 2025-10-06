@@ -4,8 +4,6 @@ const LM_STUDIO_URL = 'http://10.10.10.105:1234'
 
 export async function GET() {
   try {
-    console.log('Testing LM Studio connection...')
-    
     const response = await fetch(`${LM_STUDIO_URL}/v1/chat/completions`, {
       method: 'POST',
       headers: {

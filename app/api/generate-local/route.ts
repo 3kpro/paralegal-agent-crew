@@ -12,10 +12,6 @@ const GENERATE_API_URL = API_GATEWAY_URL ? `${API_GATEWAY_URL}/api/generate` : '
 
 async function callLMStudio(prompt: string): Promise<string> {
   try {
-    console.log('Calling LM Studio with prompt length:', prompt.length)
-    console.log('LM Studio URL:', LM_STUDIO_URL)
-    console.log('Timeout:', LM_STUDIO_TIMEOUT)
-    
     // First, get available models to use the first one available
     let modelToUse = "mistral-7b-instruct-v0.3" // Default to the model user mentioned
     try {
@@ -24,19 +20,16 @@ async function callLMStudio(prompt: string): Promise<string> {
       })
       if (modelsResponse.ok) {
         const modelsData = await modelsResponse.json()
-        console.log('Available models:', modelsData.data?.map(m => m.id))
         if (modelsData.data && modelsData.data.length > 0) {
           // Prefer mistral if available, otherwise use first available
           const mistral = modelsData.data.find(m => m.id.includes('mistral-7b-instruct-v0.3'))
           modelToUse = mistral ? mistral.id : modelsData.data[0].id
-          console.log('Selected model:', modelToUse)
         }
       }
     } catch (e) {
-      console.log('Failed to get models, using default:', modelToUse)
+      // Failed to get models, using default
     }
 
-    console.log('Sending request to LM Studio...')
     const response = await fetch(`${LM_STUDIO_URL}/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -57,8 +50,6 @@ async function callLMStudio(prompt: string): Promise<string> {
       signal: AbortSignal.timeout(LM_STUDIO_TIMEOUT)
     })
 
-    console.log('LM Studio response status:', response.status, response.statusText)
-
     if (!response.ok) {
       const errorText = await response.text()
       console.error('LM Studio API error:', response.status, response.statusText, errorText)
@@ -66,10 +57,7 @@ async function callLMStudio(prompt: string): Promise<string> {
     }
 
     const data = await response.json()
-    console.log('LM Studio response received successfully!')
-    console.log('Response data:', JSON.stringify(data, null, 2))
     const content = data.choices[0]?.message?.content || ''
-    console.log('Generated content length:', content.length)
     return content
   } catch (error) {
     console.error('LM Studio connection error:', error)
@@ -94,7 +82,6 @@ export async function POST(request: NextRequest) {
     // If using API Gateway (production), proxy the entire request
     if (GENERATE_API_URL) {
       try {
-        console.log(`[Generate API] Using API Gateway: ${GENERATE_API_URL}`)
         const response = await fetch(GENERATE_API_URL, {
           method: 'POST',
           headers: {
@@ -131,7 +118,6 @@ export async function POST(request: NextRequest) {
           characterCount: twitterContent.trim().length
         }
       } catch (error) {
-        console.log('LM Studio failed for Twitter, using fallback:', error.message)
         // Fallback to mock data if LM Studio fails
         generatedContent.twitter = {
           content: `🚀 ${topic} is trending!\n\n→ Growing rapidly\n→ Perfect timing for content creators\n→ Great opportunity to build authority\n\nJump on this trend now! 📈\n\n#${topic.replace(/ /g, '')} #TrendAlert #ContentCreator`,
@@ -151,7 +137,6 @@ export async function POST(request: NextRequest) {
           characterCount: linkedinContent.trim().length
         }
       } catch (error) {
-        console.log('LM Studio failed for LinkedIn, using fallback:', error.message)
         // Fallback to mock data
         generatedContent.linkedin = {
           content: `${topic} is transforming how we approach content creation.\n\nKey opportunities I'm seeing:\n\n• Higher engagement rates than traditional content\n• Perfect timing for early adopters\n• Strong potential for thought leadership\n\nThe data shows this trend is still in early growth phase - perfect time to establish authority.\n\nAre you leveraging this trend yet? What's your experience been?\n\n#${topic.replace(/ /g, '')} #ContentStrategy #DigitalMarketing`,

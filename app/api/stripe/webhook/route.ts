@@ -61,7 +61,7 @@ export async function POST(request: Request) {
           return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 })
         }
 
-        console.log(`✅ Subscription activated for user ${userId}: ${tier} (${billingCycle})`)
+        // Subscription activated successfully
         break
       }
 
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
           console.error('Error updating subscription:', updateError)
         }
 
-        console.log(`📝 Subscription updated for customer ${subscription.customer}: ${status}`)
+        // Subscription updated successfully
         break
       }
 
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
           console.error('Error downgrading user:', downgradeError)
         }
 
-        console.log(`❌ Subscription canceled for customer ${subscription.customer}`)
+        // Subscription canceled successfully
         break
       }
 
@@ -162,13 +162,14 @@ export async function POST(request: Request) {
           })
           .eq('id', profile.id)
 
-        console.log(`⚠️ Payment failed for customer ${invoice.customer}`)
+        // Payment failed - status updated
         // TODO: Send email notification to user
         break
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        // Unhandled event type - no action needed
+        break
     }
 
     return NextResponse.json({ received: true })

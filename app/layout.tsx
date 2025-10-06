@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import '@/lib/env' // Validate environment variables at startup
 
 export const metadata: Metadata = {
   title: 'Content Cascade AI - Turn Trending Topics Into Published Content',

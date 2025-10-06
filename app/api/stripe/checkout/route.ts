@@ -1,6 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { stripe, STRIPE_PRICES } from '@/lib/stripe'
+import { z } from 'zod'
+
+// Request validation schema
+const checkoutSchema = z.object({
+  tier: z.enum(['pro', 'premium'], {
+    message: 'Tier must be either "pro" or "premium"'
+  }),
+  billingCycle: z.enum(['monthly', 'yearly'], {
+    message: 'Billing cycle must be either "monthly" or "yearly"'
+  })
+})
 
 export async function POST(request: Request) {
   try {
@@ -11,14 +22,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // Parse and validate request body
     const body = await request.json()
-    const { tier, billingCycle } = body // tier: 'pro' | 'premium', billingCycle: 'monthly' | 'yearly'
-
-    if (!tier || !billingCycle) {
+    const validation = checkoutSchema.safeParse(body)
+    
+    if (!validation.success) {
       return NextResponse.json({
-        error: 'Missing required fields: tier and billingCycle'
+        error: 'Invalid request data',
+        details: validation.error.issues.map(e => e.message)
       }, { status: 400 })
     }
+
+    const { tier, billingCycle } = validation.data
 
     // Get the correct price ID
     const priceKey = `${tier.toUpperCase()}_${billingCycle.toUpperCase()}` as keyof typeof STRIPE_PRICES
@@ -82,7 +97,7 @@ export async function POST(request: Request) {
       url: session.url
     })
   } catch (error: any) {
-    console.error('Stripe checkout error:', error)
+    console.error('Stripe checkout error: - route.ts:100', error)
     return NextResponse.json({
       error: error.message
     }, { status: 500 })

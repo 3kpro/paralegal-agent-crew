@@ -1,5 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
+
+// Profile update validation schema
+const profileUpdateSchema = z.object({
+  full_name: z.string().min(1).max(100).optional(),
+  bio: z.string().max(500, 'Bio must be 500 characters or less').optional(),
+  website: z.string().url('Invalid website URL').optional().or(z.literal('')),
+  linkedin_url: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+  facebook_url: z.string().url('Invalid Facebook URL').optional().or(z.literal('')),
+  twitter_handle: z.string().max(15).optional(),
+}).strict() // Reject unknown fields
 
 export async function GET() {
   try {
@@ -36,58 +47,22 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const updates = await request.json()
-
-    // Fields that should NOT be updated directly via this endpoint
-    const protectedFields = [
-      'id',
-      'email',
-      'created_at',
-      'stripe_customer_id',
-      'stripe_subscription_id',
-      'subscription_tier',
-      'subscription_status',
-      'subscription_current_period_end',
-      'ai_tools_limit'
-    ]
-
-    // Remove protected fields from updates
-    const allowedUpdates = Object.keys(updates)
-      .filter(key => !protectedFields.includes(key))
-      .reduce((obj: any, key) => {
-        obj[key] = updates[key]
-        return obj
-      }, {})
-
-    // Validate URL fields if present
-    if (allowedUpdates.website && !isValidURL(allowedUpdates.website)) {
+    const body = await request.json()
+    
+    // Validate input
+    const validation = profileUpdateSchema.safeParse(body)
+    if (!validation.success) {
       return NextResponse.json({
-        error: 'Invalid website URL format'
+        error: 'Invalid profile data',
+        details: validation.error.issues.map(e => `${e.path.join('.')}: ${e.message}`)
       }, { status: 400 })
     }
 
-    if (allowedUpdates.linkedin_url && !isValidURL(allowedUpdates.linkedin_url)) {
-      return NextResponse.json({
-        error: 'Invalid LinkedIn URL format'
-      }, { status: 400 })
-    }
-
-    if (allowedUpdates.facebook_url && !isValidURL(allowedUpdates.facebook_url)) {
-      return NextResponse.json({
-        error: 'Invalid Facebook URL format'
-      }, { status: 400 })
-    }
-
-    // Validate bio length
-    if (allowedUpdates.bio && allowedUpdates.bio.length > 500) {
-      return NextResponse.json({
-        error: 'Bio must be 500 characters or less'
-      }, { status: 400 })
-    }
+    const updates = validation.data
 
     const { data, error } = await supabase
       .from('profiles')
-      .update(allowedUpdates)
+      .update(updates)
       .eq('id', user.id)
       .select()
       .single()
@@ -107,7 +82,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// Helper function to validate URLs
+// Helper function to validate URLs (DEPRECATED - using Zod now)
 function isValidURL(url: string): boolean {
   try {
     new URL(url)

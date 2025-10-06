@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import InstructionCard from '@/components/InstructionCard'
+import LoadingButton from '@/components/LoadingButton'
+import { SettingsSkeleton } from '@/components/SkeletonLoader'
 
 // Provider Instructions Data
 const PROVIDER_INSTRUCTIONS = {
@@ -114,10 +116,12 @@ export default function SettingsPage() {
   const [usageData, setUsageData] = useState<any>(null)
   const [loadingUsage, setLoadingUsage] = useState(false)
   const [upgradingTo, setUpgradingTo] = useState<string | null>(null)
+  const [initialLoading, setInitialLoading] = useState(true)
 
   useEffect(() => {
-    loadUserData()
-    loadUsageData()
+    Promise.all([loadUserData(), loadUsageData()]).finally(() => {
+      setInitialLoading(false)
+    })
   }, [])
 
   async function loadUsageData() {
@@ -337,6 +341,8 @@ export default function SettingsPage() {
       setMessage('Error: ' + error.message)
     }
   }
+
+  if (initialLoading) return <SettingsSkeleton />
 
   return (
     <div className="p-8">
@@ -625,13 +631,13 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <button
+            <LoadingButton
               type="submit"
-              disabled={loading}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+              loading={loading}
+              loadingText="Saving Changes..."
             >
-              {loading ? 'Saving...' : 'Save Changes'}
-            </button>
+              Save Changes
+            </LoadingButton>
           </form>
         </div>
       )}
@@ -1018,13 +1024,15 @@ export default function SettingsPage() {
                   <p>• ✅ 10GB storage</p>
                   <p>• ✅ Priority support</p>
                 </div>
-                <button
+                <LoadingButton
                   onClick={() => handleUpgrade('pro', 'monthly')}
+                  loading={upgradingTo === 'pro'}
+                  loadingText="Redirecting to Stripe..."
                   disabled={upgradingTo !== null}
-                  className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full"
                 >
-                  {upgradingTo === 'pro' ? 'Redirecting...' : 'Upgrade to Pro'}
-                </button>
+                  Upgrade to Pro
+                </LoadingButton>
               </div>
 
               {/* Premium Plan */}
@@ -1046,22 +1054,29 @@ export default function SettingsPage() {
                   <p>• ✅ Custom integrations</p>
                   <p>• ✅ Dedicated support</p>
                 </div>
-                <button
+                <LoadingButton
                   onClick={() => handleUpgrade('premium', 'monthly')}
+                  loading={upgradingTo === 'premium'}
+                  loadingText="Redirecting to Stripe..."
                   disabled={upgradingTo !== null}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
                 >
-                  {upgradingTo === 'premium' ? 'Redirecting...' : 'Upgrade to Premium'}
-                </button>
+                  Upgrade to Premium
+                </LoadingButton>
               </div>
             </div>
           </div>
 
           <div className="mt-8 pt-8 border-t border-gray-200">
             <div className="flex items-center justify-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Stripe integration coming soon. For now, enjoy the free tier!
-              </span>
+              <div className="text-center">
+                <p className="text-sm text-gray-600">
+                  🔒 Secure payments powered by Stripe
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Cancel anytime • 30-day money-back guarantee
+                </p>
+              </div>
               {usageData?.estimatedCostSaved && (
                 <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
                   <span className="text-sm text-green-800">

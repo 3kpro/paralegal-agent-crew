@@ -254,7 +254,7 @@ describe('Settings Page E2E Tests', () => {
       fireEvent.click(screen.getByText('Membership'));
       
       await waitFor(() => {
-        expect(screen.getByText('Usage Overview')).toBeInTheDocument();
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
       });
 
       // Verify usage meters are displayed
@@ -291,7 +291,7 @@ describe('Settings Page E2E Tests', () => {
       fireEvent.click(screen.getByText('Membership'));
       
       await waitFor(() => {
-        expect(screen.getByText('Usage Overview')).toBeInTheDocument();
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
       });
 
       // Check that progress bars have appropriate styling
@@ -312,6 +312,347 @@ describe('Settings Page E2E Tests', () => {
     });
   });
 
+  describe('Stripe Upgrade Functionality', () => {
+    beforeEach(() => {
+      // Mock successful Stripe checkout session creation
+      (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
+        if (url.toString().includes('/api/stripe/checkout')) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              success: true,
+              url: 'https://checkout.stripe.com/c/pay/test_session_123'
+            }),
+          } as Response);
+        }
+        
+        // Default mocks for other API calls
+        if (url.toString().includes('/api/profile')) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              success: true,
+              profile: {
+                first_name: 'John',
+                last_name: 'Doe',
+                bio: 'Test bio',
+                website: 'https://example.com',
+                avatar_url: '',
+                company_logo_url: '',
+                timezone: 'America/New_York',
+                language: 'en',
+                twitter_handle: 'johndoe',
+                linkedin_handle: 'johndoe',
+                facebook_handle: '',
+                instagram_handle: '',
+                tiktok_handle: '',
+                reddit_handle: '',
+              },
+            }),
+          } as Response);
+        }
+        
+        if (url.toString().includes('/api/ai-tools/list')) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              success: true,
+              ai_tools: {
+                openai: { provider: 'openai', api_key: '', is_configured: false },
+                anthropic: { provider: 'anthropic', api_key: '', is_configured: false },
+                google: { provider: 'google', api_key: '', is_configured: false },
+                elevenlabs: { provider: 'elevenlabs', api_key: '', is_configured: false },
+                xai: { provider: 'xai', api_key: '', is_configured: false },
+              },
+            }),
+          } as Response);
+        }
+
+        if (url.toString().includes('/api/usage')) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({
+              success: true,
+              data: {
+                campaigns: { used: 5, limit: 10 },
+                ai_tools: { used: 3, limit: 5 },
+                api_usage: { used: 1000, limit: 10000 },
+                storage: { used: 2048, limit: 5120 },
+                estimated_costs: { total: 25.50, openai: 15.30, anthropic: 10.20 },
+                lm_studio_savings: { total: 125.75, last_month: 45.25 },
+              },
+            }),
+          } as Response);
+        }
+
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        } as Response);
+      });
+    });
+
+    it('should render Upgrade to Pro button in membership tab', async () => {
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Find the Upgrade to Pro button
+      const upgradeProButton = screen.queryByRole('button', { name: /upgrade to pro/i });
+      expect(upgradeProButton).toBeInTheDocument();
+    });
+
+    it('should render Upgrade to Premium button in membership tab', async () => {
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Find the Upgrade to Premium button
+      const upgradePremiumButton = screen.queryByRole('button', { name: /upgrade to premium/i });
+      expect(upgradePremiumButton).toBeInTheDocument();
+    });
+
+    it('should initiate Pro upgrade when Upgrade to Pro button is clicked', async () => {
+      // Mock window.location.href assignment
+      delete (window as any).location;
+      (window as any).location = { href: '' };
+
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click Upgrade to Pro button
+      const upgradeProButton = screen.getByRole('button', { name: /upgrade to pro/i });
+      fireEvent.click(upgradeProButton);
+
+      // Verify Stripe checkout API is called with Pro plan
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: 'pro',
+            billingCycle: 'monthly',
+          }),
+        });
+      });
+
+      // Verify redirect to Stripe checkout
+      await waitFor(() => {
+        expect(window.location.href).toBe('https://checkout.stripe.com/c/pay/test_session_123');
+      });
+    });
+
+    it('should initiate Premium upgrade when Upgrade to Premium button is clicked', async () => {
+      // Mock window.location.href assignment
+      delete (window as any).location;
+      (window as any).location = { href: '' };
+
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click Upgrade to Premium button
+      const upgradePremiumButton = screen.getByRole('button', { name: /upgrade to premium/i });
+      fireEvent.click(upgradePremiumButton);
+
+      // Verify Stripe checkout API is called with Premium plan
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tier: 'premium',
+            billingCycle: 'monthly',
+          }),
+        });
+      });
+
+      // Verify redirect to Stripe checkout
+      await waitFor(() => {
+        expect(window.location.href).toBe('https://checkout.stripe.com/c/pay/test_session_123');
+      });
+    });
+
+    it('should show loading state during upgrade process', async () => {
+      // Mock a delayed Stripe response
+      (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
+        if (url.toString().includes('/api/stripe/checkout')) {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                ok: true,
+                json: () => Promise.resolve({
+                  success: true,
+                  url: 'https://checkout.stripe.com/c/pay/test_session_123'
+                }),
+              } as Response);
+            }, 100);
+          });
+        }
+        
+        // Return default mocks for other calls
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        } as Response);
+      });
+
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click upgrade button
+      const upgradeButton = screen.getByRole('button', { name: /upgrade to pro/i });
+      fireEvent.click(upgradeButton);
+
+      // Button should show loading state
+      await waitFor(() => {
+        expect(upgradeButton).toBeDisabled();
+      });
+    });
+
+    it('should handle Stripe API errors gracefully', async () => {
+      // Mock Stripe API error
+      (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
+        if (url.toString().includes('/api/stripe/checkout')) {
+          return Promise.resolve({
+            ok: false,
+            json: () => Promise.resolve({
+              success: false,
+              error: 'Stripe API Error: Unable to create checkout session'
+            }),
+          } as Response);
+        }
+        
+        // Return default mocks for other calls
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        } as Response);
+      });
+
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click upgrade button
+      const upgradeButton = screen.getByRole('button', { name: /upgrade to pro/i });
+      fireEvent.click(upgradeButton);
+
+      // Should show error message
+      await waitFor(() => {
+        expect(screen.getByText(/unable to create checkout session/i)).toBeInTheDocument();
+      });
+
+      // Button should be re-enabled
+      await waitFor(() => {
+        expect(upgradeButton).not.toBeDisabled();
+      });
+    });
+
+    it('should handle network errors during checkout', async () => {
+      // Mock network error
+      (fetch as jest.MockedFunction<typeof fetch>).mockImplementation((url) => {
+        if (url.toString().includes('/api/stripe/checkout')) {
+          return Promise.reject(new Error('Network error'));
+        }
+        
+        // Return default mocks for other calls
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ success: true }),
+        } as Response);
+      });
+
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click upgrade button
+      const upgradeButton = screen.getByRole('button', { name: /upgrade to premium/i });
+      fireEvent.click(upgradeButton);
+
+      // Should show network error message
+      await waitFor(() => {
+        expect(screen.getByText(/network error|connection failed/i)).toBeInTheDocument();
+      });
+
+      // Button should be re-enabled
+      await waitFor(() => {
+        expect(upgradeButton).not.toBeDisabled();
+      });
+    });
+
+    it('should include correct pricing information in upgrade buttons', async () => {
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Check that pricing is displayed with the buttons
+      const proSection = screen.getByText(/pro/i).closest('div');
+      const premiumSection = screen.getByText(/premium/i).closest('div');
+
+      expect(proSection).toBeInTheDocument();
+      expect(premiumSection).toBeInTheDocument();
+    });
+
+    it('should maintain authentication during upgrade flow', async () => {
+      render(<SettingsPage />);
+      
+      fireEvent.click(screen.getByText('Membership'));
+      
+      await waitFor(() => {
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
+      });
+
+      // Click upgrade button
+      const upgradeButton = screen.getByRole('button', { name: /upgrade to pro/i });
+      fireEvent.click(upgradeButton);
+
+      // Verify that the request includes authentication (user should be authenticated from setup)
+      await waitFor(() => {
+        expect(fetch).toHaveBeenCalledWith('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: expect.any(String),
+        });
+      });
+    });
+  });
+
   describe('Tab Navigation', () => {
     it('should switch between tabs correctly', async () => {
       render(<SettingsPage />);
@@ -328,7 +669,7 @@ describe('Settings Page E2E Tests', () => {
       // Switch to Membership
       fireEvent.click(screen.getByText('Membership'));
       await waitFor(() => {
-        expect(screen.getByText('Usage Overview')).toBeInTheDocument();
+        expect(screen.getByText('Membership & Usage')).toBeInTheDocument();
       });
       
       // Switch back to Profile

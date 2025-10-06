@@ -58,9 +58,14 @@ npm start
 
 ## Testing
 **Framework**: Jest with React Testing Library
-**Test Location**: `__tests__/` directory
+**Target Framework**: Jest
+**Test Location**: `__tests__/` directory  
 **Configuration**: jest.config.js and jest.setup.js
-**Run Command**:
+**Test Types**: 
+- Component E2E tests (`__tests__/components/`)
+- API route tests (`__tests__/api/`)
+- Custom hook tests (`__tests__/hooks/`)
+**Run Commands**:
 ```bash
 npm test
 npm run test:watch
@@ -70,6 +75,7 @@ npm run test:coverage
 ## API Routes
 **Contact Form**: `/api/contact` - Integrates with n8n webhook
 **Twitter Demo**: `/api/twitter-thread` - Generates Twitter threads
+**Stripe Checkout**: `/api/stripe/checkout` - Creates Stripe checkout sessions
 **Health Check**: `/api/health` - Service health monitoring
 
 ## Environment Variables
