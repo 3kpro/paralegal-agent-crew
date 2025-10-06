@@ -24,12 +24,7 @@ export default async function PortalLayout({
     .single()
 
   return (
-    <ErrorBoundary
-      onError={(error, errorInfo) => {
-        console.error('Portal Layout Error:', error);
-        console.error('Error Info:', errorInfo);
-      }}
-    >
+    <ErrorBoundary>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <aside className="w-64 bg-gray-900 text-white fixed h-full">
@@ -117,12 +112,7 @@ export default async function PortalLayout({
 
           {/* Page Content */}
           <main className="min-h-[calc(100vh-73px)]">
-            <ErrorBoundary
-              onError={(error, errorInfo) => {
-                console.error('Page Content Error:', error);
-                console.error('Error Info:', errorInfo);
-              }}
-            >
+            <ErrorBoundary>
               {children}
             </ErrorBoundary>
           </main>
