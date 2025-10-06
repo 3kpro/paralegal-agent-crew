@@ -82,8 +82,8 @@ export async function POST(request: Request) {
     console.log('Creating Stripe session with customer:', customerId)
     const sessionConfig = {
       customer: customerId,
-      mode: 'subscription',
-      payment_method_types: ['card'],
+      mode: 'subscription' as const,
+      payment_method_types: ['card'] as const,
       line_items: [
         {
           price: priceId,
