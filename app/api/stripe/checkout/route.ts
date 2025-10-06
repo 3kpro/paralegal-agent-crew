@@ -15,18 +15,23 @@ const checkoutSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    console.log('Checkout API called')
     const supabase = await createClient()
 
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
+      console.log('Auth error:', authError)
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+    console.log('User authenticated:', user.id)
 
     // Parse and validate request body
     const body = await request.json()
+    console.log('Request body:', body)
     const validation = checkoutSchema.safeParse(body)
     
     if (!validation.success) {
+      console.log('Validation failed:', validation.error)
       return NextResponse.json({
         error: 'Invalid request data',
         details: validation.error.issues.map(e => e.message)
@@ -34,12 +39,15 @@ export async function POST(request: Request) {
     }
 
     const { tier, billingCycle } = validation.data
+    console.log('Validated data:', { tier, billingCycle })
 
     // Get the correct price ID
     const priceKey = `${tier.toUpperCase()}_${billingCycle.toUpperCase()}` as keyof typeof STRIPE_PRICES
     const priceId = STRIPE_PRICES[priceKey]
+    console.log('Price key:', priceKey, 'Price ID:', priceId)
 
     if (!priceId) {
+      console.log('No price ID found for:', priceKey)
       return NextResponse.json({
         error: 'Invalid tier or billing cycle'
       }, { status: 400 })
@@ -71,7 +79,8 @@ export async function POST(request: Request) {
     }
 
     // Create checkout session
-    const session = await stripe.checkout.sessions.create({
+    console.log('Creating Stripe session with customer:', customerId)
+    const sessionConfig = {
       customer: customerId,
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -89,7 +98,11 @@ export async function POST(request: Request) {
         billing_cycle: billingCycle
       },
       allow_promotion_codes: true,
-    })
+    }
+    console.log('Session config:', sessionConfig)
+
+    const session = await stripe.checkout.sessions.create(sessionConfig)
+    console.log('Session created:', session.id, 'URL:', session.url)
 
     return NextResponse.json({
       success: true,

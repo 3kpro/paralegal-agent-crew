@@ -277,21 +277,28 @@ export default function SettingsPage() {
   async function handleUpgrade(tier: 'pro' | 'premium', billingCycle: 'monthly' | 'yearly' = 'monthly') {
     setUpgradingTo(tier)
     try {
+      console.log('Starting checkout for:', { tier, billingCycle })
+      
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier, billingCycle })
       })
 
+      console.log('Checkout response status:', response.status)
       const data = await response.json()
+      console.log('Checkout response data:', data)
 
       if (data.success && data.url) {
+        console.log('Redirecting to Stripe:', data.url)
         // Redirect to Stripe checkout
         window.location.href = data.url
       } else {
+        console.error('Checkout failed:', data)
         setMessage('Error: ' + (data.error || 'Failed to create checkout session'))
       }
     } catch (error: any) {
+      console.error('Checkout error:', error)
       setMessage('Error: ' + error.message)
     } finally {
       setUpgradingTo(null)
