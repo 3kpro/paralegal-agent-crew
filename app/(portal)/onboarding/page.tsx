@@ -122,27 +122,45 @@ export default function OnboardingPage() {
               <p className="text-gray-600 mb-6">Connect platforms to publish your content (you can skip this for now)</p>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/twitter')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">🐦</span>
                   <span className="font-medium text-gray-700">Twitter</span>
                 </button>
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/linkedin')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">💼</span>
                   <span className="font-medium text-gray-700">LinkedIn</span>
                 </button>
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/facebook')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">📘</span>
                   <span className="font-medium text-gray-700">Facebook</span>
                 </button>
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/instagram')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">📸</span>
                   <span className="font-medium text-gray-700">Instagram</span>
                 </button>
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/tiktok')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">🎵</span>
                   <span className="font-medium text-gray-700">TikTok</span>
                 </button>
-                <button className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                <button 
+                  onClick={() => router.push('/api/auth/connect/reddit')}
+                  className="h-16 border-2 border-gray-300 hover:border-indigo-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                >
                   <span className="text-2xl">🤖</span>
                   <span className="font-medium text-gray-700">Reddit</span>
                 </button>
