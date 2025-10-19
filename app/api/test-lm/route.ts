@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// nosemgrep: Local development file for LM Studio testing - HTTP is expected for local development
 const LM_STUDIO_URL = 'http://10.10.10.105:1234'
 
 export async function GET() {
