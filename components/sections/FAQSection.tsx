@@ -115,20 +115,20 @@ export default function FAQSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-grid rounded-full mb-6 border border-tron-cyan">
               <HelpCircle className="w-4 h-4 text-tron-cyan" />
-              <span className="text-sm font-semibold text-indigo-700">
+              <span className="text-sm font-semibold text-tron-cyan">
                 Frequently Asked Questions
               </span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-tron-text-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
               Everything You Need to Know
             </h2>
             
-            <p className="text-xl text-tron-text-600 max-w-3xl mx-auto">
+            <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
               Got questions? We've got answers. If you can't find what you're looking for, 
-              <a href="#contact" className="text-tron-cyan hover:text-indigo-700 font-semibold"> reach out to our team</a>.
+              <a href="#contact" className="text-tron-cyan hover:text-tron-green font-semibold"> reach out to our team</a>.
             </p>
           </motion.div>
 
@@ -141,7 +141,7 @@ export default function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
-                <h3 className="text-2xl font-bold text-tron-text-900 mb-6 pb-3 border-b-2 border-indigo-100">
+                <h3 className="text-2xl font-bold text-tron-text mb-6 pb-3 border-b-2 border-tron-cyan">
                   {category.category}
                 </h3>
                 
@@ -158,14 +158,14 @@ export default function FAQSection() {
                           onClick={() => toggleItem(categoryIndex, questionIndex)}
                           className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-tron-grid transition-colors duration-200"
                         >
-                          <span className="font-semibold text-tron-text-900 text-lg pr-8">
+                          <span className="font-semibold text-tron-text text-lg pr-8">
                             {faq.question}
                           </span>
                           <div className="flex-shrink-0">
                             {isOpen ? (
                               <Minus className="w-6 h-6 text-tron-cyan" />
                             ) : (
-                              <Plus className="w-6 h-6 text-tron-text-400" />
+                              <Plus className="w-6 h-6 text-tron-text-muted" />
                             )}
                           </div>
                         </button>
@@ -180,7 +180,7 @@ export default function FAQSection() {
                               className="overflow-hidden"
                             >
                               <div className="px-6 pb-6">
-                                <p className="text-tron-text-600 leading-relaxed">
+                                <p className="text-tron-text-muted leading-relaxed">
                                   {faq.answer}
                                 </p>
                               </div>
@@ -200,12 +200,12 @@ export default function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center mt-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-12 text-white"
+            className="text-center mt-16 bg-tron-grid rounded-2xl p-12 border border-tron-cyan"
           >
-            <h3 className="text-2xl font-bold mb-4">
+            <h3 className="text-2xl font-bold mb-4 text-tron-text">
               Still Have Questions?
             </h3>
-            <p className="text-indigo-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
               Our team is here to help! Book a free 15-minute consultation to discuss 
               your content strategy and see if Content Cascade AI is right for you.
             </p>
@@ -227,7 +227,7 @@ export default function FAQSection() {
                     contactElement.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white hover:bg-tron-grid hover:text-tron-cyan transition-all duration-200">
+                className="px-8 py-4 bg-transparent text-tron-cyan rounded-xl font-semibold text-lg border-2 border-tron-cyan hover:bg-tron-cyan hover:text-tron-dark transition-all duration-200">
                 Contact Support
               </button>
             </div>
