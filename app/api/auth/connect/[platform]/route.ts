@@ -3,10 +3,10 @@ import { createClient } from '@/lib/supabase/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { platform: string } }
+  { params }: { params: Promise<{ platform: string }> }
 ) {
   try {
-    const { platform } = params
+    const { platform } = await params
     const { searchParams } = new URL(request.url)
     const origin = request.headers.get('origin') || 'http://localhost:3000'
 
@@ -17,7 +17,7 @@ export async function GET(
     }
 
     // Get current user
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     
     if (authError || !user) {

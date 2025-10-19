@@ -102,7 +102,7 @@ export default function ContactForm() {
       <motion.label 
         htmlFor={id} 
         className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
-          focusedField === name ? 'text-cyan-400' : 'text-gray-700'
+          focusedField === name ? 'text-cyan-400' : 'text-tron-text700'
         }`}
         animate={{ color: focusedField === name ? '#00ffff' : '#374151' }}
         transition={{ duration: 0.3, ease: transitionTiming }}
@@ -118,7 +118,7 @@ export default function ContactForm() {
         onChange={handleChange}
         onFocus={() => handleFocus(name)}
         onBlur={handleBlur}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
+        className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
         placeholder={placeholder}
         whileFocus={{
           boxShadow: '0 0 0 2px #00ffff',
@@ -147,7 +147,7 @@ export default function ContactForm() {
       <motion.label 
         htmlFor={id} 
         className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
-          focusedField === name ? 'text-cyan-400' : 'text-gray-700'
+          focusedField === name ? 'text-cyan-400' : 'text-tron-text700'
         }`}
         animate={{ color: focusedField === name ? '#00ffff' : '#374151' }}
         transition={{ duration: 0.3, ease: transitionTiming }}
@@ -161,7 +161,7 @@ export default function ContactForm() {
         onChange={handleChange}
         onFocus={() => handleFocus(name)}
         onBlur={handleBlur}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
+        className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
         whileFocus={{
           boxShadow: '0 0 0 2px #00ffff',
           borderColor: '#00ffff',
@@ -184,10 +184,10 @@ export default function ContactForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: transitionTiming }}
     >
-      <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+      <div className="bg-tron-grid rounded-xl shadow-lg p-8 border border-tron-grid">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Get Started Today</h2>
-          <p className="text-gray-600">
+          <h2 className="text-3xl font-bold text-tron-text800 mb-4">Get Started Today</h2>
+          <p className="text-tron-text600">
             Tell us about your project and we'll create a custom campaign proposal for you.
           </p>
         </div>
@@ -280,7 +280,7 @@ export default function ContactForm() {
             <motion.label 
               htmlFor="message" 
               className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
-                focusedField === 'message' ? 'text-cyan-400' : 'text-gray-700'
+                focusedField === 'message' ? 'text-cyan-400' : 'text-tron-text700'
               }`}
               animate={{ color: focusedField === 'message' ? '#00ffff' : '#374151' }}
               transition={{ duration: 0.3, ease: transitionTiming }}
@@ -295,7 +295,7 @@ export default function ContactForm() {
               onChange={handleChange}
               onFocus={() => handleFocus('message')}
               onBlur={handleBlur}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
+              className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
               placeholder="Tell us about your content marketing goals, target audience, and any specific requirements..."
               whileFocus={{
                 boxShadow: '0 0 0 2px #00ffff',
@@ -324,7 +324,7 @@ export default function ContactForm() {
           </motion.button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-6 text-center text-sm text-tron-text500">
           <p>We typically respond within 24 hours with a custom proposal.</p>
         </div>
       </div>

@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="bg-gray-800 text-white py-16">
+    <footer className="bg-tron-dark text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
@@ -121,7 +121,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-12 pt-8">
+        <div className="border-t border-tron-grid mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">&copy; 2025 3K Pro Services. All rights reserved.</p>
             

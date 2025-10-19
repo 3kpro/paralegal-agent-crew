@@ -8,6 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Tron Legacy Color System
+        'tron-dark': '#0f0f1e',
+        'tron-cyan': '#00ffff',
+        'tron-green': '#00ff00',
+        'tron-magenta': '#ff00ff',
+        'tron-grid': '#1a1a2e',
+        'tron-text': '#ffffff',
+        'tron-text-muted': '#cccccc',
+        
         primary: {
           50: '#f0f9ff',
           500: '#3b82f6',
