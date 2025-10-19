@@ -50,7 +50,7 @@ const features = [
 
 export default function ModernFeatures() {
   return (
-    <section id="features" className="py-24 bg-white relative overflow-hidden">
+    <section id="features" className="py-24 bg-tron-dark relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-gray-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
 
@@ -86,7 +86,7 @@ export default function ModernFeatures() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group relative"
               >
-                <div className="h-full bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-purple-200">
+                <div className="h-full bg-tron-grid rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-tron-cyan hover:border-tron-magenta">
                   {/* Icon */}
                   <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className="w-6 h-6 text-white" />

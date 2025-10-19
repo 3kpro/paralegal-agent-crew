@@ -14,7 +14,7 @@ export default function DemoVideoSection() {
   }
 
   return (
-    <section id="demo" className="py-24 bg-gray-50">
+    <section id="demo" className="py-24 bg-tron-grid">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -62,10 +62,10 @@ export default function DemoVideoSection() {
                       onClick={handlePlayVideo}
                       className="group relative z-10"
                     >
-                      <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-24 h-24 bg-tron-cyan rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
                         <Play className="w-12 h-12 text-indigo-600 ml-1" fill="currentColor" />
                       </div>
-                      <div className="absolute inset-0 bg-white rounded-full animate-pulse opacity-25"></div>
+                      <div className="absolute inset-0 bg-tron-cyan rounded-full animate-pulse opacity-25"></div>
                     </button>
                     
                     {/* Video Info Overlay */}
@@ -104,7 +104,7 @@ export default function DemoVideoSection() {
                     <button className="hover:text-purple-400 transition-colors">
                       <PlayCircle className="w-6 h-6" />
                     </button>
-                    <div className="flex-1 bg-gray-700 h-2 rounded-full">
+                    <div className="flex-1 bg-tron-cyan h-2 rounded-full">
                       <div className="bg-purple-500 h-2 rounded-full w-1/3"></div>
                     </div>
                     <span className="text-sm">0:54 / 2:34</span>

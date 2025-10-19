@@ -55,9 +55,9 @@ export default function WaitlistSection() {
     <section id="waitlist" className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-white rounded-full"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white rounded-full"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-tron-cyan rounded-full opacity-20"></div>
+        <div className="absolute bottom-10 right-10 w-24 h-24 bg-tron-cyan rounded-full opacity-20"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-tron-magenta rounded-full opacity-20"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -68,7 +68,7 @@ export default function WaitlistSection() {
           className="max-w-3xl mx-auto text-center"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full backdrop-blur-sm mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan/20 rounded-full backdrop-blur-sm mb-8 border border-tron-cyan">
             <Users className="w-4 h-4 text-white" />
             <span className="text-sm font-semibold text-white">
               Join 1,200+ creators on the waitlist
@@ -98,7 +98,7 @@ export default function WaitlistSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-gray-900 placeholder-gray-500 text-lg focus:outline-none focus:ring-4 focus:ring-white/30"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-tron-grid text-tron-text placeholder-tron-text-muted text-lg focus:outline-none focus:ring-4 focus:ring-tron-cyan/30"
                   required
                 />
               </div>
@@ -123,21 +123,21 @@ export default function WaitlistSection() {
           </form>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-3xl font-bold text-white mb-2">50%</div>
-              <div className="text-purple-100">Launch Discount</div>
+            <div className="bg-tron-grid/50 backdrop-blur-sm rounded-2xl p-6 border border-tron-cyan/30">
+              <div className="text-3xl font-bold text-tron-cyan mb-2">50%</div>
+              <div className="text-tron-text-muted">Launch Discount</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-3xl font-bold text-white mb-2">$79</div>
-              <div className="text-purple-100">Free TrendPulse™</div>
+            <div className="bg-tron-grid/50 backdrop-blur-sm rounded-2xl p-6 border border-tron-cyan/30">
+              <div className="text-3xl font-bold text-tron-cyan mb-2">$79</div>
+              <div className="text-tron-text-muted">Free TrendPulse™</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
-              <div className="text-3xl font-bold text-white mb-2">30 days</div>
-              <div className="text-purple-100">Priority Support</div>
+            <div className="bg-tron-grid/50 backdrop-blur-sm rounded-2xl p-6 border border-tron-cyan/30">
+              <div className="text-3xl font-bold text-tron-cyan mb-2">30 days</div>
+              <div className="text-tron-text-muted">Priority Support</div>
             </div>
           </div>
 
-          <p className="text-sm text-purple-200 mt-8">
+          <p className="text-sm text-tron-text-muted mt-8">
             No spam, unsubscribe anytime. We respect your inbox.
           </p>
         </motion.div>

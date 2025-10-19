@@ -70,7 +70,7 @@ const plans = [
 
 export default function ModernPricing() {
   return (
-    <section id="pricing" className="py-24 bg-gradient-to-br from-gray-50 via-white to-purple-50 relative overflow-hidden">
+    <section id="pricing" className="py-24 bg-tron-dark relative overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -112,7 +112,7 @@ export default function ModernPricing() {
                   </div>
                 )}
 
-                <div className={`h-full bg-white rounded-2xl p-8 shadow-xl border-2 ${
+                <div className={`h-full bg-tron-grid rounded-2xl p-8 shadow-xl border-2 ${
                   plan.popular ? 'border-purple-500' : 'border-gray-200'
                 } hover:shadow-2xl transition-all duration-300`}>
                   {/* Icon */}
@@ -165,8 +165,8 @@ export default function ModernPricing() {
                     }}
                     className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
                     plan.popular
-                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-105'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                      ? 'bg-tron-cyan text-tron-dark shadow-lg hover:shadow-xl hover:scale-105'
+                      : 'bg-tron-grid text-tron-text hover:bg-tron-grid border border-tron-cyan'
                   }`}>
                     {plan.cta}
                     <ArrowRight className="w-5 h-5" />
@@ -179,7 +179,7 @@ export default function ModernPricing() {
                         <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center mt-0.5`}>
                           <Check className="w-3 h-3 text-white" />
                         </div>
-                        <span className="text-gray-700">
+                        <span className="text-tron-text-muted">
                           {feature}
                         </span>
                       </div>

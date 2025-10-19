@@ -105,7 +105,7 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="py-24 bg-gray-50">
+    <section id="faq" className="py-24 bg-tron-dark">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
@@ -116,19 +116,19 @@ export default function FAQSection() {
             className="text-center mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full mb-6">
-              <HelpCircle className="w-4 h-4 text-indigo-600" />
+              <HelpCircle className="w-4 h-4 text-tron-cyan" />
               <span className="text-sm font-semibold text-indigo-700">
                 Frequently Asked Questions
               </span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-tron-text-900 mb-6">
               Everything You Need to Know
             </h2>
             
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-tron-text-600 max-w-3xl mx-auto">
               Got questions? We've got answers. If you can't find what you're looking for, 
-              <a href="#contact" className="text-indigo-600 hover:text-indigo-700 font-semibold"> reach out to our team</a>.
+              <a href="#contact" className="text-tron-cyan hover:text-indigo-700 font-semibold"> reach out to our team</a>.
             </p>
           </motion.div>
 
@@ -141,7 +141,7 @@ export default function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-indigo-100">
+                <h3 className="text-2xl font-bold text-tron-text-900 mb-6 pb-3 border-b-2 border-indigo-100">
                   {category.category}
                 </h3>
                 
@@ -152,20 +152,20 @@ export default function FAQSection() {
                     return (
                       <div
                         key={questionIndex}
-                        className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+                        className="bg-tron-grid rounded-xl shadow-sm border border-tron-cyan overflow-hidden"
                       >
                         <button
                           onClick={() => toggleItem(categoryIndex, questionIndex)}
-                          className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200"
+                          className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-tron-grid transition-colors duration-200"
                         >
-                          <span className="font-semibold text-gray-900 text-lg pr-8">
+                          <span className="font-semibold text-tron-text-900 text-lg pr-8">
                             {faq.question}
                           </span>
                           <div className="flex-shrink-0">
                             {isOpen ? (
-                              <Minus className="w-6 h-6 text-indigo-600" />
+                              <Minus className="w-6 h-6 text-tron-cyan" />
                             ) : (
-                              <Plus className="w-6 h-6 text-gray-400" />
+                              <Plus className="w-6 h-6 text-tron-text-400" />
                             )}
                           </div>
                         </button>
@@ -180,7 +180,7 @@ export default function FAQSection() {
                               className="overflow-hidden"
                             >
                               <div className="px-6 pb-6">
-                                <p className="text-gray-600 leading-relaxed">
+                                <p className="text-tron-text-600 leading-relaxed">
                                   {faq.answer}
                                 </p>
                               </div>
@@ -217,7 +217,7 @@ export default function FAQSection() {
                     contactElement.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
+                className="px-8 py-4 bg-tron-grid text-tron-cyan rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200">
                 Book Free Consultation
               </button>
               <button 
@@ -227,7 +227,7 @@ export default function FAQSection() {
                     contactElement.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white hover:bg-white hover:text-indigo-600 transition-all duration-200">
+                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-white hover:bg-tron-grid hover:text-tron-cyan transition-all duration-200">
                 Contact Support
               </button>
             </div>

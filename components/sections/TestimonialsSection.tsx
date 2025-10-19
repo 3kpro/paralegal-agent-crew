@@ -74,7 +74,7 @@ const platformIcons = {
 
 export default function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-24 bg-white">
+    <section id="testimonials" className="py-24 bg-tron-dark">
       <div className="container mx-auto px-4">
         <div className="max-w-7xl mx-auto">
           {/* Section Header */}
@@ -116,11 +116,11 @@ export default function TestimonialsSection() {
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 relative"
+                  className="bg-tron-grid rounded-2xl p-8 shadow-lg border border-tron-cyan hover:shadow-xl transition-shadow duration-300 relative"
                 >
                   {/* Quote Icon */}
                   <div className="absolute top-6 right-6 opacity-10">
-                    <Quote className="w-12 h-12 text-gray-400" />
+                    <Quote className="w-12 h-12 text-tron-cyan" />
                   </div>
 
                   {/* Rating */}
@@ -128,7 +128,7 @@ export default function TestimonialsSection() {
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star 
                         key={i} 
-                        className="w-5 h-5 text-yellow-400" 
+                        className="w-5 h-5 text-tron-magenta" 
                         fill="currentColor" 
                       />
                     ))}

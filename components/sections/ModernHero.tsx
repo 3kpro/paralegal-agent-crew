@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export default function ModernHero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-tron-dark">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -42,10 +42,10 @@ export default function ModernHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg mb-8 border border-purple-100"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-tron-grid rounded-full shadow-lg mb-8 border border-tron-cyan"
           >
-            <Sparkles className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-semibold text-gray-700">
+            <Sparkles className="w-4 h-4 text-tron-cyan" />
+            <span className="text-sm font-semibold text-tron-text">
               🚀 Join 1,200+ creators on the waitlist • Early access available
             </span>
           </motion.div>
@@ -95,7 +95,7 @@ export default function ModernHero() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            <button className="px-8 py-4 bg-white text-gray-800 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 border-gray-200 hover:border-purple-300">
+            <button className="px-8 py-4 bg-tron-cyan text-tron-dark rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 border-tron-cyan hover:border-tron-magenta">
               🎥 Watch Demo (2 min)
             </button>
           </motion.div>
@@ -108,23 +108,23 @@ export default function ModernHero() {
             className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-600"
           >
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-500" />
+              <TrendingUp className="w-5 h-5 text-tron-green" />
               <span>
-                <strong className="text-gray-900">500+</strong> campaigns launched
+                <strong className="text-tron-text">500+</strong> campaigns launched
               </span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-gray-300" />
+            <div className="hidden sm:block w-px h-6 bg-tron-cyan" />
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-500" />
+              <Sparkles className="w-5 h-5 text-tron-magenta" />
               <span>
-                <strong className="text-gray-900">10K+</strong> pieces of content generated
+                <strong className="text-tron-text">10K+</strong> pieces of content generated
               </span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-gray-300" />
+            <div className="hidden sm:block w-px h-6 bg-tron-cyan" />
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-yellow-500" />
+              <Zap className="w-5 h-5 text-tron-green" />
               <span>
-                <strong className="text-gray-900">98%</strong> user satisfaction
+                <strong className="text-tron-text">98%</strong> user satisfaction
               </span>
             </div>
           </motion.div>

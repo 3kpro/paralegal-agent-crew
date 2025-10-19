@@ -17,18 +17,18 @@ export const Footer: React.FC = () => {
               </div>
               <span className="text-xl font-bold">3K Pro Services</span>
             </div>
-            <p className="text-gray-400">
+            <p className="text-tron-text-muted">
               AI-powered content marketing platform for modern businesses.
             </p>
           </div>
 
           <div>
             <h3 className="font-semibold mb-4">Product</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-tron-text-muted">
               <li>
                 <button
                   onClick={() => scrollToSection('services')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Features
                 </button>
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('pricing')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Pricing
                 </button>
@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   API
                 </button>
@@ -54,11 +54,11 @@ export const Footer: React.FC = () => {
 
           <div>
             <h3 className="font-semibold mb-4">Company</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-tron-text-muted">
               <li>
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   About
                 </button>
@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Blog
                 </button>
@@ -74,7 +74,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Careers
                 </button>
@@ -84,11 +84,11 @@ export const Footer: React.FC = () => {
 
           <div>
             <h3 className="font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-gray-400">
+            <ul className="space-y-2 text-tron-text-muted">
               <li>
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Help Center
                 </button>
@@ -96,7 +96,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('contact')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Contact
                 </button>
@@ -104,7 +104,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('faq')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   FAQ
                 </button>
@@ -112,7 +112,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => scrollToSection('about')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-tron-cyan transition-colors"
                 >
                   Status
                 </button>
@@ -123,14 +123,14 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-tron-grid mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">&copy; 2025 3K Pro Services. All rights reserved.</p>
+            <p className="text-tron-text-muted">&copy; 2025 3K Pro Services. All rights reserved.</p>
             
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a 
                 href="https://x.com/3kpro_services" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Follow us on X (formerly Twitter)"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
                 href="https://linkedin.com/company/3k-pro-services" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Connect with us on LinkedIn"
               >
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -152,7 +152,7 @@ export const Footer: React.FC = () => {
 
               <a 
                 href="mailto:contact@3kpro.services" 
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Email us"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,3 +166,4 @@ export const Footer: React.FC = () => {
     </footer>
   )
 }
+

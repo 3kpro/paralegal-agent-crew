@@ -26,7 +26,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
   const NavItem = ({ id, label }: { id: string, label: string }) => (
     <motion.button
       onClick={() => scrollToSection(id)}
-      className={`relative text-gray-600 hover:text-cyan-400 transition-colors duration-300`}
+      className={`relative text-tron-text hover:text-tron-cyan transition-colors duration-300`}
       whileHover={{ 
         scale: 1.05,
         transition: { duration: 0.3, ease: transitionTiming }
@@ -46,7 +46,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
   )
 
   return (
-    <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md border-b border-gray-100 z-50">
+    <nav className="fixed top-0 w-full bg-tron-grid/90 backdrop-blur-md border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <motion.button 
@@ -84,7 +84,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
           <div className="md:hidden">
             <motion.button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-600 hover:text-cyan-400 transition-colors p-2"
+              className="text-tron-text hover:text-tron-cyan transition-colors p-2"
               whileHover={{ 
                 scale: 1.1,
                 transition: { duration: 0.3, ease: transitionTiming }
@@ -110,21 +110,21 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
             <div className="flex flex-col space-y-4">
               <motion.button
                 onClick={() => scrollToSection('services')}
-                className="text-gray-600 hover:text-cyan-400 transition-colors text-left px-4"
+                className="text-tron-text hover:text-tron-cyan transition-colors text-left px-4"
                 whileHover={{ x: 5, color: '#00ffff' }}
               >
                 Services
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection('pricing')}
-                className="text-gray-600 hover:text-cyan-400 transition-colors text-left px-4"
+                className="text-tron-text hover:text-tron-cyan transition-colors text-left px-4"
                 whileHover={{ x: 5, color: '#00ffff' }}
               >
                 Pricing
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection('contact')}
-                className="text-gray-600 hover:text-cyan-400 transition-colors text-left px-4"
+                className="text-tron-text hover:text-tron-cyan transition-colors text-left px-4"
                 whileHover={{ x: 5, color: '#00ffff' }}
               >
                 About
@@ -152,3 +152,4 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
     </nav>
   )
 }
+
