@@ -15,7 +15,7 @@ export default function ModernLandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <Navigation onContactClick={handleContactClick} />
 
       <ModernHero />
