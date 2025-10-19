@@ -1,0 +1,9 @@
+# Development and test files that use HTTP for local development
+app/api/test-lm/route.ts
+app/api/test-models/route.ts
+
+# Build artifacts and dependencies
+node_modules/
+.next/
+dist/
+build/
