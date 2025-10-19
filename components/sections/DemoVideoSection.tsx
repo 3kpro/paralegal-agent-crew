@@ -24,14 +24,14 @@ export default function DemoVideoSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-6">
-              <Eye className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-semibold text-purple-700">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-grid rounded-full mb-6 border border-tron-cyan">
+              <Eye className="w-4 h-4 text-tron-cyan" />
+              <span className="text-sm font-semibold text-tron-cyan">
                 See it in action
               </span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
               Watch How It Works
               <br />
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -39,7 +39,7 @@ export default function DemoVideoSection() {
               </span>
             </h2>
             
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
               See how Content Cascade AI transforms trending topics into 
               published content across Twitter, LinkedIn, and email—automatically.
             </p>
@@ -129,10 +129,10 @@ export default function DemoVideoSection() {
               <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-tron-text mb-2">
                 TrendPulse™ Discovery
               </h3>
-              <p className="text-gray-600">
+              <p className="text-tron-text-muted">
                 Watch how we automatically discover trending topics in your industry
               </p>
             </div>
@@ -141,10 +141,10 @@ export default function DemoVideoSection() {
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Play className="w-8 h-8 text-white" fill="currentColor" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-tron-text mb-2">
                 AI Cascade™ Generation
               </h3>
-              <p className="text-gray-600">
+              <p className="text-tron-text-muted">
                 See AI transform topics into Twitter threads, LinkedIn posts, and emails
               </p>
             </div>
@@ -153,10 +153,10 @@ export default function DemoVideoSection() {
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <PlayCircle className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-semibold text-tron-text mb-2">
                 OmniFormat™ Publishing
               </h3>
-              <p className="text-gray-600">
+              <p className="text-tron-text-muted">
                 Watch content get formatted and scheduled across all your channels
               </p>
             </div>

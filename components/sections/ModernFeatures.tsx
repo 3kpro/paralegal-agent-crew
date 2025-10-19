@@ -68,7 +68,7 @@ export default function ModernFeatures() {
               Complex Simplicity
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
             We offer a lot, but you don't need to know a lot to get started. From zero to full-blown campaign in minutes.
           </p>
         </motion.div>
@@ -93,17 +93,17 @@ export default function ModernFeatures() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-2xl font-bold mb-1 text-gray-900">
+                  <h3 className="text-2xl font-bold mb-1 text-tron-text">
                     {feature.title}
                   </h3>
 
                   {/* Subtitle */}
-                  <p className="text-sm font-semibold text-purple-600 mb-3">
+                  <p className="text-sm font-semibold text-tron-magenta mb-3">
                     {feature.subtitle}
                   </p>
 
                   {/* Description */}
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-tron-text-muted leading-relaxed">
                     {feature.description}
                   </p>
 
@@ -123,7 +123,7 @@ export default function ModernFeatures() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-16"
         >
-          <p className="text-gray-600 mb-6 text-lg">
+          <p className="text-tron-text-muted mb-6 text-lg">
             Ready to transform your content workflow?
           </p>
           <a

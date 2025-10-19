@@ -91,7 +91,7 @@ export default function TestimonialsSection() {
               </span>
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
               Loved by Creators
               <br />
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -99,7 +99,7 @@ export default function TestimonialsSection() {
               </span>
             </h2>
             
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
               Join thousands of content creators, marketers, and founders who've transformed 
               their content workflow with Content Cascade AI.
             </p>
@@ -135,13 +135,13 @@ export default function TestimonialsSection() {
                   </div>
 
                   {/* Content */}
-                  <p className="text-gray-700 mb-6 leading-relaxed">
+                  <p className="text-tron-text-muted mb-6 leading-relaxed">
                     "{testimonial.content}"
                   </p>
 
                   {/* Metrics */}
-                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-3 mb-6">
-                    <div className="text-sm font-semibold text-indigo-700">
+                  <div className="bg-tron-grid rounded-lg p-3 mb-6 border border-tron-cyan">
+                    <div className="text-sm font-semibold text-tron-cyan">
                       📈 Result: {testimonial.metrics}
                     </div>
                   </div>
@@ -152,13 +152,13 @@ export default function TestimonialsSection() {
                       {testimonial.image}
                     </div>
                     <div className="flex-1">
-                      <div className="font-semibold text-gray-900">
+                      <div className="font-semibold text-tron-text">
                         {testimonial.name}
                       </div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-tron-text-muted">
                         {testimonial.role}
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <div className="flex items-center gap-1 text-sm text-tron-text-muted">
                         <PlatformIcon className="w-4 h-4" />
                         {testimonial.company}
                       </div>
@@ -176,11 +176,11 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-center mt-16"
           >
-            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-12">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <div className="bg-tron-grid rounded-2xl p-12 border border-tron-cyan">
+              <h3 className="text-2xl font-bold text-tron-text mb-4">
                 Ready to Join These Success Stories?
               </h3>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+              <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
                 Start creating content that converts with TrendPulse™ discovery, 
                 AI Cascade™ generation, and OmniFormat™ publishing.
               </p>

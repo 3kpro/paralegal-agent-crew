@@ -85,7 +85,7 @@ export default function ModernPricing() {
               Simple, Transparent Pricing
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
             Start free, upgrade when you're ready. No hidden fees, cancel anytime.
           </p>
         </motion.div>
@@ -113,7 +113,7 @@ export default function ModernPricing() {
                 )}
 
                 <div className={`h-full bg-tron-grid rounded-2xl p-8 shadow-xl border-2 ${
-                  plan.popular ? 'border-purple-500' : 'border-gray-200'
+                  plan.popular ? 'border-tron-cyan' : 'border-tron-cyan'
                 } hover:shadow-2xl transition-all duration-300`}>
                   {/* Icon */}
                   <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-lg`}>
@@ -121,29 +121,29 @@ export default function ModernPricing() {
                   </div>
 
                   {/* Plan Name */}
-                  <h3 className="text-2xl font-bold mb-2 text-gray-900">
+                  <h3 className="text-2xl font-bold mb-2 text-tron-text">
                     {plan.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-tron-text-muted mb-6">
                     {plan.description}
                   </p>
 
                   {/* Price */}
                   <div className="mb-6">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-bold text-gray-900">
+                      <span className="text-5xl font-bold text-tron-text">
                         {plan.price}
                       </span>
                       {plan.price !== 'Free' && (
-                        <span className="text-gray-600">
+                        <span className="text-tron-text-muted">
                           / {plan.period}
                         </span>
                       )}
                     </div>
                     {plan.price === 'Free' && (
-                      <span className="text-gray-600">
+                      <span className="text-tron-text-muted">
                         {plan.period}
                       </span>
                     )}
@@ -203,7 +203,7 @@ export default function ModernPricing() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <h3 className="text-3xl font-bold mb-2">Enterprise</h3>
-                <p className="text-indigo-100 text-lg">
+                <p className="text-tron-text-muted text-lg">
                   Custom solutions for large organizations. Self-hosted options, SLAs, and dedicated support.
                 </p>
               </div>
@@ -214,7 +214,7 @@ export default function ModernPricing() {
                     contactElement.scrollIntoView({ behavior: 'smooth' })
                   }
                 }}
-                className="flex-shrink-0 px-8 py-4 bg-white text-purple-600 rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                className="flex-shrink-0 px-8 py-4 bg-tron-cyan text-tron-dark rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
                 Contact Sales
               </button>
             </div>
@@ -229,13 +229,13 @@ export default function ModernPricing() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-center mt-12"
         >
-          <p className="text-gray-600">
+          <p className="text-tron-text-muted">
             Have questions?{' '}
-            <a href="#contact" className="text-purple-600 hover:text-purple-700 font-semibold underline">
+            <a href="#contact" className="text-tron-cyan hover:text-tron-magenta font-semibold underline">
               Contact us
             </a>
             {' '}or check out our{' '}
-            <a href="#faq" className="text-purple-600 hover:text-purple-700 font-semibold underline">
+            <a href="#faq" className="text-tron-cyan hover:text-tron-magenta font-semibold underline">
               FAQ
             </a>
           </p>

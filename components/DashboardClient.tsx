@@ -235,7 +235,7 @@ export default function DashboardClient() {
                 >
                   <Link
                     href={`/campaigns/${campaign.id}`}
-                    className="text-indigo-600 hover:text-cyan-400 font-medium"
+                    className="text-tron-cyan hover:text-tron-magenta font-medium"
                   >
                     View →
                   </Link>

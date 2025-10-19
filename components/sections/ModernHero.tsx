@@ -61,7 +61,7 @@ export default function ModernHero() {
               Turn Trending Topics
             </span>
             <br />
-            <span className="text-gray-900">
+            <span className="text-tron-text">
               Into Published Content
             </span>
           </motion.h1>
@@ -71,12 +71,12 @@ export default function ModernHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl text-tron-text-muted mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            <span className="font-semibold text-purple-600">TrendPulse™</span> discovers what's hot before your competitors, 
-            <span className="font-semibold text-indigo-600"> AI Cascade™</span> generates professional content, 
+            <span className="font-semibold text-tron-magenta">TrendPulse™</span> discovers what's hot before your competitors, 
+            <span className="font-semibold text-tron-cyan"> AI Cascade™</span> generates professional content, 
             and <span className="font-semibold text-pink-600">OmniFormat™</span> publishes everywhere—
-            <span className="font-bold text-gray-900"> automatically</span>.
+            <span className="font-bold text-tron-text"> automatically</span>.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -105,7 +105,7 @@ export default function ModernHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-600"
+            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-tron-text-muted"
           >
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-tron-green" />
@@ -145,7 +145,7 @@ export default function ModernHero() {
             ].map((feature, index) => (
               <div
                 key={index}
-                className="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-700 shadow-md border border-gray-100 hover:border-purple-300 hover:shadow-lg transition-all duration-200"
+                className="px-4 py-2 bg-tron-grid rounded-full text-sm font-medium text-tron-text shadow-md border border-tron-cyan hover:border-tron-magenta hover:shadow-lg transition-all duration-200"
               >
                 {feature}
               </div>
@@ -164,9 +164,9 @@ export default function ModernHero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-gray-400 rounded-full flex items-start justify-center p-2"
+          className="w-6 h-10 border-2 border-tron-cyan rounded-full flex items-start justify-center p-2"
         >
-          <div className="w-1 h-2 bg-gray-400 rounded-full" />
+          <div className="w-1 h-2 bg-tron-cyan rounded-full" />
         </motion.div>
       </motion.div>
     </section>

@@ -83,16 +83,16 @@ export default function WaitlistSection() {
             </span>
           </h2>
 
-          <p className="text-xl text-purple-100 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-tron-text-muted mb-12 max-w-2xl mx-auto leading-relaxed">
             Get early access when we launch, plus exclusive bonuses:
-            <strong className="text-white"> 50% off first month</strong> and
-            <strong className="text-white"> free TrendPulse™ workflow</strong> ($79 value).
+            <strong className="text-tron-text"> 50% off first month</strong> and
+            <strong className="text-tron-text"> free TrendPulse™ workflow</strong> ($79 value).
           </p>
 
           <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-8">
             <div className="flex gap-3">
               <div className="flex-1 relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-tron-text-muted" />
                 <input
                   type="email"
                   value={email}
@@ -105,11 +105,11 @@ export default function WaitlistSection() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-gray-900 rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-70 flex items-center gap-2 whitespace-nowrap"
+                className="px-8 py-4 bg-tron-cyan hover:bg-tron-cyan text-tron-dark rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-70 flex items-center gap-2 whitespace-nowrap"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-tron-dark border-t-transparent rounded-full animate-spin" />
                     Joining...
                   </>
                 ) : (
