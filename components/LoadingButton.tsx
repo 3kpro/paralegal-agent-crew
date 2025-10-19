@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes } from 'react'
+import { motion } from 'framer-motion'
 
 interface LoadingButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean
@@ -18,12 +19,12 @@ export default function LoadingButton({
   className = '',
   ...props
 }: LoadingButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'inline-flex items-center justify-center font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variantClasses = {
-    primary: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 text-white',
-    secondary: 'bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 text-white', 
-    outline: 'border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 focus:ring-indigo-500'
+    primary: 'bg-indigo-600 hover:bg-indigo-700 focus:ring-cyan-500 text-white',
+    secondary: 'bg-gray-600 hover:bg-gray-700 focus:ring-cyan-500 text-white', 
+    outline: 'border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 focus:ring-cyan-500'
   }
   
   const sizeClasses = {
@@ -34,18 +35,59 @@ export default function LoadingButton({
   
   const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`
   
+  // Tron-inspired animation settings
+  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
+  
+  // Spinner animation
+  const spinnerVariants = {
+    animate: {
+      rotate: 360,
+      transition: {
+        repeat: Infinity,
+        duration: 1,
+        ease: "linear"
+      }
+    }
+  }
+  
+  // Glow animation
+  const glowVariants = {
+    animate: {
+      boxShadow: ['0 0 5px #00ffff', '0 0 15px #00ffff', '0 0 5px #00ffff'],
+      transition: {
+        repeat: Infinity,
+        duration: 1.5,
+        ease: transitionTiming
+      }
+    }
+  }
+  
   return (
-    <button
+    <motion.button
       {...props}
       disabled={disabled || loading}
       className={combinedClasses}
+      whileHover={!disabled && !loading ? {
+        boxShadow: '0 0 10px #00ffff',
+        y: -2,
+        transition: { duration: 0.3, ease: transitionTiming }
+      } : undefined}
+      whileTap={!disabled && !loading ? {
+        scale: 0.98,
+        boxShadow: '0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)',
+        transition: { duration: 0.2, ease: transitionTiming }
+      } : undefined}
+      animate={loading ? 'animate' : undefined}
+      variants={loading ? glowVariants : undefined}
     >
       {loading && (
-        <svg 
-          className="animate-spin -ml-1 mr-2 h-4 w-4" 
+        <motion.svg 
+          className="h-4 w-4 mr-2" 
           xmlns="http://www.w3.org/2000/svg" 
           fill="none" 
           viewBox="0 0 24 24"
+          variants={spinnerVariants}
+          animate="animate"
         >
           <circle 
             className="opacity-25" 
@@ -60,9 +102,9 @@ export default function LoadingButton({
             fill="currentColor" 
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
           />
-        </svg>
+        </motion.svg>
       )}
       {loading ? loadingText : children}
-    </button>
+    </motion.button>
   )
 }

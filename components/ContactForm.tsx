@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 
 interface FormData {
   name: string
@@ -23,6 +24,10 @@ export default function ContactForm() {
   
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [focusedField, setFocusedField] = useState<string | null>(null)
+
+  // Tron-inspired animation settings
+  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,8 +72,118 @@ export default function ContactForm() {
     }))
   }
 
+  const handleFocus = (fieldName: string) => {
+    setFocusedField(fieldName)
+  }
+
+  const handleBlur = () => {
+    setFocusedField(null)
+  }
+
+  // Custom input component with Tron styling
+  const FormInput = ({ 
+    label, 
+    id, 
+    type = 'text', 
+    required = false,
+    placeholder,
+    value,
+    name
+  }: { 
+    label: string
+    id: string
+    type?: string
+    required?: boolean
+    placeholder?: string
+    value: string
+    name: string
+  }) => (
+    <div>
+      <motion.label 
+        htmlFor={id} 
+        className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+          focusedField === name ? 'text-cyan-400' : 'text-gray-700'
+        }`}
+        animate={{ color: focusedField === name ? '#00ffff' : '#374151' }}
+        transition={{ duration: 0.3, ease: transitionTiming }}
+      >
+        {label} {required && '*'}
+      </motion.label>
+      <motion.input
+        type={type}
+        id={id}
+        name={name}
+        required={required}
+        value={value}
+        onChange={handleChange}
+        onFocus={() => handleFocus(name)}
+        onBlur={handleBlur}
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
+        placeholder={placeholder}
+        whileFocus={{
+          boxShadow: '0 0 0 2px #00ffff',
+          borderColor: '#00ffff',
+          transition: { duration: 0.3, ease: transitionTiming }
+        }}
+      />
+    </div>
+  )
+
+  // Custom select component with Tron styling
+  const FormSelect = ({ 
+    label, 
+    id, 
+    options,
+    value,
+    name
+  }: { 
+    label: string
+    id: string
+    options: { value: string, label: string }[]
+    value: string
+    name: string
+  }) => (
+    <div>
+      <motion.label 
+        htmlFor={id} 
+        className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+          focusedField === name ? 'text-cyan-400' : 'text-gray-700'
+        }`}
+        animate={{ color: focusedField === name ? '#00ffff' : '#374151' }}
+        transition={{ duration: 0.3, ease: transitionTiming }}
+      >
+        {label}
+      </motion.label>
+      <motion.select
+        id={id}
+        name={name}
+        value={value}
+        onChange={handleChange}
+        onFocus={() => handleFocus(name)}
+        onBlur={handleBlur}
+        className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
+        whileFocus={{
+          boxShadow: '0 0 0 2px #00ffff',
+          borderColor: '#00ffff',
+          transition: { duration: 0.3, ease: transitionTiming }
+        }}
+      >
+        {options.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </motion.select>
+    </div>
+  )
+
   return (
-    <div className="max-w-2xl mx-auto">
+    <motion.div 
+      className="max-w-2xl mx-auto"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: transitionTiming }}
+    >
       <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">Get Started Today</h2>
@@ -78,135 +193,141 @@ export default function ContactForm() {
         </div>
 
         {submitStatus === 'success' && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center">
+          <motion.div 
+            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: transitionTiming }}
+            style={{ boxShadow: '0 0 10px #00ff00' }}
+          >
             <span className="text-green-600 mr-3">✅</span>
             <span className="text-green-800">Thank you! We'll get back to you within 24 hours.</span>
-          </div>
+          </motion.div>
         )}
 
         {submitStatus === 'error' && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center">
+          <motion.div 
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: transitionTiming }}
+            style={{ boxShadow: '0 0 10px #ff00ff' }}
+          >
             <span className="text-red-600 mr-3">❌</span>
             <span className="text-red-800">Something went wrong. Please try again or email us directly.</span>
-          </div>
+          </motion.div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="John Doe"
-              />
-            </div>
+            <FormInput
+              label="Full Name"
+              id="name"
+              name="name"
+              required
+              value={formData.name}
+              placeholder="John Doe"
+            />
             
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                placeholder="john@company.com"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-              Company Name
-            </label>
-            <input
-              type="text"
-              id="company"
-              name="company"
-              value={formData.company}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              placeholder="Your Company"
+            <FormInput
+              label="Email Address"
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={formData.email}
+              placeholder="john@company.com"
             />
           </div>
 
+          <FormInput
+            label="Company Name"
+            id="company"
+            name="company"
+            value={formData.company}
+            placeholder="Your Company"
+          />
+
           <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700 mb-2">
-                Service Interest
-              </label>
-              <select
-                id="serviceType"
-                name="serviceType"
-                value={formData.serviceType}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              >
-                <option value="starter">Starter ($199/campaign)</option>
-                <option value="professional">Professional ($399/campaign)</option>
-                <option value="enterprise">Enterprise ($699/campaign)</option>
-                <option value="custom">Custom Solution</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Service Interest"
+              id="serviceType"
+              name="serviceType"
+              value={formData.serviceType}
+              options={[
+                { value: 'starter', label: 'Starter ($199/campaign)' },
+                { value: 'professional', label: 'Professional ($399/campaign)' },
+                { value: 'enterprise', label: 'Enterprise ($699/campaign)' },
+                { value: 'custom', label: 'Custom Solution' }
+              ]}
+            />
             
-            <div>
-              <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
-                Monthly Budget
-              </label>
-              <select
-                id="budget"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-              >
-                <option value="500-1000">$500 - $1,000</option>
-                <option value="1000-5000">$1,000 - $5,000</option>
-                <option value="5000-10000">$5,000 - $10,000</option>
-                <option value="10000+">$10,000+</option>
-              </select>
-            </div>
+            <FormSelect
+              label="Monthly Budget"
+              id="budget"
+              name="budget"
+              value={formData.budget}
+              options={[
+                { value: '500-1000', label: '$500 - $1,000' },
+                { value: '1000-5000', label: '$1,000 - $5,000' },
+                { value: '5000-10000', label: '$5,000 - $10,000' },
+                { value: '10000+', label: '$10,000+' }
+              ]}
+            />
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+            <motion.label 
+              htmlFor="message" 
+              className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
+                focusedField === 'message' ? 'text-cyan-400' : 'text-gray-700'
+              }`}
+              animate={{ color: focusedField === 'message' ? '#00ffff' : '#374151' }}
+              transition={{ duration: 0.3, ease: transitionTiming }}
+            >
               Project Details
-            </label>
-            <textarea
+            </motion.label>
+            <motion.textarea
               id="message"
               name="message"
               rows={4}
               value={formData.message}
               onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+              onFocus={() => handleFocus('message')}
+              onBlur={handleBlur}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg transition-all duration-300"
               placeholder="Tell us about your content marketing goals, target audience, and any specific requirements..."
+              whileFocus={{
+                boxShadow: '0 0 0 2px #00ffff',
+                borderColor: '#00ffff',
+                transition: { duration: 0.3, ease: transitionTiming }
+              }}
             />
           </div>
 
-          <button
+          <motion.button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={!isSubmitting ? { 
+              boxShadow: '0 0 10px #00ffff',
+              y: -2,
+              transition: { duration: 0.3, ease: transitionTiming }
+            } : undefined}
+            whileTap={!isSubmitting ? { 
+              scale: 0.98,
+              boxShadow: '0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)',
+              transition: { duration: 0.2, ease: transitionTiming }
+            } : undefined}
           >
             {isSubmitting ? 'Sending...' : 'Get Custom Proposal'}
-          </button>
+          </motion.button>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>We typically respond within 24 hours with a custom proposal.</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
