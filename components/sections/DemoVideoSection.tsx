@@ -61,6 +61,8 @@ export default function DemoVideoSection() {
                     <button
                       onClick={handlePlayVideo}
                       className="group relative z-10"
+                      aria-label="Play demo video"
+                      title="Play demo video"
                     >
                       <div className="w-24 h-24 bg-tron-cyan rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
                         <Play className="w-12 h-12 text-tron-dark ml-1" fill="currentColor" />
@@ -101,7 +103,11 @@ export default function DemoVideoSection() {
               {isPlaying && (
                 <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white p-4">
                   <div className="flex items-center gap-4">
-                    <button className="hover:text-purple-400 transition-colors">
+                    <button 
+                      className="hover:text-purple-400 transition-colors"
+                      aria-label="Pause video"
+                      title="Pause video"
+                    >
                       <PlayCircle className="w-6 h-6" />
                     </button>
                     <div className="flex-1 bg-tron-cyan h-2 rounded-full">

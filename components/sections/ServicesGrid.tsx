@@ -41,13 +41,13 @@ const services: ServiceItem[] = [
 
 export const ServicesGrid: React.FC = () => {
   return (
-    <section id="services" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+    <section id="services" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-tron-dark">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="text-4xl font-bold text-tron-text mb-4">
             One Upload. Complete Campaign.
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
             Upload any content and watch our AI transform it into a coherent,
             multi-channel campaign that maintains your brand voice across all platforms.
           </p>
@@ -55,14 +55,14 @@ export const ServicesGrid: React.FC = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className="p-8 text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-blue-600 text-2xl">{service.icon}</span>
+            <Card key={index} className="p-8 text-center bg-tron-grid border-tron-cyan/30">
+              <div className="w-16 h-16 bg-tron-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-tron-cyan text-2xl">{service.icon}</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              <h3 className="text-xl font-semibold text-tron-text mb-4">
                 {service.title}
               </h3>
-              <p className="text-gray-600">{service.description}</p>
+              <p className="text-tron-text-muted">{service.description}</p>
             </Card>
           ))}
         </div>

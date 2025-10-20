@@ -50,25 +50,25 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-tron-dark flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Logo & Tagline */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-tron-cyan to-tron-magenta rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900">Content Cascade AI</span>
+            <span className="text-2xl font-bold text-tron-text">Content Cascade AI</span>
           </Link>
-          <p className="text-gray-600 mt-2">From trending topics to published content in minutes</p>
+          <p className="text-tron-text-muted mt-2">From trending topics to published content in minutes</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Welcome back</h1>
+        <div className="bg-tron-grid rounded-2xl shadow-xl p-8 border border-tron-cyan/30">
+          <h1 className="text-2xl font-bold text-tron-text mb-6">Welcome back</h1>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+            <div className="mb-4 p-3 bg-red-900/20 border border-red-500/30 text-red-400 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -76,7 +76,7 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-tron-text-muted mb-2">
                 Email
               </label>
               <input
@@ -85,14 +85,14 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full h-12 px-4 bg-tron-dark border border-tron-cyan/30 rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
                 placeholder="you@example.com"
               />
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-tron-text-muted mb-2">
                 Password
               </label>
               <input
@@ -101,14 +101,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full h-12 px-4 bg-tron-dark border border-tron-cyan/30 rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
                 placeholder="••••••••"
               />
             </div>
 
             {/* Forgot Password */}
             <div className="text-right">
-              <Link href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+              <Link href="/forgot-password" className="text-sm text-tron-cyan hover:text-tron-cyan/80">
                 Forgot password?
               </Link>
             </div>
@@ -117,7 +117,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold rounded-lg transition-colors shadow-lg"
+              className="w-full h-14 bg-tron-cyan hover:bg-tron-cyan/80 disabled:bg-tron-cyan/50 text-tron-dark font-semibold rounded-lg transition-colors shadow-lg"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -125,15 +125,15 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-4 text-sm text-gray-500">OR</span>
-            <div className="flex-1 border-t border-gray-200"></div>
+            <div className="flex-1 border-t border-tron-cyan/30"></div>
+            <span className="px-4 text-sm text-tron-text-muted">OR</span>
+            <div className="flex-1 border-t border-tron-cyan/30"></div>
           </div>
 
           {/* Google Login */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full h-12 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
+            className="w-full h-12 border border-tron-cyan/30 hover:bg-tron-dark/50 text-tron-text font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -157,9 +157,9 @@ export default function LoginPage() {
           </button>
 
           {/* Sign Up Link */}
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-tron-text-muted">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-indigo-600 hover:text-indigo-500 font-medium">
+            <Link href="/signup" className="text-tron-cyan hover:text-tron-cyan/80 font-medium">
               Sign up
             </Link>
           </p>

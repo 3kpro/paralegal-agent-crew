@@ -410,38 +410,46 @@ export default function SettingsPage() {
           <form onSubmit={handleProfileUpdate} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                <label htmlFor="profile-email" className="block text-sm font-medium text-tron-text-muted mb-2">
                   Email
                 </label>
                 <input
+                  id="profile-email"
                   type="email"
                   value={email}
                   disabled
-                  className="w-full px-4 py-3 border border-tron-grid rounded-lg bg-tron-dark"
+                  title="Email address (cannot be changed)"
+                  className="w-full px-4 py-3 border border-tron-grid rounded-lg bg-tron-dark text-tron-text-muted"
                 />
                 <p className="text-sm text-tron-text-muted mt-1">Email cannot be changed</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                <label htmlFor="profile-fullname" className="block text-sm font-medium text-tron-text-muted mb-2">
                   Full Name
                 </label>
                 <input
+                  id="profile-fullname"
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
+                  title="Your full name"
+                  placeholder="Enter your full name"
                   className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                <label htmlFor="profile-company" className="block text-sm font-medium text-tron-text-muted mb-2">
                   Company Name
                 </label>
                 <input
+                  id="profile-company"
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
+                  title="Your company name"
+                  placeholder="Enter your company name"
                   className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
                 />
               </div>
@@ -486,12 +494,14 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                <label htmlFor="profile-timezone" className="block text-sm font-medium text-tron-text-muted mb-2">
                   Timezone
                 </label>
                 <select
+                  id="profile-timezone"
                   value={timezone}
                   onChange={(e) => setTimezone(e.target.value)}
+                  title="Select your timezone"
                   className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
                 >
                   <option value="America/New_York">Eastern Time (US & Canada)</option>
@@ -506,12 +516,14 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                <label htmlFor="profile-language" className="block text-sm font-medium text-tron-text-muted mb-2">
                   Language
                 </label>
                 <select
+                  id="profile-language"
                   value={language}
                   onChange={(e) => setLanguage(e.target.value)}
+                  title="Select your preferred language"
                   className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
                 >
                   <option value="en-US">English (US)</option>
@@ -936,11 +948,10 @@ export default function SettingsPage() {
                   </div>
                   <div className="w-full bg-tron-grid rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full ${
-                        usageData.campaignsPercentage >= 80 ? 'bg-red-600' :
-                        usageData.campaignsPercentage >= 50 ? 'bg-yellow-600' : 'bg-tron-green/200'
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        usageData.campaignsPercentage >= 80 ? 'bg-red-600 w-4/5' :
+                        usageData.campaignsPercentage >= 50 ? 'bg-yellow-600 w-1/2' : 'bg-tron-green w-1/4'
                       }`}
-                      style={{ width: `${Math.min(usageData.campaignsPercentage || 0, 100)}%` }}
                     />
                   </div>
                   {usageData.campaignsPercentage >= 80 && (
@@ -959,11 +970,10 @@ export default function SettingsPage() {
                   </div>
                   <div className="w-full bg-tron-grid rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full ${
-                        usageData.aiToolsPercentage >= 80 ? 'bg-red-600' :
-                        usageData.aiToolsPercentage >= 50 ? 'bg-yellow-600' : 'bg-tron-green/200'
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        usageData.aiToolsPercentage >= 80 ? 'bg-red-600 w-4/5' :
+                        usageData.aiToolsPercentage >= 50 ? 'bg-yellow-600 w-1/2' : 'bg-tron-green w-1/4'
                       }`}
-                      style={{ width: `${Math.min(usageData.aiToolsPercentage || 0, 100)}%` }}
                     />
                   </div>
                   {usageData.aiToolsPercentage >= 100 && (
@@ -1007,11 +1017,10 @@ export default function SettingsPage() {
                   </div>
                   <div className="w-full bg-tron-grid rounded-full h-2">
                     <div 
-                      className={`h-2 rounded-full ${
-                        (usageData.storagePercentage || 0) >= 80 ? 'bg-red-600' :
-                        (usageData.storagePercentage || 0) >= 50 ? 'bg-yellow-600' : 'bg-tron-green/200'
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        (usageData.storagePercentage || 0) >= 80 ? 'bg-red-600 w-4/5' :
+                        (usageData.storagePercentage || 0) >= 50 ? 'bg-yellow-600 w-1/2' : 'bg-tron-green w-1/4'
                       }`}
-                      style={{ width: `${Math.min(usageData.storagePercentage || 0, 100)}%` }}
                     />
                   </div>
                 </div>

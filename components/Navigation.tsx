@@ -60,7 +60,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
             <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">3K</span>
             </div>
-            <span className="text-xl font-bold text-gray-800">3K Pro Services</span>
+            <span className="text-xl font-bold text-tron-text">3K Pro Services</span>
           </motion.button>
 
           <div className="hidden md:flex items-center space-x-8">

@@ -50,18 +50,21 @@ export default function NewCampaignPage() {
 
     setLoadingTrends(true)
     try {
-      const response = await fetch('/api/trends', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: searchQuery })
+      const response = await fetch(`/api/trends?keyword=${encodeURIComponent(searchQuery)}&mode=ideas`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
       })
 
       const data = await response.json()
       if (data.success) {
-        setTrends(data.trends || [])
+        setTrends(data.data?.trending || [])
+      } else {
+        console.error('Trends API error:', data.error)
+        setTrends([])
       }
     } catch (error) {
       console.error('Failed to fetch trends:', error)
+      setTrends([])
     } finally {
       setLoadingTrends(false)
     }
@@ -99,7 +102,7 @@ export default function NewCampaignPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          topic: selectedTrend.Hashtag || selectedTrend.query || searchQuery,
+          topic: selectedTrend.title || searchQuery,
           formats: contentFormats,
           preferredProvider: aiProvider
         })
@@ -297,7 +300,7 @@ export default function NewCampaignPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && searchTrends()}
                   placeholder="e.g., AI, fitness, tech news"
-                  className="flex-1 px-4 py-3 border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent"
+                  className="flex-1 px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
                 />
                 <button
                   onClick={searchTrends}
@@ -323,13 +326,13 @@ export default function NewCampaignPage() {
                           : 'border-tron-cyan/30 hover:border-tron-grid'
                       }`}
                     >
-                      <div className="font-semibold text-tron-text">{trend.Hashtag || trend.query}</div>
+                      <div className="font-semibold text-tron-text">{trend.title}</div>
                       <div className="text-sm text-tron-text-muted mt-1">
-                        {trend.Description || 'Trending topic'}
+                        {trend.formattedTraffic || 'Trending topic'}
                       </div>
-                      {trend.TweetVolume && (
+                      {trend.relatedQueries && trend.relatedQueries.length > 0 && (
                         <div className="text-xs text-tron-cyan mt-2">
-                          {trend.TweetVolume.toLocaleString()} posts
+                          Related: {trend.relatedQueries.slice(0, 2).join(', ')}
                         </div>
                       )}
                     </div>
@@ -362,9 +365,9 @@ export default function NewCampaignPage() {
             <h2 className="text-xl font-bold text-tron-text mb-6">Generate AI Content</h2>
 
             <div className="mb-6">
-              <div className="bg-tron-cyan/20 border border-indigo-200 rounded-lg p-4 mb-6">
+              <div className="bg-tron-cyan/20 border border-tron-cyan/30 rounded-lg p-4 mb-6">
                 <div className="font-semibold text-tron-text">Selected Topic:</div>
-                <div className="text-tron-cyan">{selectedTrend?.Hashtag || selectedTrend?.query || searchQuery}</div>
+                <div className="text-tron-cyan">{selectedTrend?.title || searchQuery}</div>
               </div>
 
               <label className="block text-sm font-medium text-tron-text-muted mb-2">
@@ -376,9 +379,12 @@ export default function NewCampaignPage() {
                 </div>
               ) : aiTools.length > 0 ? (
                 <select
+                  id="ai-provider-select"
                   value={aiProvider}
                   onChange={(e) => setAiProvider(e.target.value)}
-                  className="w-full px-4 py-3 border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent mb-6"
+                  title="Select AI provider for content generation"
+                  aria-label="AI Provider selection"
+                  className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text mb-6"
                 >
                   {aiTools.map(tool => (
                     <option key={tool.provider_key} value={tool.provider_key}>
@@ -495,7 +501,7 @@ export default function NewCampaignPage() {
                 <div>
                   <div className="text-sm font-medium text-tron-text-muted mb-1">Topic</div>
                   <div className="font-semibold text-tron-text">
-                    {selectedTrend?.Hashtag || selectedTrend?.query || searchQuery}
+                    {selectedTrend?.title || searchQuery}
                   </div>
                 </div>
                 <div>
