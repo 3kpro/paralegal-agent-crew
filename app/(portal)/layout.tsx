@@ -25,13 +25,13 @@ export default async function PortalLayout({
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen bg-tron-dark flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-gray-900 text-white fixed h-full">
+        <aside className="w-64 bg-tron-grid text-tron-text fixed h-full border-r border-tron-cyan/20">
           <div className="p-6">
             <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">3K</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-tron-cyan to-tron-magenta rounded-lg flex items-center justify-center shadow-lg shadow-tron-cyan/50">
+                <span className="text-tron-dark font-bold">3K</span>
               </div>
               <span className="font-bold text-lg">Content Cascade</span>
             </Link>
@@ -40,45 +40,45 @@ export default async function PortalLayout({
           <nav className="mt-6">
             <Link
               href="/dashboard"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >
               <span className="text-xl">📊</span>
               <span>Dashboard</span>
             </Link>
             <Link
               href="/campaigns"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >
               <span className="text-xl">⚡</span>
               <span>Campaigns</span>
             </Link>
             <Link
               href="/campaigns/new"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >
               <span className="text-xl">🎨</span>
               <span>Create</span>
             </Link>
             <Link
               href="/analytics"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >
               <span className="text-xl">📈</span>
               <span>Analytics</span>
             </Link>
             <Link
               href="/settings"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >
               <span className="text-xl">🔧</span>
               <span>Settings</span>
             </Link>
           </nav>
 
-          <div className="absolute bottom-0 w-64 border-t border-gray-800">
+          <div className="absolute bottom-0 w-64 border-t border-tron-grid">
             <Link
               href="/help"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 transition-colors"
             >
               <span className="text-xl">💡</span>
               <span>Help</span>
@@ -86,7 +86,7 @@ export default async function PortalLayout({
             <form action="/api/auth/signout" method="post">
               <button
                 type="submit"
-                className="flex items-center space-x-3 px-6 py-3 hover:bg-gray-800 transition-colors w-full text-left"
+                className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-magenta/20 transition-colors w-full text-left"
               >
                 <span className="text-xl">🚪</span>
                 <span>Logout</span>
@@ -98,12 +98,12 @@ export default async function PortalLayout({
         {/* Main Content */}
         <div className="ml-64 flex-1">
           {/* Top Bar */}
-          <header className="bg-white border-b border-gray-200 px-8 py-4">
+          <header className="bg-tron-grid border-b border-tron-cyan/30 px-8 py-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Content Cascade AI</h2>
+              <h2 className="text-xl font-semibold text-tron-text">Content Cascade AI</h2>
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">{profile?.email}</span>
-                <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
+                <span className="text-sm text-tron-text-muted">{profile?.email}</span>
+                <div className="w-10 h-10 bg-tron-cyan rounded-full flex items-center justify-center text-tron-dark font-semibold shadow-lg shadow-tron-cyan/50">
                   {profile?.full_name?.charAt(0) || 'U'}
                 </div>
               </div>

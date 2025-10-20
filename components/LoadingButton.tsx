@@ -36,7 +36,7 @@ export default function LoadingButton({
   const combinedClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`
   
   // Tron-inspired animation settings
-  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
+  const transitionTiming: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94]
   
   // Spinner animation
   const spinnerVariants = {
@@ -45,11 +45,11 @@ export default function LoadingButton({
       transition: {
         repeat: Infinity,
         duration: 1,
-        ease: "linear"
+        ease: "linear" as const
       }
     }
   }
-  
+
   // Glow animation
   const glowVariants = {
     animate: {
@@ -57,26 +57,26 @@ export default function LoadingButton({
       transition: {
         repeat: Infinity,
         duration: 1.5,
-        ease: transitionTiming
+        ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number]
       }
     }
   }
   
   return (
     <motion.button
-      {...props}
+      type={props.type}
+      onClick={props.onClick}
       disabled={disabled || loading}
       className={combinedClasses}
       whileHover={!disabled && !loading ? {
         boxShadow: '0 0 10px #00ffff',
-        y: -2,
-        transition: { duration: 0.3, ease: transitionTiming }
+        y: -2
       } : undefined}
       whileTap={!disabled && !loading ? {
         scale: 0.98,
-        boxShadow: '0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)',
-        transition: { duration: 0.2, ease: transitionTiming }
+        boxShadow: '0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)'
       } : undefined}
+      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
       animate={loading ? 'animate' : undefined}
       variants={loading ? glowVariants : undefined}
     >

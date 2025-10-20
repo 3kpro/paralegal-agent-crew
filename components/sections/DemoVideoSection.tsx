@@ -63,9 +63,9 @@ export default function DemoVideoSection() {
                       className="group relative z-10"
                     >
                       <div className="w-24 h-24 bg-tron-cyan rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                        <Play className="w-12 h-12 text-indigo-600 ml-1" fill="currentColor" />
+                        <Play className="w-12 h-12 text-tron-dark ml-1" fill="currentColor" />
                       </div>
-                      <div className="absolute inset-0 bg-tron-cyan rounded-full animate-pulse opacity-25"></div>
+                      <div className="absolute inset-0 bg-tron-cyan/20 rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
                     </button>
                     
                     {/* Video Info Overlay */}

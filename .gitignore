@@ -36,3 +36,10 @@ next-env.d.ts
 
 # problematic files
 nul
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
+
+# MCP servers (external projects)
+DEVapimatic-validator-mcp/

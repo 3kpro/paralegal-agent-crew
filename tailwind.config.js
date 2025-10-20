@@ -15,7 +15,7 @@ module.exports = {
         'tron-magenta': '#ff00ff',
         'tron-grid': '#1a1a2e',
         'tron-text': '#ffffff',
-        'tron-text-muted': '#cccccc',
+        'tron-text-muted': '#e5e5e5',
         
         primary: {
           50: '#f0f9ff',

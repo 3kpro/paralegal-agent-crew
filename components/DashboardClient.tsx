@@ -197,7 +197,7 @@ export default function DashboardClient() {
             >
               <Link
                 href="/campaigns/new"
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
+                className="px-4 py-2 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors"
               >
                 + New Campaign
               </Link>
@@ -271,7 +271,7 @@ export default function DashboardClient() {
             >
               <Link
                 href="/campaigns/new"
-                className="inline-block px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition-colors"
+                className="inline-block px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors"
               >
                 Create First Campaign
               </Link>

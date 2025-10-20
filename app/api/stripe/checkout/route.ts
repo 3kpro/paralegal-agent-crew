@@ -80,10 +80,10 @@ export async function POST(request: Request) {
 
     // Create checkout session
     console.log('Creating Stripe session with customer:', customerId)
-    const sessionConfig = {
+    const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      mode: 'subscription' as const,
-      payment_method_types: ['card'] as const,
+      mode: 'subscription',
+      payment_method_types: ['card'],
       line_items: [
         {
           price: priceId,
@@ -98,10 +98,7 @@ export async function POST(request: Request) {
         billing_cycle: billingCycle
       },
       allow_promotion_codes: true,
-    }
-    console.log('Session config:', sessionConfig)
-
-    const session = await stripe.checkout.sessions.create(sessionConfig)
+    })
     console.log('Session created:', session.id, 'URL:', session.url)
 
     return NextResponse.json({

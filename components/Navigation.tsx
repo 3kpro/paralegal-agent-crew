@@ -12,7 +12,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
   const [activeSection, setActiveSection] = useState<string | null>(null)
   
   // Tron-inspired animation settings
-  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
+  const transitionTiming: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94]
   
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)

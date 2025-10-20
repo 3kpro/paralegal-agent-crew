@@ -27,7 +27,7 @@ export default function ContactForm() {
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
   // Tron-inspired animation settings
-  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
+  const transitionTiming: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

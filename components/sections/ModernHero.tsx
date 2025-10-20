@@ -75,7 +75,7 @@ export default function ModernHero() {
           >
             <span className="font-semibold text-tron-magenta">TrendPulse™</span> discovers what's hot before your competitors, 
             <span className="font-semibold text-tron-cyan"> AI Cascade™</span> generates professional content, 
-            and <span className="font-semibold text-pink-600">OmniFormat™</span> publishes everywhere—
+            and <span className="font-semibold text-tron-green">OmniFormat™</span> publishes everywhere—
             <span className="font-bold text-tron-text"> automatically</span>.
           </motion.p>
 

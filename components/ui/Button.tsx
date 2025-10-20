@@ -28,10 +28,13 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   // Tron-inspired animation settings
-  const transitionTiming = [0.25, 0.46, 0.45, 0.94]
+  const transitionTiming: [number, number, number, number] = [0.25, 0.46, 0.45, 0.94]
 
   return (
     <motion.button
+      type={props.type}
+      onClick={props.onClick}
+      disabled={props.disabled}
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       whileHover={{
         boxShadow: '0 0 10px #00ffff',
@@ -44,7 +47,6 @@ export const Button: React.FC<ButtonProps> = ({
         transition: { duration: 0.2, ease: transitionTiming }
       }}
       transition={{ duration: 0.3, ease: transitionTiming }}
-      {...props}
     >
       {children}
     </motion.button>
