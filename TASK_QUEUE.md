@@ -1,7 +1,15 @@
-# TASK QUEUE - FINAL PUSH (Oct 18-23, 2025)
-**Status:** 🟢 BASELINE STABLE - Ready for Phase 1  
-**Last Updated:** October 18, 2025, 20:45 UTC  
-**Launch Goal:** October 23, 2025 (5 days remaining)
+# TASK QUEUE - TrendPulse Beta Launch
+**Status:** 🟢 BASELINE STABLE - Ready for Phase 1
+**Last Updated:** October 20, 2025
+**Current Focus:** Week 1 MVP - TrendPulse Beta
+
+---
+
+## 📖 **CONTEXT REFERENCE**
+
+**For complete project context, read:** [STATEMENT_OF_TRUTH.md](STATEMENT_OF_TRUTH.md)
+
+This task queue contains phase-specific tasks with detailed Zen prompts. For project strategy, architecture, and agent workflow, see the Statement of Truth.
 
 ---
 
@@ -49,12 +57,129 @@
 
 ### PREP TASKS
 
+---
 
+## ##TASK 5 - Campaign Save Bug Fix (INC001) - ✅ COMPLETE
 
+**Agent Type:** 🔧 ZenCoder - Database Designer
+**Estimate:** 15 minutes
+**Status:** 🟢 COMPLETE (Oct 20, 2025)
+**Priority:** 🚨 CRITICAL - Blocking campaign workflow testing
 
+**Summary:**
+Fix schema mismatch preventing campaign save functionality. Database column is `body` but application code tries to insert `content_text`. Simple one-line fix needed in campaign creation page.
 
-**Agent Type:** 🚀 3KPRO - DevOps Pipeline Builder  
-**Estimate:** 2 hours  
+**Bug Reference:** KNOWN_BUGS.md - INC001
+
+**Statement:**
+Copy this and give it to ZenCoder - Database Designer:
+
+---
+
+> You are assigned **PHASE 2 TASK 5: Campaign Save Bug Fix (INC001)**
+>
+> **Reference Files:**
+> - KNOWN_BUGS.md (INC001 details)
+> - supabase/migrations/001_initial_schema.sql (line 90)
+> - app/(portal)/campaigns/new/page.tsx (line 158)
+>
+> **Problem Statement:**
+> Users cannot save campaign drafts. Error: "Could not find the 'content_text' column of 'campaign_content' in the schema cache"
+>
+> **Root Cause Identified:**
+> Schema mismatch between database and application code:
+> - **Database schema** defines column as `body` (supabase/migrations/001_initial_schema.sql:90)
+> - **Application code** tries to insert `content_text` (app/(portal)/campaigns/new/page.tsx:158)
+>
+> ```sql
+> -- Database has:
+> CREATE TABLE public.campaign_content (
+>   ...
+>   body TEXT NOT NULL,  ← Column is called 'body'
+>   ...
+> )
+> ```
+>
+> ```typescript
+> // Code at line 158 tries to insert:
+> content_text: content.content || content.subject,  ← Trying to use 'content_text'
+> ```
+>
+> **Your Assignment:**
+> 1. Open file: app/(portal)/campaigns/new/page.tsx
+> 2. Navigate to line 158 in the `saveCampaign()` function
+> 3. Change `content_text:` to `body:`
+> 4. Search for other references to `content_text` in campaign-related files
+> 5. Update any other occurrences to use `body`
+> 6. Test campaign save functionality at http://localhost:3000/campaigns/new
+> 7. Verify record inserted successfully in Supabase
+>
+> **Code Change Needed (Line 154-160):**
+> ```typescript
+> // BEFORE:
+> const contentRecords = Object.entries(generatedContent).map(([platform, content]: [string, any]) => ({
+>   campaign_id: campaign.id,
+>   user_id: user.id,
+>   platform,
+>   content_text: content.content || content.subject,  ← CHANGE THIS
+>   metadata: content
+> }))
+>
+> // AFTER:
+> const contentRecords = Object.entries(generatedContent).map(([platform, content]: [string, any]) => ({
+>   campaign_id: campaign.id,
+>   user_id: user.id,
+>   platform,
+>   body: content.content || content.subject,  ← Use 'body' to match schema
+>   metadata: content
+> }))
+> ```
+>
+> **Additional Investigation:**
+> Search for other references to `content_text`:
+> ```bash
+> grep -r "content_text" app/
+> grep -r "content_text" components/
+> ```
+> Update any found instances to use `body` instead.
+>
+> **Testing Checklist:**
+> - [ ] Line 158 changed from `content_text` to `body`
+> - [ ] Other references to `content_text` found and fixed (if any)
+> - [ ] Dev server running without errors
+> - [ ] Navigate to http://localhost:3000/campaigns/new
+> - [ ] Complete all 4 steps of campaign creation
+> - [ ] Click "Save Campaign" button
+> - [ ] No schema cache errors in console
+> - [ ] Campaign record created in Supabase campaigns table
+> - [ ] Content records created in campaign_content table with `body` populated
+> - [ ] Redirects to campaign detail page successfully
+>
+> **Success Criteria:**
+> - [ ] Code change made (line 158)
+> - [ ] All references updated
+> - [ ] Campaign saves successfully without errors
+> - [ ] Records visible in Supabase
+> - [ ] No console errors
+> - [ ] Ready for full campaign workflow testing
+>
+> **Deliverables:**
+> - [ ] One-line code fix applied
+> - [ ] Additional references fixed (if found)
+> - [ ] Campaign save verified working
+> - [ ] Bug marked as FIXED in KNOWN_BUGS.md
+> - [ ] Ready for beta testing
+>
+> **Do NOT create migration** - Just fix the application code to match existing schema
+
+---
+
+---
+
+## ##TASK 6 - Vercel Configuration & DNS Setup
+
+**Agent Type:** 🚀 3KPRO - DevOps Pipeline Builder
+**Estimate:** 2 hours
 **Status:** 🔴 NOT STARTED
 
 **Summary:**

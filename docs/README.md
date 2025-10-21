@@ -1,121 +1,157 @@
-# Landing Page - Technical Documentation
+# Documentation Index
+## Content Cascade AI (CCAI) - TrendPulse Beta
 
-## 📚 Overview
+**Last Updated:** 2025-10-20
 
-This folder contains **technical documentation** specific to the 3K Pro Services Landing Page project.
-
----
-
-## 🚀 Getting Started
-
-**New to this project? Start here:**
-
-1. **[../NEXT_STEPS.md](../NEXT_STEPS.md)** ⭐ - Your step-by-step checklist
-2. **[../QUICKSTART.md](../QUICKSTART.md)** - 5-minute quick reference
-3. **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - How to test the project
+This directory contains all project documentation organized by category.
 
 ---
 
-## 📁 Documentation Index
+## 🎯 **START HERE** (Master References)
 
-### **Setup & Configuration**
-- **[N8N_WORKFLOW_SETUP.md](N8N_WORKFLOW_SETUP.md)** - n8n workflow configuration
-  - VERSION A: FREE mock testing (no API costs)
-  - VERSION B: Real Claude API integration
-- **[../README.md](../README.md)** - Project overview and features
+**These are the essential documents all AI agents and developers must read:**
 
-### **Testing & Validation**
-- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Step-by-step testing instructions
-  - FREE mock testing (Phase 1A)
-  - Real API testing (Phase 1B)
-  - Troubleshooting guide
+1. **[../STATEMENT_OF_TRUTH.md](../STATEMENT_OF_TRUTH.md)** ⭐
+   - **READ FIRST** - Master context document
+   - Project mission, strategy, and current status
+   - Complete project structure
+   - AI agent workflow and responsibilities
+   - Design system (Tron theme)
+   - Document hierarchy
+   - Recovery procedures
 
-### **Development Guides**
-- **[USING_OPUS_WITH_ZENCODER.md](USING_OPUS_WITH_ZENCODER.md)** - How to use Opus for analysis
-- **[CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md](CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md)** - Complete codebase analysis and improvement roadmap
-- **[PHASE1_SUMMARY.md](PHASE1_SUMMARY.md)** - Phase 1 changes and architecture
+2. **[../CHANGELOG.md](../CHANGELOG.md)**
+   - Version history (v1.0.0 → v1.6.6)
+   - What changed and when
+   - Recent work (read last 20 entries)
 
-### **Reference**
-- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Project file structure
-- **[ai-tools-recommendations.md](ai-tools-recommendations.md)** - AI tools recommendations
-- **[BudgetGate.md](BudgetGate.md)** - Budget considerations
+3. **[../TASK_QUEUE.md](../TASK_QUEUE.md)**
+   - Current tasks with Zen prompts
+   - Agent type assignments
+   - Phase 1-3 structure
+   - Task completion status
 
-### **Backups**
-- **[backups/](backups/)** - Archived files and reference implementations
+4. **[../KNOWN_BUGS.md](../KNOWN_BUGS.md)**
+   - Active bugs and issues
+   - Blocking issues (INC001 campaign save)
+   - Recently fixed bugs
+   - Testing queue
 
----
-
-## 🔗 Project-Wide Documentation
-
-This project is part of the larger 3K Pro Services ecosystem.
-
-**Project-Wide Docs:** [../../docs/](../../docs/)
-- [Master Changelog](../../docs/chat_history/CHANGELOG.md) - Tracks all projects
-- [Project Blueprint](../../docs/Original_Blueprint.md) - Overall vision
-- [AI Command Structure](../../docs/AI_EMPIRE_COMMAND.md) - Governance
+5. **[../README.md](../README.md)**
+   - Quick start guide
+   - Installation and setup
+   - Development commands
+   - Deployment instructions
 
 ---
 
-## 📋 Document Purpose Guide
+## 📚 Project Documentation
 
-### **For Setup & Installation**
-→ [N8N_WORKFLOW_SETUP.md](N8N_WORKFLOW_SETUP.md)
+### Architecture & Setup
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Detailed architecture and file organization
+- **[AI_TOOLS_SETUP_GUIDE.md](AI_TOOLS_SETUP_GUIDE.md)** - AI provider configuration guide
+- **[BACKEND_IMPLEMENTATION_PLAN.md](BACKEND_IMPLEMENTATION_PLAN.md)** - Technical architecture
 
-### **For Testing**
-→ [TESTING_GUIDE.md](TESTING_GUIDE.md)
+### UI/UX Specifications
+- **[ZENCODER_HANDOFF_PORTAL.md](ZENCODER_HANDOFF_PORTAL.md)** - Complete UI/UX specs (if exists)
 
-### **For Using Opus/Sonnet**
-→ [USING_OPUS_WITH_ZENCODER.md](USING_OPUS_WITH_ZENCODER.md)
+### API & Backend
+- **[API_QUICK_REFERENCE.md](API_QUICK_REFERENCE.md)** - API endpoint cheat sheet (if exists)
 
-### **For Code Analysis**
-→ [CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md](CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md)
-
-### **For Understanding Changes**
-→ [PHASE1_SUMMARY.md](PHASE1_SUMMARY.md)
-
-### **For Quick Reference**
-→ [../QUICKSTART.md](../QUICKSTART.md)
+### Testing
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Testing instructions (if exists)
 
 ---
 
-## 🎯 Common Workflows
+## 📦 Archived Documentation
 
-### **First Time Setup**
-1. Read [../NEXT_STEPS.md](../NEXT_STEPS.md)
-2. Follow [N8N_WORKFLOW_SETUP.md](N8N_WORKFLOW_SETUP.md) (VERSION A - Mock)
-3. Test using [TESTING_GUIDE.md](TESTING_GUIDE.md)
-
-### **Using Opus for Analysis**
-1. Read [USING_OPUS_WITH_ZENCODER.md](USING_OPUS_WITH_ZENCODER.md)
-2. Give Opus [CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md](CODEBASE_ANALYSIS_AND_RECOMMENDATIONS.md)
-3. Follow Opus's recommendations
-
-### **Implementing Features**
-1. Get design from Opus
-2. Use Sonnet for implementation
-3. Test with mock data first (free!)
-4. Add real API calls if needed
+### Historical Handoffs (Reference Only)
+Located in **[handoffs/](handoffs/)** directory - these documents have been superseded by STATEMENT_OF_TRUTH.md
 
 ---
 
-## 📝 Contributing to Docs
+## 🗂️ Documentation Categories
 
-When adding documentation:
-- Technical implementation → This folder
-- Project-wide governance → `../../docs/`
-- Update relevant README files
-- Add entry to [Master Changelog](../../docs/chat_history/CHANGELOG.md)
+### By Audience
+
+**For AI Agents:**
+1. Start: [../STATEMENT_OF_TRUTH.md](../STATEMENT_OF_TRUTH.md)
+2. Recent work: [../CHANGELOG.md](../CHANGELOG.md)
+3. Assignments: [../TASK_QUEUE.md](../TASK_QUEUE.md)
+4. Blockers: [../KNOWN_BUGS.md](../KNOWN_BUGS.md)
+
+**For Developers:**
+1. Setup: [../README.md](../README.md)
+2. Architecture: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+3. Testing: Documentation as available
+
+**For Project Managers:**
+1. Strategy: [../STATEMENT_OF_TRUTH.md](../STATEMENT_OF_TRUTH.md)
+2. Progress: [../CHANGELOG.md](../CHANGELOG.md)
+3. Tasks: [../TASK_QUEUE.md](../TASK_QUEUE.md)
 
 ---
 
-## 🆘 Getting Help
+## 📖 Reading Order for New Team Members
 
-**Stuck on something?**
-1. Check the relevant doc in this folder
-2. Review [TESTING_GUIDE.md](TESTING_GUIDE.md) troubleshooting section
-3. Check [PHASE1_SUMMARY.md](PHASE1_SUMMARY.md) for context
+### Day 1 - Context
+1. [../STATEMENT_OF_TRUTH.md](../STATEMENT_OF_TRUTH.md) (30 min) - Full project context
+2. [../README.md](../README.md) (10 min) - Setup instructions
+3. [../CHANGELOG.md](../CHANGELOG.md) (15 min) - Recent history
+4. [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) (15 min) - Architecture
+
+### Day 2 - Current Work
+1. [../TASK_QUEUE.md](../TASK_QUEUE.md) (20 min) - Current tasks
+2. [../KNOWN_BUGS.md](../KNOWN_BUGS.md) (10 min) - Active issues
 
 ---
 
-**Last Updated:** 2025-10-01
-**Project Version:** v1.1.0
+## 🔍 Finding Documentation
+
+**By Topic:**
+- **Project Strategy** → ../STATEMENT_OF_TRUTH.md
+- **Recent Changes** → ../CHANGELOG.md
+- **Current Tasks** → ../TASK_QUEUE.md
+- **Known Issues** → ../KNOWN_BUGS.md
+- **Setup Guide** → ../README.md
+- **Architecture** → PROJECT_STRUCTURE.md
+
+**By File Type:**
+- **.md files in root** → Essential documents (SoT, CHANGELOG, TASK_QUEUE, README)
+- **docs/*.md** → Detailed documentation
+- **docs/handoffs/** → Historical reference (archived)
+
+---
+
+## ✏️ Contributing to Documentation
+
+**When to Update:**
+- Major strategy changes → STATEMENT_OF_TRUTH.md
+- Completed work → CHANGELOG.md
+- New bugs → KNOWN_BUGS.md
+- New tasks → TASK_QUEUE.md
+- Architecture changes → PROJECT_STRUCTURE.md
+
+**Documentation Standards:**
+- Use markdown formatting
+- Include date stamps
+- Link related documents
+- Keep concise and scannable
+- Update "Last Updated" dates
+
+---
+
+## 📞 Support
+
+**Questions about documentation?**
+1. Check STATEMENT_OF_TRUTH.md first
+2. Search this index for relevant docs
+3. Check archived handoffs for historical context
+4. Ask project lead if still unclear
+
+---
+
+**Last Updated:** 2025-10-20
+**Maintained By:** Development Team
+
+For complete project context: **[STATEMENT_OF_TRUTH.md](../STATEMENT_OF_TRUTH.md)**

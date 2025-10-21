@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import SidebarGuide from '@/components/SidebarGuide'
 
 export default function NewCampaignPage() {
   const router = useRouter()
@@ -153,10 +154,11 @@ export default function NewCampaignPage() {
       if (generatedContent) {
         const contentRecords = Object.entries(generatedContent).map(([platform, content]: [string, any]) => ({
           campaign_id: campaign.id,
-          user_id: user.id,
           platform,
-          content_text: content.content || content.subject,
-          metadata: content
+          body: content.content || content.subject || content.body || '',
+          title: content.subject || content.title || null,
+          hashtags: content.hashtags || null,
+          generated_by: aiProvider || null
         }))
 
         const { error: contentError } = await supabase
@@ -177,6 +179,9 @@ export default function NewCampaignPage() {
 
   return (
     <div className="p-8 bg-tron-dark min-h-screen">
+      {/* Sidebar Guide */}
+      <SidebarGuide currentStep={step} />
+
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-tron-text mb-2">Create New Campaign</h1>
         <p className="text-tron-text-muted mb-8">Follow the steps to create your multi-platform content campaign</p>
@@ -251,9 +256,12 @@ export default function NewCampaignPage() {
             </div>
 
             <div className="mb-8">
-              <label className="block text-sm font-medium text-tron-text-muted mb-4">
-                Target Platforms (select at least one)
+              <label className="block text-sm font-medium text-tron-text-muted mb-2">
+                Select Platforms for Content (select at least one)
               </label>
+              <p className="text-xs text-tron-text-muted mb-4">
+                Generate content for copy/paste to your accounts
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {platforms.map((platform) => (
                   <button
@@ -425,43 +433,204 @@ export default function NewCampaignPage() {
             </div>
 
             {generatedContent && (
-              <div className="space-y-4 mb-6">
-                <h3 className="font-semibold text-tron-text">Generated Content:</h3>
-
-                {generatedContent.twitter && (
-                  <div className="border border-tron-cyan/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="font-semibold text-tron-text">🐦 Twitter</div>
+              <div className="mb-8">
+                {/* Success indicator */}
+                <div className="bg-gradient-to-r from-tron-cyan/20 to-tron-grid rounded-lg border-2 border-tron-cyan/50 p-4 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-tron-cyan flex items-center justify-center">
+                      <span className="text-white font-bold">✓</span>
+                    </div>
+                    <div>
+                      <div className="font-bold text-tron-cyan text-lg">Content Generated Successfully!</div>
                       <div className="text-sm text-tron-text-muted">
-                        {generatedContent.twitter.characterCount}/280 chars
+                        Generated content for {Object.keys(generatedContent).length} platforms
                       </div>
                     </div>
-                    <div className="text-tron-text whitespace-pre-wrap">
-                      {generatedContent.twitter.content}
-                    </div>
                   </div>
-                )}
+                </div>
 
-                {generatedContent.linkedin && (
-                  <div className="border border-tron-cyan/30 rounded-lg p-4">
-                    <div className="font-semibold text-tron-text mb-2">💼 LinkedIn</div>
-                    <div className="text-tron-text whitespace-pre-wrap">
-                      {generatedContent.linkedin.content}
+                {/* Platform content grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {generatedContent.twitter && (
+                    <div className="bg-gradient-to-br from-blue-950/30 to-tron-grid rounded-xl border-2 border-blue-400/30 p-6 hover:border-blue-400/50 transition-all">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
+                            <span className="text-white font-bold text-lg">🐦</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-tron-text text-lg">Twitter</div>
+                            <div className="text-xs text-blue-400">Micro-blogging platform</div>
+                          </div>
+                        </div>
+                        <div className="bg-blue-500/20 px-3 py-1 rounded-full">
+                          <div className="text-sm font-semibold text-blue-400">
+                            {generatedContent.twitter.characterCount || generatedContent.twitter.content?.length || 0}/280
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-blue-400/20">
+                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
+                          {generatedContent.twitter.content}
+                        </div>
+                        {generatedContent.twitter.hashtags && (
+                          <div className="mt-3 pt-3 border-t border-blue-400/20">
+                            <div className="text-xs text-blue-400 font-medium mb-1">Hashtags:</div>
+                            <div className="text-sm text-blue-300">
+                              {Array.isArray(generatedContent.twitter.hashtags) 
+                                ? generatedContent.twitter.hashtags.join(' ') 
+                                : generatedContent.twitter.hashtags}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {generatedContent.email && (
-                  <div className="border border-tron-cyan/30 rounded-lg p-4">
-                    <div className="font-semibold text-tron-text mb-2">✉️ Email</div>
-                    <div className="font-semibold text-tron-text text-sm mb-2">
-                      Subject: {generatedContent.email.subject}
+                  {generatedContent.linkedin && (
+                    <div className="bg-gradient-to-br from-blue-800/30 to-tron-grid rounded-xl border-2 border-blue-500/30 p-6 hover:border-blue-500/50 transition-all">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                            <span className="text-white font-bold text-lg">💼</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-tron-text text-lg">LinkedIn</div>
+                            <div className="text-xs text-blue-300">Professional network</div>
+                          </div>
+                        </div>
+                        <div className="bg-blue-600/20 px-3 py-1 rounded-full">
+                          <div className="text-sm font-semibold text-blue-300">
+                            {generatedContent.linkedin.content?.length || 0} chars
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-blue-500/20">
+                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
+                          {generatedContent.linkedin.content}
+                        </div>
+                        {generatedContent.linkedin.hashtags && (
+                          <div className="mt-3 pt-3 border-t border-blue-500/20">
+                            <div className="text-xs text-blue-300 font-medium mb-1">Hashtags:</div>
+                            <div className="text-sm text-blue-200">
+                              {Array.isArray(generatedContent.linkedin.hashtags) 
+                                ? generatedContent.linkedin.hashtags.join(' ') 
+                                : generatedContent.linkedin.hashtags}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-tron-text whitespace-pre-wrap">
-                      {generatedContent.email.content}
+                  )}
+
+                  {generatedContent.email && (
+                    <div className="bg-gradient-to-br from-green-900/30 to-tron-grid rounded-xl border-2 border-green-500/30 p-6 hover:border-green-500/50 transition-all lg:col-span-2">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center">
+                            <span className="text-white font-bold text-lg">✉️</span>
+                          </div>
+                          <div>
+                            <div className="font-bold text-tron-text text-lg">Email</div>
+                            <div className="text-xs text-green-400">Newsletter format</div>
+                          </div>
+                        </div>
+                        <div className="bg-green-600/20 px-3 py-1 rounded-full">
+                          <div className="text-sm font-semibold text-green-400">
+                            {(generatedContent.email.subject?.length || 0) + (generatedContent.email.content?.length || 0)} chars
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-green-500/20">
+                        {generatedContent.email.subject && (
+                          <div className="mb-4 pb-4 border-b border-green-500/20">
+                            <div className="text-xs text-green-400 font-medium mb-1">Subject Line:</div>
+                            <div className="font-bold text-tron-text text-lg">
+                              {generatedContent.email.subject}
+                            </div>
+                          </div>
+                        )}
+                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
+                          {generatedContent.email.content}
+                        </div>
+                        {generatedContent.email.hashtags && (
+                          <div className="mt-3 pt-3 border-t border-green-500/20">
+                            <div className="text-xs text-green-400 font-medium mb-1">Keywords:</div>
+                            <div className="text-sm text-green-300">
+                              {Array.isArray(generatedContent.email.hashtags) 
+                                ? generatedContent.email.hashtags.join(', ') 
+                                : generatedContent.email.hashtags}
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
+                  )}
+
+                  {/* Support for additional platforms */}
+                  {Object.entries(generatedContent).map(([platform, content]: [string, any]) => {
+                    // Skip already rendered platforms
+                    if (['twitter', 'linkedin', 'email'].includes(platform)) return null;
+                    
+                    // Get platform info
+                    const platformInfo = platforms.find(p => p.id === platform) || { 
+                      id: platform, 
+                      name: platform.charAt(0).toUpperCase() + platform.slice(1), 
+                      icon: '🌐' 
+                    };
+                    
+                    return (
+                      <div key={platform} className="bg-gradient-to-br from-purple-900/30 to-tron-grid rounded-xl border-2 border-purple-500/30 p-6 hover:border-purple-500/50 transition-all">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                              <span className="text-white font-bold text-lg">{platformInfo.icon}</span>
+                            </div>
+                            <div>
+                              <div className="font-bold text-tron-text text-lg">{platformInfo.name}</div>
+                              <div className="text-xs text-purple-400">Social platform</div>
+                            </div>
+                          </div>
+                          <div className="bg-purple-600/20 px-3 py-1 rounded-full">
+                            <div className="text-sm font-semibold text-purple-400">
+                              {content?.content?.length || content?.body?.length || 0} chars
+                            </div>
+                          </div>
+                        </div>
+                        <div className="bg-tron-dark/50 rounded-lg p-4 border border-purple-500/20">
+                          {content?.title && (
+                            <div className="mb-3 pb-3 border-b border-purple-500/20">
+                              <div className="font-bold text-tron-text">{content.title}</div>
+                            </div>
+                          )}
+                          <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
+                            {content?.content || content?.body || content}
+                          </div>
+                          {content?.hashtags && (
+                            <div className="mt-3 pt-3 border-t border-purple-500/20">
+                              <div className="text-xs text-purple-400 font-medium mb-1">Tags:</div>
+                              <div className="text-sm text-purple-300">
+                                {Array.isArray(content.hashtags) 
+                                  ? content.hashtags.join(' ') 
+                                  : content.hashtags}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Generation summary */}
+                <div className="mt-6 text-center">
+                  <div className="inline-flex items-center gap-2 bg-tron-cyan/10 border border-tron-cyan/30 rounded-full px-4 py-2">
+                    <span className="w-2 h-2 bg-tron-cyan rounded-full animate-pulse"></span>
+                    <span className="text-sm text-tron-cyan font-medium">
+                      Content ready for {Object.keys(generatedContent).length} platforms
+                    </span>
                   </div>
-                )}
+                </div>
               </div>
             )}
 
@@ -472,13 +641,21 @@ export default function NewCampaignPage() {
               >
                 ← Back
               </button>
-              <button
-                onClick={() => setStep(4)}
-                disabled={!generatedContent}
-                className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next: Review & Save →
-              </button>
+              <div className="flex flex-col items-end gap-2">
+                {!generatedContent && (
+                  <p className="text-sm text-tron-text-muted">
+                    ⬆️ Generate content first to continue
+                  </p>
+                )}
+                <button
+                  onClick={() => setStep(4)}
+                  disabled={!generatedContent}
+                  className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={!generatedContent ? "Generate content first" : "Proceed to review"}
+                >
+                  Next: Review & Save →
+                </button>
+              </div>
             </div>
           </div>
         )}

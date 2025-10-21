@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+import { createClient } from '@/lib/supabase/server'
+import { decryptAPIKey } from '@/lib/encryption'
 
 // API Gateway URL (ngrok tunnel) - Used in production to access local services
 const API_GATEWAY_URL = process.env.API_GATEWAY_URL || ''
@@ -107,11 +110,92 @@ function convertToTrendingTopics(psResponse: PowerShellResponse): TrendingTopic[
   }))
 }
 
+// Gemini AI fallback for trend generation
+async function generateTrendsWithGemini(keyword: string, userId: string) {
+  try {
+    const supabase = await createClient()
+
+    // Try to get user's Google API key from database
+    const { data: googleProvider } = await supabase
+      .from('ai_providers')
+      .select('id')
+      .eq('provider_key', 'google')
+      .maybeSingle()
+
+    let apiKey = process.env.GOOGLE_API_KEY // Fallback to env var
+
+    if (googleProvider) {
+      const { data: userTool } = await supabase
+        .from('user_ai_tools')
+        .select('api_key_encrypted')
+        .eq('user_id', userId)
+        .eq('provider_id', googleProvider.id)
+        .maybeSingle()
+
+      if (userTool?.api_key_encrypted) {
+        apiKey = decryptAPIKey(userTool.api_key_encrypted)
+      }
+    }
+
+    if (!apiKey) {
+      throw new Error('No Google API key configured')
+    }
+    const genAI = new GoogleGenerativeAI(apiKey)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+
+    const prompt = `Generate 6 trending content ideas related to "${keyword}" for content marketing and social media.
+
+For each trend, provide:
+- A catchy title (2-4 words)
+- Estimated interest level (format as "XXK searches" where XX is 50-200)
+- 3 related search queries
+
+Format as JSON array:
+[
+  {
+    "title": "Trend Name",
+    "formattedTraffic": "150K searches",
+    "relatedQueries": ["query 1", "query 2", "query 3"]
+  }
+]
+
+Return ONLY the JSON array, no markdown formatting.`
+
+    const result = await model.generateContent(prompt)
+    const text = result.response.text()
+
+    // Clean up markdown if present
+    const jsonText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    const trends = JSON.parse(jsonText)
+
+    return {
+      trending: trends,
+      relatedQueries: [
+        { query: `${keyword} strategy`, value: 100, formattedValue: "100%" },
+        { query: `${keyword} trends 2024`, value: 85, formattedValue: "85%" },
+        { query: `best ${keyword} tools`, value: 70, formattedValue: "70%" }
+      ],
+      relatedTopics: [
+        { query: `${keyword} marketing`, value: 100, formattedValue: "100%" },
+        { query: `${keyword} content ideas`, value: 90, formattedValue: "90%" },
+        { query: `${keyword} automation`, value: 80, formattedValue: "80%" }
+      ]
+    }
+  } catch (error: any) {
+    console.error('[Gemini Fallback] Error generating trends:', error.message)
+    throw error
+  }
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const keyword = searchParams.get('keyword') || ''
     const mode = searchParams.get('mode') || 'ideas'
+
+    // Get user for Gemini fallback
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
 
     // Mode: Daily trending topics (no keyword search)
     if (mode === 'trending') {
@@ -165,9 +249,27 @@ export async function GET(request: NextRequest) {
               relatedTopics: [],
             },
           })
-        } catch (error) {
-          console.error('[Trends API] PowerShell service unavailable, using mock data with keyword filter')
-          // Fallback to filtered mock data
+        } catch (psError) {
+          console.error('[Trends API] PowerShell service unavailable, trying Gemini AI fallback')
+
+          // Try Gemini AI fallback
+          if (user) {
+            try {
+              const geminiData = await generateTrendsWithGemini(keyword, user.id)
+              return NextResponse.json({
+                success: true,
+                mode: 'ideas',
+                keyword,
+                source: 'gemini-ai',
+                data: geminiData
+              })
+            } catch (geminiError: any) {
+              console.error('[Trends API] Gemini fallback also failed:', geminiError.message)
+            }
+          }
+
+          // Final fallback to mock data
+          console.error('[Trends API] All services unavailable, using mock data')
           const filteredTrending = mockTrendingTopics.filter(topic =>
             topic.title.toLowerCase().includes(keyword.toLowerCase()) ||
             topic.relatedQueries?.some(query =>

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import InstructionCard from '@/components/InstructionCard'
 import LoadingButton from '@/components/LoadingButton'
 import { SettingsSkeleton } from '@/components/SkeletonLoader'
+import ComingSoonModal from '@/components/ComingSoonModal'
 
 // Provider Instructions Data
 const PROVIDER_INSTRUCTIONS = {
@@ -81,6 +82,8 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false)
+  const [selectedTier, setSelectedTier] = useState<'pro' | 'premium'>('pro')
 
   // Profile form state
   const [fullName, setFullName] = useState('')
@@ -176,18 +179,32 @@ export default function SettingsPage() {
       setMessage('Error loading profile: ' + error.message)
     }
 
-    // Load API keys (keeping old method for now since the new API handles configured tools differently)
-    const { data: keys } = await supabase
-      .from('api_keys')
-      .select('*')
-      .eq('user_id', user.id)
+    // Load API keys from new AI Tools API
+    try {
+      const response = await fetch('/api/ai-tools/list')
+      const data = await response.json()
 
-    if (keys) {
-      const keysMap: any = {}
-      keys.forEach((key: any) => {
-        keysMap[key.provider] = key.api_key || ''
-      })
-      setApiKeys(keysMap)
+      if (data.success && data.providers) {
+        const keysMap: any = {
+          openai: '',
+          anthropic: '',
+          google: '',
+          xai: '',
+          elevenlabs: ''
+        }
+
+        // Mark providers as configured (we can't show actual keys for security)
+        data.providers.forEach((provider: any) => {
+          if (provider.hasApiKey && keysMap.hasOwnProperty(provider.provider_key)) {
+            // Use placeholder to indicate key is configured
+            keysMap[provider.provider_key] = '••••••••••••••••'
+          }
+        })
+
+        setApiKeys(keysMap)
+      }
+    } catch (error) {
+      console.error('Failed to load API keys:', error)
     }
   }
 
@@ -260,10 +277,26 @@ export default function SettingsPage() {
       })
 
       const data = await response.json()
-      setTestResults(prev => ({
-        ...prev,
-        [providerKey]: data
-      }))
+
+      if (!response.ok) {
+        // If 404, the tool might not be saved yet - show helpful message
+        if (response.status === 404) {
+          setTestResults(prev => ({
+            ...prev,
+            [providerKey]: { success: false, message: 'Tool not found. Try refreshing the page.' }
+          }))
+        } else {
+          setTestResults(prev => ({
+            ...prev,
+            [providerKey]: data
+          }))
+        }
+      } else {
+        setTestResults(prev => ({
+          ...prev,
+          [providerKey]: data
+        }))
+      }
     } catch (error: any) {
       setTestResults(prev => ({
         ...prev,
@@ -274,35 +307,10 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleUpgrade(tier: 'pro' | 'premium', billingCycle: 'monthly' | 'yearly' = 'monthly') {
-    setUpgradingTo(tier)
-    try {
-      console.log('Starting checkout for:', { tier, billingCycle })
-      
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, billingCycle })
-      })
-
-      console.log('Checkout response status:', response.status)
-      const data = await response.json()
-      console.log('Checkout response data:', data)
-
-      if (data.success && data.url) {
-        console.log('Redirecting to Stripe:', data.url)
-        // Redirect to Stripe checkout
-        window.location.href = data.url
-      } else {
-        console.error('Checkout failed:', data)
-        setMessage('Error: ' + (data.error || 'Failed to create checkout session'))
-      }
-    } catch (error: any) {
-      console.error('Checkout error:', error)
-      setMessage('Error: ' + error.message)
-    } finally {
-      setUpgradingTo(null)
-    }
+  function handleUpgrade(tier: 'pro' | 'premium', billingCycle: 'monthly' | 'yearly' = 'monthly') {
+    // Open Coming Soon modal instead of Stripe checkout
+    setSelectedTier(tier)
+    setShowComingSoonModal(true)
   }
 
   async function handleApiKeyUpdate(provider: string, value: string) {
@@ -343,9 +351,9 @@ export default function SettingsPage() {
 
       if (data.success) {
         setMessage(`${providerData.name} configured successfully!`)
-        // Auto-test if desired
+        // Auto-test after delay to ensure database commit
         if (data.requiresTest) {
-          setTimeout(() => testConnection(provider), 500)
+          setTimeout(() => testConnection(provider), 1500)
         }
       } else {
         setMessage(`Error: ${data.error}`)
@@ -358,8 +366,16 @@ export default function SettingsPage() {
   if (initialLoading) return <SettingsSkeleton />
 
   return (
-    <div className="p-8 bg-tron-dark min-h-screen">
-      <h1 className="text-3xl font-bold text-tron-text mb-8">Settings</h1>
+    <>
+      {/* Coming Soon Modal */}
+      <ComingSoonModal
+        isOpen={showComingSoonModal}
+        onClose={() => setShowComingSoonModal(false)}
+        tier={selectedTier}
+      />
+
+      <div className="p-8 bg-tron-dark min-h-screen">
+        <h1 className="text-3xl font-bold text-tron-text mb-8">Settings</h1>
 
       {/* Tabs */}
       <div className="border-b border-tron-grid mb-8">
@@ -705,7 +721,7 @@ export default function SettingsPage() {
 
               {/* Test Results */}
               {testResults.openai && (
-                <div className={`mt-2 p-3 rounded-lg ${testResults.openai.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-50 text-red-800'}`}>
+                <div className={`mt-2 p-3 rounded-lg ${testResults.openai.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-900/20 border border-red-500/30 text-red-400'}`}>
                   {testResults.openai.success ? '✅' : '❌'} {testResults.openai.message}
                 </div>
               )}
@@ -748,7 +764,7 @@ export default function SettingsPage() {
               )}
 
               {testResults.anthropic && (
-                <div className={`mt-2 p-3 rounded-lg ${testResults.anthropic.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-50 text-red-800'}`}>
+                <div className={`mt-2 p-3 rounded-lg ${testResults.anthropic.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-900/20 border border-red-500/30 text-red-400'}`}>
                   {testResults.anthropic.success ? '✅' : '❌'} {testResults.anthropic.message}
                 </div>
               )}
@@ -790,7 +806,7 @@ export default function SettingsPage() {
               )}
 
               {testResults.google && (
-                <div className={`mt-2 p-3 rounded-lg ${testResults.google.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-50 text-red-800'}`}>
+                <div className={`mt-2 p-3 rounded-lg ${testResults.google.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-900/20 border border-red-500/30 text-red-400'}`}>
                   {testResults.google.success ? '✅' : '❌'} {testResults.google.message}
                 </div>
               )}
@@ -832,7 +848,7 @@ export default function SettingsPage() {
               )}
 
               {testResults.elevenlabs && (
-                <div className={`mt-2 p-3 rounded-lg ${testResults.elevenlabs.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-50 text-red-800'}`}>
+                <div className={`mt-2 p-3 rounded-lg ${testResults.elevenlabs.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-900/20 border border-red-500/30 text-red-400'}`}>
                   {testResults.elevenlabs.success ? '✅' : '❌'} {testResults.elevenlabs.message}
                 </div>
               )}
@@ -874,7 +890,7 @@ export default function SettingsPage() {
               )}
 
               {testResults.xai && (
-                <div className={`mt-2 p-3 rounded-lg ${testResults.xai.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-50 text-red-800'}`}>
+                <div className={`mt-2 p-3 rounded-lg ${testResults.xai.success ? 'bg-tron-green/20 text-tron-green' : 'bg-red-900/20 border border-red-500/30 text-red-400'}`}>
                   {testResults.xai.success ? '✅' : '❌'} {testResults.xai.message}
                 </div>
               )}
@@ -1048,12 +1064,12 @@ export default function SettingsPage() {
                 </div>
                 <LoadingButton
                   onClick={() => handleUpgrade('pro', 'monthly')}
-                  loading={upgradingTo === 'pro'}
-                  loadingText="Redirecting to Stripe..."
-                  disabled={upgradingTo !== null}
+                  loading={false}
+                  loadingText=""
+                  disabled={false}
                   className="w-full"
                 >
-                  Upgrade to Pro
+                  Join Waitlist
                 </LoadingButton>
               </div>
 
@@ -1078,12 +1094,12 @@ export default function SettingsPage() {
                 </div>
                 <LoadingButton
                   onClick={() => handleUpgrade('premium', 'monthly')}
-                  loading={upgradingTo === 'premium'}
-                  loadingText="Redirecting to Stripe..."
-                  disabled={upgradingTo !== null}
+                  loading={false}
+                  loadingText=""
+                  disabled={false}
                   className="w-full bg-gradient-to-r from-tron-cyan to-tron-magenta hover:from-tron-cyan/80 hover:to-tron-magenta/80"
                 >
-                  Upgrade to Premium
+                  Join Waitlist
                 </LoadingButton>
               </div>
             </div>
@@ -1092,11 +1108,11 @@ export default function SettingsPage() {
           <div className="mt-8 pt-8 border-t border-tron-cyan/30">
             <div className="flex items-center justify-center space-x-4">
               <div className="text-center">
-                <p className="text-sm text-tron-text-muted">
-                  🔒 Secure payments powered by Stripe
+                <p className="text-sm text-tron-cyan">
+                  🚀 Premium features launching soon
                 </p>
                 <p className="text-xs text-tron-text-muted/80 mt-1">
-                  Cancel anytime • 30-day money-back guarantee
+                  Join the waitlist to get early access & exclusive beta pricing
                 </p>
               </div>
               {usageData?.estimatedCostSaved && (
@@ -1111,5 +1127,6 @@ export default function SettingsPage() {
         </div>
       )}
     </div>
+    </>
   )
 }

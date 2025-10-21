@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { DashboardSkeleton } from './SkeletonLoader'
 import { motion } from 'framer-motion'
+import TypingAnimation from './TypingAnimation'
+import WelcomeAnimation from './WelcomeAnimation'
 
 interface Campaign {
   id: string
@@ -112,16 +114,34 @@ export default function DashboardClient() {
   }
 
   return (
-    <motion.div 
-      className="p-8"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <>
+      {/* Welcome Animation */}
+      <WelcomeAnimation />
+
+      <motion.div
+        className="p-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
       <motion.div className="mb-8" variants={itemVariants}>
-        <h1 className="text-3xl font-bold text-tron-text">
+        <h1 className="text-3xl font-bold text-tron-text mb-3">
           Welcome back, {profile?.full_name || 'there'}! 🎉
         </h1>
+        <div className="text-lg text-tron-cyan font-medium">
+          <TypingAnimation
+            texts={[
+              "Ready to create viral content?",
+              "Let's leverage trending topics today!",
+              "Your next campaign starts here!",
+              "AI-powered content at your fingertips!"
+            ]}
+            className="text-tron-cyan"
+            typingSpeed={80}
+            deletingSpeed={40}
+            pauseDuration={2500}
+          />
+        </div>
         <p className="text-tron-text-muted mt-2">You have {campaigns.length} campaigns in progress</p>
       </motion.div>
 
@@ -280,5 +300,6 @@ export default function DashboardClient() {
         )}
       </motion.div>
     </motion.div>
+    </>
   )
 }
