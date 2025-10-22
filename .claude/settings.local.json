@@ -52,7 +52,13 @@
       "Bash(vercel logs:*)",
       "Bash(timeout /t 60)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File test-api.ps1)",
-      "Bash(powershell.exe -ExecutionPolicy Bypass -File test-frontend.ps1)"
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File test-frontend.ps1)",
+      "Bash(for file in \"c:\\DEV\\3K-Pro-Services\\landing-page\\app\\api\\trends\\route.ts\" \"c:\\DEV\\3K-Pro-Services\\landing-page\\app\\api\\generate\\route.ts\" \"c:\\DEV\\3K-Pro-Services\\landing-page\\app\\api\\health\\route.ts\")",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(head:*)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File test-production.ps1)",
+      "Bash(printf \"AIzaSyCbKx1enlxK3eU3b3oSGB-fdoNf7KchaIA\")",
+      "Bash(printf:*)"
     ],
     "deny": [],
     "ask": []
