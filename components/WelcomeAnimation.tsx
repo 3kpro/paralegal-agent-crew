@@ -46,12 +46,8 @@ interface DirectionPair {
 }
 
 const directionPairs: DirectionPair[] = [
-  { main: { x: -150, y: 0 }, sub: { x: 150, y: 0 } },     // left-right
-  { main: { x: 150, y: 0 }, sub: { x: -150, y: 0 } },     // right-left
   { main: { x: 0, y: -100 }, sub: { x: 0, y: 100 } },     // top-bottom
   { main: { x: 0, y: 100 }, sub: { x: 0, y: -100 } },     // bottom-top
-  { main: { x: -120, y: -80 }, sub: { x: 120, y: 80 } },  // diagonal top-left to bottom-right
-  { main: { x: 120, y: -80 }, sub: { x: -120, y: 80 } },  // diagonal top-right to bottom-left
 ]
 
 export default function WelcomeAnimation() {
