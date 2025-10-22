@@ -46,8 +46,8 @@ interface DirectionPair {
 }
 
 const directionPairs: DirectionPair[] = [
-  { main: { x: 0, y: -100 }, sub: { x: 0, y: 100 } },     // top-bottom
-  { main: { x: 0, y: 100 }, sub: { x: 0, y: -100 } },     // bottom-top
+  { main: { x: 0, y: -150 }, sub: { x: 0, y: 150 } },     // top-bottom (increased distance)
+  { main: { x: 0, y: 150 }, sub: { x: 0, y: -150 } },     // bottom-top (increased distance)
 ]
 
 export default function WelcomeAnimation() {
@@ -148,12 +148,12 @@ export default function WelcomeAnimation() {
               }}
               exit={{
                 opacity: 0,
-                x: -currentDirections.main.x * 0.5,
-                y: -currentDirections.main.y * 0.5
+                x: -currentDirections.main.x * 0.3,
+                y: -currentDirections.main.y * 0.3
               }}
               transition={{
-                duration: 1.0,
-                ease: easing
+                duration: 1.2,
+                ease: [0.25, 0.46, 0.45, 0.94] // More sophisticated easing
               }}
             >
               {currentMessage.text}
@@ -175,13 +175,13 @@ export default function WelcomeAnimation() {
                 }}
                 exit={{
                   opacity: 0,
-                  x: -currentDirections.sub.x * 0.5,
-                  y: -currentDirections.sub.y * 0.5
+                  x: -currentDirections.sub.x * 0.3,
+                  y: -currentDirections.sub.y * 0.3
                 }}
                 transition={{
-                  duration: 1.0,
-                  ease: easing,
-                  delay: 0.1 // Slight delay for layered effect
+                  duration: 1.2,
+                  ease: [0.25, 0.46, 0.45, 0.94], // Matching sophisticated easing
+                  delay: 0.3 // Increased delay to prevent overlap
                 }}
               >
                 {currentMessage.subtext}
