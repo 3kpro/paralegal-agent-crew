@@ -83,7 +83,12 @@ export default function NewCampaignPage() {
         const response = await fetch('/api/ai-tools/list')
         const data = await response.json()
         if (data.success) {
-          const configuredTools = data.providers.filter((p: any) => p.isConfigured)
+          // Filter to only Gemini and LM Studio to reduce costs
+          const configuredTools = data.providers.filter((p: any) => 
+            p.isConfigured && 
+            p.provider_key !== 'openai' && 
+            p.provider_key !== 'anthropic'
+          )
           setAiTools(configuredTools)
           if (configuredTools.length > 0) {
             setAiProvider(configuredTools[0].provider_key)

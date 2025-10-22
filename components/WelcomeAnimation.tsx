@@ -149,7 +149,7 @@ export default function WelcomeAnimation() {
                 transition={{
                   duration: 1.0,
                   ease: [0.25, 0.46, 0.45, 0.94],
-                  delay: 0.3 // Blue text fades in after white
+                  delay: 0.8 // Blue text comes in later so white message sinks in first
                 }}
               >
                 {currentMessage.subtext}
