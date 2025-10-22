@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
@@ -38,11 +38,34 @@ const welcomeMessages: WelcomeMessage[] = [
   }
 ]
 
+// Direction pairs - main text and subtext come from different directions
+type Direction = { x: number; y: number }
+interface DirectionPair {
+  main: Direction
+  sub: Direction
+}
+
+const directionPairs: DirectionPair[] = [
+  { main: { x: -150, y: 0 }, sub: { x: 150, y: 0 } },     // left-right
+  { main: { x: 150, y: 0 }, sub: { x: -150, y: 0 } },     // right-left
+  { main: { x: 0, y: -100 }, sub: { x: 0, y: 100 } },     // top-bottom
+  { main: { x: 0, y: 100 }, sub: { x: 0, y: -100 } },     // bottom-top
+  { main: { x: -120, y: -80 }, sub: { x: 120, y: 80 } },  // diagonal top-left to bottom-right
+  { main: { x: 120, y: -80 }, sub: { x: -120, y: 80 } },  // diagonal top-right to bottom-left
+]
+
 export default function WelcomeAnimation() {
   const router = useRouter()
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
+
+  // Generate random directions for each message (only once)
+  const messageDirections = useMemo(() => {
+    return welcomeMessages.map(() => {
+      return directionPairs[Math.floor(Math.random() * directionPairs.length)]
+    })
+  }, [])
 
   useEffect(() => {
     // Check if user has seen the welcome animation
@@ -72,7 +95,6 @@ export default function WelcomeAnimation() {
   const handleContinue = () => {
     localStorage.setItem('ccai_welcome_completed', 'true')
     setIsComplete(true)
-    // Redirect to create campaign
     router.push('/campaigns/new')
   }
 
@@ -85,30 +107,10 @@ export default function WelcomeAnimation() {
 
   const currentMessage = welcomeMessages[currentMessageIndex]
   const isLastMessage = currentMessageIndex === welcomeMessages.length - 1
+  const currentDirections = messageDirections[currentMessageIndex]
 
-  // Slide animation variants - fast in, slow at end (ease-out)
-  const slideVariants = {
-    enter: {
-      x: 120,
-      opacity: 0
-    },
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 1.0,
-        ease: [0.16, 1, 0.3, 1] as [number, number, number, number] // Ease out cubic - fast start, slow graceful end
-      }
-    },
-    exit: {
-      x: -120,
-      opacity: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.7, 0, 0.84, 0] as [number, number, number, number] // Ease in cubic - smooth exit
-      }
-    }
-  }
+  // Smooth ease-out cubic
+  const easing = [0.16, 1, 0.3, 1] as [number, number, number, number]
 
   return (
     <div className="fixed inset-0 z-50 bg-tron-dark flex items-center justify-center">
@@ -134,38 +136,56 @@ export default function WelcomeAnimation() {
       {/* Message container */}
       <div className="relative max-w-4xl mx-auto px-8 text-center">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentMessageIndex}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            className="space-y-4"
-          >
-            {/* Main text */}
+          <div key={currentMessageIndex} className="space-y-4">
+            {/* Main text - comes from random direction */}
             <motion.h1
-              className="text-5xl md:text-7xl font-bold text-tron-text tracking-tight"
-              initial={{ opacity: 0, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl md:text-7xl font-bold text-white tracking-tight"
+              initial={{
+                opacity: 0,
+                x: currentDirections.main.x,
+                y: currentDirections.main.y
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0
+              }}
+              exit={{
+                opacity: 0,
+                x: -currentDirections.main.x * 0.5,
+                y: -currentDirections.main.y * 0.5
+              }}
               transition={{
-                delay: 0.3,
-                duration: 0.6,
-                ease: [0.16, 1, 0.3, 1] as [number, number, number, number]
+                duration: 1.0,
+                ease: easing
               }}
             >
               {currentMessage.text}
             </motion.h1>
 
-            {/* Subtext */}
+            {/* Subtext - comes from opposite direction */}
             {currentMessage.subtext && (
               <motion.p
                 className="text-xl md:text-2xl text-tron-cyan font-light"
-                initial={{ opacity: 0, y: 0 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{
+                  opacity: 0,
+                  x: currentDirections.sub.x,
+                  y: currentDirections.sub.y
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  y: 0
+                }}
+                exit={{
+                  opacity: 0,
+                  x: -currentDirections.sub.x * 0.5,
+                  y: -currentDirections.sub.y * 0.5
+                }}
                 transition={{
-                  delay: 0.6,
-                  duration: 0.6,
-                  ease: [0.16, 1, 0.3, 1] as [number, number, number, number]
+                  duration: 1.0,
+                  ease: easing,
+                  delay: 0.1 // Slight delay for layered effect
                 }}
               >
                 {currentMessage.subtext}
@@ -177,7 +197,7 @@ export default function WelcomeAnimation() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
+                transition={{ delay: 1.2, duration: 0.5 }}
                 className="pt-8"
               >
                 <button
@@ -194,7 +214,7 @@ export default function WelcomeAnimation() {
                 </button>
               </motion.div>
             )}
-          </motion.div>
+          </div>
         </AnimatePresence>
 
         {/* Progress dots */}
