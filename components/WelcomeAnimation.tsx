@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
@@ -46,8 +46,7 @@ interface DirectionPair {
 }
 
 const directionPairs: DirectionPair[] = [
-  { main: { x: 0, y: -150 }, sub: { x: 0, y: 150 } },     // top-bottom (increased distance)
-  { main: { x: 0, y: 150 }, sub: { x: 0, y: -150 } },     // bottom-top (increased distance)
+  { main: { x: -200, y: 0 }, sub: { x: 200, y: 0 } },     // white from left, blue from right
 ]
 
 export default function WelcomeAnimation() {
@@ -56,12 +55,8 @@ export default function WelcomeAnimation() {
   const [isComplete, setIsComplete] = useState(false)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
 
-  // Generate random directions for each message (only once)
-  const messageDirections = useMemo(() => {
-    return welcomeMessages.map(() => {
-      return directionPairs[Math.floor(Math.random() * directionPairs.length)]
-    })
-  }, [])
+  // Get the single direction pattern (white from left, blue from right)
+  const currentDirections = directionPairs[0]
 
   useEffect(() => {
     // Check if user has seen the welcome animation
@@ -103,7 +98,6 @@ export default function WelcomeAnimation() {
 
   const currentMessage = welcomeMessages[currentMessageIndex]
   const isLastMessage = currentMessageIndex === welcomeMessages.length - 1
-  const currentDirections = messageDirections[currentMessageIndex]
 
   // Smooth ease-out cubic
   const easing = [0.16, 1, 0.3, 1] as [number, number, number, number]
@@ -133,7 +127,7 @@ export default function WelcomeAnimation() {
       <div className="relative max-w-4xl mx-auto px-8 text-center">
         <AnimatePresence mode="wait">
           <div key={currentMessageIndex} className="space-y-4">
-            {/* Main text - comes from random direction */}
+            {/* Main text - white from left */}
             <motion.h1
               className="text-5xl md:text-7xl font-bold text-white tracking-tight"
               initial={{
@@ -148,18 +142,18 @@ export default function WelcomeAnimation() {
               }}
               exit={{
                 opacity: 0,
-                x: -currentDirections.main.x * 0.3,
-                y: -currentDirections.main.y * 0.3
+                x: -200, // Always exit left (opposite of entrance)
+                y: 0
               }}
               transition={{
                 duration: 1.2,
-                ease: [0.25, 0.46, 0.45, 0.94] // More sophisticated easing
+                ease: [0.25, 0.46, 0.45, 0.94]
               }}
             >
               {currentMessage.text}
             </motion.h1>
 
-            {/* Subtext - comes from opposite direction */}
+            {/* Subtext - blue from right */}
             {currentMessage.subtext && (
               <motion.p
                 className="text-xl md:text-2xl text-tron-cyan font-light"
@@ -175,13 +169,13 @@ export default function WelcomeAnimation() {
                 }}
                 exit={{
                   opacity: 0,
-                  x: -currentDirections.sub.x * 0.3,
-                  y: -currentDirections.sub.y * 0.3
+                  x: 200, // Always exit right (opposite of entrance)
+                  y: 0
                 }}
                 transition={{
                   duration: 1.2,
-                  ease: [0.25, 0.46, 0.45, 0.94], // Matching sophisticated easing
-                  delay: 0.3 // Increased delay to prevent overlap
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  delay: 0.2 // Slight delay for layered effect
                 }}
               >
                 {currentMessage.subtext}
