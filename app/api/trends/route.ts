@@ -3,6 +3,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 import { createClient } from '@/lib/supabase/server'
 import { decryptAPIKey } from '@/lib/encryption'
 
+// Force this route to be dynamic - never cache by Next.js
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // API Gateway URL (ngrok tunnel) - Used in production to access local services
 const API_GATEWAY_URL = process.env.API_GATEWAY_URL || ''
 
