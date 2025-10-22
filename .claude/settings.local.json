@@ -64,7 +64,10 @@
       "Bash(else echo \"NOT_FOUND\")",
       "Bash(fi)",
       "Bash(vercel --version:*)",
-      "Bash(vercel project:*)"
+      "Bash(vercel project:*)",
+      "Bash(where:*)",
+      "Bash(npx next dev:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []
