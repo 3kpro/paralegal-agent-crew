@@ -1,4 +1,5 @@
 'use client'
+// Cache bust: 2025-10-22 - Force rebuild for Delete button text update
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
