@@ -38,25 +38,11 @@ const welcomeMessages: WelcomeMessage[] = [
   }
 ]
 
-// Direction pairs - main text and subtext come from different directions
-type Direction = { x: number; y: number }
-interface DirectionPair {
-  main: Direction
-  sub: Direction
-}
-
-const directionPairs: DirectionPair[] = [
-  { main: { x: -200, y: 0 }, sub: { x: 200, y: 0 } },     // white from left, blue from right
-]
-
 export default function WelcomeAnimation() {
   const router = useRouter()
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
   const [isComplete, setIsComplete] = useState(false)
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
-
-  // Get the single direction pattern (white from left, blue from right)
-  const currentDirections = directionPairs[0]
 
   useEffect(() => {
     // Check if user has seen the welcome animation
@@ -127,55 +113,43 @@ export default function WelcomeAnimation() {
       <div className="relative max-w-4xl mx-auto px-8 text-center">
         <AnimatePresence mode="wait">
           <div key={currentMessageIndex} className="space-y-4">
-            {/* Main text - white from left */}
+            {/* Main text - white fades in first */}
             <motion.h1
               className="text-5xl md:text-7xl font-bold text-white tracking-tight"
               initial={{
-                opacity: 0,
-                x: currentDirections.main.x,
-                y: currentDirections.main.y
+                opacity: 0
               }}
               animate={{
-                opacity: 1,
-                x: 0,
-                y: 0
+                opacity: 1
               }}
               exit={{
-                opacity: 0,
-                x: -200, // Always exit left (opposite of entrance)
-                y: 0
+                opacity: 0
               }}
               transition={{
-                duration: 1.2,
+                duration: 1.0,
                 ease: [0.25, 0.46, 0.45, 0.94]
               }}
             >
               {currentMessage.text}
             </motion.h1>
 
-            {/* Subtext - blue from right */}
+            {/* Subtext - blue fades in slightly after white */}
             {currentMessage.subtext && (
               <motion.p
                 className="text-xl md:text-2xl text-tron-cyan font-light"
                 initial={{
-                  opacity: 0,
-                  x: currentDirections.sub.x,
-                  y: currentDirections.sub.y
+                  opacity: 0
                 }}
                 animate={{
-                  opacity: 1,
-                  x: 0,
-                  y: 0
+                  opacity: 1
                 }}
                 exit={{
-                  opacity: 0,
-                  x: 200, // Always exit right (opposite of entrance)
-                  y: 0
+                  opacity: 0
                 }}
                 transition={{
-                  duration: 1.2,
+                  duration: 1.0,
                   ease: [0.25, 0.46, 0.45, 0.94],
-                  delay: 0.2 // Slight delay for layered effect
+                  delay: 0.3 // Blue text fades in after white
                 }}
               >
                 {currentMessage.subtext}
