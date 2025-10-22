@@ -113,27 +113,30 @@ function convertToTrendingTopics(psResponse: PowerShellResponse): TrendingTopic[
 // Gemini AI fallback for trend generation
 async function generateTrendsWithGemini(keyword: string, userId: string) {
   try {
-    const supabase = await createClient()
+    let apiKey = process.env.GOOGLE_API_KEY // Default to env var
 
-    // Try to get user's Google API key from database
-    const { data: googleProvider } = await supabase
-      .from('ai_providers')
-      .select('id')
-      .eq('provider_key', 'google')
-      .maybeSingle()
+    // If user is logged in (not anonymous), try to get their custom API key
+    if (userId !== 'anonymous') {
+      const supabase = await createClient()
 
-    let apiKey = process.env.GOOGLE_API_KEY // Fallback to env var
-
-    if (googleProvider) {
-      const { data: userTool } = await supabase
-        .from('user_ai_tools')
-        .select('api_key_encrypted')
-        .eq('user_id', userId)
-        .eq('provider_id', googleProvider.id)
+      // Try to get user's Google API key from database
+      const { data: googleProvider } = await supabase
+        .from('ai_providers')
+        .select('id')
+        .eq('provider_key', 'google')
         .maybeSingle()
 
-      if (userTool?.api_key_encrypted) {
-        apiKey = decryptAPIKey(userTool.api_key_encrypted)
+      if (googleProvider) {
+        const { data: userTool } = await supabase
+          .from('user_ai_tools')
+          .select('api_key_encrypted')
+          .eq('user_id', userId)
+          .eq('provider_id', googleProvider.id)
+          .maybeSingle()
+
+        if (userTool?.api_key_encrypted) {
+          apiKey = decryptAPIKey(userTool.api_key_encrypted)
+        }
       }
     }
 
@@ -252,20 +255,19 @@ export async function GET(request: NextRequest) {
         } catch (psError) {
           console.error('[Trends API] PowerShell service unavailable, trying Gemini AI fallback')
 
-          // Try Gemini AI fallback
-          if (user) {
-            try {
-              const geminiData = await generateTrendsWithGemini(keyword, user.id)
-              return NextResponse.json({
-                success: true,
-                mode: 'ideas',
-                keyword,
-                source: 'gemini-ai',
-                data: geminiData
-              })
-            } catch (geminiError: any) {
-              console.error('[Trends API] Gemini fallback also failed:', geminiError.message)
-            }
+          // Try Gemini AI fallback (works with or without logged-in user)
+          try {
+            const userId = user?.id || 'anonymous'
+            const geminiData = await generateTrendsWithGemini(keyword, userId)
+            return NextResponse.json({
+              success: true,
+              mode: 'ideas',
+              keyword,
+              source: 'gemini-ai',
+              data: geminiData
+            })
+          } catch (geminiError: any) {
+            console.error('[Trends API] Gemini fallback also failed:', geminiError.message)
           }
 
           // Final fallback to mock data
