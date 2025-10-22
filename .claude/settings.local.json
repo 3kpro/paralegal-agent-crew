@@ -58,7 +58,13 @@
       "Bash(head:*)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File test-production.ps1)",
       "Bash(printf \"AIzaSyCbKx1enlxK3eU3b3oSGB-fdoNf7KchaIA\")",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(if [ -d \"c:\\DEV\\3K-Pro-Services\\3kpro-website\" ])",
+      "Bash(then echo \"EXISTS\")",
+      "Bash(else echo \"NOT_FOUND\")",
+      "Bash(fi)",
+      "Bash(vercel --version:*)",
+      "Bash(vercel project:*)"
     ],
     "deny": [],
     "ask": []
