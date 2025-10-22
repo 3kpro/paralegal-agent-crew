@@ -37,7 +37,22 @@
       "Bash(rm -rf .next)",
       "Bash(test:*)",
       "Bash(tail:*)",
-      "Bash(npx supabase db push:*)"
+      "Bash(npx supabase db push:*)",
+      "Bash(npx create-next-app@latest 3kpro-website --typescript --tailwind --app --no-src-dir --import-alias \"@/*\")",
+      "Bash(npx tailwindcss:*)",
+      "Bash(timeout /t 10)",
+      "Bash(git init:*)",
+      "Bash(gh repo create:*)",
+      "Bash(npx supabase:*)",
+      "Bash(vercel --prod:*)",
+      "Bash(vercel domains:*)",
+      "Bash(vercel inspect:*)",
+      "Bash(vercel ls:*)",
+      "Bash(vercel alias:*)",
+      "Bash(vercel logs:*)",
+      "Bash(timeout /t 60)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File test-api.ps1)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File test-frontend.ps1)"
     ],
     "deny": [],
     "ask": []

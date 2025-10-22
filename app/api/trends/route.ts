@@ -196,6 +196,12 @@ export async function GET(request: NextRequest) {
     const keyword = searchParams.get('keyword') || ''
     const mode = searchParams.get('mode') || 'ideas'
 
+    // Disable caching for this API endpoint
+    const headers = {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      'Pragma': 'no-cache'
+    }
+
     // Get user for Gemini fallback
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -216,7 +222,7 @@ export async function GET(request: NextRequest) {
             totalResults: trending.length,
             timestamp: new Date().toISOString()
           }
-        })
+        }, { headers })
       } catch (error) {
         console.error('[Trends API] PowerShell service unavailable, using mock data')
         // Fallback to mock data if PowerShell service is down
@@ -229,7 +235,7 @@ export async function GET(request: NextRequest) {
             totalResults: mockTrendingTopics.length,
             timestamp: new Date().toISOString()
           }
-        })
+        }, { headers })
       }
     }
 
@@ -251,7 +257,7 @@ export async function GET(request: NextRequest) {
               relatedQueries: [],
               relatedTopics: [],
             },
-          })
+          }, { headers })
         } catch (psError) {
           console.error('[Trends API] PowerShell service unavailable, trying Gemini AI fallback')
 
@@ -265,7 +271,7 @@ export async function GET(request: NextRequest) {
               keyword,
               source: 'gemini-ai',
               data: geminiData
-            })
+            }, { headers })
           } catch (geminiError: any) {
             console.error('[Trends API] Gemini fallback also failed:', geminiError.message)
           }
@@ -297,7 +303,7 @@ export async function GET(request: NextRequest) {
                 { query: `${keyword} best practices`, value: 80, formattedValue: "80%" }
               ]
             }
-          })
+          }, { headers })
         }
       } else {
         // No keyword provided - return empty or default topics
@@ -313,7 +319,7 @@ export async function GET(request: NextRequest) {
           meta: {
             message: 'Please provide a keyword to search for content ideas'
           }
-        })
+        }, { headers })
       }
     }
 

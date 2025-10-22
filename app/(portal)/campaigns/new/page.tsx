@@ -53,7 +53,11 @@ export default function NewCampaignPage() {
     try {
       const response = await fetch(`/api/trends?keyword=${encodeURIComponent(searchQuery)}&mode=ideas`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
+        cache: 'no-store'
       })
 
       const data = await response.json()
