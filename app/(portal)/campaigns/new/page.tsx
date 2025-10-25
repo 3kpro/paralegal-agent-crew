@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import SidebarGuide from '@/components/SidebarGuide'
+import PublishButton from '@/components/PublishButton'
 
 export default function NewCampaignPage() {
   const router = useRouter()
@@ -638,6 +639,33 @@ export default function NewCampaignPage() {
                     <span className="text-sm text-tron-cyan font-medium">
                       Content ready for {Object.keys(generatedContent).length} platforms
                     </span>
+                  </div>
+                </div>
+
+                {/* Publish Campaign Section */}
+                <div className="mt-8 pt-8 border-t-2 border-tron-grid">
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold text-tron-text mb-2">
+                      Ready to Publish Your Campaign?
+                    </h3>
+                    <p className="text-tron-text-muted">
+                      Connect your social accounts and schedule your content across all platforms
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                    <PublishButton 
+                      content={JSON.stringify(generatedContent, null, 2)}
+                      campaignId={campaignName?.replace(/\s+/g, '-').toLowerCase()}
+                      onPublishSuccess={(results) => {
+                        console.log('Campaign published successfully:', results)
+                        // Could show success toast or redirect
+                      }}
+                      onPublishError={(error) => {
+                        console.error('Failed to publish campaign:', error)
+                        // Could show error toast
+                      }}
+                    />
                   </div>
                 </div>
               </div>

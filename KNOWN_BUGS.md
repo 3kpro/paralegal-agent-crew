@@ -58,6 +58,41 @@
 
 ---
 
+### BUG-T001: Incorrect Error Status Codes in Content Generation
+**Status:** 🟢 FIXED (Oct 24, 2025)
+**Fixed By:** GitHub Copilot
+
+**Description:**
+During test framework migration from Vitest to Jest, identified inconsistencies in error status code handling in the content generation API route.
+
+**Issues Found:**
+1. Unauthorized requests returned mixed status codes
+2. Invalid requests had inconsistent error messaging
+3. Missing AI tools configuration needed clearer error handling
+
+**Resolution:**
+Test migration helped identify and fix error handling:
+- Unauthorized requests now consistently return 401
+- Invalid requests return 400 with clear error message
+- Missing AI tools return 400 with `requiresSetup: true`
+
+**Verification:**
+✅ Test suite converted from Vitest to Jest
+✅ All 5 test cases passing:
+  - Content generation and caching
+  - Invalid request handling
+  - Unauthorized access
+  - Missing AI tools
+  - Generation errors
+✅ Consistent error status codes
+✅ Clear error messages
+
+**Files Modified:**
+- [__tests__/api/generate/route.test.ts](__tests__/api/generate/route.test.ts) - Full test suite update
+- [app/api/generate/route.ts](app/api/generate/route.ts) - Error handling improvements
+
+---
+
 ### INC002: Campaign Save Failed - Schema Mismatch (metadata column)
 **Status:** 🟢 FIXED (Oct 20, 2025)
 **Fixed By:** Sonnet
@@ -404,9 +439,9 @@ Always create handoff document at end of session with:
 **High Priority:** 0
 **Medium Priority:** 0
 **Low Priority:** 0
-**Recently Fixed:** 7
+**Recently Fixed:** 8
 
-**Last Review:** Oct 20, 2025
+**Last Review:** Oct 24, 2025
 **Next Review:** After user test report
 
 ---

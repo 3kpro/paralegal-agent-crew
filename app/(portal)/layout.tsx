@@ -60,6 +60,27 @@ export default async function PortalLayout({
               <span>Create</span>
             </Link>
             <Link
+              href="/contentflow"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
+            >
+              <span className="text-xl">📅</span>
+              <span>ContentFlow</span>
+            </Link>
+            <Link
+              href="/ai-studio"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
+            >
+              <span className="text-xl">🧠</span>
+              <span>AI Studio</span>
+            </Link>
+            <Link
+              href="/social-accounts"
+              className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
+            >
+              <span className="text-xl">🔗</span>
+              <span>Social Accounts</span>
+            </Link>
+            <Link
               href="/analytics"
               className="flex items-center space-x-3 px-6 py-3 hover:bg-tron-cyan/20 hover:border-l-4 hover:border-tron-cyan transition-all"
             >

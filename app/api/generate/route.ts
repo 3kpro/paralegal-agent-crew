@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { decryptAPIKey } from '@/lib/encryption'
+import { redis, withCache, cacheKeys } from '@/lib/redis'
+
+const CACHE_TTL = 900 // 15 minutes in seconds
 
 export async function POST(request: Request) {
   try {
@@ -19,111 +22,137 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
-    // Get user's configured AI tools
-    const { data: userTools } = await supabase
-      .from('user_ai_tools')
-      .select(`
-        *,
-        ai_providers (
-          id,
-          provider_key,
-          name,
-          category
-        )
-      `)
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-      .eq('test_status', 'success')
+    // Generate cache key based on input parameters
+    const cacheKey = `generate:${user.id}:${topic}:${formats.sort().join(',')}:${preferredProvider || 'default'}`
 
-    if (!userTools || userTools.length === 0) {
+    // Try to get from cache first
+    const cachedResult = await withCache(
+      cacheKey,
+      CACHE_TTL,
+      async () => {
+        // Get user's configured AI tools
+        const { data: userTools } = await supabase
+          .from('user_ai_tools')
+          .select(`
+            *,
+            ai_providers (
+              id,
+              provider_key,
+              name,
+              category
+            )
+          `)
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .eq('test_status', 'success')
+
+        if (!userTools || userTools.length === 0) {
+          throw new Error('No AI tools configured. Please add an AI tool in Settings.')
+        }
+
+        // Find preferred provider or use first available
+        let selectedTool = userTools.find(t => (t.ai_providers as any).provider_key === preferredProvider)
+        if (!selectedTool) {
+          selectedTool = userTools[0] // Fallback to first available
+        }
+
+        const provider = selectedTool.ai_providers as any
+        const apiKey = selectedTool.api_key_encrypted ? decryptAPIKey(selectedTool.api_key_encrypted) : null
+        const config = selectedTool.configuration || {}
+
+        // Generate content based on provider
+        let content: any
+        let tokensUsed = 0
+        let estimatedCost = 0
+
+        try {
+          switch (provider.provider_key) {
+            case 'openai':
+              const openaiResult = await generateWithOpenAI(apiKey!, topic, formats, config)
+              content = openaiResult.content
+              tokensUsed = openaiResult.tokensUsed
+              estimatedCost = openaiResult.estimatedCost
+              break
+
+            case 'anthropic':
+              const claudeResult = await generateWithClaude(apiKey!, topic, formats, config)
+              content = claudeResult.content
+              tokensUsed = claudeResult.tokensUsed
+              estimatedCost = claudeResult.estimatedCost
+              break
+
+            case 'google':
+              const geminiResult = await generateWithGemini(apiKey!, topic, formats, config)
+              content = geminiResult.content
+              tokensUsed = geminiResult.tokensUsed
+              estimatedCost = geminiResult.estimatedCost
+              break
+
+            case 'lmstudio':
+              const lmResult = await generateWithLMStudio(topic, formats)
+              content = lmResult.content
+              tokensUsed = lmResult.tokensUsed
+              estimatedCost = 0 // Local is free
+              break
+
+            default:
+              throw new Error(`Content generation not yet implemented for ${provider.name}`)
+          }
+
+          // Track usage
+          await supabase.from('ai_tool_usage').insert({
+            user_id: user.id,
+            provider_id: provider.id,
+            tokens_used: tokensUsed,
+            estimated_cost: estimatedCost
+          })
+
+          // Increment usage counter
+          await supabase
+            .from('user_ai_tools')
+            .update({ usage_count: selectedTool.usage_count + 1 })
+            .eq('id', selectedTool.id)
+
+          return {
+            success: true,
+            content,
+            metadata: {
+              provider: provider.name,
+              tokensUsed,
+              estimatedCost,
+              cached: false
+            }
+          }
+        } catch (genError: any) {
+          throw new Error(`Content generation failed: ${genError.message}`)
+        }
+      }
+    )
+
+    if (cachedResult.error) {
       return NextResponse.json({
-        error: 'No AI tools configured. Please add an AI tool in Settings.',
-        requiresSetup: true
+        error: cachedResult.error,
+        requiresSetup: cachedResult.error.includes('No AI tools configured')
       }, { status: 400 })
     }
 
-    // Find preferred provider or use first available
-    let selectedTool = userTools.find(t => (t.ai_providers as any).provider_key === preferredProvider)
-    if (!selectedTool) {
-      selectedTool = userTools[0] // Fallback to first available
-    }
-
-    const provider = selectedTool.ai_providers as any
-    const apiKey = selectedTool.api_key_encrypted ? decryptAPIKey(selectedTool.api_key_encrypted) : null
-    const config = selectedTool.configuration || {}
-
-    // Generate content based on provider
-    let content: any
-    let tokensUsed = 0
-    let estimatedCost = 0
-
-    try {
-      switch (provider.provider_key) {
-        case 'openai':
-          const openaiResult = await generateWithOpenAI(apiKey!, topic, formats, config)
-          content = openaiResult.content
-          tokensUsed = openaiResult.tokensUsed
-          estimatedCost = openaiResult.estimatedCost
-          break
-
-        case 'anthropic':
-          const claudeResult = await generateWithClaude(apiKey!, topic, formats, config)
-          content = claudeResult.content
-          tokensUsed = claudeResult.tokensUsed
-          estimatedCost = claudeResult.estimatedCost
-          break
-
-        case 'google':
-          const geminiResult = await generateWithGemini(apiKey!, topic, formats, config)
-          content = geminiResult.content
-          tokensUsed = geminiResult.tokensUsed
-          estimatedCost = geminiResult.estimatedCost
-          break
-
-        case 'lmstudio':
-          const lmResult = await generateWithLMStudio(topic, formats)
-          content = lmResult.content
-          tokensUsed = lmResult.tokensUsed
-          estimatedCost = 0 // Local is free
-          break
-
-        default:
-          throw new Error(`Content generation not yet implemented for ${provider.name}`)
+    // Add cache status to response
+    return NextResponse.json({
+      ...cachedResult,
+      metadata: {
+        ...cachedResult.metadata,
+        cached: true
       }
-
-      // Track usage
-      await supabase.from('ai_tool_usage').insert({
-        user_id: user.id,
-        provider_id: provider.id,
-        tokens_used: tokensUsed,
-        estimated_cost: estimatedCost
-      })
-
-      // Increment usage counter
-      await supabase
-        .from('user_ai_tools')
-        .update({ usage_count: selectedTool.usage_count + 1 })
-        .eq('id', selectedTool.id)
-
-      return NextResponse.json({
-        success: true,
-        content,
-        metadata: {
-          provider: provider.name,
-          tokensUsed,
-          estimatedCost
-        }
-      })
-
-    } catch (genError: any) {
-      console.error('Generation error:', genError)
-      return NextResponse.json({
-        error: `Content generation failed: ${genError.message}`,
-        provider: provider.name
-      }, { status: 500 })
-    }
+    })
   } catch (error: any) {
     console.error('Generate API error:', error)
+    // Handle known error conditions with appropriate status codes
+    if (error.message.includes('No AI tools configured')) {
+      return NextResponse.json({ 
+        error: error.message,
+        requiresSetup: true
+      }, { status: 400 })
+    }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

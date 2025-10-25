@@ -1,0 +1,94 @@
+import Redis from 'ioredis';
+
+// Error handling and retry strategy
+const retryStrategy = (times: number) => {
+  const delay = Math.min(times * 50, 2000);
+  return delay;
+};
+
+// Redis client configuration
+export const redis = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  password: process.env.REDIS_PASSWORD,
+  retryStrategy,
+  maxRetriesPerRequest: 3,
+  enableReadyCheck: true,
+  reconnectOnError: (err) => {
+    const targetError = 'READONLY';
+    if (err.message.includes(targetError)) {
+      return true;
+    }
+    return false;
+  },
+});
+
+// Cache helper functions
+export const cacheKeys = {
+  content: (id: string) => `content:${id}`,
+  campaign: (id: string) => `campaign:${id}`,
+  user: (id: string) => `user:${id}`,
+  analytics: (type: string) => `analytics:${type}`,
+};
+
+export async function getCache<T>(key: string): Promise<T | null> {
+  try {
+    const data = await redis.get(key);
+    if (!data) return null;
+    return JSON.parse(data) as T;
+  } catch (error) {
+    console.error('Redis get error:', error);
+    return null;
+  }
+}
+
+export async function setCache(key: string, data: any, ttl?: number): Promise<void> {
+  try {
+    const serialized = JSON.stringify(data);
+    if (ttl) {
+      await redis.setex(key, ttl, serialized);
+    } else {
+      await redis.set(key, serialized);
+    }
+  } catch (error) {
+    console.error('Redis set error:', error);
+  }
+}
+
+export async function invalidateCache(pattern: string): Promise<void> {
+  try {
+    const keys = await redis.keys(pattern);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  } catch (error) {
+    console.error('Redis invalidate error:', error);
+  }
+}
+
+// Cache middleware for API routes
+export async function withCache(
+  key: string,
+  ttl: number,
+  fetchData: () => Promise<any>
+) {
+  try {
+    // Try to get from cache first
+    const cached = await getCache(key);
+    if (cached) {
+      return cached;
+    }
+
+    // If not in cache, fetch data
+    const data = await fetchData();
+    
+    // Store in cache with TTL
+    await setCache(key, data, ttl);
+    
+    return data;
+  } catch (error) {
+    console.error('Cache middleware error:', error);
+    // On cache error, fallback to fetching data directly
+    return await fetchData();
+  }
+}
