@@ -1,32 +1,32 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Mail, CheckCircle, ArrowRight, Users } from 'lucide-react'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, CheckCircle, ArrowRight, Users } from "lucide-react";
 
 export default function WaitlistSection() {
-  const [email, setEmail] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
+    e.preventDefault();
+    if (!email) return;
 
-    setIsSubmitting(true)
-    
+    setIsSubmitting(true);
+
     // Simulate API call (replace with actual email capture service)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setIsSubmitted(true)
-    setIsSubmitting(false)
-    setEmail('')
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    setIsSubmitted(true);
+    setIsSubmitting(false);
+    setEmail("");
 
     // Reset after 3 seconds for demo purposes
     setTimeout(() => {
-      setIsSubmitted(false)
-    }, 3000)
-  }
+      setIsSubmitted(false);
+    }, 3000);
+  };
 
   if (isSubmitted) {
     return (
@@ -42,17 +42,20 @@ export default function WaitlistSection() {
               🎉 You're on the list!
             </h2>
             <p className="text-xl text-purple-100">
-              We'll notify you when Content Cascade AI launches. 
-              Get ready to revolutionize your content workflow!
+              We'll notify you when Content Cascade AI launches. Get ready to
+              revolutionize your content workflow!
             </p>
           </motion.div>
         </div>
       </section>
-    )
+    );
   }
 
   return (
-    <section id="waitlist" className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden">
+    <section
+      id="waitlist"
+      className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden"
+    >
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 bg-tron-cyan rounded-full opacity-20"></div>
@@ -87,10 +90,15 @@ export default function WaitlistSection() {
           </h2>
 
           <p className="text-xl text-purple-100 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Beta access includes full platform features plus exclusive early adopter benefits:
+            Beta access includes full platform features plus exclusive early
+            adopter benefits:
             <strong className="text-white"> 50% lifetime pricing</strong>,
             <strong className="text-white"> priority support</strong>, and
-            <strong className="text-white"> first access to new features</strong>.
+            <strong className="text-white">
+              {" "}
+              first access to new features
+            </strong>
+            .
           </p>
 
           <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-8">
@@ -147,5 +155,5 @@ export default function WaitlistSection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

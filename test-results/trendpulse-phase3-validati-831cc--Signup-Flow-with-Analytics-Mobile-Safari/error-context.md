@@ -1,0 +1,55 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "3K Content Cascade AI" [ref=e5]:
+        - /url: /
+        - generic [ref=e7]: 3K
+        - generic [ref=e8]: Content Cascade AI
+      - paragraph [ref=e9]: Create professional content in minutes
+    - generic [ref=e10]:
+      - heading "Create your account" [level=1] [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: Full Name
+          - textbox "Full Name" [ref=e15]:
+            - /placeholder: John Doe
+            - text: Test E2E User
+        - generic [ref=e16]:
+          - generic [ref=e17]: Email
+          - textbox "Email" [active] [ref=e18]:
+            - /placeholder: you@example.com
+        - generic [ref=e19]:
+          - generic [ref=e20]: Password
+          - textbox "Password" [ref=e21]:
+            - /placeholder: ••••••••
+            - text: TestPass123!
+        - generic [ref=e22]:
+          - generic [ref=e23]: Confirm Password
+          - textbox "Confirm Password" [ref=e24]:
+            - /placeholder: ••••••••
+            - text: TestPass123!
+        - generic [ref=e25]:
+          - checkbox "I agree to the Terms of Service and Privacy Policy" [ref=e26]
+          - generic [ref=e27]:
+            - text: I agree to the
+            - link "Terms of Service" [ref=e28]:
+              - /url: /terms
+            - text: and
+            - link "Privacy Policy" [ref=e29]:
+              - /url: /privacy
+        - button "Create account" [ref=e30] [cursor=pointer]
+      - generic [ref=e33]: OR
+      - button "Continue with Google" [ref=e35] [cursor=pointer]:
+        - img [ref=e36]
+        - generic [ref=e41]: Continue with Google
+      - paragraph [ref=e42]:
+        - text: Already have an account?
+        - link "Sign in" [ref=e43]:
+          - /url: /login
+  - button "Open Next.js Dev Tools" [ref=e49] [cursor=pointer]:
+    - img [ref=e50]
+  - alert [ref=e55]
+```

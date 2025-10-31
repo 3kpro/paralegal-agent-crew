@@ -7,28 +7,28 @@
  */
 
 export interface LMStudioConfig {
-  baseUrl: string
-  model: string
-  temperature?: number
-  maxTokens?: number
+  baseUrl: string;
+  model: string;
+  temperature?: number;
+  maxTokens?: number;
 }
 
 export interface ChatMessage {
-  role: 'user' | 'assistant'
-  content: string
+  role: "user" | "assistant";
+  content: string;
 }
 
 export interface LMStudioResponse {
   choices: Array<{
     message: {
-      content: string
-    }
-  }>
+      content: string;
+    };
+  }>;
   usage: {
-    prompt_tokens: number
-    completion_tokens: number
-    total_tokens: number
-  }
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
 /**
@@ -37,51 +37,51 @@ export interface LMStudioResponse {
  */
 export async function generateWithLMStudio(
   prompt: string,
-  config?: Partial<LMStudioConfig>
+  config?: Partial<LMStudioConfig>,
 ): Promise<string> {
   const defaultConfig: LMStudioConfig = {
-    baseUrl: process.env.LM_STUDIO_URL || 'http://10.10.10.105:1234',
-    model: process.env.LM_STUDIO_MODEL || 'mistral-7b-instruct-v0.3',
+    baseUrl: process.env.LM_STUDIO_URL || "http://10.10.10.105:1234",
+    model: process.env.LM_STUDIO_MODEL || "mistral-7b-instruct-v0.3",
     temperature: 0.7,
     maxTokens: 2000,
-  }
+  };
 
-  const finalConfig = { ...defaultConfig, ...config }
+  const finalConfig = { ...defaultConfig, ...config };
 
   try {
     const response = await fetch(`${finalConfig.baseUrl}/v1/chat/completions`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: finalConfig.model,
         messages: [
           {
-            role: 'user',
+            role: "user",
             content: prompt,
           },
         ],
         temperature: finalConfig.temperature,
         max_tokens: finalConfig.maxTokens,
       }),
-    })
+    });
 
     if (!response.ok) {
-      const error = await response.text()
-      throw new Error(`LM Studio API error: ${response.status} ${error}`)
+      const error = await response.text();
+      throw new Error(`LM Studio API error: ${response.status} ${error}`);
     }
 
-    const data: LMStudioResponse = await response.json()
+    const data: LMStudioResponse = await response.json();
 
     if (!data.choices || data.choices.length === 0) {
-      throw new Error('No response from LM Studio')
+      throw new Error("No response from LM Studio");
     }
 
-    return data.choices[0].message.content
+    return data.choices[0].message.content;
   } catch (error) {
-    console.error('LM Studio generation error:', error)
-    throw error
+    console.error("LM Studio generation error:", error);
+    throw error;
   }
 }
 
@@ -89,16 +89,16 @@ export async function generateWithLMStudio(
  * Check if LM Studio is available
  */
 export async function checkLMStudioHealth(
-  baseUrl: string = 'http://10.10.10.105:1234'
+  baseUrl: string = "http://10.10.10.105:1234",
 ): Promise<boolean> {
   try {
     const response = await fetch(`${baseUrl}/v1/models`, {
       signal: AbortSignal.timeout(5000), // 5 second timeout
-    })
-    return response.ok
+    });
+    return response.ok;
   } catch (error) {
-    console.error('LM Studio health check failed:', error)
-    return false
+    console.error("LM Studio health check failed:", error);
+    return false;
   }
 }
 
@@ -106,15 +106,15 @@ export async function checkLMStudioHealth(
  * Get available models from LM Studio
  */
 export async function getLMStudioModels(
-  baseUrl: string = 'http://10.10.10.105:1234'
+  baseUrl: string = "http://10.10.10.105:1234",
 ): Promise<string[]> {
   try {
-    const response = await fetch(`${baseUrl}/v1/models`)
-    const data = await response.json()
-    return data.data.map((model: any) => model.id)
+    const response = await fetch(`${baseUrl}/v1/models`);
+    const data = await response.json();
+    return data.data.map((model: any) => model.id);
   } catch (error) {
-    console.error('Failed to fetch LM Studio models:', error)
-    return []
+    console.error("Failed to fetch LM Studio models:", error);
+    return [];
   }
 }
 
@@ -123,11 +123,11 @@ export async function getLMStudioModels(
  */
 export async function generateTwitterThread(
   topic: string,
-  trendData?: string
+  trendData?: string,
 ): Promise<string> {
   const context = trendData
     ? `Based on this trending topic: "${trendData}"\n\n`
-    : ''
+    : "";
 
   const prompt = `${context}You are a content marketing expert who writes viral Twitter threads. Create a compelling thread about: ${topic}
 
@@ -146,9 +146,9 @@ Tweet 7: Strong CTA + 1-2 relevant hashtags
 
 TONE: Direct, confident, helpful. Like a friend who actually knows what they're talking about.
 
-Write each tweet on a new line with blank lines between them.`
+Write each tweet on a new line with blank lines between them.`;
 
-  return await generateWithLMStudio(prompt, { maxTokens: 1500 })
+  return await generateWithLMStudio(prompt, { maxTokens: 1500 });
 }
 
 /**
@@ -156,11 +156,11 @@ Write each tweet on a new line with blank lines between them.`
  */
 export async function generateLinkedInPost(
   topic: string,
-  trendData?: string
+  trendData?: string,
 ): Promise<string> {
   const context = trendData
     ? `Based on this trending topic: "${trendData}"\n\n`
-    : ''
+    : "";
 
   const prompt = `${context}You are a LinkedIn thought leader who writes posts that get thousands of engagements. Create a compelling post about: ${topic}
 
@@ -181,9 +181,9 @@ Hashtags: 3-5 relevant hashtags
 
 TONE: Professional but human. Share insights like you're having coffee with a colleague, not presenting to a boardroom.
 
-Format: Write as a complete LinkedIn post ready to copy-paste.`
+Format: Write as a complete LinkedIn post ready to copy-paste.`;
 
-  return await generateWithLMStudio(prompt, { maxTokens: 1000 })
+  return await generateWithLMStudio(prompt, { maxTokens: 1000 });
 }
 
 /**
@@ -191,11 +191,11 @@ Format: Write as a complete LinkedIn post ready to copy-paste.`
  */
 export async function generateEmailNewsletter(
   topic: string,
-  trendData?: string
+  trendData?: string,
 ): Promise<{ subject: string; preview: string; body: string }> {
   const context = trendData
     ? `Based on this trending topic: "${trendData}"\n\n`
-    : ''
+    : "";
 
   const prompt = `${context}You are an email marketing expert who writes emails that get 40%+ open rates. Create a newsletter about: ${topic}
 
@@ -221,18 +221,18 @@ TONE: Helpful friend who's sharing insider knowledge. Direct, specific, no fluff
 Format your response EXACTLY as:
 SUBJECT: [subject line]
 PREVIEW: [preview text]
-BODY: [email body]`
+BODY: [email body]`;
 
-  const response = await generateWithLMStudio(prompt, { maxTokens: 1200 })
+  const response = await generateWithLMStudio(prompt, { maxTokens: 1200 });
 
   // Parse response
-  const subjectMatch = response.match(/SUBJECT:\s*(.+)/i)
-  const previewMatch = response.match(/PREVIEW:\s*(.+)/i)
-  const bodyMatch = response.match(/BODY:\s*([\s\S]+)/i)
+  const subjectMatch = response.match(/SUBJECT:\s*(.+)/i);
+  const previewMatch = response.match(/PREVIEW:\s*(.+)/i);
+  const bodyMatch = response.match(/BODY:\s*([\s\S]+)/i);
 
   return {
-    subject: subjectMatch?.[1]?.trim() || 'Untitled Newsletter',
-    preview: previewMatch?.[1]?.trim() || '',
+    subject: subjectMatch?.[1]?.trim() || "Untitled Newsletter",
+    preview: previewMatch?.[1]?.trim() || "",
     body: bodyMatch?.[1]?.trim() || response,
-  }
+  };
 }

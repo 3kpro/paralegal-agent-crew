@@ -1,13 +1,13 @@
-import { Button } from '../ui/Button'
+import { Button } from "../ui/Button";
 
 interface HeroSectionProps {
-  onDemoClick: () => void
-  onTrialClick: () => void
+  onDemoClick: () => void;
+  onTrialClick: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onDemoClick,
-  onTrialClick
+  onTrialClick,
 }) => {
   return (
     <section className="pt-24 pb-16 bg-gradient-to-br from-gray-800 to-gray-900 text-white">
@@ -15,31 +15,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center bg-blue-500/20 rounded-full px-4 py-2 mb-6">
-              <span className="text-sm font-medium">✨ AI-Powered Content Creation</span>
+              <span className="text-sm font-medium">
+                ✨ AI-Powered Content Creation
+              </span>
             </div>
 
             <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
               Transform Any Content Into
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"> Complete Campaigns</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                {" "}
+                Complete Campaigns
+              </span>
             </h1>
 
             <p className="text-xl text-gray-300 mb-8 max-w-2xl">
-              Upload once, generate everywhere. Get professional UGC videos, social posts, email campaigns, and more from a single piece of content.
+              Upload once, generate everywhere. Get professional UGC videos,
+              social posts, email campaigns, and more from a single piece of
+              content.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button
-                onClick={onTrialClick}
-                variant="primary"
-                size="lg"
-              >
+              <Button onClick={onTrialClick} variant="primary" size="lg">
                 Start Free Trial →
               </Button>
-              <Button
-                onClick={onDemoClick}
-                variant="outline"
-                size="lg"
-              >
+              <Button onClick={onDemoClick} variant="outline" size="lg">
                 ▶ Watch Demo
               </Button>
             </div>
@@ -70,8 +69,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Campaign Generation</span>
-                  <span className="text-sm font-semibold text-green-600">Complete</span>
+                  <span className="text-sm text-gray-600">
+                    Campaign Generation
+                  </span>
+                  <span className="text-sm font-semibold text-green-600">
+                    Complete
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div className="bg-blue-600 h-2 rounded-full w-full"></div>
@@ -88,5 +91,5 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

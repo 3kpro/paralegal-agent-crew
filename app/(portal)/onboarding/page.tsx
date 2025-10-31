@@ -1,52 +1,51 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
   // Step 1: Profile
-  const [companyName, setCompanyName] = useState('')
-  const [industry, setIndustry] = useState('')
-
-  // Step 2: Social accounts (placeholder)
-  const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([])
+  const [companyName, setCompanyName] = useState("");
+  const [industry, setIndustry] = useState("");
 
   const handleComplete = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       // Update onboarding progress
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (user) {
         await supabase
-          .from('onboarding_progress')
+          .from("onboarding_progress")
           .update({
             profile_completed: true,
             completed: true,
-            current_step: 4
+            current_step: 4,
           })
-          .eq('user_id', user.id)
+          .eq("user_id", user.id);
 
         // Update profile
         await supabase
-          .from('profiles')
+          .from("profiles")
           .update({ company_name: companyName })
-          .eq('id', user.id)
+          .eq("id", user.id);
       }
 
-      router.push('/dashboard')
+      router.push("/dashboard");
     } catch (error) {
-      console.error('Onboarding error:', error)
+      console.error("Onboarding error:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex items-center justify-center px-4">
@@ -54,13 +53,17 @@ export default function OnboardingPage() {
         {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-tron-text-muted">Step {step} of 2</span>
-            <span className="text-sm text-tron-text-muted/80">Almost there!</span>
+            <span className="text-sm font-medium text-tron-text-muted">
+              Step {step} of 2
+            </span>
+            <span className="text-sm text-tron-text-muted/80">
+              Almost there!
+            </span>
           </div>
-          <div className="w-full bg-tron-grid rounded-full h-2">
+          <div className="w-full bg-tron-grid rounded-full h-2 relative overflow-hidden">
             <div
-              className="bg-tron-cyan h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(step / 2) * 100}%` }}
+              className="bg-tron-cyan h-full rounded-full transition-all duration-300 absolute top-0 left-0 progress-bar"
+              style={{ "--progress-width": `${(step / 2) * 100}%` } as React.CSSProperties}
             />
           </div>
         </div>
@@ -69,8 +72,12 @@ export default function OnboardingPage() {
         <div className="bg-tron-grid rounded-2xl shadow-xl p-8 border border-tron-cyan/30">
           {step === 1 && (
             <>
-              <h1 className="text-2xl font-bold text-tron-text mb-2">Complete Your Profile</h1>
-              <p className="text-tron-text-muted mb-6">Help us personalize your experience</p>
+              <h1 className="text-2xl font-bold text-tron-text mb-2">
+                Complete Your Profile
+              </h1>
+              <p className="text-tron-text-muted mb-6">
+                Help us personalize your experience
+              </p>
 
               <div className="space-y-4">
                 <div>
@@ -121,51 +128,68 @@ export default function OnboardingPage() {
 
           {step === 2 && (
             <>
-              <h1 className="text-2xl font-bold text-tron-text mb-2">Connect Social Accounts</h1>
-              <p className="text-tron-text-muted mb-6">Connect platforms to publish your content (you can skip this for now)</p>
+              <h1 className="text-2xl font-bold text-tron-text mb-2">
+                Connect Social Accounts
+              </h1>
+              <p className="text-tron-text-muted mb-6">
+                Connect platforms to publish your content (you can skip this for
+                now)
+              </p>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
-                <button 
-                  onClick={() => router.push('/api/auth/connect/twitter')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/twitter")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🐦</span>
-                  <span className="font-medium text-tron-text-muted">Twitter</span>
+                  <span className="font-medium text-tron-text-muted">
+                    Twitter
+                  </span>
                 </button>
-                <button 
-                  onClick={() => router.push('/api/auth/connect/linkedin')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/linkedin")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">💼</span>
-                  <span className="font-medium text-tron-text-muted">LinkedIn</span>
+                  <span className="font-medium text-tron-text-muted">
+                    LinkedIn
+                  </span>
                 </button>
-                <button 
-                  onClick={() => router.push('/api/auth/connect/facebook')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/facebook")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">📘</span>
-                  <span className="font-medium text-tron-text-muted">Facebook</span>
+                  <span className="font-medium text-tron-text-muted">
+                    Facebook
+                  </span>
                 </button>
-                <button 
-                  onClick={() => router.push('/api/auth/connect/instagram')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/instagram")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">📸</span>
-                  <span className="font-medium text-tron-text-muted">Instagram</span>
+                  <span className="font-medium text-tron-text-muted">
+                    Instagram
+                  </span>
                 </button>
-                <button 
-                  onClick={() => router.push('/api/auth/connect/tiktok')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/tiktok")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🎵</span>
-                  <span className="font-medium text-tron-text-muted">TikTok</span>
+                  <span className="font-medium text-tron-text-muted">
+                    TikTok
+                  </span>
                 </button>
-                <button 
-                  onClick={() => router.push('/api/auth/connect/reddit')}
+                <button
+                  onClick={() => router.push("/api/auth/connect/reddit")}
                   className="h-16 border-2 border-tron-grid hover:border-tron-cyan rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🤖</span>
-                  <span className="font-medium text-tron-text-muted">Reddit</span>
+                  <span className="font-medium text-tron-text-muted">
+                    Reddit
+                  </span>
                 </button>
               </div>
 
@@ -175,7 +199,7 @@ export default function OnboardingPage() {
                   disabled={loading}
                   className="w-full h-14 bg-tron-cyan hover:bg-tron-cyan/80 disabled:bg-tron-cyan/40 text-white font-semibold rounded-lg transition-colors"
                 >
-                  {loading ? 'Completing...' : 'Complete Setup →'}
+                  {loading ? "Completing..." : "Complete Setup →"}
                 </button>
                 <button
                   onClick={handleComplete}
@@ -188,6 +212,12 @@ export default function OnboardingPage() {
           )}
         </div>
       </div>
+      
+      <style jsx>{`
+        :global(.progress-bar) {
+          width: var(--progress-width);
+        }
+      `}</style>
     </div>
-  )
+  );
 }

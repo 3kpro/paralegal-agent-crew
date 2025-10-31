@@ -11,14 +11,9 @@ interface FetchWithRetryOptions extends RequestInit {
 
 export async function fetchWithRetry(
   url: string,
-  options: FetchWithRetryOptions = {}
+  options: FetchWithRetryOptions = {},
 ): Promise<Response> {
-  const {
-    retries = 3,
-    retryDelay = 1000,
-    onRetry,
-    ...fetchOptions
-  } = options;
+  const { retries = 3, retryDelay = 1000, onRetry, ...fetchOptions } = options;
 
   let lastError: Error | null = null;
 
@@ -51,10 +46,10 @@ export async function fetchWithRetry(
 
       // Exponential backoff: wait longer after each retry
       const waitTime = retryDelay * Math.pow(2, attempt);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
   }
 
   // If all retries failed, throw the last error
-  throw lastError || new Error('Request failed after retries');
+  throw lastError || new Error("Request failed after retries");
 }

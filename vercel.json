@@ -5,7 +5,7 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
-  "regions": ["sfo1", "iad1"],
+  "regions": ["iad1"],
   "headers": [
     {
       "source": "/(.*)",
@@ -38,7 +38,6 @@
   ],
   "github": {
     "enabled": true,
-    "silent": false,
     "autoJobCancelation": true
   }
 }

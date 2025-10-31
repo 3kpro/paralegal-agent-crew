@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   return NextResponse.json({
@@ -10,11 +10,11 @@ export async function GET() {
       googleKeyLength: process.env.GOOGLE_API_KEY?.length || 0,
       hasEncryptionKey: !!process.env.ENCRYPTION_KEY,
       encryptionKeyLength: process.env.ENCRYPTION_KEY?.length || 0,
-      encryptionKeyValid: process.env.ENCRYPTION_KEY?.length === 64
+      encryptionKeyValid: process.env.ENCRYPTION_KEY?.length === 64,
     },
     deployment: {
       vercelEnv: process.env.VERCEL_ENV,
-      vercelUrl: process.env.VERCEL_URL
-    }
-  })
+      vercelUrl: process.env.VERCEL_URL,
+    },
+  });
 }

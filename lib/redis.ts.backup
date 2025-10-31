@@ -1,0 +1,148 @@
+import Redis from 'ioredis';
+
+// Error handling and retry strategy
+const retryStrategy = (times: number) => {
+  const delay = Math.min(times * 50, 2000);
+  return delay;
+};
+
+// Redis client configuration
+export const redis = new Redis({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  password: process.env.REDIS_PASSWORD,
+  retryStrategy,
+  maxRetriesPerRequest: 3,
+  enableReadyCheck: true,
+  connectTimeout: 10000,
+  lazyConnect: true,
+  reconnectOnError: (err) => {
+    const targetError = 'READONLY';
+    if (err.message.includes(targetError)) {
+      return true;
+    }
+    return false;
+  },
+});
+
+// Handle Redis connection events
+redis.on('error', (error) => {
+  console.error('Redis connection error:', error);
+});
+
+redis.on('connect', () => {
+  console.log('Redis connected successfully');
+});
+
+// Cache key namespaces
+export const cacheKeys = {
+  content: (id: string) => `content:${id}`,
+  campaign: (id: string) => `campaign:${id}`,
+  user: (id: string) => `user:${id}`,
+  analytics: (type: string) => `analytics:${type}`,
+  generate: (userId: string, topic: string, formats: string[], provider: string) => 
+    `generate:${userId}:${topic}:${formats.sort().join(',')}:${provider || 'default'}`,
+  trends: (query: string) => `trends:${query.toLowerCase()}`,
+  localGenerate: (topic: string, formats: string[]) => 
+    `generate-local:${topic}:${formats.sort().join(',')}`,
+};
+
+/**
+ * Get data from Redis cache
+ * @param key Cache key
+ * @returns Parsed data or null if not found
+ */
+export async function getCache<T>(key: string): Promise<T | null> {
+  try {
+    const data = await redis.get(key);
+    if (!data) return null;
+    return JSON.parse(data) as T;
+  } catch (error) {
+    console.error('Redis get error:', error);
+    return null;
+  }
+}
+
+/**
+ * Set data in Redis cache with optional TTL
+ * @param key Cache key
+ * @param data Data to cache
+ * @param ttl Time to live in seconds (optional)
+ */
+export async function setCache(key: string, data: any, ttl?: number): Promise<void> {
+  try {
+    const serialized = JSON.stringify(data);
+    if (ttl) {
+      await redis.setex(key, ttl, serialized);
+    } else {
+      await redis.set(key, serialized);
+    }
+  } catch (error) {
+    console.error('Redis set error:', error);
+  }
+}
+
+/**
+ * Invalidate cache by pattern
+ * @param pattern Key pattern to match
+ */
+export async function invalidateCache(pattern: string): Promise<void> {
+  try {
+    const keys = await redis.keys(pattern);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+      console.log(`Invalidated ${keys.length} cache keys matching pattern: ${pattern}`);
+    }
+  } catch (error) {
+    console.error('Redis invalidate error:', error);
+  }
+}
+
+/**
+ * Cache middleware for API routes
+ * @param key Cache key
+ * @param ttl Time to live in seconds
+ * @param fetchData Function to fetch data if not in cache
+ * @returns Cached data or freshly fetched data
+ */
+export async function withCache<T>(
+  key: string,
+  ttl: number,
+  fetchData: () => Promise<T>
+): Promise<T> {
+  try {
+    // Try to get from cache first
+    const cached = await getCache<T>(key);
+    if (cached) {
+      console.log(`Cache hit for key: ${key}`);
+      return cached;
+    }
+
+    console.log(`Cache miss for key: ${key}`);
+    // If not in cache, fetch data
+    const data = await fetchData();
+
+    // Store in cache with TTL
+    await setCache(key, data, ttl);
+
+    return data;
+  } catch (error) {
+    console.error('Cache middleware error:', error);
+    // On cache error, fallback to fetching data directly
+    return await fetchData();
+  }
+}
+
+/**
+ * Check if Redis is connected
+ * @returns Boolean indicating if Redis is connected
+ */
+export async function isRedisConnected(): Promise<boolean> {
+  try {
+    const pong = await redis.ping();
+    return pong === 'PONG';
+  } catch (error) {
+    console.error('Redis connection check failed:', error);
+    return false;
+  }
+}

@@ -1,13 +1,13 @@
-import { Button } from '../ui/Button'
+import { Button } from "../ui/Button";
 
 interface CTASectionProps {
-  onContactClick: () => void
-  onDemoClick: () => void
+  onContactClick: () => void;
+  onDemoClick: () => void;
 }
 
 export const CTASection: React.FC<CTASectionProps> = ({
   onContactClick,
-  onDemoClick
+  onDemoClick,
 }) => {
   return (
     <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-800 to-gray-900 text-white">
@@ -16,25 +16,18 @@ export const CTASection: React.FC<CTASectionProps> = ({
           Ready to Transform Your Content Marketing?
         </h2>
         <p className="text-xl text-gray-300 mb-8">
-          Join hundreds of businesses already using AI to create better content faster.
+          Join hundreds of businesses already using AI to create better content
+          faster.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            onClick={onContactClick}
-            variant="primary"
-            size="lg"
-          >
+          <Button onClick={onContactClick} variant="primary" size="lg">
             Start Your Free Trial
           </Button>
-          <Button
-            onClick={onDemoClick}
-            variant="outline"
-            size="lg"
-          >
+          <Button onClick={onDemoClick} variant="outline" size="lg">
             Schedule a Demo
           </Button>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

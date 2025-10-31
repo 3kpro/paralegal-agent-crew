@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from "react";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -14,7 +14,10 @@ interface ErrorBoundaryProps {
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -32,8 +35,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error to console for debugging
-    console.error('Error Boundary caught an error:', error);
-    console.error('Error Info:', errorInfo);
+    console.error("Error Boundary caught an error:", error);
+    console.error("Error Info:", errorInfo);
 
     // Call optional error handler
     if (this.props.onError) {
@@ -89,13 +92,14 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             <h1 className="text-2xl font-bold text-gray-900 mb-3">
               Oops! Something went wrong
             </h1>
-            
+
             <p className="text-gray-600 mb-6">
-              We're sorry, but something unexpected happened. Please try again or contact support if the problem persists.
+              We're sorry, but something unexpected happened. Please try again
+              or contact support if the problem persists.
             </p>
 
             {/* Development Mode - Show Error Details */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === "development" && this.state.error && (
               <details className="text-left mb-6 p-4 bg-gray-50 rounded border">
                 <summary className="cursor-pointer text-sm font-medium text-gray-700 mb-2">
                   Error Details (Development)
@@ -127,9 +131,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               >
                 Try Again
               </button>
-              
+
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => (window.location.href = "/")}
                 className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Go Home
@@ -138,9 +142,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
             {/* Support Link */}
             <p className="mt-4 text-sm text-gray-500">
-              Need help?{' '}
-              <a 
-                href="mailto:support@3kpro.services" 
+              Need help?{" "}
+              <a
+                href="mailto:support@3kpro.services"
                 className="text-blue-600 hover:text-blue-700 underline"
               >
                 Contact Support
@@ -159,7 +163,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
   fallback?: ReactNode,
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  onError?: (error: Error, errorInfo: ErrorInfo) => void,
 ) {
   const WrappedComponent = (props: P) => (
     <ErrorBoundary fallback={fallback} onError={onError}>
@@ -168,7 +172,7 @@ export function withErrorBoundary<P extends object>(
   );
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
-  
+
   return WrappedComponent;
 }
 

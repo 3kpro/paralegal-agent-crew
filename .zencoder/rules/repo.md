@@ -57,25 +57,37 @@ npm start
 **Run Command**: `npm run docker:run`
 
 ## Testing
-**Framework**: Jest with React Testing Library
-**Target Framework**: Jest
-**Test Location**: `__tests__/` directory  
-**Configuration**: jest.config.js and jest.setup.js
+**Primary E2E Framework**: Playwright (for critical user journeys and browser automation)
+**Component Framework**: Jest with React Testing Library
+**Target Framework**: Playwright (for E2E automation), Jest (for components)
+**Test Location**: 
+- E2E Tests: `tests/e2e/` directory (Playwright)
+- Component Tests: `__tests__/` directory (Jest)
+**Configuration**: 
+- Playwright: playwright.config.ts
+- Jest: jest.config.js and jest.setup.js
 **Test Types**: 
-- Component E2E tests (`__tests__/components/`)
-- API route tests (`__tests__/api/`)
-- Custom hook tests (`__tests__/hooks/`)
-- Functional E2E tests (`__tests__/e2e/`)
+- E2E Browser Tests (`tests/e2e/`) - Playwright
+- Component tests (`__tests__/components/`) - Jest
+- API route tests (`__tests__/api/`) - Jest
+- Custom hook tests (`__tests__/hooks/`) - Jest
+- Legacy E2E tests (`__tests__/e2e/`) - Jest
 **Key Test Suites**:
 - `premium-upgrade-functional.test.tsx`: End-to-end tests for Premium upgrade flow
 - `stripe-checkout-basic.test.ts`: API structure validation for Stripe integration
 **Run Commands**:
 ```bash
+# Jest (Component & API Tests)
 npm test
 npm run test:watch
 npm run test:coverage
 npm test -- __tests__/e2e/premium-upgrade-functional.test.tsx
 npm test -- __tests__/api/stripe-checkout-basic.test.ts
+
+# Playwright (E2E Browser Tests)
+npx playwright test
+npx playwright test tests/e2e/<test-name>.spec.ts --reporter=line
+npx playwright show-report
 ```
 
 ## API Routes

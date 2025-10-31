@@ -1,754 +1,1110 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import SidebarGuide from '@/components/SidebarGuide'
-import PublishButton from '@/components/PublishButton'
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import {
+  Twitter,
+  Linkedin,
+  Facebook,
+  Instagram,
+  Music,
+  MessageSquare,
+  Zap,
+  TrendingUp,
+  Sparkles,
+  ChevronRight,
+  Check,
+  FileText,
+  Loader2,
+  Link,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { TrendSourceSelector } from "@/components/ui";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import CreativitySlider from "./components/CreativitySlider";
+import ContentSettings from "./components/ContentSettings";
+import GeneratedContentCard from "./components/GeneratedContentCard";
+import Toast from "./components/Toast";
+import {
+  Platform,
+  StepConfig,
+  ToastState,
+  Trend,
+  GeneratedContent,
+  ContentControls,
+  CampaignPayload,
+  ScheduledPost,
+} from "./types";
 
 export default function NewCampaignPage() {
-  const router = useRouter()
-  const supabase = createClient()
-  const [step, setStep] = useState(1)
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const supabase = createClient();
+  const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // Step 1: Basic Info
-  const [campaignName, setCampaignName] = useState('')
-  const [targetPlatforms, setTargetPlatforms] = useState<string[]>([])
+  const [campaignName, setCampaignName] = useState("");
+  const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
+  const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
 
   // Step 2: Trend Discovery
-  const [searchQuery, setSearchQuery] = useState('')
-  const [trends, setTrends] = useState<any[]>([])
-  const [selectedTrend, setSelectedTrend] = useState<any>(null)
-  const [loadingTrends, setLoadingTrends] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [trendSource, setTrendSource] = useState("mixed");
+  const [trends, setTrends] = useState<Trend[]>([]);
+  const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
+  const [loadingTrends, setLoadingTrends] = useState(false);
 
-  // Step 3: Content Generation
-  const [aiTools, setAiTools] = useState<any[]>([])
-  const [aiProvider, setAiProvider] = useState('lmstudio')
-  const [contentFormats, setContentFormats] = useState<string[]>(['twitter', 'linkedin', 'email'])
-  const [generatedContent, setGeneratedContent] = useState<any>(null)
-  const [generatingContent, setGeneratingContent] = useState(false)
-  const [aiToolsLoading, setAiToolsLoading] = useState(true)
+  // Step 3: Content Generation + Controls
+  const [aiProvider, setAiProvider] = useState("lmstudio");
+  const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
+  const [generatingContent, setGeneratingContent] = useState(false);
+  const [toast, setToast] = useState<ToastState>({
+    show: false,
+    message: "",
+    type: "success",
+  });
 
-  const platforms = [
-    { id: 'twitter', name: 'Twitter', icon: '🐦' },
-    { id: 'linkedin', name: 'LinkedIn', icon: '💼' },
-    { id: 'facebook', name: 'Facebook', icon: '📘' },
-    { id: 'instagram', name: 'Instagram', icon: '📸' },
-    { id: 'tiktok', name: 'TikTok', icon: '🎵' },
-    { id: 'reddit', name: 'Reddit', icon: '🤖' }
-  ]
+  // Consolidated content controls
+  const [controls, setControls] = useState<ContentControls>({
+    temperature: 0.7,
+    tone: "professional",
+    length: "standard",
+    targetAudience: "general",
+    contentFocus: "informative",
+    callToAction: "engage",
+  });
 
-  function togglePlatform(platformId: string) {
-    setTargetPlatforms(prev =>
+  // Post-generation editing
+  const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
+  const [editedContent, setEditedContent] = useState<Record<string, string>>({});
+
+  // Track toast timeout to prevent stacking
+  const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Show toast notification with auto-dismiss
+   * Fixed: Added useRef to track and clear previous timeouts, preventing toast stacking
+   */
+  const showToast = useCallback(
+    (message: string, type: "success" | "error" = "success") => {
+      // Clear previous timeout if one exists
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+
+      // Show new toast
+      setToast({ show: true, message, type });
+
+      // Set new timeout to dismiss toast
+      toastTimeoutRef.current = setTimeout(() => {
+        setToast({ show: false, message: "", type: "success" });
+        toastTimeoutRef.current = null;
+      }, 4000);
+    },
+    []
+  );
+
+  // Memoized platform list to prevent recreating on every render
+  const platforms = useMemo<Platform[]>(
+    () => [
+      { id: "twitter", name: "Twitter", icon: Twitter, color: "#1DA1F2" },
+      { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "#0A66C2" },
+      { id: "facebook", name: "Facebook", icon: Facebook, color: "#1877F2" },
+      { id: "instagram", name: "Instagram", icon: Instagram, color: "#E4405F" },
+      { id: "tiktok", name: "TikTok", icon: Music, color: "#000000" },
+      { id: "reddit", name: "Reddit", icon: MessageSquare, color: "#FF4500" },
+    ],
+    []
+  );
+
+  // Memoized step configuration
+  const stepConfig = useMemo<StepConfig[]>(
+    () => [
+      { number: 1, icon: Zap },
+      { number: 2, icon: TrendingUp },
+      { number: 3, icon: Sparkles },
+    ],
+    []
+  );
+
+  /**
+   * Toggle platform selection
+   */
+  const togglePlatform = useCallback((platformId: string) => {
+    setTargetPlatforms((prev) =>
       prev.includes(platformId)
-        ? prev.filter(p => p !== platformId)
+        ? prev.filter((p) => p !== platformId)
         : [...prev, platformId]
-    )
-  }
+    );
+  }, []);
 
-  async function searchTrends() {
-    if (!searchQuery.trim()) return
+  /**
+   * Search for trends based on query
+   */
+  const searchTrends = useCallback(async () => {
+    if (!searchQuery.trim()) return;
 
-    setLoadingTrends(true)
+    setLoadingTrends(true);
     try {
-      const response = await fetch(`/api/trends?keyword=${encodeURIComponent(searchQuery)}&mode=ideas`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
-        },
-        cache: 'no-store'
-      })
+      const response = await fetch(
+        `/api/trends?keyword=${encodeURIComponent(searchQuery)}&mode=ideas&source=${trendSource}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          cache: "no-store",
+        }
+      );
 
-      const data = await response.json()
+      const data = await response.json();
       if (data.success) {
-        setTrends(data.data?.trending || [])
+        setTrends(data.data?.trending || []);
       } else {
-        console.error('Trends API error:', data.error)
-        setTrends([])
+        console.error("Trends API error:", data.error);
+        setTrends([]);
       }
     } catch (error) {
-      console.error('Failed to fetch trends:', error)
-      setTrends([])
+      console.error("Failed to fetch trends:", error);
+      setTrends([]);
     } finally {
-      setLoadingTrends(false)
+      setLoadingTrends(false);
     }
-  }
+  }, [searchQuery, trendSource]);
 
   // Load AI tools on mount
   useEffect(() => {
     async function loadAITools() {
-      setAiToolsLoading(true)
       try {
-        const response = await fetch('/api/ai-tools/list')
-        const data = await response.json()
+        const response = await fetch("/api/ai-tools/list");
+        const data = await response.json();
         if (data.success) {
-          // Filter to only Gemini and LM Studio to reduce costs
-          const configuredTools = data.providers.filter((p: any) => 
-            p.isConfigured && 
-            p.provider_key !== 'openai' && 
-            p.provider_key !== 'anthropic'
-          )
-          setAiTools(configuredTools)
+          const configuredTools = data.providers.filter(
+            (p: any) =>
+              p.isConfigured &&
+              p.provider_key !== "openai" &&
+              p.provider_key !== "anthropic",
+          );
           if (configuredTools.length > 0) {
-            setAiProvider(configuredTools[0].provider_key)
+            setAiProvider(configuredTools[0].provider_key);
           }
         }
       } catch (error) {
-        console.error('Failed to load AI tools:', error)
-      } finally {
-        setAiToolsLoading(false)
+        console.error("Failed to load AI tools:", error);
       }
     }
-    loadAITools()
-  }, [])
+    loadAITools();
+  }, []);
 
-  async function generateContent() {
-    if (!selectedTrend) return
+  // Load connected social accounts on mount
+  useEffect(() => {
+    async function loadSocialAccounts() {
+      try {
+        const response = await fetch("/api/social-accounts");
+        const data = await response.json();
+        if (data.success && data.accounts) {
+          const connected = data.accounts.map(
+            (account: any) => account.platform,
+          );
+          setConnectedPlatforms(connected);
+        }
+      } catch (error) {
+        console.error("Failed to load social accounts:", error);
+      }
+    }
+    loadSocialAccounts();
+  }, []);
 
-    setGeneratingContent(true)
+  /**
+   * Generate content for selected platforms
+   */
+  const generateContent = useCallback(async () => {
+    if (!selectedTrend) return;
+
+    setGeneratingContent(true);
     try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           topic: selectedTrend.title || searchQuery,
-          formats: contentFormats,
-          preferredProvider: aiProvider
-        })
-      })
+          formats: targetPlatforms,
+          preferredProvider: aiProvider,
+          // Pass content controls to API
+          ...controls,
+        }),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
+
       if (data.success) {
-        setGeneratedContent(data.content)
+        setGeneratedContent(data.content);
+        showToast("Content generated successfully!", "success");
       } else if (data.requiresSetup) {
-        alert('No AI tools configured. Please set up an AI tool in Settings.')
-        router.push('/settings?tab=api-keys')
+        showToast("No AI tools configured. Redirecting to Settings...", "error");
+        setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
       } else {
-        alert(`Generation failed: ${data.error}`)
+        showToast(`Generation failed: ${data.error}`, "error");
       }
     } catch (error) {
-      console.error('Failed to generate content:', error)
-      alert('Content generation failed. Please try again.')
+      console.error("Failed to generate content:", error);
+      showToast("Content generation failed. Please try again.", "error");
     } finally {
-      setGeneratingContent(false)
+      setGeneratingContent(false);
     }
-  }
+  }, [selectedTrend, searchQuery, targetPlatforms, aiProvider, controls, showToast, router]);
 
-  async function saveCampaign() {
-    setLoading(true)
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
+  /**
+   * Toggle edit mode for a platform's content
+   * Fixed: Removed object dependencies [generatedContent, editedContent] that were causing
+   * infinite callback recreation. Using state setters instead which have stable references.
+   */
+  const toggleEdit = useCallback((platform: string) => {
+    // Get current state in closure
+    setGeneratedContent((currentGenerated) => {
+      setEditingContent((prev) => ({
+        ...prev,
+        [platform]: !prev[platform],
+      }));
 
-      // Save campaign
-      const { data: campaign, error: campaignError } = await supabase
-        .from('campaigns')
-        .insert({
+      // Initialize edited content with current content if not already set
+      if (currentGenerated && currentGenerated[platform]) {
+        setEditedContent((prev) => {
+          if (prev[platform]) return prev; // Already initialized
+          const contentData = currentGenerated[platform];
+          const content =
+            typeof contentData === "string"
+              ? contentData
+              : contentData?.content || "";
+          return {
+            ...prev,
+            [platform]: content,
+          };
+        });
+      }
+      return currentGenerated;
+    });
+  }, []);
+
+  /**
+   * Save edit for a platform's content
+   * Fixed: Removed object dependencies [editedContent, generatedContent] that were causing
+   * infinite callback recreation. Using state setter callback patterns instead.
+   */
+  const saveEdit = useCallback((platform: string) => {
+    // Update generated content using the updater function
+    setGeneratedContent((prev) => {
+      if (!prev) return prev;
+      
+      // Get edited content from state at call time
+      setEditedContent((editedContentSnapshot) => {
+        const editedText = editedContentSnapshot[platform];
+        if (editedText) {
+          // This closure captures the edited content at save time
+          setGeneratedContent((prevGen) => ({
+            ...prevGen,
+            [platform]:
+              typeof prevGen[platform] === "string"
+                ? editedText
+                : {
+                    ...prevGen[platform],
+                    content: editedText,
+                  },
+          }));
+        }
+        return editedContentSnapshot;
+      });
+      return prev;
+    });
+
+    // Exit edit mode
+    setEditingContent((prev) => ({
+      ...prev,
+      [platform]: false,
+    }));
+  }, []);
+
+  /**
+   * Handle content edit change
+   */
+  const handleContentChange = useCallback(
+    (platform: string, content: string) => {
+      setEditedContent((prev) => ({
+        ...prev,
+        [platform]: content,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handle content controls change
+   */
+  const handleControlsChange = useCallback((newControls: ContentControls) => {
+    setControls(newControls);
+  }, []);
+
+  /**
+   * Save campaign (as draft or scheduled)
+   */
+  const saveCampaign = useCallback(
+    async (publishNow = false) => {
+      setLoading(true);
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          showToast("Please log in to save campaigns", "error");
+          router.push("/login");
+          return;
+        }
+
+        if (!generatedContent) {
+          showToast("No content to save. Please generate content first.", "error");
+          return;
+        }
+
+        // Save campaign metadata
+        const campaignPayload: CampaignPayload = {
           user_id: user.id,
           name: campaignName,
           target_platforms: targetPlatforms,
-          status: 'draft',
-          metadata: {
-            trend: selectedTrend,
-            ai_provider: aiProvider
-          }
-        })
-        .select()
-        .single()
+          status: publishNow ? "scheduled" : "draft",
+          campaign_type: "trending",
+          source_type: "trending",
+          source_data: {
+            trend: selectedTrend!,
+            query: searchQuery,
+            controls: {
+              temperature: controls.temperature,
+              tone: controls.tone,
+              length: controls.length,
+            },
+          },
+          ai_provider: aiProvider,
+          tone: controls.tone,
+        };
 
-      if (campaignError) throw campaignError
+        const { data: campaign, error: campaignError } = await supabase
+          .from("campaigns")
+          .insert(campaignPayload)
+          .select()
+          .single();
 
-      // Save generated content
-      if (generatedContent) {
-        const contentRecords = Object.entries(generatedContent).map(([platform, content]: [string, any]) => ({
-          campaign_id: campaign.id,
-          platform,
-          body: content.content || content.subject || content.body || '',
-          title: content.subject || content.title || null,
-          hashtags: content.hashtags || null,
-          generated_by: aiProvider || null
-        }))
+        if (campaignError) throw campaignError;
 
-        const { error: contentError } = await supabase
-          .from('campaign_content')
-          .insert(contentRecords)
+        // Save generated content for each platform
+        const postsToInsert: ScheduledPost[] = [];
+        for (const [platform, contentData] of Object.entries(generatedContent)) {
+          if (platform === "hashtags") continue;
 
-        if (contentError) throw contentError
+          // Handle both string and object formats
+          const content =
+            typeof contentData === "string"
+              ? contentData
+              : (contentData as any)?.content || "";
+
+          if (!content) continue;
+
+          // Set scheduled_at to future time for scheduled posts, current time for drafts
+          const scheduledTime = publishNow
+            ? new Date(Date.now() + 60000).toISOString() // 1 minute from now for scheduled
+            : new Date().toISOString(); // Current time for drafts
+
+          postsToInsert.push({
+            user_id: user.id,
+            campaign_id: campaign.id,
+            title: selectedTrend?.title || searchQuery,
+            content: content,
+            platform: platform,
+            post_type: "text",
+            scheduled_at: scheduledTime,
+            status: publishNow ? "scheduled" : "draft",
+          });
+        }
+
+        if (postsToInsert.length > 0) {
+          const { error: postsError } = await supabase
+            .from("scheduled_posts")
+            .insert(postsToInsert);
+
+          if (postsError) throw postsError;
+        }
+
+        showToast(
+          publishNow
+            ? "Campaign scheduled successfully!"
+            : "Campaign saved as draft!",
+          "success"
+        );
+
+        // Delay navigation to show toast
+        setTimeout(() => router.push("/campaigns"), 1500);
+      } catch (error: any) {
+        console.error("Error saving campaign:", error);
+        showToast(
+          `Failed to save campaign: ${error.message || "Unknown error"}`,
+          "error"
+        );
+      } finally {
+        setLoading(false);
       }
-
-      router.push(`/campaigns/${campaign.id}`)
-    } catch (error: any) {
-      console.error('Failed to save campaign:', error)
-      alert('Failed to save campaign: ' + error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [
+      supabase,
+      router,
+      generatedContent,
+      showToast,
+      campaignName,
+      targetPlatforms,
+      selectedTrend,
+      searchQuery,
+      controls,
+      aiProvider,
+    ]
+  );
 
   return (
-    <div className="p-8 bg-tron-dark min-h-screen">
-      {/* Sidebar Guide */}
-      <SidebarGuide currentStep={step} />
-
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-tron-text mb-2">Create New Campaign</h1>
-        <p className="text-tron-text-muted mb-8">Follow the steps to create your multi-platform content campaign</p>
-
-        {/* Progress Steps */}
-        <div className="flex items-center justify-between mb-12">
-          <div className="flex-1">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step >= 1 ? 'bg-tron-cyan text-white' : 'bg-tron-grid text-tron-text-muted'}`}>
-                1
-              </div>
-              <div className="ml-4">
-                <div className="font-semibold text-tron-text">Basic Info</div>
-                <div className="text-sm text-tron-text-muted">Name and platforms</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step >= 2 ? 'bg-tron-cyan text-white' : 'bg-tron-grid text-tron-text-muted'}`}>
-                2
-              </div>
-              <div className="ml-4">
-                <div className="font-semibold text-tron-text">Find Trends</div>
-                <div className="text-sm text-tron-text-muted">Discover trending topics</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step >= 3 ? 'bg-tron-cyan text-white' : 'bg-tron-grid text-tron-text-muted'}`}>
-                3
-              </div>
-              <div className="ml-4">
-                <div className="font-semibold text-tron-text">Generate Content</div>
-                <div className="text-sm text-tron-text-muted">AI-powered creation</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step >= 4 ? 'bg-tron-cyan text-white' : 'bg-tron-grid text-tron-text-muted'}`}>
-                4
-              </div>
-              <div className="ml-4">
-                <div className="font-semibold text-tron-text">Review & Publish</div>
-                <div className="text-sm text-tron-text-muted">Final review</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 1: Basic Info */}
-        {step === 1 && (
-          <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-8">
-            <h2 className="text-xl font-bold text-tron-text mb-6">Campaign Details</h2>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-tron-text-muted mb-2">
-                Campaign Name
-              </label>
-              <input
-                type="text"
-                value={campaignName}
-                onChange={(e) => setCampaignName(e.target.value)}
-                placeholder="e.g., Q1 Product Launch"
-                className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
-              />
-            </div>
-
-            <div className="mb-8">
-              <label className="block text-sm font-medium text-tron-text-muted mb-2">
-                Select Platforms for Content (select at least one)
-              </label>
-              <p className="text-xs text-tron-text-muted mb-4">
-                Generate content for copy/paste to your accounts
-              </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {platforms.map((platform) => (
-                  <button
-                    key={platform.id}
-                    onClick={() => togglePlatform(platform.id)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
-                      targetPlatforms.includes(platform.id)
-                        ? 'border-tron-cyan bg-tron-cyan/20'
-                        : 'border-tron-cyan/30 hover:border-tron-grid'
+    <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-8">
+      <div className="max-w-6xl mx-auto">
+        {/* Enhanced Progress Indicator with Step Titles */}
+        <div className="mb-16">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            {stepConfig.map((s, idx) => {
+              const Icon = s.icon;
+              const isActive = step === s.number;
+              const isCompleted = step > s.number;
+              return (
+                <motion.div
+                  key={s.number}
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <div
+                    className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      isActive
+                        ? "bg-gradient-to-br from-tron-cyan to-tron-magenta shadow-lg shadow-tron-cyan/50 ring-4 ring-tron-cyan/20"
+                        : isCompleted
+                          ? "bg-tron-cyan/20 border-2 border-tron-cyan"
+                          : "bg-tron-grid border-2 border-tron-grid"
                     }`}
                   >
-                    <div className="text-3xl mb-2">{platform.icon}</div>
-                    <div className="font-semibold text-tron-text">{platform.name}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <button
-                onClick={() => setStep(2)}
-                disabled={!campaignName || targetPlatforms.length === 0}
-                className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next: Find Trends →
-              </button>
-            </div>
+                    {isCompleted ? (
+                      <Check className="w-6 h-6 text-tron-cyan" />
+                    ) : (
+                      <Icon
+                        className={`w-6 h-6 ${
+                          isActive
+                            ? "text-white"
+                            : "text-tron-text-muted"
+                        }`}
+                      />
+                    )}
+                  </div>
+                  {idx < stepConfig.length - 1 && (
+                    <div
+                      className={`w-20 h-0.5 transition-all duration-500 ${
+                        isCompleted ? "bg-tron-cyan" : "bg-tron-grid"
+                      }`}
+                    />
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
-        )}
+          
+          {/* Step Title */}
+          <motion.div
+            key={`step-title-${step}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h2 className="text-3xl font-bold text-tron-text mb-2">
+              {step === 1 && "Setup Your Campaign"}
+              {step === 2 && "Discover Trending Topics"}
+              {step === 3 && "Generate Content"}
+            </h2>
+            <p className="text-tron-text-muted">
+              {step === 1 && "Choose a name and select target platforms"}
+              {step === 2 && "Find the perfect trending topic for your campaign"}
+              {step === 3 && "Customize and generate AI-powered content"}
+            </p>
+          </motion.div>
+        </div>
 
-        {/* Step 2: Trend Discovery */}
-        {step === 2 && (
-          <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-8">
-            <h2 className="text-xl font-bold text-tron-text mb-6">Discover Trending Topics</h2>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-tron-text-muted mb-2">
-                Search for trends
-              </label>
-              <div className="flex gap-2">
+        <AnimatePresence mode="wait">
+          {/* STEP 1: PLATFORM SELECTION */}
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              {/* Campaign Name Input */}
+              <div className="space-y-3">
+                <label htmlFor="campaign-name" className="block text-sm font-medium text-tron-text-muted">
+                  Campaign Name <span className="text-tron-magenta">*</span>
+                </label>
                 <input
                   type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && searchTrends()}
-                  placeholder="e.g., AI, fitness, tech news"
-                  className="flex-1 px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
+                  id="campaign-name"
+                  value={campaignName}
+                  onChange={(e) => setCampaignName(e.target.value)}
+                  placeholder="e.g., Summer Product Launch"
+                  aria-label="Campaign name"
+                  aria-required="true"
+                  className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl font-light placeholder-tron-text-muted/50 transition-all"
                 />
-                <button
-                  onClick={searchTrends}
-                  disabled={loadingTrends || !searchQuery.trim()}
-                  className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {loadingTrends ? 'Searching...' : 'Search'}
-                </button>
-              </div>
-            </div>
-
-            {trends.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-tron-text mb-4">Trending Topics</h3>
-                <div className="space-y-3">
-                  {trends.map((trend, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setSelectedTrend(trend)}
-                      className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        selectedTrend === trend
-                          ? 'border-tron-cyan bg-tron-cyan/20'
-                          : 'border-tron-cyan/30 hover:border-tron-grid'
-                      }`}
-                    >
-                      <div className="font-semibold text-tron-text">{trend.title}</div>
-                      <div className="text-sm text-tron-text-muted mt-1">
-                        {trend.formattedTraffic || 'Trending topic'}
-                      </div>
-                      {trend.relatedQueries && trend.relatedQueries.length > 0 && (
-                        <div className="text-xs text-tron-cyan mt-2">
-                          Related: {trend.relatedQueries.slice(0, 2).join(', ')}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-between">
-              <button
-                onClick={() => setStep(1)}
-                className="px-6 py-3 border border-tron-grid text-tron-text-muted font-semibold rounded-lg hover:bg-tron-dark transition-colors"
-              >
-                ← Back
-              </button>
-              <button
-                onClick={() => setStep(3)}
-                disabled={!selectedTrend}
-                className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next: Generate Content →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Content Generation */}
-        {step === 3 && (
-          <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-8">
-            <h2 className="text-xl font-bold text-tron-text mb-6">Generate AI Content</h2>
-
-            <div className="mb-6">
-              <div className="bg-tron-cyan/20 border border-tron-cyan/30 rounded-lg p-4 mb-6">
-                <div className="font-semibold text-tron-text">Selected Topic:</div>
-                <div className="text-tron-cyan">{selectedTrend?.title || searchQuery}</div>
+                {campaignName && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-tron-cyan flex items-center gap-2"
+                  >
+                    <Check className="w-4 h-4" />
+                    Looking good!
+                  </motion.p>
+                )}
               </div>
 
-              <label className="block text-sm font-medium text-tron-text-muted mb-2">
-                AI Provider
-              </label>
-              {aiToolsLoading ? (
-                <div className="w-full px-4 py-3 border border-tron-grid rounded-lg bg-tron-dark mb-6">
-                  Loading AI tools...
-                </div>
-              ) : aiTools.length > 0 ? (
-                <select
-                  id="ai-provider-select"
-                  value={aiProvider}
-                  onChange={(e) => setAiProvider(e.target.value)}
-                  title="Select AI provider for content generation"
-                  aria-label="AI Provider selection"
-                  className="w-full px-4 py-3 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text mb-6"
-                >
-                  {aiTools.map(tool => (
-                    <option key={tool.provider_key} value={tool.provider_key}>
-                      {tool.name} {tool.category === 'local' ? '(Free)' : ''}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <div className="w-full mb-6">
-                  <div className="p-4 bg-yellow-900/20 border border-yellow-600/30 rounded-lg">
-                    <div className="font-semibold text-yellow-400 mb-2">No AI tools configured</div>
-                    <div className="text-sm text-yellow-300 mb-3">
-                      You need to configure at least one AI tool to generate content.
-                    </div>
-                    <button
-                      onClick={() => router.push('/settings?tab=api-keys')}
-                      className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-colors"
-                    >
-                      Configure AI Tools →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <button
-                onClick={generateContent}
-                disabled={generatingContent || aiTools.length === 0}
-                className="w-full px-6 py-4 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 text-lg"
-              >
-                {generatingContent ? 'Generating Content...' : '✨ Generate Content for All Platforms'}
-              </button>
-
-              {aiTools.length > 0 && (
-                <div className="mt-3 text-sm text-tron-text-muted text-center">
-                  Using: {aiTools.find(t => t.provider_key === aiProvider)?.name || 'AI Provider'}
-                </div>
-              )}
-            </div>
-
-            {generatedContent && (
-              <div className="mb-8">
-                {/* Success indicator */}
-                <div className="bg-gradient-to-r from-tron-cyan/20 to-tron-grid rounded-lg border-2 border-tron-cyan/50 p-4 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-tron-cyan flex items-center justify-center">
-                      <span className="text-white font-bold">✓</span>
-                    </div>
-                    <div>
-                      <div className="font-bold text-tron-cyan text-lg">Content Generated Successfully!</div>
-                      <div className="text-sm text-tron-text-muted">
-                        Generated content for {Object.keys(generatedContent).length} platforms
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Platform content grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {generatedContent.twitter && (
-                    <div className="bg-gradient-to-br from-blue-950/30 to-tron-grid rounded-xl border-2 border-blue-400/30 p-6 hover:border-blue-400/50 transition-all">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">🐦</span>
-                          </div>
-                          <div>
-                            <div className="font-bold text-tron-text text-lg">Twitter</div>
-                            <div className="text-xs text-blue-400">Micro-blogging platform</div>
-                          </div>
-                        </div>
-                        <div className="bg-blue-500/20 px-3 py-1 rounded-full">
-                          <div className="text-sm font-semibold text-blue-400">
-                            {generatedContent.twitter.characterCount || generatedContent.twitter.content?.length || 0}/280
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-blue-400/20">
-                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
-                          {generatedContent.twitter.content}
-                        </div>
-                        {generatedContent.twitter.hashtags && (
-                          <div className="mt-3 pt-3 border-t border-blue-400/20">
-                            <div className="text-xs text-blue-400 font-medium mb-1">Hashtags:</div>
-                            <div className="text-sm text-blue-300">
-                              {Array.isArray(generatedContent.twitter.hashtags) 
-                                ? generatedContent.twitter.hashtags.join(' ') 
-                                : generatedContent.twitter.hashtags}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {generatedContent.linkedin && (
-                    <div className="bg-gradient-to-br from-blue-800/30 to-tron-grid rounded-xl border-2 border-blue-500/30 p-6 hover:border-blue-500/50 transition-all">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">💼</span>
-                          </div>
-                          <div>
-                            <div className="font-bold text-tron-text text-lg">LinkedIn</div>
-                            <div className="text-xs text-blue-300">Professional network</div>
-                          </div>
-                        </div>
-                        <div className="bg-blue-600/20 px-3 py-1 rounded-full">
-                          <div className="text-sm font-semibold text-blue-300">
-                            {generatedContent.linkedin.content?.length || 0} chars
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-blue-500/20">
-                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
-                          {generatedContent.linkedin.content}
-                        </div>
-                        {generatedContent.linkedin.hashtags && (
-                          <div className="mt-3 pt-3 border-t border-blue-500/20">
-                            <div className="text-xs text-blue-300 font-medium mb-1">Hashtags:</div>
-                            <div className="text-sm text-blue-200">
-                              {Array.isArray(generatedContent.linkedin.hashtags) 
-                                ? generatedContent.linkedin.hashtags.join(' ') 
-                                : generatedContent.linkedin.hashtags}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {generatedContent.email && (
-                    <div className="bg-gradient-to-br from-green-900/30 to-tron-grid rounded-xl border-2 border-green-500/30 p-6 hover:border-green-500/50 transition-all lg:col-span-2">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">✉️</span>
-                          </div>
-                          <div>
-                            <div className="font-bold text-tron-text text-lg">Email</div>
-                            <div className="text-xs text-green-400">Newsletter format</div>
-                          </div>
-                        </div>
-                        <div className="bg-green-600/20 px-3 py-1 rounded-full">
-                          <div className="text-sm font-semibold text-green-400">
-                            {(generatedContent.email.subject?.length || 0) + (generatedContent.email.content?.length || 0)} chars
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-tron-dark/50 rounded-lg p-4 border border-green-500/20">
-                        {generatedContent.email.subject && (
-                          <div className="mb-4 pb-4 border-b border-green-500/20">
-                            <div className="text-xs text-green-400 font-medium mb-1">Subject Line:</div>
-                            <div className="font-bold text-tron-text text-lg">
-                              {generatedContent.email.subject}
-                            </div>
-                          </div>
-                        )}
-                        <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
-                          {generatedContent.email.content}
-                        </div>
-                        {generatedContent.email.hashtags && (
-                          <div className="mt-3 pt-3 border-t border-green-500/20">
-                            <div className="text-xs text-green-400 font-medium mb-1">Keywords:</div>
-                            <div className="text-sm text-green-300">
-                              {Array.isArray(generatedContent.email.hashtags) 
-                                ? generatedContent.email.hashtags.join(', ') 
-                                : generatedContent.email.hashtags}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Support for additional platforms */}
-                  {Object.entries(generatedContent).map(([platform, content]: [string, any]) => {
-                    // Skip already rendered platforms
-                    if (['twitter', 'linkedin', 'email'].includes(platform)) return null;
-                    
-                    // Get platform info
-                    const platformInfo = platforms.find(p => p.id === platform) || { 
-                      id: platform, 
-                      name: platform.charAt(0).toUpperCase() + platform.slice(1), 
-                      icon: '🌐' 
-                    };
-                    
-                    return (
-                      <div key={platform} className="bg-gradient-to-br from-purple-900/30 to-tron-grid rounded-xl border-2 border-purple-500/30 p-6 hover:border-purple-500/50 transition-all">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
-                              <span className="text-white font-bold text-lg">{platformInfo.icon}</span>
-                            </div>
-                            <div>
-                              <div className="font-bold text-tron-text text-lg">{platformInfo.name}</div>
-                              <div className="text-xs text-purple-400">Social platform</div>
-                            </div>
-                          </div>
-                          <div className="bg-purple-600/20 px-3 py-1 rounded-full">
-                            <div className="text-sm font-semibold text-purple-400">
-                              {content?.content?.length || content?.body?.length || 0} chars
-                            </div>
-                          </div>
-                        </div>
-                        <div className="bg-tron-dark/50 rounded-lg p-4 border border-purple-500/20">
-                          {content?.title && (
-                            <div className="mb-3 pb-3 border-b border-purple-500/20">
-                              <div className="font-bold text-tron-text">{content.title}</div>
-                            </div>
-                          )}
-                          <div className="text-tron-text whitespace-pre-wrap leading-relaxed">
-                            {content?.content || content?.body || content}
-                          </div>
-                          {content?.hashtags && (
-                            <div className="mt-3 pt-3 border-t border-purple-500/20">
-                              <div className="text-xs text-purple-400 font-medium mb-1">Tags:</div>
-                              <div className="text-sm text-purple-300">
-                                {Array.isArray(content.hashtags) 
-                                  ? content.hashtags.join(' ') 
-                                  : content.hashtags}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Generation summary */}
-                <div className="mt-6 text-center">
-                  <div className="inline-flex items-center gap-2 bg-tron-cyan/10 border border-tron-cyan/30 rounded-full px-4 py-2">
-                    <span className="w-2 h-2 bg-tron-cyan rounded-full animate-pulse"></span>
-                    <span className="text-sm text-tron-cyan font-medium">
-                      Content ready for {Object.keys(generatedContent).length} platforms
-                    </span>
-                  </div>
-                </div>
-
-                {/* Publish Campaign Section */}
-                <div className="mt-8 pt-8 border-t-2 border-tron-grid">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-tron-text mb-2">
-                      Ready to Publish Your Campaign?
+              {/* Platform Selection with Section Title */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-tron-text">
+                      Target Platforms <span className="text-tron-magenta">*</span>
                     </h3>
-                    <p className="text-tron-text-muted">
-                      Connect your social accounts and schedule your content across all platforms
+                    <p className="text-sm text-tron-text-muted mt-1">
+                      {targetPlatforms.length > 0 
+                        ? `${targetPlatforms.length} platform${targetPlatforms.length > 1 ? 's' : ''} selected`
+                        : 'Select at least one platform'}
                     </p>
                   </div>
-                  
-                  <div className="flex justify-center">
-                    <PublishButton 
-                      content={JSON.stringify(generatedContent, null, 2)}
-                      campaignId={campaignName?.replace(/\s+/g, '-').toLowerCase()}
-                      onPublishSuccess={(results) => {
-                        console.log('Campaign published successfully:', results)
-                        // Could show success toast or redirect
-                      }}
-                      onPublishError={(error) => {
-                        console.error('Failed to publish campaign:', error)
-                        // Could show error toast
-                      }}
-                    />
-                  </div>
+                  {connectedPlatforms.length > 0 && (
+                    <div className="flex items-center gap-2 text-sm text-tron-cyan">
+                      <div className="w-2 h-2 rounded-full bg-tron-cyan animate-pulse" />
+                      {connectedPlatforms.length} connected
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
 
-            <div className="flex justify-between">
-              <button
-                onClick={() => setStep(2)}
-                className="px-6 py-3 border border-tron-grid text-tron-text-muted font-semibold rounded-lg hover:bg-tron-dark transition-colors"
-              >
-                ← Back
-              </button>
-              <div className="flex flex-col items-end gap-2">
-                {!generatedContent && (
-                  <p className="text-sm text-tron-text-muted">
-                    ⬆️ Generate content first to continue
-                  </p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {platforms.map((platform) => {
+                  const Icon = platform.icon;
+                  const isConnected = connectedPlatforms.includes(platform.id);
+                  const isSelected = targetPlatforms.includes(platform.id);
+
+                  return (
+                    <motion.button
+                      key={platform.id}
+                      onClick={() => togglePlatform(platform.id)}
+                      whileHover={{ scale: 1.05, y: -5 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 group ${
+                        isSelected
+                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl shadow-tron-cyan/30 ring-2 ring-tron-cyan/20"
+                          : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                      }`}
+                    >
+                      {/* Selection Checkmark */}
+                      {isSelected && (
+                        <motion.div
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          className="absolute top-3 left-3 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center shadow-lg"
+                        >
+                          <Check className="w-4 h-4 text-white" />
+                        </motion.div>
+                      )}
+
+                      {/* Connection Status Badge */}
+                      <div className="absolute top-3 right-3">
+                        {isConnected ? (
+                          <div className="relative">
+                            <div className="w-3 h-3 rounded-full bg-tron-cyan shadow-lg shadow-tron-cyan/50 animate-pulse" />
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-tron-cyan animate-ping" />
+                          </div>
+                        ) : (
+                          <div className="w-3 h-3 rounded-full bg-tron-grid border border-tron-text-muted/30" />
+                        )}
+                      </div>
+
+                      <Icon
+                        className={`w-12 h-12 mb-4 mx-auto transition-all duration-300 ${
+                          isSelected
+                            ? "text-tron-cyan"
+                            : "text-tron-text-muted group-hover:text-tron-cyan"
+                        }`}
+                        style={{
+                          filter: isSelected
+                            ? `drop-shadow(0 0 12px ${platform.color})`
+                            : "none",
+                        }}
+                      />
+                      <div className={`font-semibold text-center transition-colors ${
+                        isSelected ? "text-tron-cyan" : "text-tron-text"
+                      }`}>
+                        {platform.name}
+                      </div>
+                      {isConnected && (
+                        <div className="text-xs text-tron-cyan mt-1 text-center">
+                          Connected
+                        </div>
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              {/* Enhanced Continue Button with Validation */}
+              <motion.div className="pt-4">
+                {!campaignName && targetPlatforms.length === 0 && (
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-sm text-tron-text-muted text-center mb-4"
+                  >
+                    Enter a campaign name and select at least one platform to continue
+                  </motion.p>
                 )}
-                <button
-                  onClick={() => setStep(4)}
-                  disabled={!generatedContent}
-                  className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title={!generatedContent ? "Generate content first" : "Proceed to review"}
+                <motion.button
+                  onClick={() => setStep(2)}
+                  disabled={!campaignName || targetPlatforms.length === 0}
+                  whileHover={{ scale: !campaignName || targetPlatforms.length === 0 ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
                 >
-                  Next: Review & Save →
-                </button>
-              </div>
+                  Continue to Trends
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
+              </motion.div>
             </div>
-          </div>
-        )}
+            </motion.div>
+          )}
 
-        {/* Step 4: Review & Save */}
-        {step === 4 && (
-          <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-8">
-            <h2 className="text-xl font-bold text-tron-text mb-6">Review & Save Campaign</h2>
+          {/* STEP 2: TREND DISCOVERY */}
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-8"
+            >
+              {/* Search Bar with Better UX */}
+              <div className="space-y-3">
+                <label htmlFor="search-trends" className="block text-sm font-medium text-tron-text-muted">
+                  Search Keywords
+                </label>
+                <div className="flex gap-3">
+                  <div className="sr-only" id="search-help">
+                    Enter keywords to discover trending topics for your campaign
+                  </div>
+                  <div className="flex-1 relative">
+                    <input
+                      type="text"
+                      id="search-trends"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && searchTrends()}
+                      placeholder="e.g., AI productivity tools, healthy recipes..."
+                      aria-label="Search trending topics"
+                      aria-describedby="search-help"
+                      className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-lg placeholder-tron-text-muted/50 transition-all"
+                    />
+                    {searchQuery && (
+                      <motion.button
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        onClick={() => setSearchQuery("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-tron-text-muted hover:text-tron-cyan transition-colors"
+                        aria-label="Clear search"
+                      >
+                        <X className="w-5 h-5" />
+                      </motion.button>
+                    )}
+                  </div>
+                  <motion.button
+                    onClick={searchTrends}
+                    disabled={loadingTrends || !searchQuery.trim()}
+                    whileHover={{ scale: !loadingTrends && searchQuery.trim() ? 1.05 : 1 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Search for trending topics"
+                    className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 flex items-center gap-2"
+                  >
+                    {loadingTrends ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                        >
+                          <Sparkles className="w-5 h-5" />
+                        </motion.div>
+                        Searching...
+                      </>
+                    ) : (
+                      <>
+                        <TrendingUp className="w-5 h-5" />
+                        Search
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </div>
 
-            <div className="bg-tron-dark rounded-lg p-6 mb-6">
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <div className="text-sm font-medium text-tron-text-muted mb-1">Campaign Name</div>
-                  <div className="font-semibold text-tron-text">{campaignName}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-tron-text-muted mb-1">Target Platforms</div>
-                  <div className="font-semibold text-tron-text">{targetPlatforms.length} platforms</div>
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-tron-text-muted mb-1">Topic</div>
-                  <div className="font-semibold text-tron-text">
-                    {selectedTrend?.title || searchQuery}
+              {/* Trends Display with Enhanced Cards */}
+              {trends.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-tron-text">
+                      Trending Topics
+                    </h3>
+                    <span className="text-sm text-tron-text-muted">
+                      {trends.length} results
+                    </span>
+                  </div>
+                  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {trends.map((trend, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        onClick={() => setSelectedTrend(trend)}
+                        whileHover={{ scale: 1.02, x: 5 }}
+                        className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 cursor-pointer transition-all ${
+                          selectedTrend === trend
+                            ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl ring-2 ring-tron-cyan/20"
+                            : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                        }`}
+                      >
+                        {selectedTrend === trend && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-4 right-4 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                          >
+                            <Check className="w-4 h-4 text-white" />
+                          </motion.div>
+                        )}
+                        <div className={`font-semibold text-lg mb-2 ${
+                          selectedTrend === trend ? "text-tron-cyan" : "text-tron-text"
+                        }`}>
+                          {trend.title}
+                        </div>
+                        <div className="flex items-center gap-4 text-sm">
+                          <span className="text-tron-text-muted">
+                            {trend.formattedTraffic || "Trending"}
+                          </span>
+                          {trend.relatedQueries && (
+                            <span className="text-tron-cyan">
+                              +{trend.relatedQueries.length} related topics
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
-                <div>
-                  <div className="text-sm font-medium text-tron-text-muted mb-1">AI Provider</div>
-                  <div className="font-semibold text-tron-text">{aiProvider}</div>
-                </div>
+              )}
+
+              {/* Empty State */}
+              {!loadingTrends && trends.length === 0 && searchQuery && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center py-16 px-4"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <div className="p-6 bg-tron-grid/30 rounded-full">
+                      <TrendingUp className="w-16 h-16 text-tron-text-muted" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                    No trends found
+                  </h3>
+                  <p className="text-tron-text-muted max-w-md mx-auto">
+                    Try different keywords or search terms
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Initial State */}
+              {trends.length === 0 && !searchQuery && !loadingTrends && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center py-16 px-4"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.05, 1],
+                        rotate: [0, 5, -5, 0],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="p-6 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-full"
+                    >
+                      <Sparkles className="w-16 h-16 text-tron-cyan" />
+                    </motion.div>
+                  </div>
+                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                    Discover Trending Topics
+                  </h3>
+                  <p className="text-tron-text-muted max-w-md mx-auto mb-8">
+                    Enter keywords to find the hottest trends and content ideas powered by AI
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {['Tech Innovations', 'Health & Wellness', 'Business Tips', 'Marketing Trends'].map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        onClick={() => {
+                          setSearchQuery(suggestion);
+                          setTimeout(() => searchTrends(), 100);
+                        }}
+                        className="px-4 py-2 bg-tron-grid/50 border border-tron-cyan/30 rounded-xl text-tron-text hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all text-sm"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-3 pt-4">
+                <motion.button
+                  onClick={() => setStep(1)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                >
+                  Back
+                </motion.button>
+                <motion.button
+                  onClick={() => setStep(3)}
+                  disabled={!selectedTrend}
+                  whileHover={{ scale: !selectedTrend ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
+                >
+                  Generate Content
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
+          )}
 
-            <div className="bg-tron-green/20 border border-tron-green/30 rounded-lg p-4 mb-6">
-              <p className="text-sm text-tron-green">
-                ✓ Your campaign will be saved as a draft. You can publish it to your connected social accounts from the campaign details page.
-              </p>
-            </div>
+          {/* STEP 3: CONTENT GENERATION WITH CONTROLS */}
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
+              {/* Content Controls - using refactored component */}
+              <ErrorBoundary>
+                <ContentSettings
+                  controls={controls}
+                  onControlsChange={handleControlsChange}
+                />
+              </ErrorBoundary>
 
-            <div className="flex justify-between">
-              <button
-                onClick={() => setStep(3)}
-                className="px-6 py-3 border border-tron-grid text-tron-text-muted font-semibold rounded-lg hover:bg-tron-dark transition-colors"
+              {/* Generate Button */}
+              <motion.button
+                onClick={generateContent}
+                disabled={generatingContent}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-8 py-6 bg-gradient-to-r from-tron-cyan via-tron-magenta to-tron-cyan bg-size-200 bg-pos-0 hover:bg-pos-100 rounded-2xl font-bold text-white text-lg shadow-2xl shadow-tron-cyan/50 disabled:opacity-50 transition-all duration-500 flex items-center justify-center gap-3"
               >
-                ← Back
-              </button>
-              <button
-                onClick={saveCampaign}
-                disabled={loading}
-                className="px-8 py-3 bg-tron-green hover:bg-tron-green/80 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 text-lg"
-              >
-                {loading ? 'Saving...' : '✓ Save Campaign'}
-              </button>
-            </div>
-          </div>
-        )}
+                {generatingContent ? (
+                  <>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    >
+                      <Sparkles className="w-6 h-6" />
+                    </motion.div>
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-6 h-6" />
+                    Generate Content
+                  </>
+                )}
+              </motion.button>
+
+              {/* Generated Content Display with Save/Publish Actions */}
+              {generatedContent && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-tron-cyan" />
+                      Generated Posts
+                    </h3>
+                    <span
+                      className="text-sm text-tron-text-muted"
+                      aria-live="polite"
+                    >
+                      {Object.keys(generatedContent).filter((k) => k !== "hashtags")
+                        .length}{" "}
+                      {Object.keys(generatedContent).filter((k) => k !== "hashtags")
+                        .length === 1
+                        ? "post"
+                        : "posts"}
+                    </span>
+                  </div>
+
+                  {/* Content Preview Cards - using refactored component */}
+                  <div className="space-y-4">
+                    {Object.entries(generatedContent).map(([platform, contentData], index) => {
+                      if (platform === "hashtags") return null;
+
+                      // Handle both string and object formats
+                      const content =
+                        typeof contentData === "string"
+                          ? contentData
+                          : (contentData as any)?.content || "";
+
+                      if (!content) return null;
+
+                      const platformConfig = platforms.find(
+                        (p) => p.id === platform
+                      );
+                      if (!platformConfig) return null;
+
+                      return (
+                        <GeneratedContentCard
+                          key={platform}
+                          platform={platform}
+                          content={contentData}
+                          platformConfig={platformConfig}
+                          isEditing={editingContent[platform] || false}
+                          editedContent={editedContent[platform]}
+                          index={index}
+                          onEditToggle={toggleEdit}
+                          onSaveEdit={saveEdit}
+                          onContentChange={handleContentChange}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* Action Buttons - Save or Publish */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                    <motion.button
+                      onClick={() => saveCampaign(false)}
+                      disabled={loading}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      aria-label="Save campaign as draft"
+                    >
+                      <Check className="w-5 h-5" />
+                      {loading ? "Saving..." : "Save for Later"}
+                    </motion.button>
+                    <motion.button
+                      onClick={() => saveCampaign(true)}
+                      disabled={loading}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-bold text-white shadow-xl shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      aria-label="Publish campaign now"
+                    >
+                      <Sparkles className="w-5 h-5" />
+                      {loading ? "Publishing..." : "Publish Now"}
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="flex gap-3">
+                <motion.button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan"
+                >
+                  Back
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Toast Notification - using refactored component */}
+        <Toast toast={toast} />
       </div>
+
+      <style jsx global>{`
+        .slider-tron::-webkit-slider-thumb {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00f5ff, #ff00ff);
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        .slider-tron::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00f5ff, #ff00ff);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        .bg-size-200 {
+          background-size: 200%;
+        }
+
+        .bg-pos-0 {
+          background-position: 0%;
+        }
+
+        .bg-pos-100 {
+          background-position: 100%;
+        }
+      `}</style>
     </div>
-  )
+  );
 }
+
+

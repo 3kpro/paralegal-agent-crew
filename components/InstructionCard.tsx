@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 interface InstructionCardProps {
-  provider: string
-  url: string
-  steps: string[]
-  timeEstimate: string
-  costInfo: string
-  keyFormat: string
+  provider: string;
+  url: string;
+  steps: string[];
+  timeEstimate: string;
+  costInfo: string;
+  keyFormat: string;
 }
 
 export default function InstructionCard({
@@ -17,9 +17,9 @@ export default function InstructionCard({
   steps,
   timeEstimate,
   costInfo,
-  keyFormat
+  keyFormat,
 }: InstructionCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="border border-gray-200 rounded-lg">
@@ -31,9 +31,7 @@ export default function InstructionCard({
         <span className="text-sm font-medium text-gray-700">
           📚 How to get your {provider} API key
         </span>
-        <span className="text-gray-500">
-          {isExpanded ? '▼' : '▶'}
-        </span>
+        <span className="text-gray-500">{isExpanded ? "▼" : "▶"}</span>
       </button>
 
       {/* Expandable Content */}
@@ -54,15 +52,19 @@ export default function InstructionCard({
           {/* Metadata */}
           <div className="flex flex-wrap gap-3 pt-3 border-t border-gray-100">
             <div className="text-sm">
-              <span className="font-semibold text-gray-700">⏱️ Setup time:</span>{' '}
+              <span className="font-semibold text-gray-700">
+                ⏱️ Setup time:
+              </span>{" "}
               <span className="text-gray-600">{timeEstimate}</span>
             </div>
             <div className="text-sm">
-              <span className="font-semibold text-gray-700">💰 Cost:</span>{' '}
+              <span className="font-semibold text-gray-700">💰 Cost:</span>{" "}
               <span className="text-gray-600">{costInfo}</span>
             </div>
             <div className="text-sm">
-              <span className="font-semibold text-gray-700">🔑 Key format:</span>{' '}
+              <span className="font-semibold text-gray-700">
+                🔑 Key format:
+              </span>{" "}
               <span className="text-gray-600">{keyFormat}</span>
             </div>
           </div>
@@ -79,5 +81,5 @@ export default function InstructionCard({
         </div>
       )}
     </div>
-  )
+  );
 }

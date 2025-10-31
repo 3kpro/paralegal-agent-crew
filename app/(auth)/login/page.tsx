@@ -1,53 +1,57 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { trackLogin } from "@/lib/analytics";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
-      router.push('/dashboard')
-      router.refresh()
+      // Track successful login
+      trackLogin();
+
+      router.push("/dashboard");
+      router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+      setError(err.message || "Failed to sign in");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in with Google')
+      setError(err.message || "Failed to sign in with Google");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-tron-dark flex items-center justify-center px-4">
@@ -58,14 +62,20 @@ export default function LoginPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-tron-cyan to-tron-magenta rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
-            <span className="text-2xl font-bold text-tron-text">Content Cascade AI</span>
+            <span className="text-2xl font-bold text-tron-text">
+              Content Cascade AI
+            </span>
           </Link>
-          <p className="text-tron-text-muted mt-2">From trending topics to published content in minutes</p>
+          <p className="text-tron-text-muted mt-2">
+            From trending topics to published content in minutes
+          </p>
         </div>
 
         {/* Login Card */}
         <div className="bg-tron-grid rounded-2xl shadow-xl p-8 border border-tron-cyan/30">
-          <h1 className="text-2xl font-bold text-tron-text mb-6">Welcome back</h1>
+          <h1 className="text-2xl font-bold text-tron-text mb-6">
+            Welcome back
+          </h1>
 
           {error && (
             <div className="mb-4 p-3 bg-red-900/20 border border-red-500/30 text-red-400 rounded-lg text-sm">
@@ -76,7 +86,10 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-tron-text-muted mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-tron-text-muted mb-2"
+              >
                 Email
               </label>
               <input
@@ -92,7 +105,10 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-tron-text-muted mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-tron-text-muted mb-2"
+              >
                 Password
               </label>
               <input
@@ -108,7 +124,10 @@ export default function LoginPage() {
 
             {/* Forgot Password */}
             <div className="text-right">
-              <Link href="/forgot-password" className="text-sm text-tron-cyan hover:text-tron-cyan/80">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-tron-cyan hover:text-tron-cyan/80"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -119,7 +138,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full h-14 bg-tron-cyan hover:bg-tron-cyan/80 disabled:bg-tron-cyan/50 text-tron-dark font-semibold rounded-lg transition-colors shadow-lg"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -158,13 +177,16 @@ export default function LoginPage() {
 
           {/* Sign Up Link */}
           <p className="mt-6 text-center text-sm text-tron-text-muted">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-tron-cyan hover:text-tron-cyan/80 font-medium">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-tron-cyan hover:text-tron-cyan/80 font-medium"
+            >
               Sign up
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

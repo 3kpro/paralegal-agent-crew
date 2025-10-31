@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Sparkles, Zap, TrendingUp, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
+import { motion } from "framer-motion";
+import { Sparkles, Zap, TrendingUp, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function ModernHero() {
   return (
@@ -18,7 +18,7 @@ export default function ModernHero() {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         />
         <motion.div
@@ -30,7 +30,7 @@ export default function ModernHero() {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
         />
       </div>
@@ -64,9 +64,7 @@ export default function ModernHero() {
               Content Creation
             </span>
             <br />
-            <span className="text-tron-text">
-              At The Speed Of AI
-            </span>
+            <span className="text-tron-text">At The Speed Of AI</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -76,10 +74,20 @@ export default function ModernHero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-tron-text-muted mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Experience the future of content creation with our <span className="font-semibold text-tron-magenta">Public Beta</span>. 
-            <span className="font-semibold text-tron-cyan"> TrendPulse™</span> delivers enterprise-grade AI tools to
-            <span className="font-semibold text-tron-green"> discover trending topics, generate viral content, and publish across 6+ platforms</span>
-            <span className="font-bold text-tron-text"> — all in minutes, not hours</span>.
+            Experience the future of content creation with our{" "}
+            <span className="font-semibold text-tron-magenta">Public Beta</span>
+            .<span className="font-semibold text-tron-cyan"> TrendPulse™</span>{" "}
+            delivers enterprise-grade AI tools to
+            <span className="font-semibold text-tron-green">
+              {" "}
+              discover trending topics, generate viral content, and publish
+              across 6+ platforms
+            </span>
+            <span className="font-bold text-tron-text">
+              {" "}
+              — all in minutes, not hours
+            </span>
+            .
           </motion.p>
 
           {/* CTA Buttons */}
@@ -120,14 +128,16 @@ export default function ModernHero() {
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-tron-cyan" />
               <span>
-                <strong className="text-tron-text">98%</strong> satisfaction rate
+                <strong className="text-tron-text">98%</strong> satisfaction
+                rate
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-tron-magenta" />
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-tron-cyan" />
               <span>
-                <strong className="text-tron-text">24hr</strong> avg response time
+                <strong className="text-tron-text">24hr</strong> avg response
+                time
               </span>
             </div>
           </motion.div>
@@ -140,14 +150,14 @@ export default function ModernHero() {
             className="mt-16 flex flex-wrap gap-3 justify-center"
           >
             {[
-              '🎯 Real-Time Trend Detection',
-              '🧠 GPT-4 & Claude AI Generation',
-              '🚀 6-Platform Auto-Publishing',
-              '⚡ 10x Faster Content Pipeline',
-              '🔒 Enterprise-Grade Security',
-              '🎨 Brand Voice Intelligence',
-              '📊 Predictive Analytics',
-              '🔄 Content Automation Workflows'
+              "🎯 Real-Time Trend Detection",
+              "🧠 GPT-4 & Claude AI Generation",
+              "🚀 6-Platform Auto-Publishing",
+              "⚡ 10x Faster Content Pipeline",
+              "🔒 Enterprise-Grade Security",
+              "🎨 Brand Voice Intelligence",
+              "📊 Predictive Analytics",
+              "🔄 Content Automation Workflows",
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -179,5 +189,5 @@ export default function ModernHero() {
         </motion.div>
       </motion.div>
     </section>
-  )
+  );
 }

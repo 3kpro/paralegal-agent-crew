@@ -1,0 +1,390 @@
+openapi: 3.0.0
+info:
+  title: Trends API
+  description: Multi-source trending topic discovery for content creation
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: api-support@company.com
+  license:
+    name: MIT
+
+servers:
+  - url: https://api.company.com
+    description: Production environment
+  - url: http://localhost:3000
+    description: Development environment
+
+paths:
+  /api/trends:
+    get:
+      summary: Discover trending topics
+      operationId: getTrendingTopics
+      description: |
+        Retrieve trending topics and content ideas from multiple data sources.
+        Supports Google Trends, Twitter Trends, Reddit Hot Topics, and mixed sources.
+        Features intelligent fallback system for high availability.
+      
+      parameters:
+        - name: keyword
+          in: query
+          description: Search keyword for trends
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+          example: "marketing"
+        
+        - name: mode
+          in: query
+          description: Request mode (ideas for trend discovery, search for specific searches)
+          required: false
+          schema:
+            type: string
+            enum:
+              - ideas
+              - search
+            default: ideas
+        
+        - name: source
+          in: query
+          description: |
+            Data source to query:
+            - **mixed**: Combines all sources (default)
+            - **google**: Google Trends (popular searches)
+            - **twitter**: Twitter Trends (viral topics)
+            - **reddit**: Reddit Hot Topics (popular discussions)
+          required: false
+          schema:
+            type: string
+            enum:
+              - mixed
+              - google
+              - twitter
+              - reddit
+            default: mixed
+        
+        - name: bypass_cache
+          in: query
+          description: Force fresh data fetch, bypassing Redis cache
+          required: false
+          schema:
+            type: boolean
+            default: false
+
+      responses:
+        '200':
+          description: Successful response with trending topics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrendsSuccessResponse'
+              examples:
+                google_trends:
+                  summary: Google Trends response
+                  value:
+                    success: true
+                    mode: ideas
+                    keyword: "marketing"
+                    source: "Google Trends"
+                    data:
+                      trending:
+                        - title: "Social Media Marketing"
+                          formattedTraffic: "200K searches"
+                          relatedQueries:
+                            - "Instagram marketing"
+                            - "TikTok trends"
+                      relatedQueries:
+                        - query: "marketing tools"
+                          value: 100
+                          formattedValue: "100%"
+                    meta:
+                      timestamp: "2024-01-15T10:30:45.123Z"
+                      cached: false
+                      response_time_ms: 1250
+
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_keyword:
+                  summary: Missing required keyword parameter
+                  value:
+                    success: false
+                    error: "Missing required parameter: keyword"
+                    response_time_ms: 45
+                invalid_source:
+                  summary: Invalid source parameter
+                  value:
+                    success: false
+                    error: "Invalid source parameter"
+                    details: "Must be: mixed, google, twitter, or reddit"
+                    response_time_ms: 50
+
+        '429':
+          description: Too many requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: "Rate limit exceeded"
+                details: "Maximum 100 requests per 5 minutes"
+
+        '500':
+          description: Server error - all fallbacks exhausted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error: "Failed to fetch trending topics"
+                details: "All services unavailable"
+                response_time_ms: 2500
+
+      tags:
+        - Trends
+
+components:
+  schemas:
+    TrendsSuccessResponse:
+      type: object
+      required:
+        - success
+        - mode
+        - keyword
+        - source
+        - data
+        - meta
+      properties:
+        success:
+          type: boolean
+          description: Request success indicator
+          example: true
+        
+        mode:
+          type: string
+          description: The mode parameter that was used
+          enum:
+            - ideas
+            - search
+          example: ideas
+        
+        keyword:
+          type: string
+          description: The keyword that was searched
+          example: "marketing"
+        
+        source:
+          type: string
+          description: |
+            The actual data source used:
+            - Google Trends
+            - Twitter Trends
+            - Reddit Hot Topics
+            - mixed
+            - gemini-ai (fallback)
+            - mock-fallback (last resort)
+          example: "Google Trends"
+        
+        data:
+          $ref: '#/components/schemas/TrendsData'
+        
+        meta:
+          $ref: '#/components/schemas/ResponseMetadata'
+
+    TrendsData:
+      type: object
+      required:
+        - trending
+      properties:
+        trending:
+          type: array
+          description: Array of trending topics
+          items:
+            $ref: '#/components/schemas/TrendingTopic'
+          minItems: 0
+          maxItems: 100
+        
+        relatedQueries:
+          type: array
+          description: Related search queries
+          items:
+            $ref: '#/components/schemas/RelatedQuery'
+        
+        relatedTopics:
+          type: array
+          description: Related topic suggestions
+          items:
+            $ref: '#/components/schemas/RelatedQuery'
+
+    TrendingTopic:
+      type: object
+      required:
+        - title
+        - formattedTraffic
+      properties:
+        title:
+          type: string
+          description: Trending topic or keyword title
+          example: "Social Media Marketing"
+        
+        formattedTraffic:
+          type: string
+          description: |
+            Human-readable traffic/popularity metric
+            Format varies by source:
+            - Google: "150K searches"
+            - Twitter: "250K tweets"
+            - Reddit: "500 upvotes"
+          example: "200K searches"
+        
+        relatedQueries:
+          type: array
+          description: Related search queries or topics
+          items:
+            type: string
+          example:
+            - "Instagram marketing"
+            - "TikTok trends"
+            - "Social media automation"
+
+    RelatedQuery:
+      type: object
+      required:
+        - query
+        - value
+        - formattedValue
+      properties:
+        query:
+          type: string
+          description: Related search query or topic
+          example: "marketing tools"
+        
+        value:
+          type: number
+          description: Numeric interest value (0-100)
+          minimum: 0
+          maximum: 100
+          example: 100
+        
+        formattedValue:
+          type: string
+          description: Human-readable percentage
+          example: "100%"
+
+    ResponseMetadata:
+      type: object
+      required:
+        - timestamp
+        - cached
+        - response_time_ms
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: Response generation timestamp (ISO 8601)
+          example: "2024-01-15T10:30:45.123Z"
+        
+        cached:
+          type: boolean
+          description: Whether response was served from Redis cache
+          example: false
+        
+        response_time_ms:
+          type: number
+          description: Response generation time in milliseconds
+          example: 1250
+        
+        cache_hit:
+          type: boolean
+          description: Optional - whether cache was hit
+          example: false
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          description: Always false for errors
+          example: false
+        
+        error:
+          type: string
+          description: Error message
+          example: "Invalid source parameter"
+        
+        details:
+          type: string
+          description: Optional additional error details
+          example: "Must be: mixed, google, twitter, or reddit"
+        
+        response_time_ms:
+          type: number
+          description: Response time in milliseconds
+          example: 50
+
+  examples:
+    GoogleTrendsKeyword:
+      summary: Search Google Trends for popular marketing keywords
+      value:
+        keyword: marketing
+        source: google
+        mode: ideas
+
+    TwitterTrends:
+      summary: Find viral topics on Twitter
+      value:
+        keyword: viral
+        source: twitter
+        mode: ideas
+
+    RedditDiscussions:
+      summary: Find hot discussions on Reddit
+      value:
+        keyword: JavaScript
+        source: reddit
+        mode: ideas
+
+    MixedSources:
+      summary: Get aggregated trends from all sources
+      value:
+        keyword: AI
+        source: mixed
+        mode: ideas
+
+  securitySchemes: {}  # Currently no authentication required
+
+tags:
+  - name: Trends
+    description: Trending topic discovery endpoints
+
+x-google-endpoints:
+  - name: trends.company.com
+    allowUnregisteredCalls: true
+
+x-google-management:
+  metrics:
+    - name: trends/request_count
+      display_name: Trends API Request Count
+    - name: trends/response_time
+      display_name: Trends API Response Time
+  quota:
+    limits:
+      - name: trends-requests-per-minute
+        description: Number of requests per minute
+        default_value: 100
+        duration: 1m
+
+externalDocs:
+  description: Trends API Documentation
+  url: https://docs.company.com/trends-api

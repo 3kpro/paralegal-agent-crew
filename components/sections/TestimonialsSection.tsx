@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Star, Quote, Twitter, Linkedin, MessageSquare } from 'lucide-react'
+import { motion } from "framer-motion";
+import { Star, Quote, Twitter, Linkedin, MessageSquare } from "lucide-react";
 
 const testimonials = [
   {
@@ -9,68 +9,74 @@ const testimonials = [
     role: "Beta Creator & Coach",
     company: "@SarahBuildsThings",
     image: "SC", // Using initials as placeholder
-    content: "TrendPulse™ Beta found 3 viral trends before anyone else. The AI Studio gives me GPT-4 and Claude together—I create 7 days of content in 30 minutes. Game-changing!",
+    content:
+      "TrendPulse™ Beta found 3 viral trends before anyone else. The AI Studio gives me GPT-4 and Claude together—I create 7 days of content in 30 minutes. Game-changing!",
     rating: 5,
     platform: "twitter",
-    metrics: "10K → 68K followers during beta"
+    metrics: "10K → 68K followers during beta",
   },
   {
     name: "Marcus Rodriguez",
     role: "Beta Agency Partner",
     company: "GrowthLab Agency",
     image: "MR",
-    content: "ContentFlow™ automation publishes to 6 platforms instantly. Our clients' reach increased 400% since joining the beta. The Brand Voice AI maintains perfect consistency.",
+    content:
+      "ContentFlow™ automation publishes to 6 platforms instantly. Our clients' reach increased 400% since joining the beta. The Brand Voice AI maintains perfect consistency.",
     rating: 5,
     platform: "linkedin",
-    metrics: "$180K additional revenue in beta"
+    metrics: "$180K additional revenue in beta",
   },
   {
     name: "Emily Watson",
     role: "Beta SaaS Founder",
     company: "TechFlow Solutions",
     image: "EW",
-    content: "Beta features are incredible. Media Generator™ creates perfect visuals, Analytics Hub™ predicts viral content. My product launches now reach 10x more people.",
+    content:
+      "Beta features are incredible. Media Generator™ creates perfect visuals, Analytics Hub™ predicts viral content. My product launches now reach 10x more people.",
     rating: 5,
     platform: "twitter",
-    metrics: "1,200% increase in signups"
+    metrics: "1,200% increase in signups",
   },
   {
     name: "David Kim",
     role: "Beta Newsletter Creator",
     company: "The Marketing Mind",
     image: "DK",
-    content: "Beta trend detection is unreal—I'm breaking stories 3 days early. Went from 25K to 85K subscribers using beta features. The competitive advantage is massive.",
+    content:
+      "Beta trend detection is unreal—I'm breaking stories 3 days early. Went from 25K to 85K subscribers using beta features. The competitive advantage is massive.",
     rating: 5,
     platform: "email",
-    metrics: "85K subscribers, $28K MRR"
+    metrics: "85K subscribers, $28K MRR",
   },
   {
     name: "Rachel Green",
     role: "Beta Business Consultant",
     company: "Strategy & Growth Co",
     image: "RG",
-    content: "The beta taught me content marketing mastery. 6-platform publishing, viral predictions, automated workflows—I'm booked solid with premium clients now.",
+    content:
+      "The beta taught me content marketing mastery. 6-platform publishing, viral predictions, automated workflows—I'm booked solid with premium clients now.",
     rating: 5,
     platform: "linkedin",
-    metrics: "8x client inquiries per month"
+    metrics: "8x client inquiries per month",
   },
   {
     name: "Alex Johnson",
     role: "Beta Course Creator",
     company: "LearnBuild Academy",
     image: "AJ",
-    content: "Beta access gave me first-mover advantage. The automation workflows turn one idea into 20+ pieces of content across platforms. Course sales up 800% since beta launch.",
+    content:
+      "Beta access gave me first-mover advantage. The automation workflows turn one idea into 20+ pieces of content across platforms. Course sales up 800% since beta launch.",
     rating: 5,
     platform: "email",
-    metrics: "$450K revenue increase"
-  }
-]
+    metrics: "$450K revenue increase",
+  },
+];
 
 const platformIcons = {
   twitter: Twitter,
   linkedin: Linkedin,
-  email: MessageSquare
-}
+  email: MessageSquare,
+};
 
 export default function TestimonialsSection() {
   return (
@@ -90,7 +96,7 @@ export default function TestimonialsSection() {
                 4.9/5 stars from 2,500+ beta creators
               </span>
             </div>
-            
+
             <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
               Loved by Beta Creators
               <br />
@@ -98,18 +104,21 @@ export default function TestimonialsSection() {
                 Getting Extraordinary Results
               </span>
             </h2>
-            
+
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              Join 2,500+ beta creators, agencies, and founders who've unlocked next-generation 
-              content creation with TrendPulse™ Beta features.
+              Join 2,500+ beta creators, agencies, and founders who've unlocked
+              next-generation content creation with TrendPulse™ Beta features.
             </p>
           </motion.div>
 
           {/* Testimonials Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => {
-              const PlatformIcon = platformIcons[testimonial.platform as keyof typeof platformIcons]
-              
+              const PlatformIcon =
+                platformIcons[
+                  testimonial.platform as keyof typeof platformIcons
+                ];
+
               return (
                 <motion.div
                   key={index}
@@ -136,10 +145,10 @@ export default function TestimonialsSection() {
                   {/* Rating */}
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className="w-5 h-5 text-tron-magenta" 
-                        fill="currentColor" 
+                      <Star
+                        key={i}
+                        className="w-5 h-5 text-tron-magenta"
+                        fill="currentColor"
                       />
                     ))}
                   </div>
@@ -175,7 +184,7 @@ export default function TestimonialsSection() {
                     </div>
                   </div>
                 </motion.div>
-              )
+              );
             })}
           </div>
 
@@ -191,30 +200,31 @@ export default function TestimonialsSection() {
                 Ready to Join Our Beta Success Stories?
               </h3>
               <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
-                Get exclusive Beta access to TrendPulse™, AI Studio™, and ContentFlow™ automation. 
-                Be among the first to experience next-generation content creation.
+                Get exclusive Beta access to TrendPulse™, AI Studio™, and
+                ContentFlow™ automation. Be among the first to experience
+                next-generation content creation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    const element = document.getElementById('contact')
+                    const element = document.getElementById("contact");
                     if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' })
+                      element.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
                   className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-200"
                 >
                   Join Beta Program
                 </motion.button>
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    const element = document.getElementById('pricing')
+                    const element = document.getElementById("pricing");
                     if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' })
+                      element.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
                   className="px-8 py-4 bg-tron-grid border-2 border-tron-cyan text-tron-cyan rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-tron-cyan/10 transform transition-all duration-200"
@@ -227,5 +237,5 @@ export default function TestimonialsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

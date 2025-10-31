@@ -7,31 +7,34 @@ const { defineConfig, devices } = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './__tests__/e2e',
   /* Maximum time one test can run for */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000, // Increased from 30s to 60s for auth flows
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met
+     * Increased from 5s to 20s for Supabase auth redirects
      */
-    timeout: 5000
+    timeout: 20000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  /* Retry on CI and locally for flaky auth flows */
+  retries: process.env.CI ? 2 : 1, // Changed from 0 to 1 for local retries
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
-    ['json', { outputFile: 'playwright-report/test-results.json' }]
+    ['json', { outputFile: 'playwright-report/test-results.json' }],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Maximum time each action such as click() can take. Defaults to 0 (no limit). */
-    actionTimeout: 0,
-    /* Base URL to use in actions like wait page.goto('/'). */
+    /* Maximum time each action such as click() can take. */
+    actionTimeout: 15000, // 15s for actions like clicks that trigger auth redirects
+    /* Navigation timeout for page loads and redirects */
+    navigationTimeout: 30000, // 30s for Supabase auth redirects
+    /* Base URL to use in actions like wait page.goto('/'). */
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

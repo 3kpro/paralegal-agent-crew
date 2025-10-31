@@ -1,0 +1,166 @@
+import { describe, expect, test, beforeEach, afterAll } from '@jest/globals';
+import { redis, withCache, cacheKeys } from '@/lib/redis';
+import { invalidateAllContentCache } from '@/lib/cache-invalidation';
+
+describe('Redis Caching Performance', () => {
+  // Test data
+  const testTopic = 'AI Content Marketing';
+  const testFormats = ['twitter', 'linkedin', 'email'];
+  const testUserId = 'performance-test-user';
+  const testProvider = 'openai';
+  
+  // Cache keys
+  const generateCacheKey = cacheKeys.generate(testUserId, testTopic, testFormats, testProvider);
+  const localGenerateCacheKey = cacheKeys.localGenerate(testTopic, testFormats);
+  const trendsCacheKey = cacheKeys.trends(testTopic.toLowerCase());
+  
+  // Mock data
+  const mockGenerateData = {
+    success: true,
+    content: {
+      twitter: { content: 'Test tweet #AI', hashtags: ['#AI'] },
+      linkedin: { content: 'Test LinkedIn post about AI' },
+      email: { subject: 'AI Content', content: 'Test email content' }
+    },
+    metadata: {
+      provider: 'OpenAI',
+      tokensUsed: 100,
+      estimatedCost: 0.002
+    }
+  };
+  
+  const mockTrendsData = {
+    success: true,
+    mode: 'ideas',
+    keyword: testTopic,
+    data: {
+      trending: [
+        { title: 'AI Content', formattedTraffic: '150K searches', relatedQueries: ['AI writing', 'Content automation'] }
+      ],
+      relatedQueries: [
+        { query: 'AI content tools', value: 100, formattedValue: '100%' }
+      ],
+      relatedTopics: [
+        { query: 'AI content marketing', value: 90, formattedValue: '90%' }
+      ]
+    }
+  };
+  
+  beforeEach(async () => {
+    // Clear test cache before each test
+    await invalidateAllContentCache();
+    await redis.del(trendsCacheKey);
+  });
+  
+  afterAll(async () => {
+    // Clean up after all tests
+    await invalidateAllContentCache();
+    await redis.del(trendsCacheKey);
+  });
+  
+  test('should improve performance for content generation', async () => {
+    // Simulate slow data fetching (500ms delay)
+    const slowFetchData = async () => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return mockGenerateData;
+    };
+    
+    // Measure time for first request (cache miss)
+    const startMiss = Date.now();
+    const resultMiss = await withCache(generateCacheKey, 60, slowFetchData);
+    const durationMiss = Date.now() - startMiss;
+    
+    // Measure time for second request (cache hit)
+    const startHit = Date.now();
+    const resultHit = await withCache(generateCacheKey, 60, slowFetchData);
+    const durationHit = Date.now() - startHit;
+    
+    // Verify results
+    expect(resultMiss).toEqual(mockGenerateData);
+    expect(resultHit).toEqual(mockGenerateData);
+    
+    // Verify performance improvement
+    expect(durationMiss).toBeGreaterThan(450); // Should take at least 450ms
+    expect(durationHit).toBeLessThan(100); // Should be much faster (< 100ms)
+    
+    // Calculate improvement percentage
+    const improvementPercent = ((durationMiss - durationHit) / durationMiss) * 100;
+    console.log(`Cache performance improvement: ${improvementPercent.toFixed(2)}%`);
+    console.log(`Cache miss duration: ${durationMiss}ms`);
+    console.log(`Cache hit duration: ${durationHit}ms`);
+    
+    // Should have at least 80% improvement
+    expect(improvementPercent).toBeGreaterThan(80);
+  });
+  
+  test('should improve performance for trends API', async () => {
+    // Simulate slow trends API (300ms delay)
+    const slowFetchTrends = async () => {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return mockTrendsData;
+    };
+    
+    // Measure time for first request (cache miss)
+    const startMiss = Date.now();
+    const resultMiss = await withCache(trendsCacheKey, 60, slowFetchTrends);
+    const durationMiss = Date.now() - startMiss;
+    
+    // Measure time for second request (cache hit)
+    const startHit = Date.now();
+    const resultHit = await withCache(trendsCacheKey, 60, slowFetchTrends);
+    const durationHit = Date.now() - startHit;
+    
+    // Verify results
+    expect(resultMiss).toEqual(mockTrendsData);
+    expect(resultHit).toEqual(mockTrendsData);
+    
+    // Verify performance improvement
+    expect(durationMiss).toBeGreaterThan(250); // Should take at least 250ms
+    expect(durationHit).toBeLessThan(50); // Should be much faster (< 50ms)
+    
+    // Calculate improvement percentage
+    const improvementPercent = ((durationMiss - durationHit) / durationMiss) * 100;
+    console.log(`Trends API cache performance improvement: ${improvementPercent.toFixed(2)}%`);
+    console.log(`Trends API cache miss duration: ${durationMiss}ms`);
+    console.log(`Trends API cache hit duration: ${durationHit}ms`);
+    
+    // Should have at least 80% improvement
+    expect(improvementPercent).toBeGreaterThan(80);
+  });
+  
+  test('should handle concurrent requests efficiently', async () => {
+    // Simulate slow data fetching (500ms delay)
+    let fetchCount = 0;
+    const slowFetchData = async () => {
+      fetchCount++;
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return { ...mockGenerateData, fetchCount };
+    };
+    
+    // Make 5 concurrent requests
+    const startTime = Date.now();
+    const results = await Promise.all([
+      withCache(generateCacheKey, 60, slowFetchData),
+      withCache(generateCacheKey, 60, slowFetchData),
+      withCache(generateCacheKey, 60, slowFetchData),
+      withCache(generateCacheKey, 60, slowFetchData),
+      withCache(generateCacheKey, 60, slowFetchData)
+    ]);
+    const duration = Date.now() - startTime;
+    
+    // Verify all results are the same
+    const firstResult = results[0];
+    results.forEach(result => {
+      expect(result).toEqual(firstResult);
+    });
+    
+    // Verify fetch was only called once
+    expect(fetchCount).toBe(1);
+    
+    // Verify total duration is close to a single fetch (500ms) plus some overhead
+    expect(duration).toBeLessThan(1000); // Should take less than 1000ms total
+    
+    console.log(`Concurrent requests duration: ${duration}ms`);
+    console.log(`Fetch count: ${fetchCount}`);
+  });
+});

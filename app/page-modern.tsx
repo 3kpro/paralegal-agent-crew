@@ -1,7 +1,11 @@
-'use client'
+"use client";
 
-import { ModernHero, ModernFeatures, ModernPricing } from '../components/sections'
-import { Navigation, Footer, ContactSection } from '../components'
+import {
+  ModernHero,
+  ModernFeatures,
+  ModernPricing,
+} from "../components/sections";
+import { Navigation, Footer, ContactSection } from "../components";
 
 export default function ModernLandingPage() {
   return (
@@ -18,5 +22,5 @@ export default function ModernLandingPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

@@ -1,106 +1,114 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface OnboardingStep {
-  title: string
-  description: string
-  targetStep?: number
-  position?: 'top' | 'center' | 'bottom'
+  title: string;
+  description: string;
+  targetStep?: number;
+  position?: "top" | "center" | "bottom";
 }
 
 const onboardingSteps: OnboardingStep[] = [
   {
-    title: '🚀 Welcome to Content Cascade AI',
-    description: 'Let\'s create your first viral campaign in 4 simple steps. This will only take 2 minutes!',
-    position: 'center'
+    title: "🚀 Welcome to Content Cascade AI",
+    description:
+      "Let's create your first viral campaign in 4 simple steps. This will only take 2 minutes!",
+    position: "center",
   },
   {
-    title: '✨ Step 1: Name Your Campaign',
-    description: 'Give your campaign a memorable name and select which platforms you want to target.',
+    title: "✨ Step 1: Name Your Campaign",
+    description:
+      "Give your campaign a memorable name and select which platforms you want to target.",
     targetStep: 1,
-    position: 'top'
+    position: "top",
   },
   {
-    title: '🔥 Step 2: Find Trending Topics',
-    description: 'Search for trending topics in your niche. We\'ll show you what\'s hot right now!',
+    title: "🔥 Step 2: Find Trending Topics",
+    description:
+      "Search for trending topics in your niche. We'll show you what's hot right now!",
     targetStep: 2,
-    position: 'top'
+    position: "top",
   },
   {
-    title: '🤖 Step 3: Generate AI Content',
-    description: 'Watch as AI creates platform-specific content optimized for engagement.',
+    title: "🤖 Step 3: Generate AI Content",
+    description:
+      "Watch as AI creates platform-specific content optimized for engagement.",
     targetStep: 3,
-    position: 'top'
+    position: "top",
   },
   {
-    title: '📋 Step 4: Review & Save',
-    description: 'Review your content and save it as a campaign. Copy-paste to your platforms and go viral!',
+    title: "📋 Step 4: Review & Save",
+    description:
+      "Review your content and save it as a campaign. Copy-paste to your platforms and go viral!",
     targetStep: 4,
-    position: 'top'
-  }
-]
+    position: "top",
+  },
+];
 
 interface OnboardingTourProps {
-  currentStep: number
-  onComplete: () => void
+  currentStep: number;
+  onComplete: () => void;
 }
 
-export default function OnboardingTour({ currentStep, onComplete }: OnboardingTourProps) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [currentTourStep, setCurrentTourStep] = useState(0)
-  const [hasSeenTour, setHasSeenTour] = useState(false)
+export default function OnboardingTour({
+  currentStep,
+  onComplete,
+}: OnboardingTourProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [currentTourStep, setCurrentTourStep] = useState(0);
+  const [hasSeenTour, setHasSeenTour] = useState(false);
 
   useEffect(() => {
     // Check if user has seen the tour
-    const tourCompleted = localStorage.getItem('ccai_tour_completed')
+    const tourCompleted = localStorage.getItem("ccai_tour_completed");
     if (tourCompleted) {
-      setHasSeenTour(true)
-      return
+      setHasSeenTour(true);
+      return;
     }
 
     // Show welcome message after short delay
     const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 500)
+      setIsVisible(true);
+    }, 500);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Auto-advance tour based on user progress
-    if (hasSeenTour || !isVisible) return
+    if (hasSeenTour || !isVisible) return;
 
-    const stepData = onboardingSteps[currentTourStep]
+    const stepData = onboardingSteps[currentTourStep];
     if (stepData.targetStep && currentStep > stepData.targetStep) {
-      handleNext()
+      handleNext();
     }
-  }, [currentStep, currentTourStep, hasSeenTour, isVisible])
+  }, [currentStep, currentTourStep, hasSeenTour, isVisible]);
 
   const handleNext = () => {
     if (currentTourStep < onboardingSteps.length - 1) {
-      setCurrentTourStep(prev => prev + 1)
+      setCurrentTourStep((prev) => prev + 1);
     } else {
-      completeTour()
+      completeTour();
     }
-  }
+  };
 
   const handleSkip = () => {
-    completeTour()
-  }
+    completeTour();
+  };
 
   const completeTour = () => {
-    setIsVisible(false)
-    localStorage.setItem('ccai_tour_completed', 'true')
-    setHasSeenTour(true)
-    onComplete()
-  }
+    setIsVisible(false);
+    localStorage.setItem("ccai_tour_completed", "true");
+    setHasSeenTour(true);
+    onComplete();
+  };
 
-  if (hasSeenTour || !isVisible) return null
+  if (hasSeenTour || !isVisible) return null;
 
-  const currentStepData = onboardingSteps[currentTourStep]
-  const isWelcome = currentTourStep === 0
+  const currentStepData = onboardingSteps[currentTourStep];
+  const isWelcome = currentTourStep === 0;
 
   return (
     <AnimatePresence>
@@ -120,12 +128,12 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', duration: 0.5 }}
+            transition={{ type: "spring", duration: 0.5 }}
             className={`fixed z-50 ${
-              currentStepData.position === 'center'
-                ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
-                : 'top-24 left-1/2 -translate-x-1/2'
-            } ${isWelcome ? 'w-[90%] max-w-2xl' : 'w-[90%] max-w-lg'}`}
+              currentStepData.position === "center"
+                ? "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                : "top-24 left-1/2 -translate-x-1/2"
+            } ${isWelcome ? "w-[90%] max-w-2xl" : "w-[90%] max-w-lg"}`}
           >
             <div className="bg-gradient-to-br from-tron-grid to-tron-dark border-2 border-tron-cyan rounded-2xl p-8 shadow-2xl shadow-tron-cyan/20">
               {/* Progress Indicator */}
@@ -136,14 +144,19 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
                       Step {currentTourStep} of {onboardingSteps.length - 1}
                     </span>
                     <span className="text-xs text-tron-cyan">
-                      {Math.round((currentTourStep / (onboardingSteps.length - 1)) * 100)}%
+                      {Math.round(
+                        (currentTourStep / (onboardingSteps.length - 1)) * 100,
+                      )}
+                      %
                     </span>
                   </div>
                   <div className="h-1 bg-tron-dark rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-tron-cyan to-blue-500"
                       initial={{ width: 0 }}
-                      animate={{ width: `${(currentTourStep / (onboardingSteps.length - 1)) * 100}%` }}
+                      animate={{
+                        width: `${(currentTourStep / (onboardingSteps.length - 1)) * 100}%`,
+                      }}
                       transition={{ duration: 0.5 }}
                     />
                   </div>
@@ -157,7 +170,7 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className={`${isWelcome ? 'text-3xl' : 'text-2xl'} font-bold text-tron-text mb-4`}
+                  className={`${isWelcome ? "text-3xl" : "text-2xl"} font-bold text-tron-text mb-4`}
                 >
                   {currentStepData.title}
                 </motion.h2>
@@ -166,7 +179,7 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className={`${isWelcome ? 'text-lg' : 'text-base'} text-tron-text-muted leading-relaxed`}
+                  className={`${isWelcome ? "text-lg" : "text-base"} text-tron-text-muted leading-relaxed`}
                 >
                   {currentStepData.description}
                 </motion.p>
@@ -195,7 +208,10 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
                       onClick={handleNext}
                       className="flex-1 px-6 py-3 bg-gradient-to-r from-tron-cyan to-blue-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-tron-cyan/30 transition-all"
                     >
-                      {currentTourStep < onboardingSteps.length - 1 ? 'Next' : 'Finish Tour'} →
+                      {currentTourStep < onboardingSteps.length - 1
+                        ? "Next"
+                        : "Finish Tour"}{" "}
+                      →
                     </button>
                     <button
                       onClick={handleSkip}
@@ -212,7 +228,11 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
                 <div className="absolute -top-4 -right-4 w-20 h-20">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                    transition={{
+                      duration: 20,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="text-6xl"
                   >
                     ✨
@@ -224,5 +244,5 @@ export default function OnboardingTour({ currentStep, onComplete }: OnboardingTo
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }

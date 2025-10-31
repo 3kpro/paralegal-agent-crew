@@ -1,71 +1,122 @@
-'use client'
+"use client";
 // Cache bust: 2025-10-22 - Force rebuild for Delete button text update
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check } from "lucide-react";
 
 interface Campaign {
-  id: string
-  name: string
-  status: string
-  created_at: string
-  target_platforms?: string[]
-  metadata?: any
+  id: string;
+  name: string;
+  status: string;
+  created_at: string;
+  target_platforms?: string[];
+  metadata?: any;
 }
 
 interface Content {
-  id: string
-  platform: string
-  body: string
-  created_at: string
-  metadata?: any
+  id: string;
+  platform: string;
+  content: string;
+  created_at: string;
+  metadata?: any;
 }
 
 export default function CampaignDetailClient({
   campaign,
-  content
+  content,
 }: {
-  campaign: Campaign
-  content: Content[] | null
+  campaign: Campaign;
+  content: Content[] | null;
 }) {
-  const router = useRouter()
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error";
+  }>({ show: false, message: "", type: "success" });
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
+  };
 
   async function handleDelete() {
-    setDeleting(true)
+    setDeleting(true);
     try {
       const response = await fetch(`/api/campaigns/${campaign.id}`, {
-        method: 'DELETE',
-      })
+        method: "DELETE",
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success) {
-        router.push('/campaigns')
-        router.refresh()
+        showToast("Campaign deleted successfully!", "success");
+        setTimeout(() => {
+          router.push("/campaigns");
+          router.refresh();
+        }, 1500);
       } else {
-        alert(`Failed to delete campaign: ${data.error}`)
+        showToast(`Failed to delete campaign: ${data.error}`, "error");
       }
     } catch (error: any) {
-      alert(`Error deleting campaign: ${error.message}`)
+      showToast(`Error deleting campaign: ${error.message}`, "error");
     } finally {
-      setDeleting(false)
-      setShowDeleteModal(false)
+      setDeleting(false);
+      setShowDeleteModal(false);
     }
+  }
+
+  function handleEdit() {
+    // Navigate to campaigns/new page which can be used for editing
+    // In the future, we can create a dedicated edit page
+    router.push(`/campaigns/new`);
   }
 
   return (
     <div className="p-8 bg-tron-dark min-h-screen">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast.show && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50"
+          >
+            <div
+              className={`px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border-2 flex items-center gap-3 ${
+                toast.type === "success"
+                  ? "bg-green-500/20 border-green-500/50 text-green-100"
+                  : "bg-red-500/20 border-red-500/50 text-red-100"
+              }`}
+            >
+              {toast.type === "success" ? (
+                <Check className="w-5 h-5 text-green-400" />
+              ) : (
+                <span className="text-red-400 text-xl">⚠️</span>
+              )}
+              <span className="font-medium">{toast.message}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-tron-grid border-2 border-red-500/50 rounded-xl p-8 max-w-md mx-4">
-            <h3 className="text-xl font-bold text-tron-text mb-4">Delete Campaign?</h3>
+            <h3 className="text-xl font-bold text-tron-text mb-4">
+              Delete Campaign?
+            </h3>
             <p className="text-tron-text-muted mb-6">
-              Are you sure you want to delete "<span className="text-tron-cyan">{campaign.name}</span>"?
-              This action cannot be undone and will delete all generated content.
+              Are you sure you want to delete "
+              <span className="text-tron-cyan">{campaign.name}</span>"? This
+              action cannot be undone and will delete all generated content.
             </p>
             <div className="flex gap-3 justify-end">
               <button
@@ -80,7 +131,7 @@ export default function CampaignDetailClient({
                 disabled={deleting}
                 className="px-4 py-2 bg-red-500/20 border border-red-500 text-red-400 hover:bg-red-500/30 rounded-lg transition-colors disabled:opacity-50"
               >
-                {deleting ? 'Deleting...' : 'Delete Campaign'}
+                {deleting ? "Deleting..." : "Delete Campaign"}
               </button>
             </div>
           </div>
@@ -97,19 +148,26 @@ export default function CampaignDetailClient({
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-tron-text mb-2">{campaign.name}</h1>
+            <h1 className="text-3xl font-bold text-tron-text mb-2">
+              {campaign.name}
+            </h1>
             <div className="flex items-center gap-4 text-tron-text-muted">
-              <span>Status: <span className="text-tron-cyan">{campaign.status}</span></span>
+              <span>
+                Status:{" "}
+                <span className="text-tron-cyan">{campaign.status}</span>
+              </span>
               <span>•</span>
-              <span>Created: {new Date(campaign.created_at).toLocaleDateString()}</span>
+              <span>
+                Created: {new Date(campaign.created_at).toLocaleDateString()}
+              </span>
             </div>
           </div>
           <div className="flex gap-3">
             <button
-              className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-text hover:border-tron-cyan rounded-lg transition-colors"
-              disabled
+              onClick={handleEdit}
+              className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 rounded-lg transition-colors"
             >
-              Edit (Coming Soon)
+              Edit
             </button>
             <button
               onClick={() => setShowDeleteModal(true)}
@@ -124,7 +182,9 @@ export default function CampaignDetailClient({
       {/* Campaign Info */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-tron-grid rounded-xl p-6 border border-tron-cyan/30">
-          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">Target Platforms</h3>
+          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">
+            Target Platforms
+          </h3>
           <div className="flex flex-wrap gap-2">
             {campaign.target_platforms?.map((platform: string) => (
               <span
@@ -133,28 +193,38 @@ export default function CampaignDetailClient({
               >
                 {platform}
               </span>
-            )) || <span className="text-tron-text-muted">No platforms selected</span>}
+            )) || (
+              <span className="text-tron-text-muted">
+                No platforms selected
+              </span>
+            )}
           </div>
         </div>
 
         <div className="bg-tron-grid rounded-xl p-6 border border-tron-cyan/30">
-          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">Trend Topic</h3>
+          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">
+            Trend Topic
+          </h3>
           <p className="text-tron-text">
-            {campaign.metadata?.trend?.title || 'No trend selected'}
+            {campaign.metadata?.trend?.title || "No trend selected"}
           </p>
         </div>
 
         <div className="bg-tron-grid rounded-xl p-6 border border-tron-cyan/30">
-          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">AI Provider</h3>
+          <h3 className="text-sm font-semibold text-tron-text-muted mb-2">
+            AI Provider
+          </h3>
           <p className="text-tron-text">
-            {campaign.metadata?.ai_provider || 'Not specified'}
+            {campaign.metadata?.ai_provider || "Not specified"}
           </p>
         </div>
       </div>
 
       {/* Generated Content */}
       <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-6">
-        <h2 className="text-xl font-bold text-tron-text mb-6">Generated Content</h2>
+        <h2 className="text-xl font-bold text-tron-text mb-6">
+          Generated Content
+        </h2>
 
         {content && content.length > 0 ? (
           <div className="space-y-6">
@@ -173,32 +243,46 @@ export default function CampaignDetailClient({
                 </div>
 
                 <div className="space-y-3">
-                  {item.body && (
+                  {item.content && (
                     <div>
-                      <p className="text-sm text-tron-text-muted mb-1">Content:</p>
-                      <p className="text-tron-text whitespace-pre-wrap">{item.body}</p>
+                      <p className="text-sm text-tron-text-muted mb-1">
+                        Content:
+                      </p>
+                      <p className="text-tron-text whitespace-pre-wrap">
+                        {item.content}
+                      </p>
                     </div>
                   )}
 
                   {item.metadata?.subject && (
                     <div>
-                      <p className="text-sm text-tron-text-muted mb-1">Subject:</p>
+                      <p className="text-sm text-tron-text-muted mb-1">
+                        Subject:
+                      </p>
                       <p className="text-tron-text">{item.metadata.subject}</p>
                     </div>
                   )}
 
-                  {item.metadata?.hashtags && item.metadata.hashtags.length > 0 && (
-                    <div>
-                      <p className="text-sm text-tron-text-muted mb-1">Hashtags:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.metadata.hashtags.map((tag: string, idx: number) => (
-                          <span key={idx} className="text-tron-cyan text-sm">
-                            {tag}
-                          </span>
-                        ))}
+                  {item.metadata?.hashtags &&
+                    item.metadata.hashtags.length > 0 && (
+                      <div>
+                        <p className="text-sm text-tron-text-muted mb-1">
+                          Hashtags:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {item.metadata.hashtags.map(
+                            (tag: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="text-tron-cyan text-sm"
+                              >
+                                {tag}
+                              </span>
+                            ),
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {item.metadata?.characterCount && (
                     <p className="text-xs text-tron-text-muted">
@@ -235,5 +319,5 @@ export default function CampaignDetailClient({
         )}
       </div>
     </div>
-  )
+  );
 }

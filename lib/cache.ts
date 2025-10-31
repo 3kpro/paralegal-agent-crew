@@ -4,87 +4,88 @@
  */
 
 interface CacheEntry<T> {
-  value: T
-  expiresAt: number
+  value: T;
+  expiresAt: number;
 }
 
 class SimpleCache<T> {
-  private cache = new Map<string, CacheEntry<T>>()
-  private defaultTTL: number
+  private cache = new Map<string, CacheEntry<T>>();
+  private defaultTTL: number;
 
-  constructor(defaultTTLMs: number = 300000) { // 5 minutes default
-    this.defaultTTL = defaultTTLMs
+  constructor(defaultTTLMs: number = 300000) {
+    // 5 minutes default
+    this.defaultTTL = defaultTTLMs;
   }
 
   set(key: string, value: T, ttl?: number): void {
-    const expiresAt = Date.now() + (ttl || this.defaultTTL)
-    this.cache.set(key, { value, expiresAt })
+    const expiresAt = Date.now() + (ttl || this.defaultTTL);
+    this.cache.set(key, { value, expiresAt });
   }
 
   get(key: string): T | null {
-    const entry = this.cache.get(key)
+    const entry = this.cache.get(key);
 
     if (!entry) {
-      return null
+      return null;
     }
 
     // Check if expired
     if (Date.now() > entry.expiresAt) {
-      this.cache.delete(key)
-      return null
+      this.cache.delete(key);
+      return null;
     }
 
-    return entry.value
+    return entry.value;
   }
 
   has(key: string): boolean {
-    return this.get(key) !== null
+    return this.get(key) !== null;
   }
 
   delete(key: string): boolean {
-    return this.cache.delete(key)
+    return this.cache.delete(key);
   }
 
   clear(): void {
-    this.cache.clear()
+    this.cache.clear();
   }
 
   // Cleanup expired entries
   cleanup(): number {
-    let removed = 0
-    const now = Date.now()
-    const keysToDelete: string[] = []
+    let removed = 0;
+    const now = Date.now();
+    const keysToDelete: string[] = [];
 
     // Collect keys to delete first to avoid modifying map during iteration
     this.cache.forEach((entry, key) => {
       if (now > entry.expiresAt) {
-        keysToDelete.push(key)
+        keysToDelete.push(key);
       }
-    })
+    });
 
     // Delete expired keys
-    keysToDelete.forEach(key => {
-      this.cache.delete(key)
-      removed++
-    })
+    keysToDelete.forEach((key) => {
+      this.cache.delete(key);
+      removed++;
+    });
 
-    return removed
+    return removed;
   }
 
   size(): number {
-    return this.cache.size
+    return this.cache.size;
   }
 }
 
 // Export singleton instance for Twitter thread responses
-export const threadCache = new SimpleCache<string>(600000) // 10 minutes
+export const threadCache = new SimpleCache<string>(600000); // 10 minutes
 
 // Periodically cleanup expired entries (every 5 minutes)
-if (typeof setInterval !== 'undefined') {
+if (typeof setInterval !== "undefined") {
   setInterval(() => {
-    const removed = threadCache.cleanup()
+    const removed = threadCache.cleanup();
     if (removed > 0) {
-      console.log(`Cache cleanup: removed ${removed} expired entries`)
+      console.log(`Cache cleanup: removed ${removed} expired entries`);
     }
-  }, 300000)
+  }, 300000);
 }

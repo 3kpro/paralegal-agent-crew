@@ -1,84 +1,94 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface GuideStep {
-  title: string
-  description: string
-  tip?: string
-  targetStep: number
+  title: string;
+  description: string;
+  tip?: string;
+  targetStep: number;
 }
 
 const guideSteps: GuideStep[] = [
   {
     title: "Campaign Basics",
-    description: "Give your campaign a memorable name and select the platforms you want to target.",
+    description:
+      "Give your campaign a memorable name and select the platforms you want to target.",
     tip: "Pro tip: Start with 2-3 platforms for better focus",
-    targetStep: 1
+    targetStep: 1,
   },
   {
     title: "Find Your Trend",
-    description: "Search for trending topics in your niche. We'll show you real-time data to help you ride the wave.",
+    description:
+      "Search for trending topics in your niche. We'll show you real-time data to help you ride the wave.",
     tip: "Look for trends with high volume but moderate competition",
-    targetStep: 2
+    targetStep: 2,
   },
   {
     title: "AI Content Generation",
-    description: "Select your AI provider and watch as platform-optimized content is generated automatically.",
+    description:
+      "Select your AI provider and watch as platform-optimized content is generated automatically.",
     tip: "Each platform gets custom-tailored content with hashtags",
-    targetStep: 3
+    targetStep: 3,
   },
   {
     title: "Review & Launch",
-    description: "Review your generated content, make any tweaks, and save your campaign.",
+    description:
+      "Review your generated content, make any tweaks, and save your campaign.",
     tip: "Copy content directly to your platforms and watch engagement soar",
-    targetStep: 4
-  }
-]
+    targetStep: 4,
+  },
+];
 
 interface SidebarGuideProps {
-  currentStep: number
-  onDismiss?: () => void
+  currentStep: number;
+  onDismiss?: () => void;
 }
 
-export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuideProps) {
-  const [isVisible, setIsVisible] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
-  const [hasSeenGuide, setHasSeenGuide] = useState(false)
+export default function SidebarGuide({
+  currentStep,
+  onDismiss,
+}: SidebarGuideProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [hasSeenGuide, setHasSeenGuide] = useState(false);
 
   useEffect(() => {
     // Check if user has dismissed the guide
-    const guideDismissed = localStorage.getItem('ccai_sidebar_guide_dismissed')
+    const guideDismissed = localStorage.getItem("ccai_sidebar_guide_dismissed");
     if (guideDismissed) {
-      setHasSeenGuide(true)
-      return
+      setHasSeenGuide(true);
+      return;
     }
 
     // Show guide after short delay
     const timer = setTimeout(() => {
-      setIsVisible(true)
-    }, 1000)
+      setIsVisible(true);
+    }, 1000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleDismiss = () => {
-    localStorage.setItem('ccai_sidebar_guide_dismissed', 'true')
-    setIsVisible(false)
-    setHasSeenGuide(true)
-    onDismiss?.()
-  }
+    localStorage.setItem("ccai_sidebar_guide_dismissed", "true");
+    setIsVisible(false);
+    setHasSeenGuide(true);
+    onDismiss?.();
+  };
 
   const toggleMinimize = () => {
-    setIsMinimized(!isMinimized)
-  }
+    setIsMinimized(!isMinimized);
+  };
 
-  if (hasSeenGuide || !isVisible) return null
+  if (hasSeenGuide || !isVisible) return null;
 
-  const currentGuideStep = guideSteps.find(step => step.targetStep === currentStep) || guideSteps[0]
-  const stepIndex = guideSteps.findIndex(step => step.targetStep === currentStep)
-  const progress = ((stepIndex + 1) / guideSteps.length) * 100
+  const currentGuideStep =
+    guideSteps.find((step) => step.targetStep === currentStep) || guideSteps[0];
+  const stepIndex = guideSteps.findIndex(
+    (step) => step.targetStep === currentStep,
+  );
+  const progress = ((stepIndex + 1) / guideSteps.length) * 100;
 
   return (
     <AnimatePresence>
@@ -87,8 +97,8 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
           initial={{ x: 400, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 400, opacity: 0 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className={`fixed right-4 top-24 z-40 ${isMinimized ? 'w-16' : 'w-96'} transition-all duration-300`}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+          className={`fixed right-4 top-24 z-40 ${isMinimized ? "w-16" : "w-96"} transition-all duration-300`}
         >
           <div className="bg-gradient-to-br from-tron-grid to-tron-dark border-2 border-tron-cyan/40 rounded-2xl shadow-2xl shadow-tron-cyan/10 overflow-hidden">
             {/* Header */}
@@ -96,16 +106,18 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-tron-cyan animate-pulse" />
                 {!isMinimized && (
-                  <span className="text-sm font-semibold text-tron-cyan">Guide</span>
+                  <span className="text-sm font-semibold text-tron-cyan">
+                    Guide
+                  </span>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <button
                   onClick={toggleMinimize}
                   className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                  title={isMinimized ? 'Expand' : 'Minimize'}
+                  title={isMinimized ? "Expand" : "Minimize"}
                 >
-                  {isMinimized ? '□' : '–'}
+                  {isMinimized ? "□" : "–"}
                 </button>
                 <button
                   onClick={handleDismiss}
@@ -122,7 +134,7 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
               {!isMinimized && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
+                  animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
@@ -143,7 +155,7 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
                           className="h-full bg-gradient-to-r from-tron-cyan to-blue-500 rounded-full"
                           initial={{ width: 0 }}
                           animate={{ width: `${progress}%` }}
-                          transition={{ duration: 0.5, ease: 'easeOut' }}
+                          transition={{ duration: 0.5, ease: "easeOut" }}
                         />
                       </div>
                     </div>
@@ -188,8 +200,8 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
                           key={index}
                           className={`h-1.5 rounded-full transition-all duration-300 ${
                             index <= stepIndex
-                              ? 'w-8 bg-tron-cyan'
-                              : 'w-1.5 bg-tron-grid'
+                              ? "w-8 bg-tron-cyan"
+                              : "w-1.5 bg-tron-grid"
                           }`}
                         />
                       ))}
@@ -210,5 +222,5 @@ export default function SidebarGuide({ currentStep, onDismiss }: SidebarGuidePro
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

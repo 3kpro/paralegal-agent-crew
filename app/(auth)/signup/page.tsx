@@ -1,38 +1,39 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { trackSignup } from "@/lib/analytics";
 
 export default function SignupPage() {
-  const [fullName, setFullName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const supabase = createClient()
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
   const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
+      setError("Passwords do not match");
+      return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
+      setError("Password must be at least 6 characters");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -40,33 +41,36 @@ export default function SignupPage() {
             full_name: fullName,
           },
         },
-      })
+      });
 
-      if (error) throw error
+      if (error) throw error;
+
+      // Track successful signup
+      trackSignup({ method: "email" });
 
       // Redirect to onboarding
-      router.push('/onboarding')
-      router.refresh()
+      router.push("/onboarding");
+      router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to create account')
+      setError(err.message || "Failed to create account");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleGoogleSignup = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
         },
-      })
-      if (error) throw error
+      });
+      if (error) throw error;
     } catch (err: any) {
-      setError(err.message || 'Failed to sign up with Google')
+      setError(err.message || "Failed to sign up with Google");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
@@ -77,14 +81,20 @@ export default function SignupPage() {
             <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900">Content Cascade AI</span>
+            <span className="text-2xl font-bold text-gray-900">
+              Content Cascade AI
+            </span>
           </Link>
-          <p className="text-gray-600 mt-2">Create professional content in minutes</p>
+          <p className="text-gray-600 mt-2">
+            Create professional content in minutes
+          </p>
         </div>
 
         {/* Signup Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Create your account</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">
+            Create your account
+          </h1>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
@@ -95,7 +105,10 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="space-y-4">
             {/* Full Name */}
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="fullName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Full Name
               </label>
               <input
@@ -111,7 +124,10 @@ export default function SignupPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email
               </label>
               <input
@@ -127,7 +143,10 @@ export default function SignupPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -143,7 +162,10 @@ export default function SignupPage() {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Confirm Password
               </label>
               <input
@@ -166,12 +188,18 @@ export default function SignupPage() {
                 className="mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
-                I agree to the{' '}
-                <Link href="/terms" className="text-indigo-600 hover:text-indigo-500">
+                I agree to the{" "}
+                <Link
+                  href="/terms"
+                  className="text-indigo-600 hover:text-indigo-500"
+                >
                   Terms of Service
-                </Link>{' '}
-                and{' '}
-                <Link href="/privacy" className="text-indigo-600 hover:text-indigo-500">
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy"
+                  className="text-indigo-600 hover:text-indigo-500"
+                >
                   Privacy Policy
                 </Link>
               </label>
@@ -183,7 +211,7 @@ export default function SignupPage() {
               disabled={loading}
               className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold rounded-lg transition-colors shadow-lg"
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? "Creating account..." : "Create account"}
             </button>
           </form>
 
@@ -222,13 +250,16 @@ export default function SignupPage() {
 
           {/* Login Link */}
           <p className="mt-6 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link href="/login" className="text-indigo-600 hover:text-indigo-500 font-medium">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-indigo-600 hover:text-indigo-500 font-medium"
+            >
               Sign in
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

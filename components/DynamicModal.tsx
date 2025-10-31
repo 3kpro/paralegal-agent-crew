@@ -1,9 +1,10 @@
-import dynamic from 'next/dynamic'
-import { Skeleton } from './SkeletonLoader'
+import dynamic from "next/dynamic";
+import { Skeleton } from "./SkeletonLoader";
 
 // Dynamic imports for modal components with loading states
 export const DynamicDemoModal = dynamic(
-  () => import('./modals/DemoModal').then(mod => ({ default: mod.DemoModal })),
+  () =>
+    import("./modals/DemoModal").then((mod) => ({ default: mod.DemoModal })),
   {
     loading: () => (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -22,12 +23,15 @@ export const DynamicDemoModal = dynamic(
         </div>
       </div>
     ),
-    ssr: false
-  }
-)
+    ssr: false,
+  },
+);
 
 export const DynamicEnhancedTwitterDemo = dynamic(
-  () => import('./modals/EnhancedTwitterDemo').then(mod => ({ default: mod.EnhancedTwitterDemo })),
+  () =>
+    import("./modals/EnhancedTwitterDemo").then((mod) => ({
+      default: mod.EnhancedTwitterDemo,
+    })),
   {
     loading: () => (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -45,8 +49,16 @@ export const DynamicEnhancedTwitterDemo = dynamic(
               <div className="space-y-4">
                 <Skeleton height="h-6" width="w-24" />
                 <div className="space-y-2">
-                  <Skeleton height="h-8" width="w-full" className="rounded-md" />
-                  <Skeleton height="h-8" width="w-full" className="rounded-md" />
+                  <Skeleton
+                    height="h-8"
+                    width="w-full"
+                    className="rounded-md"
+                  />
+                  <Skeleton
+                    height="h-8"
+                    width="w-full"
+                    className="rounded-md"
+                  />
                 </div>
               </div>
             </div>
@@ -55,37 +67,46 @@ export const DynamicEnhancedTwitterDemo = dynamic(
         </div>
       </div>
     ),
-    ssr: false
-  }
-)
+    ssr: false,
+  },
+);
 
 export const DynamicTrialModal = dynamic(
-  () => import('./modals/TrialModal').then(mod => ({ default: mod.TrialModal })),
+  () =>
+    import("./modals/TrialModal").then((mod) => ({ default: mod.TrialModal })),
   {
     loading: () => (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
           <div className="text-center space-y-4">
-            <Skeleton height="h-12" width="w-12" className="rounded-full mx-auto" />
+            <Skeleton
+              height="h-12"
+              width="w-12"
+              className="rounded-full mx-auto"
+            />
             <Skeleton height="h-8" width="w-48" className="mx-auto" />
             <Skeleton height="h-16" width="w-full" />
-            <Skeleton height="h-10" width="w-32" className="rounded-lg mx-auto" />
+            <Skeleton
+              height="h-10"
+              width="w-32"
+              className="rounded-lg mx-auto"
+            />
           </div>
         </div>
       </div>
     ),
-    ssr: false
-  }
-)
+    ssr: false,
+  },
+);
 
 // Dynamic import for settings components (heavy forms)
 export const DynamicSettingsClient = dynamic(
-  () => import('../app/(portal)/settings/page'),
+  () => import("../app/(portal)/settings/page"),
   {
     loading: () => {
-      const { SettingsSkeleton } = require('./SkeletonLoader')
-      return <SettingsSkeleton />
+      const { SettingsSkeleton } = require("./SkeletonLoader");
+      return <SettingsSkeleton />;
     },
-    ssr: false
-  }
-)
+    ssr: false,
+  },
+);

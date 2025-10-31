@@ -1,36 +1,35 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from "next/server";
 
 // nosemgrep: Local development file for LM Studio testing - HTTP is expected for local development
-const LM_STUDIO_URL = 'http://10.10.10.105:1234'
+const LM_STUDIO_URL = "http://10.10.10.105:1234";
 
 export async function GET() {
   try {
     const response = await fetch(`${LM_STUDIO_URL}/v1/models`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(5000) // 5 second timeout
-    })
+      method: "GET",
+      signal: AbortSignal.timeout(5000), // 5 second timeout
+    });
 
     if (!response.ok) {
-      const errorText = await response.text()
+      const errorText = await response.text();
       return NextResponse.json({
-        status: 'error',
+        status: "error",
         message: `LM Studio models endpoint error: ${response.status}`,
-        error: errorText
-      })
+        error: errorText,
+      });
     }
 
-    const data = await response.json()
+    const data = await response.json();
     return NextResponse.json({
-      status: 'success',
-      message: 'LM Studio models endpoint working',
-      models: data
-    })
-
+      status: "success",
+      message: "LM Studio models endpoint working",
+      models: data,
+    });
   } catch (error) {
     return NextResponse.json({
-      status: 'error',
-      message: 'Failed to connect to LM Studio models endpoint',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    })
+      status: "error",
+      message: "Failed to connect to LM Studio models endpoint",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 }

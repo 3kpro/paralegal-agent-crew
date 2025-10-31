@@ -168,13 +168,16 @@ describe('Onboarding Social Connections E2E', () => {
     test('handles loading states during completion', async () => {
       // Mock a delayed response
       let resolvePromise: (value: any) => void
-      const delayedPromise = new Promise((resolve) => {
+      const delayedPromise = new Promise<void>((resolve) => {
         resolvePromise = resolve
       })
 
       mockSupabase.from.mockReturnValue({
         update: jest.fn(() => ({
-          eq: jest.fn(() => delayedPromise),
+          eq: jest.fn(async () => {
+            const result = await delayedPromise;
+            return result;
+          }),
         })),
       })
 

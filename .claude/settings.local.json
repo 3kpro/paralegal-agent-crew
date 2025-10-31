@@ -67,7 +67,16 @@
       "Bash(vercel project:*)",
       "Bash(where:*)",
       "Bash(npx next dev:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(semgrep:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx prettier:*)",
+      "Bash(python -m json.tool:*)",
+      "Read(//c/**)",
+      "Bash(ls:*)",
+      "Bash(npm run test:*)",
+      "Bash(cd:*)"
     ],
     "deny": [],
     "ask": []

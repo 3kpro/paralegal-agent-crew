@@ -1,104 +1,95 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 interface WelcomeMessage {
-  text: string
-  subtext?: string
-  duration?: number
+  text: string;
+  subtext?: string;
+  duration?: number;
 }
 
 const welcomeMessages: WelcomeMessage[] = [
   {
     text: "Tired of staring at blank screens?",
     subtext: "Welcome to TrendPulse. We fixed that.",
-    duration: 3500
+    duration: 3500,
   },
   {
     text: "Here's the secret:",
     subtext: "Trends are just conversations you're late to... until now",
-    duration: 3500
+    duration: 3500,
   },
   {
     text: "We find what's hot.",
     subtext: "AI writes the content. You take the credit.",
-    duration: 3500
+    duration: 3500,
   },
   {
     text: "While they're still brainstorming,",
     subtext: "you're already posting. That's the edge.",
-    duration: 3500
+    duration: 3500,
   },
   {
     text: "Ready to move at internet speed?",
     subtext: "Let's build your first campaign",
-    duration: 4500
-  }
-]
+    duration: 4500,
+  },
+];
 
 export default function WelcomeAnimation() {
-  const router = useRouter()
-  const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
-  const [isComplete, setIsComplete] = useState(false)
-  const [hasSeenWelcome, setHasSeenWelcome] = useState(false)
+  const router = useRouter();
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
 
   useEffect(() => {
     // Check if user has seen the welcome animation
-    const welcomeCompleted = localStorage.getItem('ccai_welcome_completed')
+    const welcomeCompleted = localStorage.getItem("ccai_welcome_completed");
     if (welcomeCompleted) {
-      setHasSeenWelcome(true)
-      setIsComplete(true)
-      return
+      setHasSeenWelcome(true);
+      setIsComplete(true);
+      return;
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    if (hasSeenWelcome || isComplete) return
+    if (hasSeenWelcome || isComplete) return;
 
-    const currentMessage = welcomeMessages[currentMessageIndex]
-    const duration = currentMessage.duration || 2500
+    const currentMessage = welcomeMessages[currentMessageIndex];
+    const duration = currentMessage.duration || 2500;
 
     const timer = setTimeout(() => {
       if (currentMessageIndex < welcomeMessages.length - 1) {
-        setCurrentMessageIndex(prev => prev + 1)
+        setCurrentMessageIndex((prev) => prev + 1);
       }
-    }, duration)
+    }, duration);
 
-    return () => clearTimeout(timer)
-  }, [currentMessageIndex, hasSeenWelcome, isComplete])
+    return () => clearTimeout(timer);
+  }, [currentMessageIndex, hasSeenWelcome, isComplete]);
 
   const handleContinue = () => {
-    localStorage.setItem('ccai_welcome_completed', 'true')
-    setIsComplete(true)
-    router.push('/campaigns/new')
-  }
+    localStorage.setItem("ccai_welcome_completed", "true");
+    setIsComplete(true);
+    router.push("/campaigns/new");
+  };
 
   const handleSkip = () => {
-    localStorage.setItem('ccai_welcome_completed', 'true')
-    setIsComplete(true)
-  }
+    localStorage.setItem("ccai_welcome_completed", "true");
+    setIsComplete(true);
+  };
 
-  if (hasSeenWelcome || isComplete) return null
+  if (hasSeenWelcome || isComplete) return null;
 
-  const currentMessage = welcomeMessages[currentMessageIndex]
-  const isLastMessage = currentMessageIndex === welcomeMessages.length - 1
-
-  // Smooth ease-out cubic
-  const easing = [0.16, 1, 0.3, 1] as [number, number, number, number]
+  const currentMessage = welcomeMessages[currentMessageIndex];
+  const isLastMessage = currentMessageIndex === welcomeMessages.length - 1;
 
   return (
     <div className="fixed inset-0 z-50 bg-tron-dark flex items-center justify-center">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `
-            linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px'
-        }} />
+        <div className="absolute inset-0 welcome-grid-background" />
       </div>
 
       {/* Skip button */}
@@ -117,17 +108,17 @@ export default function WelcomeAnimation() {
             <motion.h1
               className="text-5xl md:text-7xl font-bold text-white tracking-tight"
               initial={{
-                opacity: 0
+                opacity: 0,
               }}
               animate={{
-                opacity: 1
+                opacity: 1,
               }}
               exit={{
-                opacity: 0
+                opacity: 0,
               }}
               transition={{
                 duration: 1.0,
-                ease: [0.25, 0.46, 0.45, 0.94]
+                ease: [0.25, 0.46, 0.45, 0.94],
               }}
             >
               {currentMessage.text}
@@ -138,18 +129,18 @@ export default function WelcomeAnimation() {
               <motion.p
                 className="text-xl md:text-2xl text-tron-cyan font-light"
                 initial={{
-                  opacity: 0
+                  opacity: 0,
                 }}
                 animate={{
-                  opacity: 1
+                  opacity: 1,
                 }}
                 exit={{
-                  opacity: 0
+                  opacity: 0,
                 }}
                 transition={{
                   duration: 1.0,
                   ease: [0.25, 0.46, 0.45, 0.94],
-                  delay: 0.8 // Blue text comes in later so white message sinks in first
+                  delay: 0.8, // Blue text comes in later so white message sinks in first
                 }}
               >
                 {currentMessage.subtext}
@@ -193,10 +184,10 @@ export default function WelcomeAnimation() {
               key={index}
               className={`h-1.5 rounded-full transition-all duration-500 ${
                 index === currentMessageIndex
-                  ? 'w-8 bg-tron-cyan'
+                  ? "w-8 bg-tron-cyan"
                   : index < currentMessageIndex
-                  ? 'w-1.5 bg-tron-cyan/50'
-                  : 'w-1.5 bg-tron-grid'
+                    ? "w-1.5 bg-tron-cyan/50"
+                    : "w-1.5 bg-tron-grid"
               }`}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -211,27 +202,27 @@ export default function WelcomeAnimation() {
         className="absolute top-1/4 left-1/4 w-64 h-64 bg-tron-cyan/5 rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3]
+          opacity: [0.3, 0.5, 0.3],
         }}
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       />
       <motion.div
         className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"
         animate={{
           scale: [1.2, 1, 1.2],
-          opacity: [0.5, 0.3, 0.5]
+          opacity: [0.5, 0.3, 0.5],
         }}
         transition={{
           duration: 4,
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 2
+          delay: 2,
         }}
       />
     </div>
-  )
+  );
 }

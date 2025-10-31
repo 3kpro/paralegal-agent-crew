@@ -1,132 +1,136 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface TrendingTopic {
-  title: string
-  formattedTraffic: string
-  relatedQueries?: string[]
+  title: string;
+  formattedTraffic: string;
+  relatedQueries?: string[];
 }
 
 interface RelatedQuery {
-  query: string
-  value: number
-  formattedValue?: string
+  query: string;
+  value: number;
+  formattedValue?: string;
 }
 
 interface TrendsData {
-  trending: TrendingTopic[]
-  relatedQueries: RelatedQuery[]
-  relatedTopics: RelatedQuery[]
+  trending: TrendingTopic[];
+  relatedQueries: RelatedQuery[];
+  relatedTopics: RelatedQuery[];
 }
 
 export default function TrendDiscovery() {
-  const [keyword, setKeyword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [trends, setTrends] = useState<TrendsData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null)
-  const [generatedContent, setGeneratedContent] = useState<any>(null)
-  const [generating, setGenerating] = useState(false)
+  const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [trends, setTrends] = useState<TrendsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [generating, setGenerating] = useState(false);
 
   const searchTrends = async () => {
     if (!keyword.trim()) {
-      setError('Please enter a keyword')
-      return
+      setError("Please enter a keyword");
+      return;
     }
 
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch(
-        `/api/trends?keyword=${encodeURIComponent(keyword)}&mode=ideas`
-      )
+        `/api/trends?keyword=${encodeURIComponent(keyword)}&mode=ideas`,
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch trends')
+        throw new Error("Failed to fetch trends");
       }
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (result.success) {
-        setTrends(result.data)
+        setTrends(result.data);
       } else {
-        setError(result.message || 'Failed to fetch trends')
+        setError(result.message || "Failed to fetch trends");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const getTrendingTopics = async () => {
-    setLoading(true)
-    setError(null)
-    setKeyword('')
+    setLoading(true);
+    setError(null);
+    setKeyword("");
 
     try {
-      const response = await fetch('/api/trends?mode=trending')
+      const response = await fetch("/api/trends?mode=trending");
 
       if (!response.ok) {
-        throw new Error('Failed to fetch trending topics')
+        throw new Error("Failed to fetch trending topics");
       }
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (result.success) {
         setTrends({
-          trending: Array.isArray(result.data) ? result.data : result.data.trending || [],
+          trending: Array.isArray(result.data)
+            ? result.data
+            : result.data.trending || [],
           relatedQueries: [],
           relatedTopics: [],
-        })
+        });
       } else {
-        setError(result.message || 'Failed to fetch trending topics')
+        setError(result.message || "Failed to fetch trending topics");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const generateContent = async () => {
-    if (!selectedTopic) return
+    if (!selectedTopic) return;
 
-    setGenerating(true)
-    setError(null)
+    setGenerating(true);
+    setError(null);
 
     try {
-      const response = await fetch('/api/generate-local', {
-        method: 'POST',
+      const response = await fetch("/api/generate-local", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           topic: selectedTopic,
-          formats: ['twitter', 'linkedin', 'email']
-        })
-      })
+          formats: ["twitter", "linkedin", "email"],
+        }),
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to generate content')
+        throw new Error("Failed to generate content");
       }
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (result.success) {
-        setGeneratedContent(result)
+        setGeneratedContent(result);
       } else {
-        setError(result.error || 'Failed to generate content')
+        setError(result.error || "Failed to generate content");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate content')
+      setError(
+        err instanceof Error ? err.message : "Failed to generate content",
+      );
     } finally {
-      setGenerating(false)
+      setGenerating(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
@@ -147,7 +151,7 @@ export default function TrendDiscovery() {
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && searchTrends()}
+            onKeyDown={(e) => e.key === "Enter" && searchTrends()}
             placeholder="Enter a topic (e.g., AI automation, content marketing)"
             className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={loading}
@@ -158,14 +162,14 @@ export default function TrendDiscovery() {
               disabled={loading}
               className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
             >
-              {loading ? '🔍 Searching...' : '🔍 Search'}
+              {loading ? "🔍 Searching..." : "🔍 Search"}
             </button>
             <button
               onClick={getTrendingTopics}
               disabled={loading}
               className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
             >
-              {loading ? '⏳ Loading...' : '🔥 Daily Trends'}
+              {loading ? "⏳ Loading..." : "🔥 Daily Trends"}
             </button>
           </div>
         </div>
@@ -198,8 +202,8 @@ export default function TrendDiscovery() {
                     onClick={() => setSelectedTopic(trend.title)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedTopic === trend.title
-                        ? 'bg-blue-100 border-2 border-blue-500'
-                        : 'bg-gray-50 hover:bg-gray-100'
+                        ? "bg-blue-100 border-2 border-blue-500"
+                        : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
                     <div className="font-medium">{trend.title}</div>
@@ -230,8 +234,8 @@ export default function TrendDiscovery() {
                     onClick={() => setSelectedTopic(query.query)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedTopic === query.query
-                        ? 'bg-green-100 border-2 border-green-500'
-                        : 'bg-gray-50 hover:bg-gray-100'
+                        ? "bg-green-100 border-2 border-green-500"
+                        : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
                     <div className="font-medium">{query.query}</div>
@@ -264,8 +268,8 @@ export default function TrendDiscovery() {
                     onClick={() => setSelectedTopic(topic.query)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
                       selectedTopic === topic.query
-                        ? 'bg-purple-100 border-2 border-purple-500'
-                        : 'bg-gray-50 hover:bg-gray-100'
+                        ? "bg-purple-100 border-2 border-purple-500"
+                        : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
                     <div className="font-medium">{topic.query}</div>
@@ -303,7 +307,7 @@ export default function TrendDiscovery() {
               disabled={generating}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-md"
             >
-              {generating ? '🔄 Generating...' : '✨ Generate Content'}
+              {generating ? "🔄 Generating..." : "✨ Generate Content"}
             </button>
           </div>
         </motion.div>
@@ -322,10 +326,11 @@ export default function TrendDiscovery() {
                 🎉 Content Generated Successfully!
               </h3>
               <p className="text-gray-600">
-                Topic: <span className="font-semibold">{generatedContent.topic}</span>
+                Topic:{" "}
+                <span className="font-semibold">{generatedContent.topic}</span>
               </p>
             </div>
-            
+
             {/* Content Tabs */}
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -340,7 +345,8 @@ export default function TrendDiscovery() {
                     </pre>
                   </div>
                   <div className="mt-2 text-xs text-blue-600">
-                    Characters: {generatedContent.content.twitter.characterCount}/280
+                    Characters:{" "}
+                    {generatedContent.content.twitter.characterCount}/280
                   </div>
                 </div>
 
@@ -355,7 +361,8 @@ export default function TrendDiscovery() {
                     </pre>
                   </div>
                   <div className="mt-2 text-xs text-purple-600">
-                    Characters: {generatedContent.content.linkedin.characterCount}
+                    Characters:{" "}
+                    {generatedContent.content.linkedin.characterCount}
                   </div>
                 </div>
 
@@ -384,8 +391,8 @@ export default function TrendDiscovery() {
               <div className="mt-6 flex flex-wrap gap-3 justify-center">
                 <button
                   onClick={() => {
-                    setGeneratedContent(null)
-                    setSelectedTopic(null)
+                    setGeneratedContent(null);
+                    setSelectedTopic(null);
                   }}
                   className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
                 >
@@ -396,7 +403,7 @@ export default function TrendDiscovery() {
                   disabled={generating}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
                 >
-                  {generating ? '🔄 Regenerating...' : '🔄 Regenerate'}
+                  {generating ? "🔄 Regenerating..." : "🔄 Regenerate"}
                 </button>
               </div>
             </div>
@@ -404,5 +411,5 @@ export default function TrendDiscovery() {
         </motion.div>
       )}
     </div>
-  )
+  );
 }

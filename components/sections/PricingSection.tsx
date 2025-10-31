@@ -1,64 +1,69 @@
-import { Button } from '../ui/Button'
+import { Button } from "../ui/Button";
 
 interface PricingPlan {
-  name: string
-  price: string
-  description: string
-  features: string[]
-  buttonText: string
-  popular?: boolean
+  name: string;
+  price: string;
+  description: string;
+  features: string[];
+  buttonText: string;
+  popular?: boolean;
 }
 
 const pricingPlans: PricingPlan[] = [
   {
-    name: 'Starter',
-    price: '$199',
-    description: 'Perfect for small businesses getting started',
+    name: "Starter",
+    price: "$199",
+    description: "Perfect for small businesses getting started",
     features: [
-      'Content Cascade (7 formats)',
-      'Basic UGC video script',
-      'Social media posts',
-      'Email campaign draft',
-      '24-hour delivery'
+      "Content Cascade (7 formats)",
+      "Basic UGC video script",
+      "Social media posts",
+      "Email campaign draft",
+      "24-hour delivery",
     ],
-    buttonText: 'Get Started'
+    buttonText: "Get Started",
   },
   {
-    name: 'Professional',
-    price: '$399',
-    description: 'Everything you need for serious marketing',
+    name: "Professional",
+    price: "$399",
+    description: "Everything you need for serious marketing",
     features: [
-      'Everything in Starter',
-      'Professional UGC video',
-      'Multiple video variations',
-      'Brand voice training',
-      'Priority support'
+      "Everything in Starter",
+      "Professional UGC video",
+      "Multiple video variations",
+      "Brand voice training",
+      "Priority support",
     ],
-    buttonText: 'Start Free Trial',
-    popular: true
+    buttonText: "Start Free Trial",
+    popular: true,
   },
   {
-    name: 'Enterprise',
-    price: '$699',
-    description: 'Advanced features for growing teams',
+    name: "Enterprise",
+    price: "$699",
+    description: "Advanced features for growing teams",
     features: [
-      'Everything in Professional',
-      'Custom character creation',
-      'Advanced analytics',
-      'Direct publishing',
-      'Dedicated account manager'
+      "Everything in Professional",
+      "Custom character creation",
+      "Advanced analytics",
+      "Direct publishing",
+      "Dedicated account manager",
     ],
-    buttonText: 'Contact Sales'
-  }
-]
+    buttonText: "Contact Sales",
+  },
+];
 
 interface PricingSectionProps {
-  onContactClick: () => void
+  onContactClick: () => void;
 }
 
-export const PricingSection: React.FC<PricingSectionProps> = ({ onContactClick }) => {
+export const PricingSection: React.FC<PricingSectionProps> = ({
+  onContactClick,
+}) => {
   return (
-    <section id="pricing" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <section
+      id="pricing"
+      className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">
@@ -74,7 +79,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onContactClick }
             <div
               key={index}
               className={`bg-white rounded-xl shadow-lg p-8 border-2 ${
-                plan.popular ? 'border-blue-600 relative' : 'border-gray-100'
+                plan.popular ? "border-blue-600 relative" : "border-gray-100"
               }`}
             >
               {plan.popular && (
@@ -107,7 +112,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onContactClick }
 
               <Button
                 onClick={onContactClick}
-                variant={plan.popular ? 'primary' : 'secondary'}
+                variant={plan.popular ? "primary" : "secondary"}
                 className="w-full"
               >
                 {plan.buttonText}
@@ -117,5 +122,5 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onContactClick }
         </div>
       </div>
     </section>
-  )
-}
+  );
+};

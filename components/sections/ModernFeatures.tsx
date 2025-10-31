@@ -1,56 +1,72 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { TrendingUp, Sparkles, Layout, Clock, Shield, BarChart3 } from 'lucide-react'
+import { motion } from "framer-motion";
+import {
+  TrendingUp,
+  Sparkles,
+  Layout,
+  Clock,
+  Shield,
+  BarChart3,
+} from "lucide-react";
 
 const features = [
   {
     icon: TrendingUp,
-    title: 'TrendPulse™ Discovery',
-    subtitle: 'Real-Time Intelligence',
-    description: 'Advanced AI monitors 1M+ sources across platforms to identify trending topics 72 hours before they peak. Includes competitor analysis and viral prediction scoring.',
-    gradient: 'from-blue-500 to-cyan-500'
+    title: "TrendPulse™ Discovery",
+    subtitle: "Real-Time Intelligence",
+    description:
+      "Advanced AI monitors 1M+ sources across platforms to identify trending topics 72 hours before they peak. Includes competitor analysis and viral prediction scoring.",
+    gradient: "from-blue-500 to-cyan-500",
   },
   {
     icon: Sparkles,
-    title: 'AI Studio™ Multi-Provider',
-    subtitle: 'Enterprise AI Generation',
-    description: 'Choose from GPT-4, Claude 3.5 Sonnet, Gemini Pro, and 8+ premium AI models. Auto-optimization selects the best AI for each content type and platform.',
-    gradient: 'from-purple-500 to-pink-500'
+    title: "AI Studio™ Multi-Provider",
+    subtitle: "Enterprise AI Generation",
+    description:
+      "Choose from GPT-4, Claude 3.5 Sonnet, Gemini Pro, and 8+ premium AI models. Auto-optimization selects the best AI for each content type and platform.",
+    gradient: "from-purple-500 to-pink-500",
   },
   {
     icon: Layout,
-    title: 'ContentFlow™ Automation',
-    subtitle: '6-Platform Publishing',
-    description: 'One-click publishing to Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Smart formatting, optimal timing, and engagement tracking included.',
-    gradient: 'from-orange-500 to-red-500'
+    title: "ContentFlow™ Automation",
+    subtitle: "6-Platform Publishing",
+    description:
+      "One-click publishing to Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Smart formatting, optimal timing, and engagement tracking included.",
+    gradient: "from-orange-500 to-red-500",
   },
   {
     icon: Clock,
-    title: 'Analytics Hub™',
-    subtitle: 'Performance Intelligence',
-    description: 'Real-time performance tracking with predictive insights. A/B test headlines, track viral coefficients, and optimize content strategy with data-driven recommendations.',
-    gradient: 'from-green-500 to-emerald-500'
+    title: "Analytics Hub™",
+    subtitle: "Performance Intelligence",
+    description:
+      "Real-time performance tracking with predictive insights. A/B test headlines, track viral coefficients, and optimize content strategy with data-driven recommendations.",
+    gradient: "from-green-500 to-emerald-500",
   },
   {
     icon: Shield,
-    title: 'Brand Voice AI™',
-    subtitle: 'Consistency Engine',
-    description: 'Train custom AI models on your content to maintain perfect brand voice across all platforms. Includes tone scoring and compliance monitoring.',
-    gradient: 'from-indigo-500 to-purple-500'
+    title: "Brand Voice AI™",
+    subtitle: "Consistency Engine",
+    description:
+      "Train custom AI models on your content to maintain perfect brand voice across all platforms. Includes tone scoring and compliance monitoring.",
+    gradient: "from-indigo-500 to-purple-500",
   },
   {
     icon: BarChart3,
-    title: 'Media Generator™',
-    subtitle: 'Visual Content Creation',
-    description: 'Generate custom images, infographics, and video thumbnails using DALL-E 3, Midjourney, and Stable Diffusion. Perfect brand alignment guaranteed.',
-    gradient: 'from-yellow-500 to-orange-500'
-  }
-]
+    title: "Media Generator™",
+    subtitle: "Visual Content Creation",
+    description:
+      "Generate custom images, infographics, and video thumbnails using DALL-E 3, Midjourney, and Stable Diffusion. Perfect brand alignment guaranteed.",
+    gradient: "from-yellow-500 to-orange-500",
+  },
+];
 
 export default function ModernFeatures() {
   return (
-    <section id="features" className="py-24 bg-tron-dark relative overflow-hidden">
+    <section
+      id="features"
+      className="py-24 bg-tron-dark relative overflow-hidden"
+    >
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-gray-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
 
@@ -69,14 +85,16 @@ export default function ModernFeatures() {
             </span>
           </h2>
           <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
-            Experience our most powerful features yet. The Beta release brings enhanced AI capabilities, faster processing, and seamless integrations.
+            Experience our most powerful features yet. The Beta release brings
+            enhanced AI capabilities, faster processing, and seamless
+            integrations.
           </p>
         </motion.div>
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => {
-            const Icon = feature.icon
+            const Icon = feature.icon;
             return (
               <motion.div
                 key={index}
@@ -88,7 +106,9 @@ export default function ModernFeatures() {
               >
                 <div className="h-full bg-tron-grid rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-tron-cyan hover:border-tron-magenta">
                   {/* Icon */}
-                  <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  <div
+                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
 
@@ -108,10 +128,12 @@ export default function ModernFeatures() {
                   </p>
 
                   {/* Hover gradient effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`} />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}
+                  />
                 </div>
               </motion.div>
-            )
+            );
           })}
         </div>
 
@@ -134,10 +156,12 @@ export default function ModernFeatures() {
               <Sparkles className="w-5 h-5" />
               Join TrendPulse™ Beta
             </a>
-            <span className="text-sm text-tron-text-muted">Limited spots available</span>
+            <span className="text-sm text-tron-text-muted">
+              Limited spots available
+            </span>
           </div>
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

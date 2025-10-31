@@ -1,22 +1,24 @@
-'use client'
+"use client";
 
 // Force rebuild - Content Cascade AI Landing Page
-import { 
-  ModernHero, 
-  ModernFeatures, 
+import {
+  ModernHero,
+  ModernFeatures,
   DemoVideoSection,
   TestimonialsSection,
   ModernPricing,
   FAQSection,
-  WaitlistSection
-} from '../components/sections'
-import { Navigation, Footer, ContactSection } from '../components'
-import { scrollToContact } from '../utils/scroll'
+  WaitlistSection,
+} from "../components/sections";
+import { Navigation, Footer, ContactSection } from "../components";
 
 export default function HomePage() {
   const handleContactClick = () => {
-    scrollToContact()
-  }
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -40,5 +42,5 @@ export default function HomePage() {
 
       <Footer />
     </div>
-  )
+  );
 }

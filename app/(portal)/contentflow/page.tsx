@@ -1,54 +1,98 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { SchedulePostDialog } from '@/components/SchedulePostDialog'
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { SchedulePostDialog } from "@/components/SchedulePostDialog";
+import { Send, RotateCcw, Check } from "lucide-react";
 
 export default function ContentFlowPage() {
-  const router = useRouter()
-  const supabase = createClient()
-  const [view, setView] = useState<'calendar' | 'queue' | 'templates'>('calendar')
-  const [scheduledPosts, setScheduledPosts] = useState<any[]>([])
-  const [templates, setTemplates] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showScheduleDialog, setShowScheduleDialog] = useState(false)
+  const router = useRouter();
+  const supabase = createClient();
+  const [view, setView] = useState<"calendar" | "queue" | "templates">(
+    "calendar",
+  );
+  const [scheduledPosts, setScheduledPosts] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+  const [publishingPostId, setPublishingPostId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    show: boolean;
+    message: string;
+    type: "success" | "error";
+  }>({ show: false, message: "", type: "success" });
+
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
+  };
 
   useEffect(() => {
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   async function loadData() {
-    setLoading(true)
+    setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
-        router.push('/login')
-        return
+        router.push("/login");
+        return;
       }
 
       // Load scheduled posts
       const { data: posts } = await supabase
-        .from('scheduled_posts')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('scheduled_at', { ascending: true })
+        .from("scheduled_posts")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("scheduled_at", { ascending: true });
 
-      setScheduledPosts(posts || [])
+      setScheduledPosts(posts || []);
 
       // Load templates
       const { data: userTemplates } = await supabase
-        .from('content_templates')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .from("content_templates")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-      setTemplates(userTemplates || [])
+      setTemplates(userTemplates || []);
     } catch (error) {
-      console.error('Failed to load ContentFlow data:', error)
+      console.error("Failed to load ContentFlow data:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
+    }
+  }
+
+  async function publishPost(postId: string) {
+    setPublishingPostId(postId);
+
+    try {
+      const response = await fetch("/api/publish", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ post_id: postId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showToast("Post published successfully!", "success");
+        // Reload posts to show updated status
+        await loadData();
+      } else {
+        showToast(data.error || "Failed to publish post", "error");
+      }
+    } catch (error: any) {
+      showToast(`Error: ${error.message}`, "error");
+    } finally {
+      setPublishingPostId(null);
     }
   }
 
@@ -60,11 +104,38 @@ export default function ContentFlowPage() {
           <p className="text-tron-text-muted">Loading ContentFlow...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen bg-tron-dark p-6">
+      {/* Toast Notification */}
+      <AnimatePresence>
+        {toast.show && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50"
+          >
+            <div
+              className={`px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border-2 flex items-center gap-3 ${
+                toast.type === "success"
+                  ? "bg-green-500/20 border-green-500/50 text-green-100"
+                  : "bg-red-500/20 border-red-500/50 text-red-100"
+              }`}
+            >
+              {toast.type === "success" ? (
+                <Check className="w-5 h-5 text-green-400" />
+              ) : (
+                <span className="text-red-400 text-xl">⚠️</span>
+              )}
+              <span className="font-medium">{toast.message}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -82,7 +153,7 @@ export default function ContentFlowPage() {
                 Schedule and auto-publish your content across all platforms
               </p>
             </div>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -96,17 +167,17 @@ export default function ContentFlowPage() {
           {/* Navigation Tabs */}
           <div className="flex gap-2 bg-tron-grid rounded-lg p-1">
             {[
-              { key: 'calendar', label: 'Calendar View', icon: '📅' },
-              { key: 'queue', label: 'Publishing Queue', icon: '⏰' },
-              { key: 'templates', label: 'Templates', icon: '📝' }
+              { key: "calendar", label: "Calendar View", icon: "📅" },
+              { key: "queue", label: "Publishing Queue", icon: "⏰" },
+              { key: "templates", label: "Templates", icon: "📝" },
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setView(tab.key as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
                   view === tab.key
-                    ? 'bg-tron-cyan text-tron-dark font-semibold'
-                    : 'text-tron-text-muted hover:text-tron-text hover:bg-tron-dark/50'
+                    ? "bg-tron-cyan text-tron-dark font-semibold"
+                    : "text-tron-text-muted hover:text-tron-text hover:bg-tron-dark/50"
                 }`}
               >
                 <span>{tab.icon}</span>
@@ -123,9 +194,22 @@ export default function ContentFlowPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {view === 'calendar' && <CalendarView posts={scheduledPosts} onScheduleClick={() => setShowScheduleDialog(true)} />}
-          {view === 'queue' && <QueueView posts={scheduledPosts} />}
-          {view === 'templates' && <TemplatesView templates={templates} onTemplateUpdate={loadData} />}
+          {view === "calendar" && (
+            <CalendarView
+              posts={scheduledPosts}
+              onScheduleClick={() => setShowScheduleDialog(true)}
+            />
+          )}
+          {view === "queue" && (
+            <QueueView
+              posts={scheduledPosts}
+              onPublish={publishPost}
+              publishingPostId={publishingPostId}
+            />
+          )}
+          {view === "templates" && (
+            <TemplatesView templates={templates} onTemplateUpdate={loadData} />
+          )}
         </motion.div>
 
         {/* Schedule Post Dialog */}
@@ -137,14 +221,21 @@ export default function ContentFlowPage() {
         />
       </div>
     </div>
-  )
+  );
 }
 
-function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClick: () => void }) {
-  const today = new Date()
-  const upcomingPosts = posts.filter(post => 
-    new Date(post.scheduled_at) > today && post.status === 'scheduled'
-  )
+function CalendarView({
+  posts,
+  onScheduleClick,
+}: {
+  posts: any[];
+  onScheduleClick: () => void;
+}) {
+  const today = new Date();
+  const upcomingPosts = posts.filter(
+    (post) =>
+      new Date(post.scheduled_at) > today && post.status === "scheduled",
+  );
 
   return (
     <div className="space-y-6">
@@ -152,14 +243,16 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
           <div className="text-2xl text-tron-cyan mb-2">📅</div>
-          <div className="text-2xl font-bold text-tron-text">{upcomingPosts.length}</div>
+          <div className="text-2xl font-bold text-tron-text">
+            {upcomingPosts.length}
+          </div>
           <div className="text-sm text-tron-text-muted">Scheduled Posts</div>
         </div>
-        
+
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
           <div className="text-2xl text-tron-cyan mb-2">📊</div>
           <div className="text-2xl font-bold text-tron-text">
-            {posts.filter(p => p.status === 'published').length}
+            {posts.filter((p) => p.status === "published").length}
           </div>
           <div className="text-sm text-tron-text-muted">Published</div>
         </div>
@@ -167,7 +260,7 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
           <div className="text-2xl text-tron-cyan mb-2">🎯</div>
           <div className="text-2xl font-bold text-tron-text">
-            {[...new Set(upcomingPosts.map(p => p.platform))].length}
+            {[...new Set(upcomingPosts.map((p) => p.platform))].length}
           </div>
           <div className="text-sm text-tron-text-muted">Platforms</div>
         </div>
@@ -175,7 +268,7 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
           <div className="text-2xl text-tron-cyan mb-2">⚡</div>
           <div className="text-2xl font-bold text-tron-text">
-            {posts.filter(p => p.status === 'failed').length}
+            {posts.filter((p) => p.status === "failed").length}
           </div>
           <div className="text-sm text-tron-text-muted">Failed Posts</div>
         </div>
@@ -183,12 +276,16 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
 
       {/* Upcoming Posts Timeline */}
       <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6">
-        <h3 className="text-xl font-semibold text-tron-text mb-4">Upcoming Posts</h3>
-        
+        <h3 className="text-xl font-semibold text-tron-text mb-4">
+          Upcoming Posts
+        </h3>
+
         {upcomingPosts.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📅</div>
-            <h4 className="text-lg font-semibold text-tron-text mb-2">No scheduled posts</h4>
+            <h4 className="text-lg font-semibold text-tron-text mb-2">
+              No scheduled posts
+            </h4>
             <p className="text-tron-text-muted mb-4">
               Start scheduling your content to see it here
             </p>
@@ -213,7 +310,9 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-lg">{getPlatformIcon(post.platform)}</span>
+                      <span className="text-lg">
+                        {getPlatformIcon(post.platform)}
+                      </span>
                       <span className="text-sm font-medium text-tron-cyan capitalize">
                         {post.platform}
                       </span>
@@ -221,17 +320,23 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
                         {new Date(post.scheduled_at).toLocaleString()}
                       </span>
                     </div>
-                    <h4 className="font-semibold text-tron-text mb-1">{post.title}</h4>
+                    <h4 className="font-semibold text-tron-text mb-1">
+                      {post.title}
+                    </h4>
                     <p className="text-sm text-tron-text-muted line-clamp-2">
                       {post.content}
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                      post.status === 'scheduled' ? 'bg-blue-500/20 text-blue-400' :
-                      post.status === 'published' ? 'bg-green-500/20 text-green-400' :
-                      'bg-red-500/20 text-red-400'
-                    }`}>
+                    <span
+                      className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                        post.status === "scheduled"
+                          ? "bg-blue-500/20 text-blue-400"
+                          : post.status === "published"
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-red-500/20 text-red-400"
+                      }`}
+                    >
                       {post.status}
                     </span>
                   </div>
@@ -242,13 +347,21 @@ function CalendarView({ posts, onScheduleClick }: { posts: any[], onScheduleClic
         )}
       </div>
     </div>
-  )
+  );
 }
 
-function QueueView({ posts }: { posts: any[] }) {
-  const queuedPosts = posts.filter(post => post.status === 'scheduled')
-  const publishedPosts = posts.filter(post => post.status === 'published')
-  const failedPosts = posts.filter(post => post.status === 'failed')
+function QueueView({
+  posts,
+  onPublish,
+  publishingPostId,
+}: {
+  posts: any[];
+  onPublish: (postId: string) => void;
+  publishingPostId: string | null;
+}) {
+  const queuedPosts = posts.filter((post) => post.status === "scheduled" || post.status === "draft");
+  const publishedPosts = posts.filter((post) => post.status === "published");
+  const failedPosts = posts.filter((post) => post.status === "failed");
 
   return (
     <div className="space-y-6">
@@ -259,16 +372,42 @@ function QueueView({ posts }: { posts: any[] }) {
             Queued ({queuedPosts.length})
           </h3>
           <div className="space-y-3">
-            {queuedPosts.slice(0, 3).map((post) => (
-              <div key={post.id} className="bg-tron-dark/50 rounded p-3 border border-blue-500/20">
+            {queuedPosts.slice(0, 5).map((post) => (
+              <div
+                key={post.id}
+                className="bg-tron-dark/50 rounded p-3 border border-blue-500/20"
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <span>{getPlatformIcon(post.platform)}</span>
-                  <span className="text-sm font-medium text-blue-400">{post.platform}</span>
+                  <span className="text-sm font-medium text-blue-400">
+                    {post.platform}
+                  </span>
                 </div>
-                <div className="text-xs text-tron-text-muted truncate">{post.title}</div>
+                <div className="text-xs text-tron-text-muted truncate">
+                  {post.title}
+                </div>
                 <div className="text-xs text-tron-text-muted mt-1">
                   {new Date(post.scheduled_at).toLocaleString()}
                 </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onPublish(post.id)}
+                  disabled={publishingPostId === post.id}
+                  className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan text-xs font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {publishingPostId === post.id ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin" />
+                      Publishing...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3 h-3" />
+                      Publish Now
+                    </>
+                  )}
+                </motion.button>
               </div>
             ))}
           </div>
@@ -281,14 +420,23 @@ function QueueView({ posts }: { posts: any[] }) {
           </h3>
           <div className="space-y-3">
             {publishedPosts.slice(0, 3).map((post) => (
-              <div key={post.id} className="bg-tron-dark/50 rounded p-3 border border-green-500/20">
+              <div
+                key={post.id}
+                className="bg-tron-dark/50 rounded p-3 border border-green-500/20"
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <span>{getPlatformIcon(post.platform)}</span>
-                  <span className="text-sm font-medium text-green-400">{post.platform}</span>
+                  <span className="text-sm font-medium text-green-400">
+                    {post.platform}
+                  </span>
                 </div>
-                <div className="text-xs text-tron-text-muted truncate">{post.title}</div>
+                <div className="text-xs text-tron-text-muted truncate">
+                  {post.title}
+                </div>
                 <div className="text-xs text-tron-text-muted mt-1">
-                  {post.published_at ? new Date(post.published_at).toLocaleString() : 'Published'}
+                  {post.published_at
+                    ? new Date(post.published_at).toLocaleString()
+                    : "Published"}
                 </div>
               </div>
             ))}
@@ -301,32 +449,66 @@ function QueueView({ posts }: { posts: any[] }) {
             Failed ({failedPosts.length})
           </h3>
           <div className="space-y-3">
-            {failedPosts.slice(0, 3).map((post) => (
-              <div key={post.id} className="bg-tron-dark/50 rounded p-3 border border-red-500/20">
+            {failedPosts.slice(0, 5).map((post) => (
+              <div
+                key={post.id}
+                className="bg-tron-dark/50 rounded p-3 border border-red-500/20"
+              >
                 <div className="flex items-center gap-2 mb-1">
                   <span>{getPlatformIcon(post.platform)}</span>
-                  <span className="text-sm font-medium text-red-400">{post.platform}</span>
+                  <span className="text-sm font-medium text-red-400">
+                    {post.platform}
+                  </span>
                 </div>
-                <div className="text-xs text-tron-text-muted truncate">{post.title}</div>
-                <div className="text-xs text-red-400 mt-1">
-                  {post.failed_reason || 'Publishing failed'}
+                <div className="text-xs text-tron-text-muted truncate">
+                  {post.title}
                 </div>
+                <div className="text-xs text-red-400 mt-1 line-clamp-2">
+                  {post.failed_reason || "Publishing failed"}
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onPublish(post.id)}
+                  disabled={publishingPostId === post.id}
+                  className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {publishingPostId === post.id ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
+                      Retrying...
+                    </>
+                  ) : (
+                    <>
+                      <RotateCcw className="w-3 h-3" />
+                      Retry
+                    </>
+                  )}
+                </motion.button>
               </div>
             ))}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function TemplatesView({ templates, onTemplateUpdate }: { templates: any[], onTemplateUpdate: () => void }) {
-  const [showScheduleDialog, setShowScheduleDialog] = useState(false)
+function TemplatesView({
+  templates,
+  onTemplateUpdate,
+}: {
+  templates: any[];
+  onTemplateUpdate: () => void;
+}) {
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-tron-text">Content Templates</h3>
+        <h3 className="text-xl font-semibold text-tron-text">
+          Content Templates
+        </h3>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -351,17 +533,17 @@ function TemplatesView({ templates, onTemplateUpdate }: { templates: any[], onTe
                 {template.category}
               </span>
             </div>
-            
+
             <p className="text-sm text-tron-text-muted mb-4">
               {template.description}
             </p>
-            
+
             <div className="bg-tron-dark/50 rounded p-3 mb-4">
               <p className="text-xs text-tron-text-muted line-clamp-3">
                 {template.template_content}
               </p>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex gap-1">
                 {template.platforms?.map((platform: string) => (
@@ -377,11 +559,13 @@ function TemplatesView({ templates, onTemplateUpdate }: { templates: any[], onTe
           </motion.div>
         ))}
       </div>
-      
+
       {templates.length === 0 && (
         <div className="text-center py-12">
           <div className="text-6xl mb-4">📝</div>
-          <h4 className="text-lg font-semibold text-tron-text mb-2">No templates yet</h4>
+          <h4 className="text-lg font-semibold text-tron-text mb-2">
+            No templates yet
+          </h4>
           <p className="text-tron-text-muted mb-4">
             Create reusable templates to speed up your content creation
           </p>
@@ -404,18 +588,18 @@ function TemplatesView({ templates, onTemplateUpdate }: { templates: any[], onTe
         templates={[]}
       />
     </div>
-  )
+  );
 }
 
 function getPlatformIcon(platform: string): string {
   const icons: Record<string, string> = {
-    twitter: '🐦',
-    linkedin: '💼',
-    facebook: '📘',
-    instagram: '📸',
-    tiktok: '🎵',
-    reddit: '🤖',
-    youtube: '📺'
-  }
-  return icons[platform] || '📱'
+    twitter: "🐦",
+    linkedin: "💼",
+    facebook: "📘",
+    instagram: "📸",
+    tiktok: "🎵",
+    reddit: "🤖",
+    youtube: "📺",
+  };
+  return icons[platform] || "📱";
 }

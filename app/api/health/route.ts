@@ -1,130 +1,186 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { redis } from "@/lib/redis";
 
 // Simple fetch with retry implementation
-async function fetchWithRetry(url: string, options: { retries: number; retryDelay: number }) {
-  let lastError: Error | null = null
-  
+async function fetchWithRetry(
+  url: string,
+  options: { retries: number; retryDelay: number },
+) {
+  let lastError: Error | null = null;
+
   for (let i = 0; i <= options.retries; i++) {
     try {
-      const response = await fetch(url)
-      return response
+      const response = await fetch(url);
+      return response;
     } catch (error) {
-      lastError = error as Error
+      lastError = error as Error;
       if (i < options.retries) {
-        await new Promise(resolve => setTimeout(resolve, options.retryDelay))
+        await new Promise((resolve) => setTimeout(resolve, options.retryDelay));
       }
     }
   }
-  
-  throw lastError
+
+  throw lastError;
 }
 
 interface HealthCheck {
-  status: 'healthy' | 'degraded' | 'unhealthy'
-  timestamp: string
-  version: string
+  status: "healthy" | "degraded" | "unhealthy";
+  timestamp: string;
+  version: string;
   services: {
-    n8n: {
-      status: 'connected' | 'disconnected' | 'error'
-      responseTime?: number
-      lastChecked: string
-    }
-    database?: {
-      status: 'connected' | 'disconnected' | 'error'
-      responseTime?: number
-      lastChecked: string
-    }
-  }
-  uptime: number
+    database: {
+      status: "connected" | "disconnected" | "error";
+      responseTime?: number;
+      lastChecked: string;
+      metrics?: any;
+    };
+    redis: {
+      status: "connected" | "disconnected" | "error";
+      responseTime?: number;
+      lastChecked: string;
+    };
+    n8n?: {
+      status: "connected" | "disconnected" | "error";
+      responseTime?: number;
+      lastChecked: string;
+    };
+  };
+  uptime: number;
   memory: {
-    used: number
-    total: number
-    percentage: number
-  }
+    used: number;
+    total: number;
+    percentage: number;
+  };
 }
 
-let serviceStartTime = Date.now()
+let serviceStartTime = Date.now();
 
 export async function GET(): Promise<NextResponse> {
-  const isProduction = process.env.NODE_ENV === 'production'
-  const isVercel = process.env.VERCEL === '1'
-  
+  const isProduction = process.env.NODE_ENV === "production";
+  const isVercel = process.env.VERCEL === "1";
+
   const healthCheck: HealthCheck = {
-    status: 'healthy',
+    status: "healthy",
     timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0',
+    version: process.env.npm_package_version || "1.0.0",
     services: {
-      n8n: {
-        status: 'disconnected',
-        lastChecked: new Date().toISOString()
-      }
+      database: {
+        status: "disconnected",
+        lastChecked: new Date().toISOString(),
+      },
+      redis: {
+        status: "disconnected",
+        lastChecked: new Date().toISOString(),
+      },
     },
     uptime: Date.now() - serviceStartTime,
     memory: {
       used: process.memoryUsage().heapUsed / 1024 / 1024, // MB
       total: process.memoryUsage().heapTotal / 1024 / 1024, // MB
-      percentage: Math.round((process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100)
-    }
-  }
+      percentage: Math.round(
+        (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) *
+          100,
+      ),
+    },
+  };
 
-  // Skip external service checks in Vercel deployment
-  if (isVercel || isProduction) {
-    healthCheck.services.n8n = {
-      status: 'disconnected', // Not available in Vercel
-      lastChecked: new Date().toISOString()
-    }
-    healthCheck.status = 'healthy' // Landing page only, so healthy
-    return NextResponse.json(healthCheck, { status: 200 })
-  }
-
+  // 1. Check Database Health
   try {
-    // Check n8n connectivity with retry (local development only)
-    const n8nUrl = process.env.N8N_BASE_URL || 'http://localhost:5678'
-    const n8nStartTime = Date.now()
+    const dbStartTime = Date.now();
+    const supabase = await createClient();
+    const { data: dbHealth, error } = await supabase.rpc("get_database_health");
 
-    const n8nResponse = await fetchWithRetry(`${n8nUrl}/healthz`, {
-      retries: 2,
-      retryDelay: 500
-    })
+    if (error) throw error;
 
-    const n8nResponseTime = Date.now() - n8nStartTime
+    healthCheck.services.database = {
+      status: "connected",
+      responseTime: Date.now() - dbStartTime,
+      lastChecked: new Date().toISOString(),
+      metrics: dbHealth,
+    };
 
-    if (n8nResponse.ok) {
-      healthCheck.services.n8n = {
-        status: 'connected',
-        responseTime: n8nResponseTime,
-        lastChecked: new Date().toISOString()
-      }
-    } else {
-      healthCheck.services.n8n = {
-        status: 'error',
-        responseTime: n8nResponseTime,
-        lastChecked: new Date().toISOString()
-      }
-      healthCheck.status = 'degraded'
+    // Warn if cache hit ratio is low
+    if (dbHealth && dbHealth.cache_hit_ratio < 90) {
+      healthCheck.status = "degraded";
     }
-
-  } catch (error) {
-    console.error('Health check error:', error)
-    healthCheck.services.n8n = {
-      status: 'disconnected',
-      lastChecked: new Date().toISOString()
-    }
-    healthCheck.status = 'degraded'
+  } catch (error: any) {
+    console.error("Database health check failed:", error);
+    healthCheck.services.database = {
+      status: "error",
+      lastChecked: new Date().toISOString(),
+    };
+    healthCheck.status = "unhealthy";
   }
 
-  // Determine overall health status
-  const hasErrors = Object.values(healthCheck.services).some(service => service.status === 'error')
-  const hasDisconnected = Object.values(healthCheck.services).some(service => service.status === 'disconnected')
+  // 2. Check Redis Health
+  try {
+    const redisStartTime = Date.now();
+    await redis.ping();
 
-  if (hasErrors) {
-    healthCheck.status = 'unhealthy'
-    return NextResponse.json(healthCheck, { status: 503 })
-  } else if (hasDisconnected) {
-    healthCheck.status = 'degraded'
-    return NextResponse.json(healthCheck, { status: 200 })
-  } else {
-    healthCheck.status = 'healthy'
-    return NextResponse.json(healthCheck, { status: 200 })
+    healthCheck.services.redis = {
+      status: "connected",
+      responseTime: Date.now() - redisStartTime,
+      lastChecked: new Date().toISOString(),
+    };
+  } catch (error: any) {
+    console.error("Redis health check failed:", error);
+    healthCheck.services.redis = {
+      status: "disconnected",
+      lastChecked: new Date().toISOString(),
+    };
+    // Redis is optional - don't mark as unhealthy
+    if (healthCheck.status === "healthy") {
+      healthCheck.status = "degraded";
+    }
   }
+
+  // 3. Check n8n (optional - local development only)
+  if (!isVercel && !isProduction) {
+    try {
+      const n8nUrl = process.env.N8N_BASE_URL || "http://localhost:5678";
+      const n8nStartTime = Date.now();
+
+      const n8nResponse = await fetchWithRetry(`${n8nUrl}/healthz`, {
+        retries: 2,
+        retryDelay: 500,
+      });
+
+      const n8nResponseTime = Date.now() - n8nStartTime;
+
+      if (n8nResponse.ok) {
+        healthCheck.services.n8n = {
+          status: "connected",
+          responseTime: n8nResponseTime,
+          lastChecked: new Date().toISOString(),
+        };
+      } else {
+        healthCheck.services.n8n = {
+          status: "error",
+          responseTime: n8nResponseTime,
+          lastChecked: new Date().toISOString(),
+        };
+      }
+    } catch (error) {
+      console.error("n8n health check failed:", error);
+      healthCheck.services.n8n = {
+        status: "disconnected",
+        lastChecked: new Date().toISOString(),
+      };
+    }
+  }
+
+  // Determine overall health status based on critical services
+  // Database is critical, Redis is optional
+  const databaseHealthy = healthCheck.services.database.status === "connected";
+  const hasCriticalError = healthCheck.services.database.status === "error";
+
+  if (hasCriticalError || !databaseHealthy) {
+    healthCheck.status = "unhealthy";
+    return NextResponse.json(healthCheck, { status: 503 });
+  }
+
+  // Return appropriate status code
+  const httpStatus = healthCheck.status === "unhealthy" ? 503 : 200;
+  return NextResponse.json(healthCheck, { status: httpStatus });
 }

@@ -1,9 +1,9 @@
-import { Button } from '../ui/Button'
-import { useTwitterDemo } from '../../hooks/useTwitterDemo'
+import { Button } from "../ui/Button";
+import { useTwitterDemo } from "../../hooks/useTwitterDemo";
 
 interface DemoModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
@@ -14,16 +14,18 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     isGenerating,
     error,
     handleGenerateThread,
-    clearDemo
-  } = useTwitterDemo()
+    clearDemo,
+  } = useTwitterDemo();
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Content Cascade AI Demo</h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Content Cascade AI Demo
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -37,8 +39,12 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
             <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-blue-600 text-3xl">📝</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">AI Twitter Thread Generator</h3>
-            <p className="text-gray-500 mb-4">Transform any content into engaging Twitter threads</p>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              AI Twitter Thread Generator
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Transform any content into engaging Twitter threads
+            </p>
 
             <form onSubmit={handleGenerateThread} className="space-y-4">
               <textarea
@@ -49,18 +55,10 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 required
               />
               <div className="flex gap-4">
-                <Button
-                  type="submit"
-                  disabled={isGenerating}
-                  variant="primary"
-                >
-                  {isGenerating ? 'Generating...' : 'Generate Twitter Thread'}
+                <Button type="submit" disabled={isGenerating} variant="primary">
+                  {isGenerating ? "Generating..." : "Generate Twitter Thread"}
                 </Button>
-                <Button
-                  type="button"
-                  onClick={clearDemo}
-                  variant="secondary"
-                >
+                <Button type="button" onClick={clearDemo} variant="secondary">
                   Clear
                 </Button>
               </div>
@@ -85,9 +83,13 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
 
         {generatedThread && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
-            <h4 className="font-semibold text-green-800 mb-4">🎉 Generated Twitter Thread:</h4>
+            <h4 className="font-semibold text-green-800 mb-4">
+              🎉 Generated Twitter Thread:
+            </h4>
             <div className="bg-white rounded border p-4">
-              <pre className="whitespace-pre-wrap text-gray-800">{generatedThread}</pre>
+              <pre className="whitespace-pre-wrap text-gray-800">
+                {generatedThread}
+              </pre>
             </div>
             <div className="flex gap-4 mt-4">
               <Button
@@ -98,7 +100,9 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
                 Copy to Clipboard
               </Button>
               <Button
-                onClick={() => window.open('https://twitter.com/compose/tweet', '_blank')}
+                onClick={() =>
+                  window.open("https://twitter.com/compose/tweet", "_blank")
+                }
                 variant="outline"
                 size="sm"
               >
@@ -114,15 +118,19 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
             <p className="text-sm text-blue-600">Coming Soon</p>
           </div>
           <div className="p-4 bg-green-50 rounded-lg">
-            <h4 className="font-semibold text-green-800 mb-2">📱 Social Posts</h4>
+            <h4 className="font-semibold text-green-800 mb-2">
+              📱 Social Posts
+            </h4>
             <p className="text-sm text-green-600">Twitter Threads (Live)</p>
           </div>
           <div className="p-4 bg-purple-50 rounded-lg">
-            <h4 className="font-semibold text-purple-800 mb-2">📧 Email Campaigns</h4>
+            <h4 className="font-semibold text-purple-800 mb-2">
+              📧 Email Campaigns
+            </h4>
             <p className="text-sm text-purple-600">Coming Soon</p>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

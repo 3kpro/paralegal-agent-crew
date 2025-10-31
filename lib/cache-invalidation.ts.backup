@@ -1,0 +1,86 @@
+import { redis, cacheKeys } from '@/lib/redis';
+
+/**
+ * Invalidate user-specific content cache
+ * @param userId User ID
+ */
+export async function invalidateUserContentCache(userId: string): Promise<void> {
+  try {
+    // Invalidate all content cache for this user
+    await redis.keys(`generate:${userId}:*`).then(keys => {
+      if (keys.length > 0) {
+        return redis.del(...keys);
+      }
+    });
+    
+    // Invalidate campaign cache for this user
+    await redis.keys(`campaign:${userId}:*`).then(keys => {
+      if (keys.length > 0) {
+        return redis.del(...keys);
+      }
+    });
+    
+    // Invalidate user profile cache
+    await redis.del(cacheKeys.user(userId));
+    
+    console.log(`Invalidated cache for user ${userId}`);
+  } catch (error) {
+    console.error('Failed to invalidate user cache:', error);
+  }
+}
+
+/**
+ * Invalidate campaign-specific cache
+ * @param campaignId Campaign ID
+ */
+export async function invalidateCampaignCache(campaignId: string): Promise<void> {
+  try {
+    await redis.keys(`campaign:*:${campaignId}*`).then(keys => {
+      if (keys.length > 0) {
+        return redis.del(...keys);
+      }
+    });
+    
+    console.log(`Invalidated cache for campaign ${campaignId}`);
+  } catch (error) {
+    console.error('Failed to invalidate campaign cache:', error);
+  }
+}
+
+/**
+ * Invalidate trend-specific cache
+ * @param query Trend query
+ */
+export async function invalidateTrendCache(query: string): Promise<void> {
+  try {
+    await redis.del(cacheKeys.trends(query));
+    console.log(`Invalidated cache for trend query: ${query}`);
+  } catch (error) {
+    console.error('Failed to invalidate trend cache:', error);
+  }
+}
+
+/**
+ * Invalidate all content generation cache
+ */
+export async function invalidateAllContentCache(): Promise<void> {
+  try {
+    // Invalidate all generate cache
+    await redis.keys('generate:*').then(keys => {
+      if (keys.length > 0) {
+        return redis.del(...keys);
+      }
+    });
+    
+    // Invalidate all generate-local cache
+    await redis.keys('generate-local:*').then(keys => {
+      if (keys.length > 0) {
+        return redis.del(...keys);
+      }
+    });
+    
+    console.log('Invalidated all content generation cache');
+  } catch (error) {
+    console.error('Failed to invalidate all content cache:', error);
+  }
+}

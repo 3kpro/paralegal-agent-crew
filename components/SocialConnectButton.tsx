@@ -1,28 +1,31 @@
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/Button";
 
 interface SocialConnectButtonProps {
-  platform: 'twitter' | 'tiktok'
-  className?: string
+  platform: "twitter" | "tiktok";
+  className?: string;
 }
 
 const platformConfig = {
   twitter: {
-    icon: '𝕏',
-    name: 'Twitter'
+    icon: "𝕏",
+    name: "Twitter",
   },
   tiktok: {
-    icon: '🎵',
-    name: 'TikTok'
-  }
-}
+    icon: "🎵",
+    name: "TikTok",
+  },
+};
 
-export function SocialConnectButton({ platform, className = '' }: SocialConnectButtonProps) {
-  const config = platformConfig[platform]
-  
+export function SocialConnectButton({
+  platform,
+  className = "",
+}: SocialConnectButtonProps) {
+  const config = platformConfig[platform];
+
   const handleConnect = () => {
     // Direct redirect to OAuth flow
-    window.location.href = `/api/auth/connect/${platform}`
-  }
+    window.location.href = `/api/auth/connect/${platform}`;
+  };
 
   return (
     <Button
@@ -33,5 +36,5 @@ export function SocialConnectButton({ platform, className = '' }: SocialConnectB
       <span className="text-lg">{config.icon}</span>
       <span>Connect {config.name}</span>
     </Button>
-  )
+  );
 }
