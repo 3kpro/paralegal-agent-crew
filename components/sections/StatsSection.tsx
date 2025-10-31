@@ -1,41 +1,206 @@
+'use client'
+
+import React, { useEffect, useState } from 'react'
+import { motion, useInView } from 'framer-motion'
+import { Users, Zap, Clock, Star } from 'lucide-react'
+
 interface StatItem {
   value: string
   label: string
+  icon: React.ComponentType<any>
+  color: string
+  animatedValue?: number
 }
 
 const stats: StatItem[] = [
   {
-    value: '10x',
-    label: 'Faster Content Creation'
+    value: '1000+',
+    label: 'Beta Signups and Counting',
+    icon: Users,
+    color: 'text-tron-cyan',
+    animatedValue: 1000
   },
   {
-    value: '7+',
-    label: 'Content Formats'
+    value: '20+',
+    label: 'New Beta Features Launched',
+    icon: Zap,
+    color: 'text-tron-magenta',
+    animatedValue: 20
   },
   {
-    value: '95%',
-    label: 'Time Savings'
+    value: '98%',
+    label: 'User Satisfaction Rate',
+    icon: Star,
+    color: 'text-green-400',
+    animatedValue: 98
   },
   {
-    value: '500+',
-    label: 'Happy Clients'
+    value: '24h',
+    label: 'Average Response Time',
+    icon: Clock,
+    color: 'text-yellow-400',
+    animatedValue: 24
   }
 ]
 
+const Counter = ({ target, suffix = '', prefix = '', duration = 2000 }: { target: number; suffix?: string; prefix?: string; duration?: number }) => {
+  const [count, setCount] = useState(0)
+  const ref = React.useRef(null)
+  const inView = useInView(ref, { once: true })
+
+  useEffect(() => {
+    if (inView) {
+      const start = 0
+      const end = target
+      const startTime = Date.now()
+
+      const updateCount = () => {
+        const now = Date.now()
+        const elapsed = now - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        
+        const easeOut = 1 - Math.pow(1 - progress, 3)
+        const currentCount = Math.round(start + (end - start) * easeOut)
+        
+        setCount(currentCount)
+
+        if (progress < 1) {
+          requestAnimationFrame(updateCount)
+        }
+      }
+
+      updateCount()
+    }
+  }, [inView, target, duration])
+
+  return (
+    <span ref={ref}>
+      {prefix}{count}{suffix}
+    </span>
+  )
+}
+
 export const StatsSection: React.FC = () => {
   return (
-    <section className="py-16 bg-tron-grid">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {stats.map((stat, index) => (
-            <div key={index}>
-              <div className="text-3xl font-bold text-tron-cyan mb-2">
-                {stat.value}
-              </div>
-              <div className="text-tron-text-muted">{stat.label}</div>
-            </div>
-          ))}
+    <section className="py-20 bg-tron-grid relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-tron-cyan/5 to-tron-magenta/5" />
+      <div className="absolute inset-0">
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-tron-cyan/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-tron-magenta/10 rounded-full blur-2xl animate-pulse delay-1000" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan/20 border border-tron-cyan rounded-full mb-6">
+            <Star className="w-4 h-4 text-tron-cyan" fill="currentColor" />
+            <span className="text-sm font-semibold text-tron-cyan">
+              TrendPulse™ Beta Success
+            </span>
+          </div>
+          
+          <h2 className="text-3xl md:text-4xl font-bold text-tron-text mb-4">
+            Join the Beta Revolution
+          </h2>
+          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
+            Real numbers from our growing community of Beta testers
+          </p>
+        </motion.div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: `0 20px 40px ${stat.color === 'text-tron-cyan' ? 'rgba(0, 255, 255, 0.2)' : 
+                                        stat.color === 'text-tron-magenta' ? 'rgba(255, 0, 255, 0.2)' :
+                                        stat.color === 'text-green-400' ? 'rgba(34, 197, 94, 0.2)' :
+                                        'rgba(251, 191, 36, 0.2)'}`
+                }}
+                className="text-center p-8 bg-tron-dark/50 backdrop-blur-sm border border-tron-cyan/30 rounded-2xl hover:border-tron-cyan/60 transition-all duration-300 group"
+              >
+                {/* Icon */}
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                  className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-2xl flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}
+                >
+                  <Icon className="w-8 h-8" />
+                </motion.div>
+
+                {/* Counter Value */}
+                <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-3 font-mono`}>
+                  {stat.animatedValue ? (
+                    stat.value.includes('%') ? (
+                      <><Counter target={stat.animatedValue} />%</>
+                    ) : stat.value.includes('h') ? (
+                      <><Counter target={stat.animatedValue} />h</>
+                    ) : stat.value.includes('+') ? (
+                      <><Counter target={stat.animatedValue} />+</>
+                    ) : (
+                      <Counter target={stat.animatedValue} />
+                    )
+                  ) : (
+                    stat.value
+                  )}
+                </div>
+
+                {/* Label */}
+                <div className="text-tron-text-muted font-medium leading-tight">
+                  {stat.label}
+                </div>
+
+                {/* Beta Badge */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: index * 0.1 + 0.3 }}
+                  className="mt-4 inline-flex px-3 py-1 bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border border-tron-cyan/40 rounded-full"
+                >
+                  <span className="text-xs font-semibold text-tron-cyan">BETA</span>
+                </motion.div>
+              </motion.div>
+            )
+          })}
         </div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="text-center mt-16"
+        >
+          <p className="text-tron-text-muted mb-6 max-w-xl mx-auto">
+            Join our growing community of creators who are already experiencing the future of content creation
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              const element = document.getElementById('contact')
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
+            className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-200"
+          >
+            Request Beta Access
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   )

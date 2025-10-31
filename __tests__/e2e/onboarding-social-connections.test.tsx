@@ -228,10 +228,12 @@ describe('Onboarding Social Connections E2E', () => {
         test(`renders ${name} connection page correctly`, () => {
           render(<ConnectPlatformPage />)
 
-          expect(screen.getByRole('heading', { name: new RegExp(`Connect ${name}`, 'i') })).toBeInTheDocument()
-          expect(screen.getByText(new RegExp(`Connect your ${name} account to publish content`), { exact: false })).toBeInTheDocument()
+          // Validate platform name before using in RegExp
+          const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          expect(screen.getByRole('heading', { name: new RegExp(`Connect ${safeName}`, 'i') })).toBeInTheDocument()
+          expect(screen.getByText(new RegExp(`Connect your ${safeName} account to publish content`), { exact: false })).toBeInTheDocument()
           expect(screen.getAllByText(icon)).toHaveLength(2) // Icon appears twice: in the circle and in the button
-          expect(screen.getByRole('button', { name: new RegExp(`Connect ${name}`, 'i') })).toBeInTheDocument()
+          expect(screen.getByRole('button', { name: new RegExp(`Connect ${safeName}`, 'i') })).toBeInTheDocument()
           expect(screen.getByRole('button', { name: /skip for now/i })).toBeInTheDocument()
         })
 

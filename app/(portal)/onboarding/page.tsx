@@ -91,8 +91,11 @@ export default function OnboardingPage() {
                     Industry (Optional)
                   </label>
                   <select
+                    id="industry-select"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
+                    aria-label="Industry"
+                    title="Select your industry"
                     className="w-full h-12 px-4 bg-tron-dark border border-tron-grid rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text"
                   >
                     <option value="">Select industry...</option>

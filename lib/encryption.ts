@@ -74,11 +74,14 @@ export function decryptAPIKey(encryptedData: string): string {
     const authTag = Buffer.from(parts[1], 'hex')
     const encrypted = parts[2]
 
-    // Create decipher
+    // Create decipher with auth tag length
     const decipher = crypto.createDecipheriv(
       ALGORITHM,
       Buffer.from(process.env.ENCRYPTION_KEY, 'hex'),
-      iv
+      iv,
+      {
+        authTagLength: AUTH_TAG_LENGTH
+      }
     )
 
     // Set auth tag for verification

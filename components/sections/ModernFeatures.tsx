@@ -6,44 +6,44 @@ import { TrendingUp, Sparkles, Layout, Clock, Shield, BarChart3 } from 'lucide-r
 const features = [
   {
     icon: TrendingUp,
-    title: 'TrendPulse™',
-    subtitle: 'Trend Discovery',
-    description: 'Know what\'s hot before your competitors. Our AI scans trending topics across industries and serves them fresh to your dashboard.',
+    title: 'TrendPulse™ Discovery',
+    subtitle: 'Real-Time Intelligence',
+    description: 'Advanced AI monitors 1M+ sources across platforms to identify trending topics 72 hours before they peak. Includes competitor analysis and viral prediction scoring.',
     gradient: 'from-blue-500 to-cyan-500'
   },
   {
     icon: Sparkles,
-    title: 'AI Cascade™',
-    subtitle: 'Content Generation',
-    description: 'One topic, infinite content. Generate professional Twitter threads, LinkedIn posts, and email newsletters—all powered by Claude Opus.',
+    title: 'AI Studio™ Multi-Provider',
+    subtitle: 'Enterprise AI Generation',
+    description: 'Choose from GPT-4, Claude 3.5 Sonnet, Gemini Pro, and 8+ premium AI models. Auto-optimization selects the best AI for each content type and platform.',
     gradient: 'from-purple-500 to-pink-500'
   },
   {
     icon: Layout,
-    title: 'OmniFormat™',
-    subtitle: 'Multi-Channel Publishing',
-    description: 'Write once, publish everywhere. Content automatically formatted for Twitter, LinkedIn, email, and more—no copy-paste needed.',
+    title: 'ContentFlow™ Automation',
+    subtitle: '6-Platform Publishing',
+    description: 'One-click publishing to Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Smart formatting, optimal timing, and engagement tracking included.',
     gradient: 'from-orange-500 to-red-500'
   },
   {
     icon: Clock,
-    title: 'SmartScheduler™',
-    subtitle: 'Intelligent Timing',
-    description: 'Post when your audience is listening. AI analyzes engagement patterns and schedules content for maximum impact.',
+    title: 'Analytics Hub™',
+    subtitle: 'Performance Intelligence',
+    description: 'Real-time performance tracking with predictive insights. A/B test headlines, track viral coefficients, and optimize content strategy with data-driven recommendations.',
     gradient: 'from-green-500 to-emerald-500'
   },
   {
     icon: Shield,
-    title: 'BrandGuard™',
-    subtitle: 'Voice Protection',
-    description: 'Keep your voice consistent. AI learns your brand guidelines and ensures every piece of content matches your style.',
+    title: 'Brand Voice AI™',
+    subtitle: 'Consistency Engine',
+    description: 'Train custom AI models on your content to maintain perfect brand voice across all platforms. Includes tone scoring and compliance monitoring.',
     gradient: 'from-indigo-500 to-purple-500'
   },
   {
     icon: BarChart3,
-    title: 'ImpactMetrics™',
-    subtitle: 'Analytics Dashboard',
-    description: 'See what moves the needle. Track engagement, measure ROI, and discover what content resonates with your audience.',
+    title: 'Media Generator™',
+    subtitle: 'Visual Content Creation',
+    description: 'Generate custom images, infographics, and video thumbnails using DALL-E 3, Midjourney, and Stable Diffusion. Perfect brand alignment guaranteed.',
     gradient: 'from-yellow-500 to-orange-500'
   }
 ]
@@ -64,12 +64,12 @@ export default function ModernFeatures() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Complex Simplicity
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Supercharged for Beta
             </span>
           </h2>
           <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
-            We offer a lot, but you don't need to know a lot to get started. From zero to full-blown campaign in minutes.
+            Experience our most powerful features yet. The Beta release brings enhanced AI capabilities, faster processing, and seamless integrations.
           </p>
         </motion.div>
 
@@ -124,15 +124,18 @@ export default function ModernFeatures() {
           className="text-center mt-16"
         >
           <p className="text-tron-text-muted mb-6 text-lg">
-            Ready to transform your content workflow?
+            Ready to experience the future of content creation?
           </p>
-          <a
-            href="/trend-gen"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
-          >
-            <Sparkles className="w-5 h-5" />
-            Start Creating Now
-          </a>
+          <div className="flex flex-col items-center gap-4">
+            <a
+              href="/trend-gen"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+            >
+              <Sparkles className="w-5 h-5" />
+              Join TrendPulse™ Beta
+            </a>
+            <span className="text-sm text-tron-text-muted">Limited spots available</span>
+          </div>
         </motion.div>
       </div>
     </section>

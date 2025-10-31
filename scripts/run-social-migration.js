@@ -33,7 +33,7 @@ async function checkTableExists(tableName) {
 
     return !error && data && data.length > 0
   } catch (error) {
-    console.error(`Error checking if table ${tableName} exists:`, error)
+    console.error('Error checking if table exists:', { tableName, error: error.message })
     return false
   }
 }

@@ -3,29 +3,29 @@ import type { Metadata } from 'next'
 import '@/lib/env' // Validate environment variables at startup
 
 export const metadata: Metadata = {
-  title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
-  description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes across Twitter, LinkedIn, and email—automatically.',
-  keywords: 'AI content creation, trend discovery, Twitter threads, LinkedIn posts, email marketing, content automation, social media automation, TrendPulse, AI Cascade, OmniFormat',
+  title: 'TrendPulse™ Beta - AI-Powered Content Creation | Early Access Live',
+  description: 'Join 2,500+ creators in TrendPulse™ Beta. Experience next-gen AI content creation with 6-platform publishing, real-time trend detection, and 50% lifetime pricing. Beta access available now.',
+  keywords: 'TrendPulse Beta, AI content creation, beta access, content automation, social media automation, multi-platform publishing, trend detection, GPT-4 content, Claude AI, real-time analytics, beta pricing, early access',
   authors: [{ name: '3K Pro Services' }],
   openGraph: {
-    title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
-    description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes everywhere—automatically.',
+    title: 'TrendPulse™ Beta - Next-Generation AI Content Creation',
+    description: 'Join 2,500+ beta creators using TrendPulse™ for 6-platform content publishing, real-time trend detection, and enterprise AI generation. 50% lifetime pricing for early adopters.',
     url: 'https://3kpro.services',
-    siteName: 'Content Cascade AI',
+    siteName: 'TrendPulse™ Beta',
     type: 'website',
     images: [
       {
         url: 'https://3kpro.services/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Content Cascade AI - AI-powered content creation platform',
+        alt: 'TrendPulse™ Beta - AI-powered content creation platform with multi-platform publishing',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Content Cascade AI - Turn Trending Topics Into Published Content',
-    description: 'TrendPulse™ discovers what\'s hot, AI Cascade™ generates professional content, and OmniFormat™ publishes everywhere—automatically.',
+    title: 'TrendPulse™ Beta - AI Content Creation Revolution',
+    description: '🚀 Beta Live Now! Join 2,500+ creators using next-gen AI for content creation. Real-time trends, 6-platform publishing, 50% lifetime pricing.',
     images: ['https://3kpro.services/og-image.png'],
   },
   robots: {

@@ -219,7 +219,7 @@ export default function AIStudioPage() {
           }
         } catch (error) {
           // Handle individual provider error
-          console.error(`Generation failed for ${provider.name}:`, error)
+          console.error('Generation failed:', { provider: provider.name, error })
           setGenerationResults(prev => 
             prev.map(r => r.id === requestId ? {
               ...r,

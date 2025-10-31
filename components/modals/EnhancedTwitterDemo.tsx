@@ -163,8 +163,11 @@ export const EnhancedTwitterDemo: React.FC<DemoModalProps> = ({ isOpen, onClose 
                     Content Style:
                   </label>
                   <select
+                    id="content-style"
                     value={style}
                     onChange={(e) => setStyle(e.target.value as any)}
+                    aria-label="Content Style"
+                    title="Select content style"
                     className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="professional">💼 Professional</option>
@@ -177,7 +180,11 @@ export const EnhancedTwitterDemo: React.FC<DemoModalProps> = ({ isOpen, onClose 
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Twitter Account:
                   </label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <select 
+                    id="twitter-account"
+                    aria-label="Twitter Account"
+                    title="Select Twitter account"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     <option value="default">@3kpro_services (Demo)</option>
                     <option value="personal">Your Personal Account</option>
                   </select>

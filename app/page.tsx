@@ -1,6 +1,6 @@
 'use client'
 
-import { ModernHero, ModernFeatures, ModernPricing, ServicesGrid, FAQSection, TestimonialsSection, WaitlistSection } from '../components/sections'
+import { ModernHero, ModernFeatures, ModernPricing, StatsSection, ServicesGrid, FAQSection, TestimonialsSection, WaitlistSection } from '../components/sections'
 import { Navigation, Footer, ContactSection } from '../components'
 import { useState } from 'react'
 
@@ -21,6 +21,8 @@ export default function ModernLandingPage() {
       <ModernHero />
 
       <ModernFeatures />
+
+      <StatsSection />
 
       <ServicesGrid />
 

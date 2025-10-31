@@ -5,7 +5,7 @@ async function testPremiumUpgrade() {
   try {
     console.log('🧪 Testing Premium upgrade API...')
     
-    const response = await axios.post('http://localhost:3000/api/stripe/checkout', {
+    const response = await axios.post('https://localhost:3000/api/stripe/checkout', {
       tier: 'premium',
       billingCycle: 'monthly'
     }, {

@@ -4,7 +4,8 @@
  */
 
 const https = require('https');
-const http = require('http');
+// Use HTTPS for secure communication
+const https = require('https');
 
 async function testPremiumUpgradeAPI() {
   console.log('🧪 Testing Premium Upgrade API...');
@@ -29,7 +30,7 @@ async function testPremiumUpgradeAPI() {
   };
 
   return new Promise((resolve, reject) => {
-    const req = http.request(options, (res) => {
+    const req = https.request(options, (res) => {
       let data = '';
       
       console.log(`📊 Status Code: ${res.statusCode}`);

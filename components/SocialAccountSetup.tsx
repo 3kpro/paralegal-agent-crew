@@ -524,15 +524,54 @@ function CredentialSetupModal({
     apiEndpoint: '',
     additionalData: ''
   })
-
+  const [errors, setErrors] = useState({
+    accountName: '',
+    accountHandle: '',
+    accessToken: ''
+  })
   const [saving, setSaving] = useState(false)
+
+  const validateForm = () => {
+    const newErrors = {
+      accountName: '',
+      accountHandle: '',
+      accessToken: ''
+    }
+
+    if (!formData.accountName.trim()) {
+      newErrors.accountName = 'Display name is required'
+    }
+
+    if (!formData.accountHandle.trim()) {
+      newErrors.accountHandle = 'Twitter handle is required'
+    } else if (formData.accountHandle.startsWith('@')) {
+      newErrors.accountHandle = 'Please enter handle without @'
+    }
+
+    if (!formData.accessToken.trim()) {
+      newErrors.accessToken = 'Bearer Token is required'
+    } else if (!formData.accessToken.startsWith('aaa')) {
+      newErrors.accessToken = 'Invalid Bearer Token format'
+    }
+
+    setErrors(newErrors)
+    return !Object.values(newErrors).some(error => error)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      return
+    }
+
     setSaving(true)
     
     try {
-      await onSave(formData)
+      await onSave({
+        ...formData,
+        accountHandle: formData.accountHandle.replace('@', '')
+      })
     } catch (error) {
       console.error('Failed to save credentials:', error)
       alert('Failed to save account credentials. Please try again.')
@@ -548,14 +587,14 @@ function CredentialSetupModal({
           title: 'Twitter/X API Setup',
           instructions: [
             '1. Go to developer.twitter.com and create an app',
-            '2. Generate API keys and tokens',
-            '3. Copy your Bearer Token or Access Token',
-            '4. Enter your account handle (e.g., @username)'
+            '2. Set up OAuth 2.0 with User Authentication',
+            '3. Generate and save API keys and tokens',
+            '4. Enter your Twitter handle without the @ symbol'
           ],
           fields: {
-            accessToken: 'Bearer Token or Access Token',
-            accountHandle: 'Your Twitter handle (e.g., @username)',
-            accountName: 'Display name for this account'
+            accessToken: 'Bearer Token (starts with aaa...)',
+            accountHandle: 'Twitter handle (without @)',
+            accountName: 'Account Display Name'
           }
         }
       case 'linkedin':
@@ -643,25 +682,50 @@ function CredentialSetupModal({
             <input
               type="text"
               value={formData.accountName}
-              onChange={(e) => setFormData(prev => ({ ...prev, accountName: e.target.value }))}
-              className="w-full px-3 py-2 bg-tron-dark border border-tron-cyan/30 rounded-lg text-tron-text placeholder-tron-text-muted focus:border-tron-cyan focus:outline-none"
-              placeholder="My Business Account"
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, accountName: e.target.value }))
+                setErrors(prev => ({ ...prev, accountName: '' }))
+              }}
+              className={`w-full px-3 py-2 bg-tron-dark border rounded-lg text-tron-text placeholder-tron-text-muted focus:outline-none ${
+                errors.accountName 
+                  ? 'border-red-500 focus:border-red-500' 
+                  : 'border-tron-cyan/30 focus:border-tron-cyan'
+              }`}
+              placeholder="e.g., My Business Account"
               required
             />
+            {errors.accountName && (
+              <p className="mt-1 text-sm text-red-500">{errors.accountName}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium text-tron-text mb-2">
               {setupInfo.fields.accountHandle}
             </label>
-            <input
-              type="text"
-              value={formData.accountHandle}
-              onChange={(e) => setFormData(prev => ({ ...prev, accountHandle: e.target.value }))}
-              className="w-full px-3 py-2 bg-tron-dark border border-tron-cyan/30 rounded-lg text-tron-text placeholder-tron-text-muted focus:border-tron-cyan focus:outline-none"
-              placeholder={platform.id === 'twitter' ? '@username' : 'account-handle'}
-              required
-            />
+            <div className="relative">
+              <span className="absolute left-3 top-2 text-tron-text-muted">@</span>
+              <input
+                type="text"
+                value={formData.accountHandle}
+                onChange={(e) => {
+                  setFormData(prev => ({ ...prev, accountHandle: e.target.value }))
+                  setErrors(prev => ({ ...prev, accountHandle: '' }))
+                }}
+                className={`w-full px-3 py-2 pl-7 bg-tron-dark border rounded-lg text-tron-text placeholder-tron-text-muted focus:outline-none ${
+                  errors.accountHandle 
+                    ? 'border-red-500 focus:border-red-500' 
+                    : 'border-tron-cyan/30 focus:border-tron-cyan'
+                }`}
+                placeholder="username"
+                required
+              />
+            </div>
+            {errors.accountHandle ? (
+              <p className="mt-1 text-sm text-red-500">{errors.accountHandle}</p>
+            ) : (
+              <p className="mt-1 text-xs text-tron-text-muted">Enter your Twitter handle without the @ symbol</p>
+            )}
           </div>
 
           <div>
@@ -670,11 +734,23 @@ function CredentialSetupModal({
             </label>
             <textarea
               value={formData.accessToken}
-              onChange={(e) => setFormData(prev => ({ ...prev, accessToken: e.target.value }))}
-              className="w-full px-3 py-2 bg-tron-dark border border-tron-cyan/30 rounded-lg text-tron-text placeholder-tron-text-muted focus:border-tron-cyan focus:outline-none h-24"
-              placeholder="Paste your API token here..."
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, accessToken: e.target.value }))
+                setErrors(prev => ({ ...prev, accessToken: '' }))
+              }}
+              className={`w-full px-3 py-2 bg-tron-dark border rounded-lg text-tron-text placeholder-tron-text-muted focus:outline-none h-24 ${
+                errors.accessToken 
+                  ? 'border-red-500 focus:border-red-500' 
+                  : 'border-tron-cyan/30 focus:border-tron-cyan'
+              }`}
+              placeholder="aaa..."
               required
             />
+            {errors.accessToken ? (
+              <p className="mt-1 text-sm text-red-500">{errors.accessToken}</p>
+            ) : (
+              <p className="mt-1 text-xs text-tron-text-muted">Bearer Token should start with 'aaa'</p>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 pt-4">

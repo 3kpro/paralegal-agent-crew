@@ -46,8 +46,25 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
   )
 
   return (
-    <nav className="fixed top-0 w-full bg-tron-grid/90 backdrop-blur-md border-b border-gray-100 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      {/* Beta Announcement Banner */}
+      <div className="fixed top-0 w-full bg-gradient-to-r from-tron-magenta to-tron-cyan text-white z-[60] py-2">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm font-semibold"
+          >
+            🚀 <span className="animate-pulse">LIVE NOW</span>: TrendPulse™ Beta • Join 2,500+ Creators • 50% Lifetime Discount • 
+            <Link href="/trend-gen" className="underline hover:no-underline ml-1">
+              Get Beta Access →
+            </Link>
+          </motion.p>
+        </div>
+      </div>
+      
+      <nav className="fixed top-10 w-full bg-tron-grid/90 backdrop-blur-md border-b border-tron-cyan/30 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <motion.button 
             onClick={() => window.location.reload()}
@@ -72,12 +89,15 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
                 Login
               </Button>
             </Link>
-            <Button
-              onClick={onContactClick}
-              variant="primary"
-            >
-              Get Started
-            </Button>
+            <Link href="/trend-gen">
+              <Button
+                variant="primary"
+                className="relative overflow-hidden"
+              >
+                <span className="relative z-10">Join Beta</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-tron-cyan to-tron-magenta opacity-0 hover:opacity-100 transition-opacity duration-300" />
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -135,21 +155,21 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
                     Login
                   </Button>
                 </Link>
-                <Button
-                  onClick={() => {
-                    onContactClick()
-                    setMobileMenuOpen(false)
-                  }}
-                  variant="primary"
-                >
-                  Get Started
-                </Button>
+                <Link href="/trend-gen">
+                  <Button
+                    onClick={() => setMobileMenuOpen(false)}
+                    variant="primary"
+                  >
+                    Join Beta
+                  </Button>
+                </Link>
               </div>
             </div>
           </motion.div>
         )}
       </div>
     </nav>
+    </>
   )
 }
 

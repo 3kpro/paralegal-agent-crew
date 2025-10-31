@@ -5,65 +5,67 @@ import { Check, Sparkles, Zap, Crown, ArrowRight } from 'lucide-react'
 
 const plans = [
   {
-    name: 'Starter',
+    name: 'Beta Free',
     price: 'Free',
-    period: 'forever',
-    description: 'Perfect for trying out Content Cascade AI',
+    period: 'during beta',
+    description: 'Full access to TrendPulse™ Beta features',
     icon: Sparkles,
-    gradient: 'from-gray-400 to-gray-600',
+    gradient: 'from-green-400 to-blue-500',
     features: [
-      '5 campaigns per month',
-      '1 connected channel',
-      'Basic trends (curated)',
-      'Standard AI model',
-      'Community support',
-      'Email delivery'
+      '10 campaigns per month',
+      '2 connected platforms',
+      'TrendPulse™ Discovery (beta)',
+      'AI Studio™ (GPT-4 & Claude)',
+      'ContentFlow™ Publishing',
+      'Analytics Hub™ Basic',
+      'Community beta support',
+      'Early access to new features'
     ],
-    cta: 'Get Started Free',
+    cta: 'Join Beta Free',
     popular: false
   },
   {
-    name: 'Pro',
-    price: '$29',
-    period: 'per month',
-    description: 'For serious content creators',
+    name: 'Pro Beta',
+    price: '$19',
+    period: 'per month (50% off)',
+    description: 'Beta early adopter pricing - lock in now!',
     icon: Zap,
     gradient: 'from-indigo-500 to-purple-600',
     features: [
       'Unlimited campaigns',
-      '3 connected channels',
-      'Real-time TrendPulse™',
-      'Claude Opus AI Cascade™',
-      'Priority support',
-      'ImpactMetrics™ dashboard',
-      '10 Automation Recipes™',
-      'BrandGuard™ protection',
-      'SmartScheduler™',
-      'OmniFormat™ publishing'
+      '6 connected platforms',
+      'Advanced TrendPulse™ with predictions',
+      'Multi-provider AI Studio™',
+      'Brand Voice AI™ training',
+      'Media Generator™ access',
+      'Advanced Analytics Hub™',
+      'Priority beta support',
+      'Custom automation workflows',
+      'Export & backup tools'
     ],
-    cta: 'Start 14-Day Trial',
+    cta: 'Start Beta Trial',
     popular: true
   },
   {
-    name: 'Agency',
-    price: '$99',
-    period: 'per month',
-    description: 'For agencies and teams',
+    name: 'Agency Beta',
+    price: '$49',
+    period: 'per month (50% off)',
+    description: 'Multi-client agency management',
     icon: Crown,
     gradient: 'from-purple-500 to-pink-600',
     features: [
-      'Everything in Pro',
-      '10 connected channels',
-      'White-label options',
-      'Team collaboration (5 seats)',
-      'API access',
-      'Custom Automation Recipes™',
-      'Dedicated account manager',
-      'Advanced analytics',
-      'Priority AI processing',
+      'Everything in Pro Beta',
+      'Unlimited platforms',
+      'White-label dashboard',
+      'Team collaboration (10 seats)',
+      'Client management tools',
+      'Custom brand training',
+      'Dedicated beta success manager',
+      'API access & webhooks',
+      'Priority feature requests',
       'Custom integrations'
     ],
-    cta: 'Contact Sales',
+    cta: 'Contact Beta Sales',
     popular: false
   }
 ]
@@ -82,11 +84,11 @@ export default function ModernPricing() {
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Simple, Transparent Pricing
+              Beta Launch Pricing
             </span>
           </h2>
           <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
-            Start free, upgrade when you're ready. No hidden fees, cancel anytime.
+            Early adopter pricing available now. Lock in 50% savings for life. Beta features included.
           </p>
         </motion.div>
 

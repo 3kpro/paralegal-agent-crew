@@ -84,8 +84,11 @@ export default function AnalyticsPage() {
             
             <div className="flex items-center gap-4">
               <select
+                id="time-range"
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
+                aria-label="Time Range"
+                title="Select time range for analytics"
                 className="bg-tron-grid border border-tron-cyan/30 text-tron-text px-4 py-2 rounded-lg focus:border-tron-cyan focus:outline-none"
               >
                 {timeRanges.map((range) => (

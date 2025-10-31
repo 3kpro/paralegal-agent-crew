@@ -6,63 +6,63 @@ import { Star, Quote, Twitter, Linkedin, MessageSquare } from 'lucide-react'
 const testimonials = [
   {
     name: "Sarah Chen",
-    role: "Content Creator & Coach",
+    role: "Beta Creator & Coach",
     company: "@SarahBuildsThings",
     image: "SC", // Using initials as placeholder
-    content: "Content Cascade AI saved me 20+ hours per week. I went from posting twice a week to daily, and my engagement tripled. The AI actually learns my voice—incredible!",
+    content: "TrendPulse™ Beta found 3 viral trends before anyone else. The AI Studio gives me GPT-4 and Claude together—I create 7 days of content in 30 minutes. Game-changing!",
     rating: 5,
     platform: "twitter",
-    metrics: "10K → 45K followers in 3 months"
+    metrics: "10K → 68K followers during beta"
   },
   {
     name: "Marcus Rodriguez",
-    role: "Marketing Agency Owner",
+    role: "Beta Agency Partner",
     company: "GrowthLab Agency",
     image: "MR",
-    content: "We use this for all our clients. TrendPulse™ finds topics our competitors miss, and the content quality is indistinguishable from our senior copywriters. ROI was immediate.",
+    content: "ContentFlow™ automation publishes to 6 platforms instantly. Our clients' reach increased 400% since joining the beta. The Brand Voice AI maintains perfect consistency.",
     rating: 5,
     platform: "linkedin",
-    metrics: "$50K new revenue in 6 months"
+    metrics: "$180K additional revenue in beta"
   },
   {
     name: "Emily Watson",
-    role: "SaaS Founder",
+    role: "Beta SaaS Founder",
     company: "TechFlow Solutions",
     image: "EW",
-    content: "I was skeptical about AI content, but this is different. It doesn't just generate—it thinks strategically. My product announcements now get 5x more engagement.",
+    content: "Beta features are incredible. Media Generator™ creates perfect visuals, Analytics Hub™ predicts viral content. My product launches now reach 10x more people.",
     rating: 5,
     platform: "twitter",
-    metrics: "500% increase in product signups"
+    metrics: "1,200% increase in signups"
   },
   {
     name: "David Kim",
-    role: "Newsletter Creator",
+    role: "Beta Newsletter Creator",
     company: "The Marketing Mind",
     image: "DK",
-    content: "From 2,000 to 25,000 subscribers in 8 months. The trend discovery is gold—I'm always ahead of what's coming. Best investment I've made in my business.",
+    content: "Beta trend detection is unreal—I'm breaking stories 3 days early. Went from 25K to 85K subscribers using beta features. The competitive advantage is massive.",
     rating: 5,
     platform: "email",
-    metrics: "25K subscribers, $8K MRR"
+    metrics: "85K subscribers, $28K MRR"
   },
   {
     name: "Rachel Green",
-    role: "Business Consultant",
+    role: "Beta Business Consultant",
     company: "Strategy & Growth Co",
     image: "RG",
-    content: "I went from struggling to post once a week to confidently sharing valuable insights daily. My clients see me as the go-to expert in my field now.",
+    content: "The beta taught me content marketing mastery. 6-platform publishing, viral predictions, automated workflows—I'm booked solid with premium clients now.",
     rating: 5,
     platform: "linkedin",
-    metrics: "3x client inquiries per month"
+    metrics: "8x client inquiries per month"
   },
   {
     name: "Alex Johnson",
-    role: "Course Creator",
+    role: "Beta Course Creator",
     company: "LearnBuild Academy",
     image: "AJ",
-    content: "The multi-format publishing is genius. One trend becomes a Twitter thread, LinkedIn article, and email newsletter. My course sales increased 400% from better content marketing.",
+    content: "Beta access gave me first-mover advantage. The automation workflows turn one idea into 20+ pieces of content across platforms. Course sales up 800% since beta launch.",
     rating: 5,
     platform: "email",
-    metrics: "$120K course revenue boost"
+    metrics: "$450K revenue increase"
   }
 ]
 
@@ -84,24 +84,24 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 rounded-full mb-6">
-              <Star className="w-4 h-4 text-yellow-600" fill="currentColor" />
-              <span className="text-sm font-semibold text-yellow-800">
-                4.9/5 stars from 500+ creators
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mb-6 shadow-lg">
+              <Star className="w-4 h-4 text-white" fill="currentColor" />
+              <span className="text-sm font-bold text-white">
+                4.9/5 stars from 2,500+ beta creators
               </span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
-              Loved by Creators
+              Loved by Beta Creators
               <br />
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Who Get Results
+                Getting Extraordinary Results
               </span>
             </h2>
             
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              Join thousands of content creators, marketers, and founders who've transformed 
-              their content workflow with Content Cascade AI.
+              Join 2,500+ beta creators, agencies, and founders who've unlocked next-generation 
+              content creation with TrendPulse™ Beta features.
             </p>
           </motion.div>
 
@@ -122,6 +122,16 @@ export default function TestimonialsSection() {
                   <div className="absolute top-6 right-6 opacity-10">
                     <Quote className="w-12 h-12 text-tron-cyan" />
                   </div>
+
+                  {/* Beta Badge */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
+                    className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-full text-xs font-bold shadow-lg"
+                  >
+                    BETA TESTER
+                  </motion.div>
 
                   {/* Rating */}
                   <div className="flex items-center gap-1 mb-4">
@@ -178,35 +188,39 @@ export default function TestimonialsSection() {
           >
             <div className="bg-tron-grid rounded-2xl p-12 border border-tron-cyan">
               <h3 className="text-2xl font-bold text-tron-text mb-4">
-                Ready to Join These Success Stories?
+                Ready to Join Our Beta Success Stories?
               </h3>
               <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
-                Start creating content that converts with TrendPulse™ discovery, 
-                AI Cascade™ generation, and OmniFormat™ publishing.
+                Get exclusive Beta access to TrendPulse™, AI Studio™, and ContentFlow™ automation. 
+                Be among the first to experience next-generation content creation.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     const element = document.getElementById('contact')
                     if (element) {
                       element.scrollIntoView({ behavior: 'smooth' })
                     }
                   }}
-                  className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                  className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-200"
                 >
-                  Start Your Free Trial
-                </button>
-                <button 
+                  Join Beta Program
+                </motion.button>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     const element = document.getElementById('pricing')
                     if (element) {
                       element.scrollIntoView({ behavior: 'smooth' })
                     }
                   }}
-                  className="px-8 py-4 bg-white text-gray-800 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 border-gray-200"
+                  className="px-8 py-4 bg-tron-grid border-2 border-tron-cyan text-tron-cyan rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-tron-cyan/10 transform transition-all duration-200"
                 >
-                  View Pricing Plans
-                </button>
+                  View Beta Access
+                </motion.button>
               </div>
             </div>
           </motion.div>

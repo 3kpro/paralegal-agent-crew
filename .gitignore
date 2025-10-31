@@ -1,5 +1,21 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.pytest_cache/
+
 # dependencies
 /node_modules
 /.pnp
@@ -25,10 +41,39 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env
+.env.*
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.vercel
+.env.test
+.env.staging
+
+# secrets and sensitive data
+*.pem
+*.key
+*.cert
+*.secret
+*_TOKEN
+*_KEY
+*HANDOFF*.md
+*SECRET*
+credentials.json
+service-account*.json
 
 # vercel
 .vercel
+
+# secrets and tokens
+*.key
+*.pem
+*.cert
+*.secret
+*_TOKEN
+*_KEY
+*HANDOFF*.md
 
 # typescript
 *.tsbuildinfo
@@ -43,3 +88,4 @@ nul
 
 # MCP servers (external projects)
 DEVapimatic-validator-mcp/
+.env.vercel
