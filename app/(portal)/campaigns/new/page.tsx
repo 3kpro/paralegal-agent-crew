@@ -18,6 +18,7 @@ import {
   FileText,
   Loader2,
   Link,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendSourceSelector } from "@/components/ui";
