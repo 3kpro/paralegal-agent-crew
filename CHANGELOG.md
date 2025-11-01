@@ -1,3 +1,17 @@
+## [1.9.3] - 2025-01-15
+
+### 🐛 **BUG FIX: TypeScript Type Error - Nested Cached Property Access**
+
+**Issue**: TypeScript compilation error in Content Generation API route
+
+- **File**: `app/api/generate/route.ts` (line 213)
+- **Problem**: Attempted to access `cachedResult.cached` which doesn't exist at root level
+- **Root Cause**: The `cached` property is nested within the `metadata` object, not at the root level
+- **Solution**: Changed `cachedResult.cached || false` to `cachedResult.metadata?.cached || false`
+- **Impact**: ✅ Resolves TypeScript compilation error while maintaining type safety
+
+---
+
 ## [1.9.2] - 2025-01-15
 
 ### 🔍 **CAMPAIGN PAGE CODE REVIEW & REFACTORING FIXES**
@@ -3448,105 +3462,4 @@ Supporting (docs/):
 - **Enhanced Settings → API Keys Tab**
 
   - Complete overhaul from basic inputs to professional interface
-  - 5 AI provider instruction cards (OpenAI, Anthropic, Google, ElevenLabs, xAI)
-  - Test Connection functionality with real-time validation
-  - Success/failure visual feedback system
-  - Integration with AI Tools backend endpoints (`/api/ai-tools/configure`, `/api/ai-tools/test`)
-  - Informational section about LM Studio (already configured local AI)
-
-- **Enhanced Profile Settings Tab**
-
-  - Expanded from 3 fields to 14+ comprehensive fields:
-    - Basic info: Avatar URL, company logo, bio (150 chars), website
-    - Localization: Timezone and language selection
-    - Social media: Twitter, LinkedIn, Instagram, Facebook, TikTok, Reddit handles
-  - Responsive 3-column grid layout (mobile-first design)
-  - Form validation with URL and character count checking
-  - Integration with enhanced `/api/profile` endpoint
-
-- **Enhanced Membership Tab**
-  - Real-time usage visualization with 4 progress meters:
-    - Campaigns usage (monthly limits by tier)
-    - AI Tools configured (tier-based limits)
-    - Storage usage with file count estimates
-    - API calls tracking with cost estimation
-  - Color-coded progress bars (green/yellow/red states)
-  - Cost tracking and savings visualization (LM Studio benefits)
-  - Enhanced plan comparison with visual hierarchy
-  - Integration with `/api/usage` endpoint for live data
-
-### Changed
-
-- **Settings Page Architecture**
-
-  - Migrated from direct Supabase queries to new AI Tools backend APIs
-  - Added comprehensive provider instruction data structure
-  - Implemented proper state management for testing, results, and usage data
-  - Added responsive design patterns throughout all tabs
-
-- **Provider Data Structure**
-  - Created detailed setup instructions for 5 major AI providers
-  - Added setup time estimates (2-5 minutes per provider)
-  - Included cost information and free tier details
-  - Added key format examples and validation patterns
-  - Integrated platform-specific setup URLs
-
-### Improved
-
-- **User Experience**
-
-  - Professional, user-friendly interface for AI provider configuration
-  - Clear visual hierarchy with cards, gradients, and proper spacing
-  - Loading states and error handling throughout
-  - Helpful guidance text and setup instructions
-  - Mobile-responsive design with proper breakpoints
-
-- **Developer Experience**
-  - Clean component architecture with reusable InstructionCard
-  - Proper TypeScript interfaces for provider data
-  - Integration-ready with existing authentication flow
-  - Maintainable styling conventions using Tailwind CSS
-
-### Technical Implementation
-
-- **Components**: React functional components with hooks (useState, useEffect)
-- **Styling**: Tailwind CSS with mobile-first responsive design
-- **State Management**: Local state for forms, testing states, and API responses
-- **API Integration**: RESTful endpoints with proper error handling
-- **Authentication**: Seamless integration with existing auth system
-
-### Backend API Integration
-
-- **AI Tools Configuration**: Uses `/api/ai-tools/configure` for saving provider settings
-- **Connection Testing**: Uses `/api/ai-tools/test` for real-time key validation
-- **Profile Management**: Uses `/api/profile` for extended profile updates
-- **Usage Analytics**: Uses `/api/usage` for real-time usage statistics
-
-### Files Modified
-
-- [app/(portal)/settings/page.tsx](<app/(portal)/settings/page.tsx>) - Complete settings page overhaul
-- [components/InstructionCard.tsx](components/InstructionCard.tsx) - New reusable instruction component
-
-### Implementation Status
-
-- ✅ Priority 1 AI Tools Settings Integration 100% complete
-- ✅ All 3 settings tabs (Profile, API Keys, Membership) enhanced
-- ✅ Backend API integration fully functional
-- ✅ Mobile-responsive design implemented
-- ✅ Real-time testing and validation working
-- ⏳ Ready for user testing and Priority 2 implementation
-
-**Next Steps**: The enhanced Settings page is ready for user testing via `/settings` route after authentication. Priority 2 tasks from the integration package can be implemented next.
-
----
-
-## [1.5.0] - 2025-10-04
-
-### Added
-
-- **Stripe Payment Integration - Complete Backend**
-
-  - Stripe SDK configuration in [lib/stripe.ts](lib/stripe.ts)
-  - Tier limits configuration (Free: 5 campaigns/month, Pro: unlimited, Premium: unlimited)
-  - Product configuration (Pro: $29/mo or $290/yr, Premium: $99/mo or $990/yr)
-  - Checkout session creation endpoint [app/api/stripe/checkout/route.ts](app/api/stripe/checkout/route.ts)
+  - 5 AI provider instruction cards (OpenAI, Anth

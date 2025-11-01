@@ -304,16 +304,19 @@ export default function NewCampaignPage() {
         const editedText = editedContentSnapshot[platform];
         if (editedText) {
           // This closure captures the edited content at save time
-          setGeneratedContent((prevGen) => ({
-            ...prevGen,
-            [platform]:
-              typeof prevGen[platform] === "string"
-                ? editedText
-                : {
-                    ...prevGen[platform],
-                    content: editedText,
-                  },
-          }));
+          setGeneratedContent((prevGen) => {
+            if (!prevGen) return prevGen;
+            return {
+              ...prevGen,
+              [platform]:
+                typeof prevGen[platform] === "string"
+                  ? editedText
+                  : {
+                      ...prevGen[platform],
+                      content: editedText,
+                    },
+            };
+          });
         }
         return editedContentSnapshot;
       });
@@ -779,7 +782,7 @@ export default function NewCampaignPage() {
                       {trends.length} results
                     </span>
                   </div>
-                  <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-3 max-h-[500px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                     {trends.map((trend, index) => (
                       <motion.div
                         key={index}
@@ -787,7 +790,7 @@ export default function NewCampaignPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => setSelectedTrend(trend)}
-                        whileHover={{ scale: 1.02, x: 5 }}
+                        whileHover={{ scale: 1.01 }}
                         className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 cursor-pointer transition-all ${
                           selectedTrend === trend
                             ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl ring-2 ring-tron-cyan/20"

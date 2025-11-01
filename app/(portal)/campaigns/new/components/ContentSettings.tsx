@@ -59,6 +59,7 @@ const ContentSettings = memo<ContentSettingsProps>(
         { id: "creators", label: "Content Creators" },
         { id: "students", label: "Students" },
         { id: "techies", label: "Tech Enthusiasts" },
+        { id: "gamers", label: "Gamers" },
       ],
       []
     );
@@ -71,6 +72,7 @@ const ContentSettings = memo<ContentSettingsProps>(
         { id: "news", label: "News/Update" },
         { id: "tips", label: "Tips & Advice" },
         { id: "story", label: "Tell a Story" },
+        { id: "walkthrough", label: "Walk Through" },
       ],
       []
     );

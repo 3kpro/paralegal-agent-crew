@@ -45,6 +45,8 @@ export interface ToastState {
 export interface Trend {
   id?: string;
   title: string;
+  formattedTraffic?: string;
+  relatedQueries?: string[];
 }
 
 /**

@@ -196,16 +196,6 @@ export async function POST(request: Request) {
       }
     });
 
-    if (cachedResult.error) {
-      return NextResponse.json(
-        {
-          error: cachedResult.error,
-          requiresSetup: cachedResult.error.includes("No AI tools configured"),
-        },
-        { status: 400 },
-      );
-    }
-
     // Track content generation event
     // 🚀 OPTIMIZATION: Fire-and-forget analytics event (non-blocking)
     try {
@@ -219,8 +209,8 @@ export async function POST(request: Request) {
             topic,
             formats,
             provider: preferredProvider || "default",
-            success: !cachedResult.error,
-            cached: cachedResult.cached || false
+            success: cachedResult.success,
+            cached: cachedResult.metadata?.cached || false
           }
         });
 
@@ -232,7 +222,7 @@ export async function POST(request: Request) {
     }
 
     // Increment daily usage metric
-    if (!cachedResult.error) {
+    if (cachedResult.success) {
       try {
         const { error: rpcError } = await supabase.rpc("increment_usage_metric", {
           p_user_id: user.id,
@@ -551,6 +541,7 @@ function getPromptForFormat(
     creators: "content creators and influencers",
     students: "students and learners",
     techies: "tech enthusiasts and developers",
+    gamers: "gamers and gaming enthusiasts",
   };
 
   // Map content focus to intent
@@ -561,6 +552,7 @@ function getPromptForFormat(
     news: "providing news and updates about",
     tips: "offering practical tips and advice about",
     story: "telling a compelling story about",
+    walkthrough: "creating a step-by-step walkthrough or guide about",
   };
 
   // Map call to action types
@@ -591,16 +583,18 @@ function getPromptForFormat(
 
   const prompts: Record<string, string> = {
     twitter: `Create a ${toneDesc} Twitter/X post about "${topic}". Requirements:
-- Maximum ${limits.twitter} characters
-- Include 2-3 relevant hashtags
+- STRICT LIMIT: Maximum ${limits.twitter} characters total (including spaces and hashtags)
+- Include 2-3 relevant hashtags (these count toward the ${limits.twitter} character limit)
 - ${tone === "humorous" ? "Be witty and clever" : tone === "inspirational" ? "Be uplifting and motivational" : "Be engaging and compelling"}
 - Include a call-to-action or thought-provoking question
 - ${tone === "casual" ? "Use casual language" : tone === "professional" ? "Maintain professional language" : "Match the tone naturally"}
 - This should be ready-to-post content that can be published immediately
+- CRITICAL: The entire post MUST be under ${limits.twitter} characters
 
 Return only the tweet text that can be posted directly, nothing else.`,
 
     linkedin: `Create a ${toneDesc} LinkedIn post about "${topic}". Requirements:
+- STRICT LIMIT: Maximum 3000 characters (LinkedIn's limit)
 - ${limits.words}
 - Include relevant hashtags (3-5)
 - Structure: Attention-grabbing hook → Valuable insight → Clear call-to-action
@@ -621,6 +615,7 @@ SUBJECT: [subject line]
 BODY: [email body]`,
 
     facebook: `Create a ${toneDesc} Facebook post about "${topic}". Requirements:
+- STRICT LIMIT: Maximum 63,206 characters (but keep it under ${limits.other} for engagement)
 - ${limits.words}
 - Include relevant hashtags (2-4)
 - ${tone === "humorous" ? "Be entertaining and shareable" : tone === "inspirational" ? "Be uplifting and share-worthy" : tone === "casual" ? "Be conversational and relatable" : "Be engaging"}
@@ -637,6 +632,7 @@ Audience: ${audienceDesc}
 Goal: ${ctaDesc}
 
 Requirements:
+- STRICT LIMIT: Maximum 2,200 characters (Instagram's limit)
 - ${limits.words}
 - Write ONLY about the topic "${topic}" - no product promotion or service mentions
 - ${focusDesc} the topic itself, not any company or product
@@ -650,6 +646,7 @@ Requirements:
 Return only the Instagram caption that can be posted directly, nothing else.`,
 
     reddit: `Create a ${toneDesc} Reddit post about "${topic}". Requirements:
+- STRICT LIMIT: Maximum 40,000 characters (Reddit's limit for text posts)
 - ${limits.words}
 - ${tone === "casual" ? "Use authentic, conversational Reddit voice" : tone === "educational" ? "Provide detailed, well-researched information" : tone === "humorous" ? "Be clever and witty" : "Be genuine and valuable"}
 - No hashtags (Reddit doesn't use them)
@@ -660,6 +657,7 @@ Return only the Instagram caption that can be posted directly, nothing else.`,
 Return only the Reddit post text that can be posted directly, nothing else.`,
 
     tiktok: `Create a ${toneDesc} TikTok caption/text post about "${topic}". Requirements:
+- STRICT LIMIT: Maximum 2,200 characters (TikTok's caption limit)
 - ${limits.words} for caption text
 - ${tone === "humorous" ? "Be entertaining and trendy" : tone === "educational" ? "Make it quick and digestible" : tone === "inspirational" ? "Be energetic and motivational" : "Be attention-grabbing"}
 - Start with an engaging hook
