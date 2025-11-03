@@ -151,25 +151,29 @@ export default function AnalyticsPage() {
             {
               icon: TrendingUp,
               label: "Campaign Performance",
-              value: "Coming Soon",
+              value: "---",
+              subtext: "Awaiting data",
               color: "text-green-400",
             },
             {
               icon: Users,
               label: "Audience Growth",
-              value: "Coming Soon",
+              value: "---",
+              subtext: "Tracking soon",
               color: "text-blue-400",
             },
             {
               icon: Eye,
               label: "Total Impressions",
-              value: "Coming Soon",
+              value: "---",
+              subtext: "Analytics pending",
               color: "text-purple-400",
             },
             {
               icon: Share2,
               label: "Engagement Rate",
-              value: "Coming Soon",
+              value: "---",
+              subtext: "Metrics incoming",
               color: "text-tron-cyan",
             },
           ].map((stat, index) => (
@@ -188,6 +192,7 @@ export default function AnalyticsPage() {
                 {stat.value}
               </div>
               <div className="text-sm text-tron-text-muted">{stat.label}</div>
+              <div className="text-xs text-tron-text-muted/60 mt-1">{stat.subtext}</div>
             </motion.div>
           ))}
         </div>
@@ -263,7 +268,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium text-tron-text">
-                        Coming Soon
+                        ---
                       </div>
                       <div className="text-xs text-tron-text-muted">
                         Engagement data

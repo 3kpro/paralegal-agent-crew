@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Trash2 } from "lucide-react";
+import { Check, Trash2, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CampaignActions } from "@/components/CampaignActions";
 
@@ -146,9 +146,10 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
         </div>
         <Link
           href="/campaigns/new"
-          className="px-6 py-3 bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark font-semibold rounded-lg transition-colors"
+          className="px-8 py-4 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 transition-colors flex items-center gap-3 text-lg"
         >
-          + New Campaign
+          <Plus className="w-6 h-6" />
+          New Campaign
         </Link>
       </div>
 

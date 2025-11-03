@@ -97,14 +97,16 @@ export default function ModernHero() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <Link
-              href="/trend-gen"
-              className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
-            >
-              <Zap className="w-5 h-5" />
-              Join TrendPulse™ Beta
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            <div className="relative">
+              <Link
+                href="/trend-gen"
+                className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
+              >
+                <Zap className="w-5 h-5" />
+                Join TrendPulse™ Beta
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
 
             <button className="px-8 py-4 bg-tron-dark text-tron-cyan rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 border-tron-cyan hover:border-tron-magenta">
               ⭐ Beta Features Overview

@@ -1,0 +1,417 @@
+
+> 3kpro-services@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.4
+   - Local:        http://localhost:3000
+   - Network:      http://10.5.0.2:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ✓ Compiled /middleware in 414ms (186 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 5.9s (1766 modules)
+ GET / 200 in 7510ms
+ ✓ Compiled in 1709ms (778 modules)
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1644ms (1765 modules)
+ GET /login 200 in 2292ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1423ms (1886 modules)
+✅ Analytics tracked: login for user james.lawson@gmail.com
+ POST /api/analytics/track 200 in 2021ms
+ GET /dashboard 200 in 2165ms
+ GET /dashboard 200 in 384ms
+ ○ Compiling /glowing-effect-demo ...
+ ✓ Compiled /glowing-effect-demo in 935ms (1829 modules)
+ GET /glowing-effect-demo 200 in 1438ms
+ ✓ Compiled / in 331ms (1110 modules)
+ GET / 200 in 883ms
+ GET /login 200 in 127ms
+ ✓ Compiled /api/analytics/track in 422ms (1127 modules)
+✅ Analytics tracked: login for user james.lawson@gmail.com
+ POST /api/analytics/track 200 in 1982ms
+ GET /dashboard 200 in 1812ms
+ GET /dashboard 200 in 473ms
+ GET /dashboard 200 in 230ms
+ ✓ Compiled in 2.7s (1901 modules)
+ GET /dashboard 200 in 564ms
+ ✓ Compiled in 865ms (1901 modules)
+ GET /dashboard 200 in 622ms
+ ✓ Compiled in 2.3s (1917 modules)
+ ⨯ Error: Cannot find module './4586.js'
+Require stack:
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\webpack-runtime.js
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\require.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\load-components.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\utils.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\options.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\index.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\parse-module.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\get-page-static-info.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-server.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js:2:9702)
+    at Object.<anonymous> (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js:2:9798) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/dashboard'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 5.7s (2230 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+Error: Cannot find module './4586.js'
+Require stack:
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\webpack-runtime.js
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\require.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\load-components.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\utils.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\options.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\index.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\parse-module.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\get-page-static-info.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-server.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js:2:9702)
+    at Object.<anonymous> (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\(portal)\dashboard\page.js:2:9798) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ GET /dashboard 500 in 10559ms
+ GET /dashboard 500 in 334ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ ✓ Compiled in 2.5s (2244 modules)
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ GET /dashboard 500 in 4091ms
+ GET /dashboard 500 in 442ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ GET /dashboard 500 in 1309ms
+ GET /dashboard 500 in 315ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ GET /dashboard 500 in 1295ms
+ GET /dashboard 500 in 295ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/dashboard'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json'
+}
+ GET /dashboard 500 in 1301ms
+ GET /dashboard 500 in 361ms
+ ✓ Compiled in 599ms (944 modules)
+ ✓ Compiled in 395ms (944 modules)
+ ✓ Compiled in 452ms (944 modules)
+ ✓ Compiled in 1076ms (944 modules)
+ ✓ Compiled in 547ms (944 modules)
+ ✓ Compiled in 426ms (944 modules)
+ ✓ Compiled in 1046ms (944 modules)
+ ✓ Compiled in 575ms (944 modules)
+ ✓ Compiled in 249ms (944 modules)
+ ✓ Compiled in 386ms (944 modules)
+ ✓ Compiled in 1441ms (2137 modules)
+ ✓ Compiled in 622ms (944 modules)
+ ✓ Compiled in 1109ms (944 modules)
+ ✓ Compiled in 426ms (944 modules)
+ ✓ Compiled in 484ms (944 modules)
+ ✓ Compiled in 275ms (944 modules)
+ ✓ Compiled in 512ms (944 modules)
+ ✓ Compiled in 2s (2137 modules)
+ ✓ Compiled in 910ms (944 modules)
+ ✓ Compiled in 239ms (944 modules)
+ ✓ Compiled in 167ms (944 modules)
+ ✓ Compiled in 794ms (944 modules)
+ ✓ Compiled in 3s (2151 modules)
+ ✓ Compiled in 1337ms (2167 modules)
+ ✓ Compiled in 951ms (2170 modules)
+ ✓ Compiled in 805ms (2157 modules)
+ ✓ Compiled in 1137ms (2157 modules)
+ ✓ Compiled in 659ms (948 modules)
+ ✓ Compiled in 330ms (948 modules)
+ ✓ Compiled in 1781ms (2157 modules)
+ ✓ Compiled in 514ms (948 modules)
+ ✓ Compiled in 594ms (948 modules)
+ ✓ Compiled in 555ms (948 modules)
+ ✓ Compiled in 420ms (948 modules)
+ ✓ Compiled in 703ms (948 modules)
+ ⨯ Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'
+    at async L (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\page.js:1:70245) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 868ms (2236 modules)
+ ⨯ Error: Cannot find module './5611.js'
+Require stack:
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\webpack-runtime.js
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\require.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\load-components.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\utils.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\options.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\index.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\parse-module.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\get-page-static-info.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-server.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js:1:327)
+    at Object.<anonymous> (C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js:1:374) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\routes-manifest.json'
+    at async L (C:\DEV\3K-Pro-Services\landing-page\.next\server\app\page.js:1:70245) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ Error: Cannot find module './5611.js'
+Require stack:
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\webpack-runtime.js
+- C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\require.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\load-components.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\utils.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\options.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\swc\index.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\parse-module.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\build\analysis\get-page-static-info.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\router-server.js
+- C:\DEV\3K-Pro-Services\landing-page\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js:1:327)
+    at Object.<anonymous> (C:\DEV\3K-Pro-Services\landing-page\.next\server\pages\_document.js:1:374) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: ENOENT: no such file or directory, open 'C:\DEV\3K-Pro-Services\landing-page\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\DEV\\3K-Pro-Services\\landing-page\\.next\\fallback-build-manifest.json'
+}
+ GET / 500 in 1900ms
+ GET / 500 in 261ms
+
+> 3kpro-services@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.5.4
+   - Local:        http://localhost:3000
+   - Network:      http://10.5.0.2:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 2.2s
+ ✓ Compiled /middleware in 302ms (186 modules)
+ ○ Compiling /contentflow ...
+ ✓ Compiled /contentflow in 5.2s (1580 modules)
+ ✓ Compiled in 1245ms (637 modules)
+ GET /contentflow 200 in 6833ms
+ ○ Compiling /settings ...
+ ✓ Compiled /settings in 1289ms (1581 modules)
+ GET /settings 200 in 1863ms
+ ○ Compiling /api/profile ...
+ ✓ Compiled /api/profile in 1311ms (1600 modules)
+ GET /api/profile 200 in 1854ms
+ GET /api/profile 200 in 341ms
+ ○ Compiling /api/ai-tools/list ...
+ GET /api/usage 200 in 2804ms
+ ✓ Compiled /api/ai-tools/list in 770ms (1602 modules)
+ GET /api/ai-tools/list 200 in 1416ms
+ GET /api/usage 200 in 679ms
+ GET /api/ai-tools/list 200 in 607ms
+ ○ Compiling /campaigns ...
+ ✓ Compiled /campaigns in 762ms (1620 modules)
+ GET /campaigns 200 in 1446ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1113ms (1625 modules)
+ GET /dashboard 200 in 1946ms
+ ○ Compiling /campaigns/new ...
+ ✓ Compiled /campaigns/new in 3.7s (1714 modules)
+ GET /campaigns/new 200 in 5521ms
+ ✓ Compiled in 2.1s (691 modules)
+ ✓ Compiled in 1061ms (691 modules)
+ GET /campaigns/new 200 in 1129ms
+ GET /campaigns/new 200 in 211ms
+ GET /campaigns/new 200 in 396ms
+ ○ Compiling /api/social-accounts ...
+ ✓ Compiled /api/social-accounts in 703ms (1027 modules)
+ ✓ Compiled in 839ms (677 modules)
+ GET /api/social-accounts 200 in 2899ms
+ GET /campaigns/new 200 in 2664ms
+ GET /api/ai-tools/list 200 in 3186ms
+ GET /api/social-accounts 200 in 257ms
+ GET /api/ai-tools/list 200 in 478ms
+ GET /settings 200 in 236ms
+ ○ Compiling /api/usage ...
+ ✓ Compiled /api/profile in 863ms (1031 modules)
+ ✓ Compiled (1033 modules)
+ GET /api/profile 200 in 2310ms
+ GET /api/profile 200 in 387ms
+ GET /api/usage 200 in 3537ms
+ GET /api/ai-tools/list 200 in 621ms
+ GET /api/ai-tools/list 200 in 542ms
+ GET /api/usage 200 in 747ms
+ GET /dashboard 200 in 309ms
+ ○ Compiling /social-accounts ...
+ ✓ Compiled /social-accounts in 3.6s (1741 modules)
+ GET /social-accounts 200 in 4294ms
+ GET /social-accounts 200 in 239ms
+ GET /campaigns 200 in 370ms
+ ○ Compiling /analytics ...
+ ✓ Compiled /analytics in 1900ms (1727 modules)
+ GET /analytics 200 in 2901ms
+ ✓ Compiled in 1140ms (707 modules)
+ GET /analytics 200 in 175ms
+ GET /analytics 200 in 127ms

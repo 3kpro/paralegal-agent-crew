@@ -37,11 +37,10 @@ export const Navigation: React.FC<NavigationProps> = ({ onContactClick }) => {
       {label}
       {activeSection === id && (
         <motion.div
-          className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400"
+          className="absolute bottom-0 left-0 w-full h-0.5 bg-cyan-400 nav-active-indicator"
           initial={{ width: 0, opacity: 0 }}
           animate={{ width: "100%", opacity: 1 }}
           transition={{ duration: 0.3, ease: transitionTiming }}
-          style={{ boxShadow: "0 0 5px #00ffff" }}
         />
       )}
     </motion.button>

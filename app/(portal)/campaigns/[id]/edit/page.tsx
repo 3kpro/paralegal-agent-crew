@@ -1,26 +1,7 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Construction } from "lucide-react";
 
-export default function EditCampaignPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Auto-redirect after 3 seconds
-    const timer = setTimeout(() => {
-      router.push(`/campaigns/${params.id}`);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [params.id, router]);
-
+function EditCampaignContent({ id }: { id: string }) {
   return (
     <div className="min-h-screen bg-tron-dark flex items-center justify-center p-8">
       <motion.div
@@ -47,20 +28,20 @@ export default function EditCampaignPage({
           </p>
 
           <div className="space-y-3">
-            <button
-              onClick={() => router.push(`/campaigns/${params.id}`)}
-              className="w-full px-6 py-3 bg-gradient-to-r from-tron-cyan to-tron-magenta text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+            <a
+              href={`/campaigns/${id}`}
+              className="w-full px-6 py-3 bg-gradient-to-r from-tron-cyan to-tron-magenta text-white font-semibold rounded-lg hover:opacity-90 transition-opacity block text-center"
             >
               View Campaign Details
-            </button>
+            </a>
 
-            <button
-              onClick={() => router.push("/campaigns")}
+            <a
+              href="/campaigns"
               className="w-full px-6 py-3 bg-tron-grid border border-tron-cyan/30 text-tron-cyan font-semibold rounded-lg hover:border-tron-cyan transition-colors flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Campaigns
-            </button>
+            </a>
           </div>
 
           <p className="text-xs text-tron-text-muted mt-6">
@@ -70,4 +51,13 @@ export default function EditCampaignPage({
       </motion.div>
     </div>
   );
+}
+
+export default async function EditCampaignPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const resolvedParams = await params;
+  return <EditCampaignContent id={resolvedParams.id} />;
 }

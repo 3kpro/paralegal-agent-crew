@@ -41,23 +41,27 @@ export async function GET(request: NextRequest) {
 
     // Handle different actions
     switch (action) {
-      case "stats":
+      case "stats": {
         const stats = await getRedisStats();
         return NextResponse.json(stats);
+      }
 
-      case "distribution":
+      case "distribution": {
         const distribution = await getCacheDistribution();
         return NextResponse.json(distribution);
+      }
 
-      case "largest":
+      case "largest": {
         const pattern = searchParams.get("pattern") || "*";
         const limit = parseInt(searchParams.get("limit") || "10");
         const largest = await getLargestCacheEntries(pattern, limit);
         return NextResponse.json(largest);
+      }
 
-      case "ping":
+      case "ping": {
         const connected = await isRedisConnected();
         return NextResponse.json({ connected });
+      }
 
       default:
         return NextResponse.json({ error: "Invalid action" }, { status: 400 });
@@ -110,7 +114,7 @@ export async function POST(request: NextRequest) {
 
     // Handle different actions
     switch (action) {
-      case "flush":
+      case "flush": {
         // Flush all keys matching pattern
         if (!pattern) {
           return NextResponse.json(
@@ -131,6 +135,7 @@ export async function POST(request: NextRequest) {
           success: true,
           message: `Flushed ${keys.length} keys matching pattern: ${pattern}`,
         });
+      }
 
       case "flushContent":
         // Flush all content cache

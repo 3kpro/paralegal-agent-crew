@@ -23,6 +23,7 @@ export function generateCodeVerifier(): string {
     window.crypto.getRandomValues(values);
   } else {
     // Node.js environment fallback
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const crypto = require('crypto');
     crypto.randomFillSync(values);
   }
@@ -43,6 +44,7 @@ export async function generateCodeChallenge(verifier: string): Promise<string> {
     return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
   } else {
     // Node.js environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256').update(verifier).digest('base64');
     return hash.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");

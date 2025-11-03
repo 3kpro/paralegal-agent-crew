@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Skeleton } from '@/components/SkeletonLoader'
+import './test-components.css'
 
 // Mock components to test theme consistency
 const MockTronButton = ({ variant = 'primary', children }: { variant?: 'primary' | 'secondary', children: React.ReactNode }) => (
@@ -381,7 +382,7 @@ describe('Tron Theme Integration E2E Tests', () => {
             <span>75%</span>
           </div>
           <div className="w-full bg-tron-grid rounded-full h-2 border border-tron-cyan/20">
-            <div className="bg-tron-cyan h-full rounded-full transition-all duration-300" style={{ width: '75%' }}>
+            <div className="bg-tron-cyan h-full rounded-full transition-all duration-300 progress-fill-75">
               <div className="h-full bg-gradient-to-r from-tron-cyan to-tron-green rounded-full"></div>
             </div>
           </div>

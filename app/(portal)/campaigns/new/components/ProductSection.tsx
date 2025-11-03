@@ -42,6 +42,7 @@ export default function ProductSection({
   const handleInputChange = (field: keyof ProductDetails, value: any) => {
     onChange({
       ...product || {
+        name: '',
         presentationStyle: 'benefits',
         highlightPrice: false,
         includeTestimonials: false,

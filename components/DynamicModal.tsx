@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { Skeleton } from "./SkeletonLoader";
+import { Skeleton, SettingsSkeleton } from "./SkeletonLoader";
 
 // Dynamic imports for modal components with loading states
 export const DynamicDemoModal = dynamic(
@@ -104,7 +104,6 @@ export const DynamicSettingsClient = dynamic(
   () => import("../app/(portal)/settings/page"),
   {
     loading: () => {
-      const { SettingsSkeleton } = require("./SkeletonLoader");
       return <SettingsSkeleton />;
     },
     ssr: false,

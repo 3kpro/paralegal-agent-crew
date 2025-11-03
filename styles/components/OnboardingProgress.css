@@ -1,3 +1,6 @@
-.onboarding-progress-bar {
+/* Onboarding Progress Bar Styles */
+
+.progress-bar {
+  --progress-width: 0%;
   width: var(--progress-width);
 }

@@ -30,7 +30,7 @@ const TRENDING_TOPICS = [
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [selectedTopic, setSelectedTopic] = useState<typeof TRENDING_TOPICS[0] | null>(null);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-8">

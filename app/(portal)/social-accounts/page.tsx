@@ -12,6 +12,7 @@ import {
   Linkedin,
   Facebook,
   Instagram,
+  Music2,
   CheckCircle2,
   Loader2,
   AlertCircle,
@@ -124,7 +125,8 @@ export default function SocialAccountsPage() {
     { id: "twitter", name: "Twitter", Icon: Twitter, bgClass: "bg-black" },
     { id: "linkedin", name: "LinkedIn", Icon: Linkedin, bgClass: "bg-[#0077B5]" },
     { id: "facebook", name: "Facebook", Icon: Facebook, bgClass: "bg-[#1877F2]" },
-    { id: "instagram", name: "Instagram", Icon: Instagram, bgClass: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" }
+    { id: "instagram", name: "Instagram", Icon: Instagram, bgClass: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" },
+    { id: "tiktok", name: "TikTok", Icon: Music2, bgClass: "bg-gradient-to-br from-[#00F2EA] via-[#FF0050] to-[#000000]" }
   ];
 
   const isConnected = (platformId: string) => {
@@ -163,7 +165,7 @@ export default function SocialAccountsPage() {
                 <Loader2 className="w-8 h-8 text-tron-cyan animate-spin" />
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-10 max-w-xl mx-auto py-12">
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto py-4">
                 {platforms.map((platform, index) => {
                   const connected = isConnected(platform.id);
                   const account = getAccountForPlatform(platform.id);
@@ -180,24 +182,24 @@ export default function SocialAccountsPage() {
                       <button
                         onClick={() => !connected && !connecting && handleConnect(platform.id)}
                         disabled={connected || connecting}
-                        className={`relative group aspect-square rounded-xl p-6 flex flex-col items-center justify-center gap-3 overflow-hidden w-full
+                        className={`relative group aspect-square rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 overflow-hidden w-full
                           ${platform.bgClass}
                           ${connected ? 'cursor-default' : 'hover:transform hover:scale-105'}
                           ${connecting ? 'opacity-75' : ''}
                           transition-all duration-300`}
                       >
                         {/* Platform Icon */}
-                        <div className="text-white w-16 h-16 flex items-center justify-center">
+                        <div className="text-white w-10 h-10 flex items-center justify-center">
                           <platform.Icon className="w-full h-full" />
                         </div>
 
                         {/* Platform Name */}
-                        <span className="text-white text-xl font-bold">{platform.name}</span>
+                        <span className="text-white text-base font-bold">{platform.name}</span>
 
                         {/* Status Badge */}
                         {connected && account && (
-                          <div className="absolute top-3 right-3">
-                            <CheckCircle2 className="w-6 h-6 text-green-400" />
+                          <div className="absolute top-1.5 right-1.5">
+                            <CheckCircle2 className="w-4 h-4 text-green-400" />
                           </div>
                         )}
 
@@ -206,7 +208,7 @@ export default function SocialAccountsPage() {
                           <motion.div
                             className="absolute inset-0 bg-black/60 flex items-center justify-center"
                           >
-                            <Loader2 className="w-8 h-8 text-white animate-spin" />
+                            <Loader2 className="w-5 h-5 text-white animate-spin" />
                           </motion.div>
                         )}
 
@@ -214,9 +216,9 @@ export default function SocialAccountsPage() {
                         {!connected && !connecting && (
                           <motion.div
                             whileHover={{ scale: 1.1 }}
-                            className="absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                            className="absolute bottom-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           >
-                            <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-white font-medium">
+                            <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-medium">
                               Connect
                             </div>
                           </motion.div>
@@ -224,12 +226,12 @@ export default function SocialAccountsPage() {
 
                         {/* Connected Info */}
                         {connected && account && (
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-3">
-                            <p className="text-white text-sm font-medium truncate">
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-1.5">
+                            <p className="text-white text-[10px] font-medium truncate">
                               @{account.platform_username}
                             </p>
                             {account.metadata?.followers !== undefined && (
-                              <p className="text-white/70 text-xs">
+                              <p className="text-white/70 text-[9px]">
                                 {account.metadata.followers.toLocaleString()} followers
                               </p>
                             )}
@@ -246,7 +248,7 @@ export default function SocialAccountsPage() {
                       {connected && account && (
                         <button
                           onClick={() => handleDisconnect(account.id, platform.name)}
-                          className="mt-3 w-full py-2 px-4 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded-lg text-red-300 text-sm font-medium transition-colors"
+                          className="mt-1.5 w-full py-1 px-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 rounded text-red-300 text-[10px] font-medium transition-colors"
                         >
                           Disconnect
                         </button>
@@ -370,7 +372,10 @@ export default function SocialAccountsPage() {
               </h3>
 
               <div className="space-y-3">
-                <button className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors">
+                <button 
+                  onClick={() => window.open('https://docs.contentcascade.ai/troubleshooting/connection-issues', '_blank')}
+                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-tron-text">
                       Connection Troubleshooting
@@ -382,7 +387,10 @@ export default function SocialAccountsPage() {
                   </p>
                 </button>
 
-                <button className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors">
+                <button 
+                  onClick={() => window.open('https://docs.contentcascade.ai/publishing/guidelines', '_blank')}
+                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-tron-text">
                       Publishing Guidelines
@@ -394,7 +402,10 @@ export default function SocialAccountsPage() {
                   </p>
                 </button>
 
-                <button className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors">
+                <button 
+                  onClick={() => window.open('https://docs.contentcascade.ai/api/platform-limitations', '_blank')}
+                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-tron-text">
                       Platform Limitations

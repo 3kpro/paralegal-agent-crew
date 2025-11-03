@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 
 // Profile update validation schema
 const profileUpdateSchema = z
@@ -22,8 +23,12 @@ const profileUpdateSchema = z
   })
   .strict(); // Reject unknown fields
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Apply rate limiting
+    const rateLimitResult = await rateLimit(request, RateLimitPresets.STANDARD);
+    if (rateLimitResult) return rateLimitResult;
+
     const supabase = await createClient();
 
     const {
@@ -53,6 +58,10 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
+    // Apply rate limiting
+    const rateLimitResult = await rateLimit(request, RateLimitPresets.STANDARD);
+    if (rateLimitResult) return rateLimitResult;
+
     const supabase = await createClient();
 
     const {

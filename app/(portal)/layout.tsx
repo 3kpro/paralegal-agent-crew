@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { FloatingNav } from "@/components/ui/floating-nav";
 
 export default async function PortalLayout({
   children,
@@ -28,12 +29,15 @@ export default async function PortalLayout({
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-tron-dark flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-tron-grid text-tron-text fixed h-full border-r border-tron-cyan/20 hidden md:block">
+        {/* New Floating Navigation */}
+        <FloatingNav />
+        
+        {/* Old Sidebar - Hidden */}
+        <aside className="w-64 bg-tron-grid text-tron-text fixed h-full border-r border-tron-cyan/20 hidden">
           <div className="p-6">
             <Link href="/dashboard" className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-gradient-to-br from-tron-cyan to-tron-magenta rounded-lg flex items-center justify-center shadow-lg shadow-tron-cyan/50">
-                <span className="text-tron-dark font-bold">3K</span>
+                <span className="tron-dark font-bold">3K</span>
               </div>
               <span className="font-bold text-lg">Content Cascade</span>
             </Link>
@@ -119,9 +123,9 @@ export default async function PortalLayout({
         </aside>
 
         {/* Main Content */}
-        <div className="md:ml-64 flex-1">
+        <div className="flex-1">
           {/* Top Bar */}
-          <header className="bg-tron-grid border-b border-tron-cyan/30 px-4 md:px-8 py-4">
+          <header className="bg-tron-grid border-b border-tron-cyan/30 px-4 md:px-8 py-4 md:pl-32">
             <div className="flex items-center justify-between">
               <h2 className="text-lg md:text-xl font-semibold text-tron-text">
                 Content Cascade AI
@@ -138,7 +142,7 @@ export default async function PortalLayout({
           </header>
 
           {/* Page Content */}
-          <main className="min-h-[calc(100vh-73px)] pb-16 md:pb-0">
+          <main className="min-h-[calc(100vh-73px)] pb-16 md:pb-0 md:pl-32">
             <ErrorBoundary>{children}</ErrorBoundary>
           </main>
         </div>

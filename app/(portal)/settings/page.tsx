@@ -194,7 +194,7 @@ export default function SettingsPage() {
         data.providers.forEach((provider: any) => {
           if (
             provider.hasApiKey &&
-            keysMap.hasOwnProperty(provider.provider_key)
+            Object.prototype.hasOwnProperty.call(keysMap, provider.provider_key)
           ) {
             // Use placeholder to indicate key is configured
             keysMap[provider.provider_key] = "••••••••••••••••";
@@ -755,7 +755,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => testConnection("openai")}
                     disabled={testingProvider === "openai"}
-                    className="px-4 py-2 bg-tron-green hover:bg-tron-green/80 text-white text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 text-tron-cyan text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testingProvider === "openai"
                       ? "Testing..."
@@ -808,7 +808,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => testConnection("anthropic")}
                     disabled={testingProvider === "anthropic"}
-                    className="px-4 py-2 bg-tron-green hover:bg-tron-green/80 text-white text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 text-tron-cyan text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testingProvider === "anthropic"
                       ? "Testing..."
@@ -857,7 +857,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => testConnection("google")}
                     disabled={testingProvider === "google"}
-                    className="px-4 py-2 bg-tron-green hover:bg-tron-green/80 text-white text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 text-tron-cyan text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testingProvider === "google"
                       ? "Testing..."
@@ -908,7 +908,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => testConnection("elevenlabs")}
                     disabled={testingProvider === "elevenlabs"}
-                    className="px-4 py-2 bg-tron-green hover:bg-tron-green/80 text-white text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 text-tron-cyan text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testingProvider === "elevenlabs"
                       ? "Testing..."
@@ -957,7 +957,7 @@ export default function SettingsPage() {
                   <button
                     onClick={() => testConnection("xai")}
                     disabled={testingProvider === "xai"}
-                    className="px-4 py-2 bg-tron-green hover:bg-tron-green/80 text-white text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 text-tron-cyan text-sm font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {testingProvider === "xai"
                       ? "Testing..."

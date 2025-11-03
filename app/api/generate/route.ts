@@ -2,11 +2,18 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { decryptAPIKey } from "@/lib/encryption";
 import { redis, withCache, cacheKeys } from "@/lib/redis";
+import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
+import { generateContentSchema } from "@/lib/validations";
+import { ZodError } from "zod";
 
 const CACHE_TTL = 900; // 15 minutes in seconds
 
 export async function POST(request: Request) {
   try {
+    // Apply rate limiting (10 requests per minute for content generation)
+    const rateLimitResult = await rateLimit(request, RateLimitPresets.GENERATION);
+    if (rateLimitResult) return rateLimitResult;
+
     const supabase = await createClient();
 
     const {
@@ -17,16 +24,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction } = await request.json();
-
-    if (!topic || !formats || formats.length === 0) {
-      return NextResponse.json(
-        {
-          error: "Topic and formats are required",
-        },
-        { status: 400 },
-      );
+    // Parse and validate request body
+    const body = await request.json();
+    
+    let validatedData;
+    try {
+      validatedData = generateContentSchema.parse(body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return NextResponse.json(
+          { 
+            error: "Validation failed", 
+            details: error.errors.map(e => ({
+              field: e.path.join('.'),
+              message: e.message
+            }))
+          },
+          { status: 400 }
+        );
+      }
+      throw error;
     }
+
+    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction } = validatedData;
 
     // Set defaults for content controls
     const contentTemperature = temperature ?? 0.7;
@@ -542,6 +562,7 @@ function getPromptForFormat(
     students: "students and learners",
     techies: "tech enthusiasts and developers",
     gamers: "gamers and gaming enthusiasts",
+    hobbyists: "hobbyists and enthusiasts",
   };
 
   // Map content focus to intent

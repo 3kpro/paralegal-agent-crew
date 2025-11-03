@@ -61,8 +61,7 @@ export interface GeneratedPlatformContent {
 /**
  * Generated content response (multi-platform)
  */
-export interface GeneratedContent {
-  [platform: string]: string | GeneratedPlatformContent;
+export interface GeneratedContent extends Record<string, any> {
   hashtags?: string[];
 }
 
@@ -89,7 +88,8 @@ export interface CampaignPayload {
   campaign_type: "trending" | "custom";
   source_type: "trending" | "custom";
   source_data: {
-    trend: Trend;
+    trends?: Trend[];
+    trend?: Trend;
     query: string;
     controls: Partial<ContentControls>;
   };
@@ -109,4 +109,26 @@ export interface ScheduledPost {
   post_type: "text" | "image" | "video";
   scheduled_at: string;
   status: "draft" | "scheduled" | "published";
+}
+
+/**
+ * Product details for campaign marketing
+ */
+export interface CampaignImage {
+  url: string;
+  alt: string;
+  platform: string;
+  style: string;
+}
+
+export interface ProductDetails {
+  name: string;
+  url?: string;
+  presentationStyle: "benefits" | "features" | "story" | "technical";
+  focusPoints: ("quality" | "value" | "innovation" | "reliability" | "sustainability")[];
+  highlightPrice: boolean;
+  includeTestimonials: boolean;
+  customDescription?: string;
+  generatedDescription?: string;
+  campaignImages?: CampaignImage[];
 }

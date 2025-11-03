@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Fireworks from "@/components/Fireworks";
 import {
   Twitter,
   Linkedin,
@@ -19,9 +20,21 @@ import {
   Loader2,
   Link,
   X,
+  Menu as MenuIcon,
+  Home,
+  Settings,
+  Save,
+  Eye,
+  Calendar,
+  LayoutDashboard,
+  Palette,
+  Users,
+  BarChart3,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendSourceSelector } from "@/components/ui";
+import { TrendSourceSelector, AnimatedLoader } from "@/components/ui";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CreativitySlider from "./components/CreativitySlider";
 import ContentSettings from "./components/ContentSettings";
@@ -41,6 +54,13 @@ import {
 export default function NewCampaignPage() {
   const router = useRouter();
   const supabase = createClient();
+  
+  // Card-based navigation state
+  const [currentCard, setCurrentCard] = useState(1);
+  const [cardDirection, setCardDirection] = useState(1); // 1 for forward, -1 for back
+  const [activePlatformView, setActivePlatformView] = useState<string>(""); // For Card 6 platform switcher
+  const [showFireworks, setShowFireworks] = useState(false);
+  
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -53,8 +73,23 @@ export default function NewCampaignPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [trendSource, setTrendSource] = useState("mixed");
   const [trends, setTrends] = useState<Trend[]>([]);
+  const [selectedTrends, setSelectedTrends] = useState<Trend[]>([]); // Multiple trends
   const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [loadingTrends, setLoadingTrends] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  // Generate button motivational messages
+  const [generateButtonText] = useState(() => {
+    const messages = [
+      "Show me magic ✨",
+      "Let's dance 💃",
+      "Make it pop 🎉",
+      "Bring IT!! 🔥",
+      "Unleash creativity 🚀",
+      "Let's go viral 📈",
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  });
 
   // Step 3: Content Generation + Controls
   const [aiProvider, setAiProvider] = useState("lmstudio");
@@ -141,6 +176,49 @@ export default function NewCampaignPage() {
   }, []);
 
   /**
+   * Toggle trend selection (multiple)
+   */
+  const toggleTrendSelection = useCallback((trend: Trend) => {
+    setSelectedTrends((prev) => {
+      const isSelected = prev.some((t) => t.title === trend.title);
+      if (isSelected) {
+        return prev.filter((t) => t.title !== trend.title);
+      } else {
+        return [...prev, trend];
+      }
+    });
+  }, []);
+
+  /**
+   * Card navigation helpers
+   */
+  const goToNextCard = useCallback(() => {
+    setCardDirection(1);
+    setCurrentCard((prev) => {
+      const nextCard = Math.min(prev + 1, 7);
+      // Set first platform as active when entering Card 7
+      if (nextCard === 7 && targetPlatforms.length > 0) {
+        setActivePlatformView(targetPlatforms[0]);
+      }
+      return nextCard;
+    });
+  }, [targetPlatforms]);
+
+  const goToPrevCard = useCallback(() => {
+    setCardDirection(-1);
+    setCurrentCard((prev) => Math.max(prev - 1, 1));
+  }, []);
+
+  const goToCard = useCallback((cardNum: number) => {
+    setCardDirection(cardNum > currentCard ? 1 : -1);
+    setCurrentCard(cardNum);
+    // Set first platform as active when entering Card 7
+    if (cardNum === 7 && targetPlatforms.length > 0) {
+      setActivePlatformView(targetPlatforms[0]);
+    }
+  }, [currentCard, targetPlatforms]);
+
+  /**
    * Search for trends based on query
    */
   const searchTrends = useCallback(async () => {
@@ -174,6 +252,42 @@ export default function NewCampaignPage() {
       setLoadingTrends(false);
     }
   }, [searchQuery, trendSource]);
+
+  /**
+   * Load trending topics without a specific search query
+   */
+  const loadTrendingTopics = useCallback(async () => {
+    setLoadingTrends(true);
+    setHasSearched(true);
+    goToCard(5);
+    
+    try {
+      const response = await fetch(
+        `/api/trends?mode=trending&source=${trendSource}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+          },
+          cache: "no-store",
+        }
+      );
+
+      const data = await response.json();
+      if (data.success) {
+        setTrends(data.data?.trending || []);
+      } else {
+        console.error("Trends API error:", data.error);
+        setTrends([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch trends:", error);
+      setTrends([]);
+    } finally {
+      setLoadingTrends(false);
+    }
+  }, [trendSource, goToCard]);
 
   // Load AI tools on mount
   useEffect(() => {
@@ -222,7 +336,7 @@ export default function NewCampaignPage() {
    * Generate content for selected platforms
    */
   const generateContent = useCallback(async () => {
-    if (!selectedTrend) return;
+    if (selectedTrends.length === 0) return;
 
     setGeneratingContent(true);
     try {
@@ -230,7 +344,7 @@ export default function NewCampaignPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic: selectedTrend.title || searchQuery,
+          topic: selectedTrends.map(t => t.title).join(", "),
           formats: targetPlatforms,
           preferredProvider: aiProvider,
           // Pass content controls to API
@@ -243,6 +357,12 @@ export default function NewCampaignPage() {
       if (data.success) {
         setGeneratedContent(data.content);
         showToast("Content generated successfully!", "success");
+        
+        // Trigger fireworks celebration after a delay so content shows first
+        setTimeout(() => {
+          setShowFireworks(true);
+          setTimeout(() => setShowFireworks(false), 5000);
+        }, 1000);
       } else if (data.requiresSetup) {
         showToast("No AI tools configured. Redirecting to Settings...", "error");
         setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
@@ -255,7 +375,7 @@ export default function NewCampaignPage() {
     } finally {
       setGeneratingContent(false);
     }
-  }, [selectedTrend, searchQuery, targetPlatforms, aiProvider, controls, showToast, router]);
+  }, [selectedTrends, targetPlatforms, aiProvider, controls, showToast, router]);
 
   /**
    * Toggle edit mode for a platform's content
@@ -446,8 +566,14 @@ export default function NewCampaignPage() {
           "success"
         );
 
-        // Delay navigation to show toast
-        setTimeout(() => router.push("/campaigns"), 1500);
+        // Trigger fireworks celebration after a delay so toast shows first
+        setTimeout(() => {
+          setShowFireworks(true);
+          setTimeout(() => setShowFireworks(false), 5000);
+        }, 1000);
+
+        // Delay navigation to show toast and fireworks
+        setTimeout(() => router.push("/campaigns"), 6500);
       } catch (error: any) {
         console.error("Error saving campaign:", error);
         showToast(
@@ -473,8 +599,821 @@ export default function NewCampaignPage() {
   );
 
   return (
+    <>
+      {/* Fireworks celebration effect */}
+      <Fireworks active={showFireworks} duration={5000} />
+      
+      {/* Hide the default sidebar on this page */}
+      <style jsx global>{`
+        aside.w-64 {
+          display: none !important;
+        }
+        .md\\:ml-64 {
+          margin-left: 0 !important;
+        }
+        
+        .slider-tron::-webkit-slider-thumb {
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00f5ff, #ff00ff);
+          cursor: pointer;
+          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        .slider-tron::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00f5ff, #ff00ff);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        .bg-size-200 {
+          background-size: 200%;
+        }
+
+        .bg-pos-0 {
+          background-position: 0%;
+        }
+
+        .bg-pos-100 {
+          background-position: 100%;
+        }
+      `}</style>
+      
     <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        {/* Card-based navigation - single focused card at a time */}
+        <AnimatePresence mode="wait" custom={cardDirection}>
+          
+          {/* CARD 1: Campaign Name */}
+          {currentCard === 1 && (
+            <motion.div
+              key="card-1"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+            >
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                  Campaign Name
+                </h2>
+              </div>
+
+              <div className="max-w-xl mx-auto">
+                <input
+                  type="text"
+                  value={campaignName}
+                  onChange={(e) => setCampaignName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && campaignName.trim()) {
+                      goToNextCard();
+                    }
+                  }}
+                  placeholder="e.g., Summer Product Launch"
+                  autoFocus
+                  className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-2xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                />
+
+                <motion.button
+                  onClick={goToNextCard}
+                  disabled={!campaignName.trim()}
+                  whileHover={{ scale: !campaignName.trim() ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full mt-8 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                >
+                  Continue
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* CARD 2: Platform Selection */}
+          {currentCard === 2 && (
+            <motion.div
+              key="card-2"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+            >
+              <div className="text-center mb-12">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                >
+                  <Zap className="w-10 h-10 text-tron-cyan" />
+                </motion.div>
+                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                  Choose target accounts
+                </h2>
+                <p className="text-tron-text-muted text-lg">
+                  Select one or more platforms
+                  {targetPlatforms.length > 0 && (
+                    <span className="text-tron-cyan"> · {targetPlatforms.length} selected</span>
+                  )}
+                </p>
+              </div>
+
+              <div className="max-w-3xl mx-auto">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+                  {platforms.map((platform) => {
+                    const Icon = platform.icon;
+                    const isSelected = targetPlatforms.includes(platform.id);
+                    const isConnected = connectedPlatforms.includes(platform.id);
+
+                    return (
+                      <motion.button
+                        key={platform.id}
+                        onClick={() => togglePlatform(platform.id)}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`relative p-8 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 group ${
+                          isSelected
+                            ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl shadow-tron-cyan/30"
+                            : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50"
+                        }`}
+                      >
+                        {/* Selection Checkmark */}
+                        {isSelected && (
+                          <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            className="absolute top-3 right-3 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center shadow-lg"
+                          >
+                            <Check className="w-4 h-4 text-white" />
+                          </motion.div>
+                        )}
+
+                        {/* Connection Status */}
+                        {isConnected && (
+                          <div className="absolute top-3 left-3">
+                            <div className="w-3 h-3 rounded-full bg-tron-cyan shadow-lg shadow-tron-cyan/50 animate-pulse" />
+                          </div>
+                        )}
+
+                        <Icon
+                          className={`w-12 h-12 mb-3 mx-auto transition-all duration-300 ${
+                            isSelected
+                              ? "text-tron-cyan"
+                              : "text-tron-text-muted group-hover:text-tron-cyan"
+                          }`}
+                        />
+                        <p
+                          className={`text-sm font-semibold transition-colors ${
+                            isSelected ? "text-tron-text" : "text-tron-text-muted group-hover:text-tron-text"
+                          }`}
+                        >
+                          {platform.name}
+                        </p>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                <div className="flex gap-4">
+                  <motion.button
+                    onClick={goToPrevCard}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                  >
+                    ← Back
+                  </motion.button>
+                  <motion.button
+                    onClick={goToNextCard}
+                    disabled={targetPlatforms.length === 0}
+                    whileHover={{ scale: targetPlatforms.length === 0 ? 1 : 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                  >
+                    Continue
+                    <ChevronRight className="w-6 h-6" />
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* CARD 3: Heavy Hitters vs Custom Trend */}
+          {currentCard === 3 && (
+            <motion.div
+              key="card-3"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+            >
+              <div className="text-center mb-12">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                >
+                  <TrendingUp className="w-10 h-10 text-tron-cyan" />
+                </motion.div>
+                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                  Which direction do you want to go?
+                </h2>
+              </div>
+
+              <div className="max-w-2xl mx-auto space-y-6">
+                {/* Trending Now Button */}
+                <motion.button
+                  onClick={loadTrendingTopics}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full p-8 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 backdrop-blur-xl border-2 border-tron-cyan rounded-2xl hover:shadow-xl hover:shadow-tron-cyan/30 transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
+                        <Sparkles className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-2xl font-bold text-tron-text mb-1">
+                          Trending Now
+                        </h3>
+                        <p className="text-tron-text-muted">
+                          Hot topics trending right now
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-8 h-8 text-tron-cyan group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </motion.button>
+
+                {/* Custom Search Button */}
+                <motion.button
+                  onClick={() => goToNextCard()}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full p-8 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 backdrop-blur-xl border-2 border-tron-cyan rounded-2xl hover:shadow-xl hover:shadow-tron-cyan/30 transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
+                        <TrendingUp className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-2xl font-bold text-tron-text mb-1">
+                          Your Trend
+                        </h3>
+                        <p className="text-tron-text-muted">
+                          Find something specific
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-8 h-8 text-tron-cyan group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </motion.button>
+
+                {/* Back Button */}
+                <motion.button
+                  onClick={goToPrevCard}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-8 py-4 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                >
+                  ← Back
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* CARD 4: Custom Trend Search */}
+          {currentCard === 4 && (
+            <motion.div
+              key="card-4"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+            >
+              <div className="text-center mb-12">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                >
+                  <TrendingUp className="w-10 h-10 text-tron-cyan" />
+                </motion.div>
+                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                  What is the focus of your campaign?
+                </h2>
+                <p className="text-tron-text-muted text-lg">
+                  Search for topics, keywords, or niches that matter to you
+                </p>
+              </div>
+
+              <div className="max-w-xl mx-auto">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && searchQuery.trim()) {
+                        searchTrends();
+                        goToNextCard();
+                      }
+                    }}
+                    placeholder="e.g., artificial intelligence, sustainable fashion, gaming..."
+                    autoFocus
+                    className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                  />
+                  {searchQuery && (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-tron-cyan/10 rounded-full transition-colors"
+                    >
+                      <X className="w-5 h-5 text-tron-text-muted" />
+                    </motion.button>
+                  )}
+                </div>
+
+                <div className="flex gap-4 mt-8">
+                  <motion.button
+                    onClick={goToPrevCard}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                  >
+                    ← Back
+                  </motion.button>
+                  <motion.button
+                    onClick={async () => {
+                      if (searchQuery.trim()) {
+                        setHasSearched(true);
+                        goToNextCard();
+                        await searchTrends();
+                      }
+                    }}
+                    disabled={!searchQuery.trim()}
+                    whileHover={{ scale: !searchQuery.trim() ? 1 : 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                  >
+                    Search Trends
+                    <ChevronRight className="w-6 h-6" />
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* CARD 5: Trend Results & Selection */}
+          {currentCard === 5 && (
+            <motion.div
+              key="card-5"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className={loadingTrends ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl'}
+            >
+              {loadingTrends ? (
+                <div className="flex items-center justify-center min-h-[600px]">
+                  <AnimatedLoader message="" />
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-8">
+                    <h2 className="text-4xl font-bold text-tron-text mb-4">
+                      Pick your trends
+                    </h2>
+                    <p className="text-tron-text-muted text-lg">
+                      {selectedTrends.length > 0 
+                        ? `${selectedTrends.length} trend${selectedTrends.length > 1 ? 's' : ''} selected`
+                        : 'Select one or more trending topics'}
+                    </p>
+                  </div>
+
+                  <div className="max-w-4xl mx-auto">
+                {loadingTrends ? (
+                  <AnimatedLoader message="" />
+                ) : trends.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-h-96 overflow-y-scroll pr-2 scrollbar-thin scrollbar-thumb-tron-cyan/30 scrollbar-track-tron-dark/50">
+                    {trends.slice(0, 8).map((trend, idx) => {
+                      const isSelected = selectedTrends.some((t) => t.title === trend.title);
+                      return (
+                        <motion.button
+                          key={`${trend.title}-${idx}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          onClick={() => toggleTrendSelection(trend)}
+                          whileTap={{ scale: 0.98 }}
+                          className={`p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
+                            isSelected
+                              ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg"
+                              : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-md hover:shadow-tron-cyan/20"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <h3 className={`font-semibold mb-2 ${
+                                isSelected ? "text-tron-text" : "text-tron-text-muted"
+                              }`}>
+                                {trend.title}
+                              </h3>
+                              {trend.formattedTraffic && (
+                                <p className="text-xs text-tron-text-muted">
+                                  {trend.formattedTraffic}
+                                </p>
+                              )}
+                            </div>
+                            <div className="w-6 h-6 flex-shrink-0">
+                              {isSelected && (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                                >
+                                  <Check className="w-4 h-4 text-white" />
+                                </motion.div>
+                              )}
+                            </div>
+                          </div>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-tron-text-muted">No trends found. Try a different search.</p>
+                  </div>
+                )}
+
+                {!loadingTrends && (
+                  <div className="flex gap-4">
+                    <motion.button
+                      onClick={() => goToCard(3)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                    >
+                      ← Back
+                    </motion.button>
+                    <motion.button
+                      onClick={goToNextCard}
+                      disabled={selectedTrends.length === 0}
+                      whileHover={{ scale: selectedTrends.length === 0 ? 1 : 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                    >
+                      Continue
+                    </motion.button>
+                  </div>
+                )}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* CARD 6: Content Controls/Shaping */}
+          {currentCard === 6 && (
+            <motion.div
+              key="card-6"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl"
+            >
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold text-tron-text mb-2">
+                  Shape your content
+                </h2>
+                <p className="text-tron-text-muted">
+                  Customize how your content will be generated
+                </p>
+              </div>
+
+              <div className="max-w-4xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column */}
+                  <div className="space-y-5">
+                    {/* Tone */}
+                    <div>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">Tone</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['professional', 'casual', 'friendly'].map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => setControls({ ...controls, tone: t })}
+                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                              controls.tone === t
+                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                            }`}
+                          >
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Length */}
+                    <div>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">Content Length</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {['short', 'standard', 'long'].map((l) => (
+                          <button
+                            key={l}
+                            onClick={() => setControls({ ...controls, length: l })}
+                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                              controls.length === l
+                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                            }`}
+                          >
+                            {l.charAt(0).toUpperCase() + l.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Content Focus */}
+                    <div>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['informative', 'entertaining', 'educational', 'promotional'].map((f) => (
+                          <button
+                            key={f}
+                            onClick={() => setControls({ ...controls, contentFocus: f })}
+                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                              controls.contentFocus === f
+                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                            }`}
+                          >
+                            {f.charAt(0).toUpperCase() + f.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column */}
+                  <div className="space-y-5">
+                    {/* Target Audience */}
+                    <div>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">Target Audience</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['general', 'technical', 'business', 'creative'].map((a) => (
+                          <button
+                            key={a}
+                            onClick={() => setControls({ ...controls, targetAudience: a })}
+                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                              controls.targetAudience === a
+                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                            }`}
+                          >
+                            {a.charAt(0).toUpperCase() + a.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Call to Action */}
+                    <div>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['engage', 'convert', 'learn', 'share'].map((c) => (
+                          <button
+                            key={c}
+                            onClick={() => setControls({ ...controls, callToAction: c })}
+                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                              controls.callToAction === c
+                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                            }`}
+                          >
+                            {c.charAt(0).toUpperCase() + c.slice(1)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation */}
+                <div className="flex gap-4 mt-6">
+                  <motion.button
+                    onClick={goToPrevCard}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-6 py-4 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                  >
+                    ← Back
+                  </motion.button>
+                  <motion.button
+                    onClick={async () => {
+                      setGeneratingContent(true);
+                      goToNextCard();
+                      await generateContent();
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-xl font-semibold text-white shadow-lg shadow-tron-cyan/30 transition-all"
+                  >
+                    {generateButtonText}
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* CARD 7: Content Display with Platform Switcher */}
+          {currentCard === 7 && (
+            <motion.div
+              key="card-7"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
+            >
+              {generatingContent ? (
+                <div className="flex items-center justify-center min-h-[600px]">
+                  <AnimatedLoader message="" />
+                </div>
+              ) : (
+                <>
+                  <div className="text-center mb-6">
+                    <input
+                      type="text"
+                      value={campaignName}
+                      onChange={(e) => setCampaignName(e.target.value)}
+                      placeholder="Enter campaign name"
+                      className="text-3xl font-bold text-tron-text mb-2 bg-transparent border-2 border-transparent hover:border-tron-cyan/30 focus:border-tron-cyan/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
+                    />
+                    {generatedContent && (
+                      <p className="text-tron-text-muted">
+                        Edit and publish your campaign
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="max-w-5xl mx-auto">
+                    {generatedContent ? (
+                  <>
+                    {/* Platform Switcher Toolbar */}
+                    <div className="flex gap-2 mb-6 p-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl">
+                      {targetPlatforms.map((platform) => (
+                        <motion.button
+                          key={platform}
+                          onClick={() => setActivePlatformView(platform)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all ${
+                            activePlatformView === platform
+                              ? "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg"
+                              : "text-tron-text-muted hover:text-tron-text hover:bg-tron-cyan/10"
+                          }`}
+                        >
+                          {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                        </motion.button>
+                      ))}
+                    </div>
+
+                    {/* Content Display for Active Platform */}
+                    <AnimatePresence mode="wait">
+                      {activePlatformView && generatedContent[activePlatformView] && (
+                        <motion.div
+                          key={activePlatformView}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3 }}
+                          className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
+                        >
+                          {/* Header with Platform Name and Action Buttons */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h3 className="text-xl font-bold text-tron-text">
+                                {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
+                              </h3>
+                              <p className="text-sm text-tron-text-muted">
+                                {typeof generatedContent[activePlatformView] === 'string' 
+                                  ? generatedContent[activePlatformView].length 
+                                  : generatedContent[activePlatformView]?.content?.length || 0} characters
+                              </p>
+                            </div>
+                            <div className="flex gap-3">
+                              <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="px-6 py-2.5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-lg font-semibold text-white shadow-lg text-sm"
+                              >
+                                Post
+                              </motion.button>
+                              <motion.button
+                                onClick={() => router.push("/campaigns")}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                className="px-6 py-2.5 bg-tron-dark/50 border border-tron-magenta/30 rounded-lg font-semibold text-tron-magenta hover:bg-tron-magenta/10 text-sm"
+                              >
+                                Save
+                              </motion.button>
+                            </div>
+                          </div>
+
+                          {/* Content Text */}
+                          {editingContent[activePlatformView] ? (
+                            <textarea
+                              value={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                              onChange={(e) => setEditedContent({ ...editedContent, [activePlatformView]: e.target.value })}
+                              placeholder="Edit your content..."
+                              className="w-full h-64 px-4 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan resize-none"
+                            />
+                          ) : (
+                            <div className="bg-tron-dark/30 border border-tron-grid rounded-xl p-4">
+                              <p className="text-tron-text whitespace-pre-wrap">
+                                {editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                              </p>
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    {/* Navigation - Just Back and Edit */}
+                    <div className="flex gap-3">
+                      <motion.button
+                        onClick={goToPrevCard}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                      >
+                        ← Back
+                      </motion.button>
+                      {activePlatformView && generatedContent[activePlatformView] && (
+                        <motion.button
+                          onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="flex-1 px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                        >
+                          {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
+                        </motion.button>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-tron-text-muted">No content generated yet.</p>
+                  </div>
+                )}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* Keep existing steps temporarily for testing - we'll convert them next */}
+          {currentCard > 7 && (
+            <div className="text-center text-tron-text">
+              <p className="text-2xl mb-4">Card {currentCard} - Coming soon!</p>
+              <button
+                onClick={goToPrevCard}
+                className="px-6 py-3 bg-tron-cyan/20 border-2 border-tron-cyan rounded-xl text-tron-cyan hover:bg-tron-cyan/30 transition-all"
+              >
+                ← Back
+              </button>
+            </div>
+          )}
+
+        </AnimatePresence>
+
+        {/* Old step-based content below - will remove after all cards are done */}
+        <div className="hidden">
         {/* Enhanced Progress Indicator with Step Titles */}
         <div className="mb-16">
           <div className="flex items-center justify-center gap-2 mb-6">
@@ -942,7 +1881,7 @@ export default function NewCampaignPage() {
                 disabled={generatingContent}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-8 py-6 bg-gradient-to-r from-tron-cyan via-tron-magenta to-tron-cyan bg-size-200 bg-pos-0 hover:bg-pos-100 rounded-2xl font-bold text-white text-lg shadow-2xl shadow-tron-cyan/50 disabled:opacity-50 transition-all duration-500 flex items-center justify-center gap-3"
+                className="w-full px-8 py-6 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
               >
                 {generatingContent ? (
                   <>
@@ -1045,7 +1984,7 @@ export default function NewCampaignPage() {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-bold text-white shadow-xl shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      className="px-8 py-5 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                       aria-label="Publish campaign now"
                     >
                       <Sparkles className="w-5 h-5" />
@@ -1074,40 +2013,11 @@ export default function NewCampaignPage() {
         <Toast toast={toast} />
       </div>
 
-      <style jsx global>{`
-        .slider-tron::-webkit-slider-thumb {
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #00f5ff, #ff00ff);
-          cursor: pointer;
-          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
-        }
+      </div>
+      {/* End hidden old content */}
 
-        .slider-tron::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #00f5ff, #ff00ff);
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
-        }
-
-        .bg-size-200 {
-          background-size: 200%;
-        }
-
-        .bg-pos-0 {
-          background-position: 0%;
-        }
-
-        .bg-pos-100 {
-          background-position: 100%;
-        }
-      `}</style>
     </div>
+    </>
   );
 }
 

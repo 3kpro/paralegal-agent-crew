@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       let content = "";
       let tokens_used = 0;
       let cost_estimate = 0;
-      let processing_time_start = Date.now();
+      const processing_time_start = Date.now();
 
       // Generate content based on provider
       if (provider === "gemini") {

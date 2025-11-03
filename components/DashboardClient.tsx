@@ -159,9 +159,9 @@ export default function DashboardClient() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-xl shadow-tron-cyan/30 flex items-center gap-3 text-lg group"
+                className="px-8 py-4 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 transition-colors flex items-center gap-3 text-lg"
               >
-                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                <Plus className="w-6 h-6" />
                 New Campaign
               </motion.button>
             </Link>
@@ -327,9 +327,9 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-2xl shadow-tron-cyan/50 flex items-center gap-2 mx-auto text-lg"
+                    className="px-8 py-4 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 transition-colors flex items-center gap-3 mx-auto text-lg"
                   >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-6 h-6" />
                     Create First Campaign
                   </motion.button>
                 </Link>

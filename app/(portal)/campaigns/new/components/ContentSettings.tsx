@@ -60,6 +60,7 @@ const ContentSettings = memo<ContentSettingsProps>(
         { id: "students", label: "Students" },
         { id: "techies", label: "Tech Enthusiasts" },
         { id: "gamers", label: "Gamers" },
+        { id: "hobbyists", label: "Hobbyists" },
       ],
       []
     );
@@ -134,48 +135,51 @@ const ContentSettings = memo<ContentSettingsProps>(
     );
 
     return (
-      <div className="space-y-6 p-8 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-3xl">
+      <div className="space-y-5 p-6 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-3xl">
         {/* Header */}
-        <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2 mb-4">
           <Settings className="w-5 h-5 text-tron-cyan" />
           Content Settings
         </h3>
 
-        {/* Main Controls Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Creativity Slider */}
-          <CreativitySlider
-            value={controls.temperature}
-            onChange={handleTemperatureChange}
-          />
+        {/* Compact Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Left Column: Creativity + Length */}
+          <div className="space-y-4">
+            {/* Creativity Slider */}
+            <CreativitySlider
+              value={controls.temperature}
+              onChange={handleTemperatureChange}
+            />
 
-          {/* Content Length */}
-          <fieldset className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl hover:border-tron-cyan/50 transition-all">
-            <legend className="flex items-center gap-2 mb-4 font-semibold text-tron-text">
-              <Settings2 className="w-5 h-5 text-tron-cyan" />
-              Content Length
-            </legend>
-            <div className="flex gap-2">
-              {lengths.map((len) => (
-                <ControlOptionButton
-                  key={len.id}
-                  id={len.id}
-                  label={len.label}
-                  isSelected={controls.length === len.id}
-                  onClick={handleLengthChange}
-                  flex={true}
-                />
-              ))}
-            </div>
-          </fieldset>
+            {/* Content Length - Compact */}
+            <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
+              <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
+                <Settings2 className="w-4 h-4 text-tron-cyan" />
+                Content Length
+              </legend>
+              <div className="grid grid-cols-3 gap-2">
+                {lengths.map((len) => (
+                  <ControlOptionButton
+                    key={len.id}
+                    id={len.id}
+                    label={len.label}
+                    isSelected={controls.length === len.id}
+                    onClick={handleLengthChange}
+                    flex={true}
+                  />
+                ))}
+              </div>
+            </fieldset>
+          </div>
 
-          {/* Content Tone */}
-          <fieldset className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl md:col-span-2 hover:border-tron-cyan/50 transition-all">
-            <legend className="flex items-center gap-2 mb-4 font-semibold text-tron-text">
-              <Sparkles className="w-5 h-5 text-tron-cyan" />
+          {/* Right Column: Tone */}
+          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
+              <Sparkles className="w-4 h-4 text-tron-cyan" />
               Content Tone
             </legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-3 gap-2">
               {tones.map((t) => (
                 <ControlOptionButton
                   key={t.id}
@@ -188,13 +192,13 @@ const ContentSettings = memo<ContentSettingsProps>(
             </div>
           </fieldset>
 
-          {/* Target Audience */}
-          <fieldset className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl md:col-span-2 hover:border-tron-cyan/50 transition-all">
-            <legend className="flex items-center gap-2 mb-4 font-semibold text-tron-text">
-              <Users className="w-5 h-5 text-tron-cyan" />
+          {/* Target Audience - Full Width, Compact */}
+          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
+              <Users className="w-4 h-4 text-tron-cyan" />
               Target Audience
             </legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
               {audiences.map((aud) => (
                 <ControlOptionButton
                   key={aud.id}
@@ -207,13 +211,13 @@ const ContentSettings = memo<ContentSettingsProps>(
             </div>
           </fieldset>
 
-          {/* Content Focus */}
-          <fieldset className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl md:col-span-2 hover:border-tron-cyan/50 transition-all">
-            <legend className="flex items-center gap-2 mb-4 font-semibold text-tron-text">
-              <MessageSquare className="w-5 h-5 text-tron-cyan" />
+          {/* Content Focus - Full Width, Compact */}
+          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
+              <MessageSquare className="w-4 h-4 text-tron-cyan" />
               Content Focus
             </legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
               {focuses.map((focus) => (
                 <ControlOptionButton
                   key={focus.id}
@@ -226,13 +230,13 @@ const ContentSettings = memo<ContentSettingsProps>(
             </div>
           </fieldset>
 
-          {/* Call to Action */}
-          <fieldset className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl md:col-span-2 hover:border-tron-cyan/50 transition-all">
-            <legend className="flex items-center gap-2 mb-4 font-semibold text-tron-text">
-              <Target className="w-5 h-5 text-tron-cyan" />
+          {/* Call to Action - Full Width, Compact */}
+          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
+              <Target className="w-4 h-4 text-tron-cyan" />
               Call to Action
             </legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
               {callToActions.map((cta) => (
                 <ControlOptionButton
                   key={cta.id}

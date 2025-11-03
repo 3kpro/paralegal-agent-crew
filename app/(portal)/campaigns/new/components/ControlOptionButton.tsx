@@ -13,7 +13,6 @@ interface ControlOptionButtonProps {
   isSelected: boolean;
   onClick: (id: string) => void;
   flex?: boolean;
-  variant?: "default" | "wrap";
   className?: string;
 }
 
@@ -27,31 +26,26 @@ const ControlOptionButton = memo<ControlOptionButtonProps>(
     isSelected,
     onClick,
     flex = false,
-    variant = "default",
     className = "",
   }) => {
     const handleClick = useCallback(() => {
       onClick(id);
     }, [id, onClick]);
 
-    const baseClasses = `font-medium transition-all ${className}`;
+    const baseClasses = `text-sm font-medium transition-all ${className}`;
     const selectedClasses =
       "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg ring-2 ring-tron-cyan/20";
     const unselectedClasses =
-      "bg-tron-grid/50 text-tron-text-muted hover:bg-tron-grid/70 hover:text-tron-text";
+      "bg-tron-grid/50 text-tron-text-muted hover:bg-tron-grid/70 hover:text-tron-text hover:border-tron-cyan/30";
 
-    const layoutClasses =
-      variant === "wrap"
-        ? flex
-          ? "px-6 py-3 rounded-xl"
-          : "px-6 py-3 rounded-xl"
-        : flex
-          ? "flex-1 py-3 rounded-xl"
-          : "px-6 py-3 rounded-xl";
+    const layoutClasses = flex
+      ? "flex-1 py-2.5 px-3 rounded-lg"
+      : "py-2.5 px-4 rounded-lg text-center";
 
     return (
       <button
         onClick={handleClick}
+        // eslint-disable-next-line react/no-unknown-property
         aria-pressed={isSelected ? "true" : "false"}
         title={`Select ${label}`}
         className={`${baseClasses} ${layoutClasses} ${

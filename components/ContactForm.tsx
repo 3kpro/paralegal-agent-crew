@@ -205,11 +205,10 @@ export default function ContactForm() {
 
         {submitStatus === "success" && (
           <motion.div
-            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center"
+            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center form-success-message"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, ease: transitionTiming }}
-            style={{ boxShadow: "0 0 10px #00ff00" }}
           >
             <span className="text-green-600 mr-3">✅</span>
             <span className="text-green-800">
@@ -220,11 +219,10 @@ export default function ContactForm() {
 
         {submitStatus === "error" && (
           <motion.div
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center"
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center form-error-message"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, ease: transitionTiming }}
-            style={{ boxShadow: "0 0 10px #ff00ff" }}
           >
             <span className="text-red-600 mr-3">❌</span>
             <span className="text-red-800">

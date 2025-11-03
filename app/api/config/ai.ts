@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Debug info
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -14,7 +14,7 @@ const getAiClient = () => {
     throw new Error("GOOGLE_API_KEY environment variable not set");
   }
   // Removed `vertexai: true` to use Google AI endpoints which support API Key authentication
-  return new GoogleGenAI({ 
+  return new GoogleGenerativeAI({ 
     apiKey: process.env.GOOGLE_API_KEY
   });
 };
