@@ -66,7 +66,7 @@ export function MenuItem({ children, onClick, disabled = false, icon, isActive =
         ${disabled ? "text-gray-400 cursor-not-allowed" : "text-coral-400"}
         ${isActive ? "bg-white/10" : ""}
       `}
-      role="menuitem"
+      aria-label={label}
       onClick={onClick}
       disabled={disabled}
     >
