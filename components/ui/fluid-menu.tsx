@@ -20,7 +20,14 @@ export function Menu({ trigger, children, align = "left", showChevron = true }: 
         className="cursor-pointer inline-flex items-center"
         role="button"
         aria-haspopup="true"
-        aria-expanded={isOpen}
+        aria-expanded={isOpen ? "true" : "false"}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }
+        }}
       >
         {trigger}
         {showChevron && (
@@ -35,9 +42,8 @@ export function Menu({ trigger, children, align = "left", showChevron = true }: 
           } mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-9 focus:outline-none z-50`}
           role="menu"
           aria-orientation="vertical"
-          aria-labelledby="menu-button"
         >
-          <div className="py-1" role="none">
+          <div className="py-1">
             {children}
           </div>
         </div>

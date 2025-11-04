@@ -45,8 +45,7 @@ const ControlOptionButton = memo<ControlOptionButtonProps>(
     return (
       <button
         onClick={handleClick}
-        // eslint-disable-next-line react/no-unknown-property
-        aria-pressed={isSelected ? "true" : "false"}
+        aria-pressed={isSelected}
         title={`Select ${label}`}
         className={`${baseClasses} ${layoutClasses} ${
           isSelected ? selectedClasses : unselectedClasses

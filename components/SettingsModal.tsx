@@ -157,6 +157,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           <button
             onClick={onClose}
             className="absolute top-4 left-4 p-2 hover:bg-gray-200 rounded-lg transition-colors"
+            aria-label="Close settings"
           >
             <X className="w-5 h-5 text-gray-600" />
           </button>
@@ -399,11 +400,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <div className="space-y-6">
                     {/* Theme */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="theme-select" className="block text-sm font-medium text-gray-700 mb-2">
                         Theme
                       </label>
                       <div className="relative">
                         <select
+                          id="theme-select"
                           value={theme}
                           onChange={(e) => setTheme(e.target.value as "light" | "dark" | "system")}
                           className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
@@ -420,11 +422,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     {/* Language */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="language-select" className="block text-sm font-medium text-gray-700 mb-2">
                         Language
                       </label>
                       <div className="relative">
                         <select
+                          id="language-select"
                           value={language}
                           onChange={(e) => setLanguage(e.target.value)}
                           className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
@@ -453,11 +456,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <div className="space-y-6">
                     {/* Target Audience */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="target-audience-select" className="block text-sm font-medium text-gray-700 mb-2">
                         Target Audience
                       </label>
                       <div className="relative">
                         <select
+                          id="target-audience-select"
                           value={targetAudience}
                           onChange={(e) => setTargetAudience(e.target.value as typeof targetAudience)}
                           className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
@@ -476,11 +480,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     {/* Call to Action */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="call-to-action-select" className="block text-sm font-medium text-gray-700 mb-2">
                         Call to Action
                       </label>
                       <div className="relative">
                         <select
+                          id="call-to-action-select"
                           value={callToAction}
                           onChange={(e) => setCallToAction(e.target.value as typeof callToAction)}
                           className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
@@ -498,11 +503,12 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                     {/* Tone */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="tone-select" className="block text-sm font-medium text-gray-700 mb-2">
                         Tone
                       </label>
                       <div className="relative">
                         <select
+                          id="tone-select"
                           value={tone}
                           onChange={(e) => setTone(e.target.value as typeof tone)}
                           className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"

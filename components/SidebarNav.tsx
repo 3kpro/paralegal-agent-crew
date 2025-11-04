@@ -74,7 +74,7 @@ export function SidebarFooter() {
           className="w-full justify-start text-left border-tron-cyan/10 hover:border-tron-cyan/50"
         />
       </Link>
-      <button onClick={handleLogout} className="w-full">
+      <button onClick={handleLogout} className="w-full" aria-label="Logout">
         <InteractiveHoverButton
           text="Logout"
           variant="outline"

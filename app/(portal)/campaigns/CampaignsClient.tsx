@@ -206,6 +206,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
                       checked={selectedCampaigns.has(campaign.id)}
                       onChange={() => toggleSelectCampaign(campaign.id)}
                       className="w-5 h-5 rounded border-2 border-coral-500 bg-[#2b2b2b] text-coral-500 focus:ring-2 focus:ring-coral-500 focus:ring-offset-0 cursor-pointer"
+                      aria-label={`Select ${campaign.name}`}
                     />
                   </td>
                   <td className="p-4">
