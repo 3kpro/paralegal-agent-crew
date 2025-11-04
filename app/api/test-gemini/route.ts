@@ -10,8 +10,8 @@ export async function GET() {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
     
     try {
-      // Test with a simple prompt
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+      // Test with a simple prompt - use gemini-1.5-flash like in production
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const prompt = 'Say "Hello, this is a test!"';
       
       const result = await model.generateContent(prompt);
