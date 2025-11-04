@@ -27,6 +27,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   // Preferences
   const [theme, setTheme] = useState<"light" | "dark" | "system">("light");
   const [language, setLanguage] = useState("en-US");
+  const [tone, setTone] = useState<"professional" | "casual" | "educational" | "promotional" | "humor">("professional");
+  const [targetAudience, setTargetAudience] = useState<"general" | "entrepreneur" | "professional" | "gamer" | "hobbyist">("general");
+  const [callToAction, setCallToAction] = useState<"visit" | "learn" | "sign-up" | "follow">("visit");
 
   useEffect(() => {
     if (isOpen) {
@@ -51,6 +54,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         setFullName(data.profile.full_name || "");
         setLanguage(data.profile.language || "en-US");
         setTheme(data.profile.theme || "light");
+        setTone(data.profile.tone || "professional");
+        setTargetAudience(data.profile.target_audience || "general");
+        setCallToAction(data.profile.call_to_action || "visit");
       }
 
       // Load usage data for subscription tier
@@ -112,6 +118,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         body: JSON.stringify({
           language: language,
           theme: theme,
+          tone: tone,
+          target_audience: targetAudience,
+          call_to_action: callToAction,
         }),
       });
 
@@ -432,8 +441,89 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         </svg>
                       </div>
                     </div>
+                  </div>
+                </section>
 
-                    {/* Mobile App */}
+                {/* Content Generation Preferences */}
+                <section className="mb-8">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                    Content Generation Preferences
+                  </h3>
+
+                  <div className="space-y-6">
+                    {/* Target Audience */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Target Audience
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={targetAudience}
+                          onChange={(e) => setTargetAudience(e.target.value as typeof targetAudience)}
+                          className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
+                        >
+                          <option value="general">General</option>
+                          <option value="entrepreneur">Entrepreneur</option>
+                          <option value="professional">Professional</option>
+                          <option value="gamer">Gamer</option>
+                          <option value="hobbyist">Hobbyist</option>
+                        </select>
+                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Call to Action */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Call to Action
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={callToAction}
+                          onChange={(e) => setCallToAction(e.target.value as typeof callToAction)}
+                          className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
+                        >
+                          <option value="visit">Visit</option>
+                          <option value="learn">Learn More</option>
+                          <option value="sign-up">Sign Up</option>
+                          <option value="follow">Follow</option>
+                        </select>
+                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Tone */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Tone
+                      </label>
+                      <div className="relative">
+                        <select
+                          value={tone}
+                          onChange={(e) => setTone(e.target.value as typeof tone)}
+                          className="w-full max-w-md px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-gray-900 appearance-none pr-10"
+                        >
+                          <option value="professional">Professional</option>
+                          <option value="casual">Casual</option>
+                          <option value="educational">Educational</option>
+                          <option value="promotional">Promotional</option>
+                          <option value="humor">Humor</option>
+                        </select>
+                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Mobile App and Save Button */}
+                <section>
+                  <div className="space-y-6">
                     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                       <div className="flex justify-between items-center">
                         <div>

@@ -9,8 +9,10 @@ export interface ContactFormData {
 
 export interface TwitterThreadData {
   topic: string
-  tone: 'professional' | 'casual' | 'educational' | 'promotional'
+  tone: 'professional' | 'casual' | 'educational' | 'promotional' | 'humor'
   threadLength: number
+  targetAudience?: 'general' | 'entrepreneur' | 'professional' | 'gamer' | 'hobbyist'
+  callToAction?: 'visit' | 'learn' | 'sign-up' | 'follow'
 }
 
 export interface ApiResponse<T = any> {
