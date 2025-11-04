@@ -14,32 +14,32 @@ interface StatItem {
 
 const stats: StatItem[] = [
   {
-    value: "1000+",
-    label: "Beta Signups and Counting",
+    value: "100+",
+    label: "Early Access Users",
     icon: Users,
     color: "text-coral-500",
-    animatedValue: 1000,
+    animatedValue: 100,
   },
   {
-    value: "20+",
-    label: "New Beta Features Launched",
+    value: "6",
+    label: "Platform Integrations",
     icon: Zap,
     color: "text-coral-600",
-    animatedValue: 20,
+    animatedValue: 6,
   },
   {
-    value: "98%",
-    label: "User Satisfaction Rate",
+    value: "24/7",
+    label: "AI-Powered Trend Discovery",
     icon: Star,
     color: "text-green-500",
-    animatedValue: 98,
+    animatedValue: 24,
   },
   {
-    value: "24h",
+    value: "48h",
     label: "Average Response Time",
     icon: Clock,
     color: "text-amber-500",
-    animatedValue: 24,
+    animatedValue: 48,
   },
 ];
 
@@ -113,15 +113,15 @@ export const StatsSection: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
             <Star className="w-4 h-4 text-coral-400" fill="currentColor" />
             <span className="text-sm font-semibold text-coral-400">
-              TrendPulse™ Beta Success
+              TrendPulse™ Platform
             </span>
           </div>
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Join the Beta Revolution
+            Built for Content Creators
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Real numbers from our growing community of Beta testers
+            Professional-grade tools backed by real technology
           </p>
         </motion.div>
 
@@ -204,21 +204,18 @@ export const StatsSection: React.FC = () => {
           className="text-center mt-16"
         >
           <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-            Join our growing community of creators who are already experiencing
-            the future of content creation
+            Start creating viral content with AI-powered trend discovery and
+            multi-platform publishing
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
-              const element = document.getElementById("contact");
-              if (element) {
-                element.scrollIntoView({ behavior: "smooth" });
-              }
+              window.location.href = "/trend-gen";
             }}
             className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform transition-all duration-200"
           >
-            Request Beta Access
+            Get Started Free
           </motion.button>
         </motion.div>
       </div>

@@ -46,7 +46,7 @@ export default function ModernHero() {
           >
             <Sparkles className="w-5 h-5 text-coral-500" />
             <span className="text-sm font-semibold text-gray-100">
-              🚀 TrendPulse™ Public Beta • Join 1000+ Creators
+              🚀 TrendPulse™ • AI-Powered Content Creation
             </span>
             <span className="px-2 py-1 bg-coral-500/20 rounded-full text-xs font-semibold text-coral-400 border border-coral-500/30">
               LIVE
@@ -122,21 +122,21 @@ export default function ModernHero() {
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-coral-500" />
               <span>
-                <strong className="text-white">2,500+</strong> beta creators
+                <strong className="text-white">6</strong> platform integrations
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-gray-700" />
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-coral-500" />
               <span>
-                <strong className="text-gray-900">98%</strong> satisfaction rate
+                <strong className="text-white">AI-powered</strong> trend discovery
               </span>
             </div>
-            <div className="hidden sm:block w-px h-6 bg-gray-300" />
+            <div className="hidden sm:block w-px h-6 bg-gray-700" />
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-coral-500" />
               <span>
-                <strong className="text-gray-900">24hr</strong> avg response time
+                <strong className="text-white">Real-time</strong> viral predictions
               </span>
             </div>
           </motion.div>
