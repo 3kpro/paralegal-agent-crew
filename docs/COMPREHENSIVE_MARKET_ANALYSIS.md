@@ -7,6 +7,16 @@
 
 ---
 
+## TL;DR: Key Takeaways
+
+- **Galaxy.ai has NO API.** We cannot integrate with them. They are a competitor, not an infrastructure provider.
+- **Use OpenRouter for AI Models:** Integrate with OpenRouter's API to get access to 500+ AI models with a single key. This is our path to offering model choice without the maintenance overhead.
+- **Use Replicate for Media:** For future image and video generation, use the Replicate API.
+- **New Positioning:** Our value is in **"AI-Powered Content Workflows,"** not just being another tool directory. Our moat is the intelligent process, starting with TrendPulse™.
+- **TrendPulse™ Needs Innovation:** To truly stand out, TrendPulse™ must evolve beyond a simple trend viewer. We need to add **Viral Score™** (a predictive score for a trend's potential), real-time alerts, and historical analytics.
+
+---
+
 ## Executive Summary
 
 **Quick Answers to Your Questions:**
@@ -45,7 +55,7 @@
 - They solve "try every AI tool" - You solve "create content workflows"
 
 **Strategic Takeaway:**
-> **Don't compete with Galaxy.ai on tool access. Compete on WORKFLOWS.**
+> **Don't compete with Galaxy.ai on tool access. Compete on WORKFLOWS.** Our unique value is the intelligent process that starts with trend discovery and ends with multi-platform content.
 
 ---
 
@@ -329,6 +339,7 @@ Nobody predicts viral potential. They just show trending topics.
 
 **How It Works:**
 ```typescript
+// Viral Score™ is a predictive score (0-100) that estimates a topic's potential to go viral.
 interface TrendWithViralScore {
   title: string;
   formattedTraffic: string;

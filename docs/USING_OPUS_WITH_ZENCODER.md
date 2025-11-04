@@ -35,13 +35,14 @@ You mentioned you have a 6-day ZenCoder trial. Here's how to use it:
 
 **Option B: ZenCoder CLI** (command-line tool)
 ```bash
-# Install ZenCoder CLI (if not already installed)
-npm install -g zencoder-cli  # or whatever their install command is
+# Install ZenCoder CLI (if not already installed).
+# Note: This is an example command.
+npm install -g zencoder-cli
 
-# Login
+# Login to your ZenCoder account.
 zencoder login
 
-# Start a conversation with Opus
+# Start a new chat session with the Opus model.
 zencoder chat --model opus
 ```
 

@@ -2,6 +2,19 @@
 
 **Created:** 2025-10-03
 **Product:** AI Content Repurposing Engine
+**Gumroad Link:** [YOUR_GUMROAD_LINK]
+
+---
+
+## 📋 Pre-Launch Checklist
+
+- [ ] Update `[YOUR_GUMROAD_LINK]` in all posts below with your actual Gumroad link.
+- [ ] Set up your results tracking spreadsheet.
+- [ ] Confirm your Gumroad product page is live and ready for sales.
+
+---
+
+**Product:** AI Content Repurposing Engine
 **Gumroad Link:** https://3kpro.gumroad.com/l/pmbwp
 
 ---
