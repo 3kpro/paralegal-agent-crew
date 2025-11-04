@@ -73,11 +73,7 @@ export function validateEnv(): Env {
       );
     }
 
-    if (env.USE_ANTHROPIC_DIRECT === "false" && !env.N8N_WEBHOOK_URL) {
-      console.warn(
-        "Warning: N8N_WEBHOOK_URL not set. Using default http://localhost:5678/webhook/twitter-demo",
-      );
-    }
+    // N8N webhook URL is optional - no warning needed
 
     return env;
   } catch (error) {
