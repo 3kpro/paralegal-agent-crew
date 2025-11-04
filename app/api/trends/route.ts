@@ -182,7 +182,10 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
           });
           console.warn('[Trends] Falling back to mixed real trends (Twitter/Reddit mock data)');
           // Fallback to real trends if Gemini fails
-          let newsApiKey = process.env.NEWS_API_KEY;
+                }
+
+      // News API implementation
+      const newsApiKey = process.env.NEWS_API_KEY;
           
           if (userId !== "anonymous") {
             // Implementation for user's custom news API key would go here

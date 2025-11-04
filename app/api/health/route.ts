@@ -61,8 +61,11 @@ export async function GET(): Promise<NextResponse> {
   const isVercel = process.env.VERCEL === "1";
 
   const healthCheck: HealthCheck = {
-    status: "healthy",
-    timestamp: new Date().toISOString(),
+    status: 'healthy',
+      timestamp: new Date().toISOString(),
+    };
+
+    const serviceStartTime = Date.now();
     version: process.env.npm_package_version || "1.0.0",
     services: {
       database: {
