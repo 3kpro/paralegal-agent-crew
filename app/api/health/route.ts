@@ -60,12 +60,11 @@ export async function GET(): Promise<NextResponse> {
   const isProduction = process.env.NODE_ENV === "production";
   const isVercel = process.env.VERCEL === "1";
 
+  const serviceStartTime = Date.now();
+
   const healthCheck: HealthCheck = {
     status: 'healthy',
-      timestamp: new Date().toISOString(),
-    };
-
-    const serviceStartTime = Date.now();
+    timestamp: new Date().toISOString(),
     version: process.env.npm_package_version || "1.0.0",
     services: {
       database: {
