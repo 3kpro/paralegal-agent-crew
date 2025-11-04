@@ -1,3 +1,32 @@
+## [1.12.2] - 2025-01-11
+
+### 🐛 **CRITICAL FIX: Gemini AI Trend Generation**
+
+**Fixed Model Name Bug Causing Mock Data Fallback**
+
+**Fixed**:
+- 🔴 **CRITICAL**: Corrected Gemini model name from non-existent `gemini-2.5-flash` to `gemini-1.5-flash`
+- 🐛 Trend searches now return keyword-specific AI content ideas instead of generic mocks
+- ✅ Gemini API calls now succeed in production
+- 🔍 Added client-side console warnings when fallback data is used
+
+**Root Cause**:
+- Used incorrect model name `gemini-2.5-flash` (doesn't exist)
+- Gemini API silently failed with "model not found" error
+- Error was caught and system fell back to mock trending topics
+- Users saw same generic trends regardless of search keyword
+
+**Impact**:
+- Before: All searches returned 6 generic topics (AI Content Creation, Social Media Marketing, etc.)
+- After: Each search returns 6 keyword-specific AI-generated content ideas
+
+**Technical**:
+- Modified `app/api/trends/route.ts` - Line 254: Changed model to `gemini-1.5-flash`
+- Modified `components/TrendDiscovery.tsx` - Added debug logging for API responses
+- Available models: `gemini-1.5-flash` ✅, `gemini-1.5-pro`, `gemini-pro`
+
+---
+
 ## [1.12.1] - 2025-01-11
 
 ### 🎯 **PWA Manifest Fix**
