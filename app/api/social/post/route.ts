@@ -7,6 +7,7 @@ interface PostRequest {
   content: string;
   mediaUrls?: string[];
   scheduledFor?: string;
+  campaignId?: string; // Optional: Enable performance tracking for ML training
 }
 
 export async function POST(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: PostRequest = await request.json();
-    const { platform, content, mediaUrls = [] } = body;
+    const { platform, content, mediaUrls = [], campaignId } = body;
 
     if (!platform || !content) {
       return NextResponse.json(
@@ -60,6 +61,48 @@ export async function POST(request: NextRequest) {
         media_count: mediaUrls.length,
       },
     });
+
+    // Track performance for ML training (Phase 2) - Optional
+    // Only track if campaignId is provided
+    if (campaignId) {
+      try {
+        // Fetch campaign to get trend with viral score predictions
+        const { data: campaign } = await supabase
+          .from('campaigns')
+          .select('source_data')
+          .eq('id', campaignId)
+          .single();
+
+        if (campaign?.source_data?.trend) {
+          const trend = campaign.source_data.trend;
+
+          // Only track if viral score is available
+          if (trend.viralScore !== undefined) {
+            await supabase.from('content_performance').insert({
+              user_id: user.id,
+              campaign_id: campaignId,
+              post_id: null, // No scheduled post for direct publishing
+              trend_title: trend.title,
+              trend_source: trend.sources?.[0] || 'mixed',
+              viral_score_predicted: trend.viralScore,
+              viral_potential_predicted: trend.viralPotential || 'medium',
+              predicted_factors: trend.viralFactors || {},
+              content_text: content,
+              content_type: platform,
+              platforms: [platform],
+              published_at: new Date().toISOString(),
+            });
+
+            console.log(
+              `[Feedback Tracking] ✓ Performance tracking enabled for direct post: ${trend.title} (Score: ${trend.viralScore})`,
+            );
+          }
+        }
+      } catch (trackingError) {
+        // Log error but don't fail the publish
+        console.error('[Feedback Tracking] Failed to record performance:', trackingError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

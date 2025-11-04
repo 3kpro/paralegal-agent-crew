@@ -47,6 +47,15 @@ export interface Trend {
   title: string;
   formattedTraffic?: string;
   relatedQueries?: string[];
+  viralScore?: number;
+  viralPotential?: 'high' | 'medium' | 'low';
+  viralFactors?: {
+    volume: number;
+    multiSource: number;
+    specificity: number;
+    freshness: number;
+  };
+  sources?: string[];
 }
 
 /**

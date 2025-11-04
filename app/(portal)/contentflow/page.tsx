@@ -98,17 +98,17 @@ export default function ContentFlowPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-tron-dark flex items-center justify-center">
+      <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-tron-text-muted">Loading ContentFlow...</p>
+          <div className="w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading ContentFlow...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-tron-dark p-6">
+    <div className="min-h-screen bg-[#2b2b2b] p-6">
       {/* Toast Notification */}
       <AnimatePresence>
         {toast.show && (
@@ -121,8 +121,8 @@ export default function ContentFlowPage() {
             <div
               className={`px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-xl border-2 flex items-center gap-3 ${
                 toast.type === "success"
-                  ? "bg-green-500/20 border-green-500/50 text-green-100"
-                  : "bg-red-500/20 border-red-500/50 text-red-100"
+                  ? "bg-green-900/20 border-green-500/50 text-green-100"
+                  : "bg-red-900/20 border-red-500/50 text-red-100"
               }`}
             >
               {toast.type === "success" ? (
@@ -145,11 +145,11 @@ export default function ContentFlowPage() {
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-tron-text flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
                 <span className="text-2xl">📅</span>
                 ContentFlow
               </h1>
-              <p className="text-tron-text-muted mt-2">
+              <p className="text-gray-300 mt-2">
                 Schedule and auto-publish your content across all platforms
               </p>
             </div>
@@ -158,14 +158,14 @@ export default function ContentFlowPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowScheduleDialog(true)}
-              className="bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark px-6 py-3 rounded-lg font-semibold transition-colors"
+              className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
             >
               + Schedule New Post
             </motion.button>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex gap-2 bg-tron-grid rounded-lg p-1">
+          <div className="flex gap-2 bg-[#343a40] rounded-lg p-1 border-2 border-gray-700/50">
             {[
               { key: "calendar", label: "Calendar View", icon: "📅" },
               { key: "queue", label: "Publishing Queue", icon: "⏰" },
@@ -176,8 +176,8 @@ export default function ContentFlowPage() {
                 onClick={() => setView(tab.key as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
                   view === tab.key
-                    ? "bg-tron-cyan text-tron-dark font-semibold"
-                    : "text-tron-text-muted hover:text-tron-text hover:bg-tron-dark/50"
+                    ? "bg-coral-500 text-white font-semibold"
+                    : "text-gray-300 hover:text-white hover:bg-[#2b2b2b]"
                 }`}
               >
                 <span>{tab.icon}</span>

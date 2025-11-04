@@ -76,7 +76,10 @@
       "Read(//c/**)",
       "Bash(ls:*)",
       "Bash(npm run test:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(cmd /c restart-dev.bat:*)",
+      "Bash(nul)",
+      "Bash(\"c:\\DEV\\3K-Pro-Services\\landing-page\\docs\\SUPABASE_HANDOFF.md\")"
     ],
     "deny": [],
     "ask": []

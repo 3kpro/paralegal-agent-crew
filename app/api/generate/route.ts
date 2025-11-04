@@ -26,16 +26,18 @@ export async function POST(request: Request) {
 
     // Parse and validate request body
     const body = await request.json();
-    
+    console.log('[Generate API] Request body:', JSON.stringify(body, null, 2));
+
     let validatedData;
     try {
       validatedData = generateContentSchema.parse(body);
     } catch (error) {
       if (error instanceof ZodError) {
+        console.error('[Generate API] Zod validation failed:', JSON.stringify(error.issues, null, 2));
         return NextResponse.json(
-          { 
-            error: "Validation failed", 
-            details: error.errors.map(e => ({
+          {
+            error: "Validation failed",
+            details: error.issues.map((e: any) => ({
               field: e.path.join('.'),
               message: e.message
             }))
@@ -43,7 +45,11 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      throw error;
+      console.error('[Generate API] Validation error:', error);
+      return NextResponse.json(
+        { error: "Invalid request data", details: String(error) },
+        { status: 400 }
+      );
     }
 
     const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction } = validatedData;

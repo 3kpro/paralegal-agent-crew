@@ -32,6 +32,7 @@ import {
   BarChart3,
   HelpCircle,
   LogOut,
+  Flame,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendSourceSelector, AnimatedLoader } from "@/components/ui";
@@ -336,7 +337,10 @@ export default function NewCampaignPage() {
    * Generate content for selected platforms
    */
   const generateContent = useCallback(async () => {
-    if (selectedTrends.length === 0) return;
+    if (selectedTrends.length === 0) {
+      showToast("Please select at least one trend before generating content", "error");
+      return;
+    }
 
     setGeneratingContent(true);
     try {
@@ -347,8 +351,13 @@ export default function NewCampaignPage() {
           topic: selectedTrends.map(t => t.title).join(", "),
           formats: targetPlatforms,
           preferredProvider: aiProvider,
-          // Pass content controls to API
-          ...controls,
+          // Pass content controls to API (map targetAudience to audience for API)
+          temperature: controls.temperature,
+          tone: controls.tone,
+          length: controls.length,
+          audience: controls.targetAudience, // API expects "audience" not "targetAudience"
+          contentFocus: controls.contentFocus,
+          callToAction: controls.callToAction,
         }),
       });
 
@@ -1004,11 +1013,36 @@ export default function NewCampaignPage() {
                       Pick your trends
                     </h2>
                     <p className="text-tron-text-muted text-lg">
-                      {selectedTrends.length > 0 
+                      {selectedTrends.length > 0
                         ? `${selectedTrends.length} trend${selectedTrends.length > 1 ? 's' : ''} selected`
                         : 'Select one or more trending topics'}
                     </p>
                   </div>
+
+                  {/* Viral Score Education Banner */}
+                  {trends.length > 0 && (
+                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gradient-to-r from-tron-cyan/10 to-tron-magenta/10 border border-tron-cyan/30 rounded-xl">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 mt-1">
+                          <Sparkles className="w-5 h-5 text-tron-cyan" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-tron-text mb-1 flex items-center gap-2">
+                            Viral Score™ Prediction
+                            <span className="inline-flex gap-1 items-center">
+                              <Flame className="w-3.5 h-3.5 text-green-400" />
+                              <Zap className="w-3.5 h-3.5 text-yellow-400" />
+                              <BarChart3 className="w-3.5 h-3.5 text-gray-400" />
+                            </span>
+                          </h4>
+                          <p className="text-xs text-tron-text-muted leading-relaxed">
+                            Each trend is scored 0-100 based on <span className="text-tron-cyan font-semibold">search volume</span>, <span className="text-tron-cyan font-semibold">multi-platform validation</span>, <span className="text-tron-cyan font-semibold">topic specificity</span>, and <span className="text-tron-cyan font-semibold">freshness</span>.
+                            Higher scores mean <span className="text-green-400 font-semibold">higher viral potential</span> - helping you choose topics that perform best.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="max-w-4xl mx-auto">
                 {loadingTrends ? (
@@ -1033,11 +1067,33 @@ export default function NewCampaignPage() {
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
-                              <h3 className={`font-semibold mb-2 ${
-                                isSelected ? "text-tron-text" : "text-tron-text-muted"
-                              }`}>
-                                {trend.title}
-                              </h3>
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className={`font-semibold ${
+                                  isSelected ? "text-tron-text" : "text-tron-text-muted"
+                                }`}>
+                                  {trend.title}
+                                </h3>
+                                {trend.viralScore !== undefined && (
+                                  <span
+                                    className={`px-2 py-0.5 rounded text-xs font-semibold flex-shrink-0 inline-flex items-center gap-1 ${
+                                      trend.viralPotential === 'high'
+                                        ? 'bg-green-500/20 text-green-300 border border-green-500/40'
+                                        : trend.viralPotential === 'medium'
+                                        ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40'
+                                        : 'bg-gray-500/20 text-gray-300 border border-gray-500/40'
+                                    }`}
+                                  >
+                                    {trend.viralPotential === 'high' ? (
+                                      <Flame className="w-3 h-3" />
+                                    ) : trend.viralPotential === 'medium' ? (
+                                      <Zap className="w-3 h-3" />
+                                    ) : (
+                                      <BarChart3 className="w-3 h-3" />
+                                    )}
+                                    {trend.viralScore}
+                                  </span>
+                                )}
+                              </div>
                               {trend.formattedTraffic && (
                                 <p className="text-xs text-tron-text-muted">
                                   {trend.formattedTraffic}
@@ -1745,10 +1801,32 @@ export default function NewCampaignPage() {
                             <Check className="w-4 h-4 text-white" />
                           </motion.div>
                         )}
-                        <div className={`font-semibold text-lg mb-2 ${
-                          selectedTrend === trend ? "text-tron-cyan" : "text-tron-text"
-                        }`}>
-                          {trend.title}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`font-semibold text-lg ${
+                            selectedTrend === trend ? "text-tron-cyan" : "text-tron-text"
+                          }`}>
+                            {trend.title}
+                          </div>
+                          {trend.viralScore !== undefined && (
+                            <span
+                              className={`px-2 py-0.5 rounded text-xs font-semibold flex-shrink-0 inline-flex items-center gap-1 ${
+                                trend.viralPotential === 'high'
+                                  ? 'bg-green-500/20 text-green-300 border border-green-500/40'
+                                  : trend.viralPotential === 'medium'
+                                  ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40'
+                                  : 'bg-gray-500/20 text-gray-300 border border-gray-500/40'
+                              }`}
+                            >
+                              {trend.viralPotential === 'high' ? (
+                                <Flame className="w-3 h-3" />
+                              ) : trend.viralPotential === 'medium' ? (
+                                <Zap className="w-3 h-3" />
+                              ) : (
+                                <BarChart3 className="w-3 h-3" />
+                              )}
+                              {trend.viralScore}
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-4 text-sm">
                           <span className="text-tron-text-muted">
@@ -1878,7 +1956,7 @@ export default function NewCampaignPage() {
               {/* Generate Button */}
               <motion.button
                 onClick={generateContent}
-                disabled={generatingContent}
+                disabled={generatingContent || selectedTrends.length === 0}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-8 py-6 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"

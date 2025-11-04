@@ -87,7 +87,7 @@ export default function DashboardClient() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-magenta text-tron-magenta px-6 py-4 rounded-2xl">
+        <div className="bg-red-900/20 backdrop-blur-xl border-2 border-red-500/30 text-red-400 px-6 py-4 rounded-2xl">
           Error loading dashboard: {error}
         </div>
       </motion.div>
@@ -103,25 +103,25 @@ export default function DashboardClient() {
       icon: Zap,
       value: campaigns.length,
       label: "Campaigns",
-      gradient: "from-tron-cyan to-blue-500",
+      gradient: "from-coral-500 to-coral-600",
     },
     {
       icon: TrendingUp,
       value: "0",
       label: "Views",
-      gradient: "from-tron-magenta to-purple-500",
+      gradient: "from-coral-400 to-coral-500",
     },
     {
       icon: Target,
       value: "0%",
       label: "Engagement",
-      gradient: "from-tron-cyan to-tron-magenta",
+      gradient: "from-coral-500 to-coral-600",
     },
     {
       icon: DollarSign,
       value: "$0",
       label: "AI Credits Saved",
-      gradient: "from-green-400 to-tron-cyan",
+      gradient: "from-green-400 to-green-500",
     },
   ];
 
@@ -130,7 +130,7 @@ export default function DashboardClient() {
       {/* Welcome Animation */}
       <WelcomeAnimation />
 
-      <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-8">
+      <div className="min-h-screen bg-[#2b2b2b] p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header */}
           <motion.div
@@ -140,11 +140,11 @@ export default function DashboardClient() {
             className="flex flex-col md:flex-row md:items-center justify-between gap-6"
           >
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-tron-text via-tron-cyan to-tron-magenta bg-clip-text text-transparent mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
                 {profile?.full_name || "Welcome Back"}
               </h1>
-              <p className="text-tron-text-muted text-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-tron-cyan" />
+              <p className="text-gray-300 text-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-coral-500" />
                 {campaigns.length === 0 ? (
                   "Ready to create your first campaign?"
                 ) : campaigns.length === 1 ? (
@@ -159,7 +159,7 @@ export default function DashboardClient() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 transition-colors flex items-center gap-3 text-lg"
+                className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
               >
                 <Plus className="w-6 h-6" />
                 New Campaign
@@ -183,7 +183,7 @@ export default function DashboardClient() {
                   {/* Gradient glow effect on hover */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl blur-xl`} />
                   
-                  <div className="relative p-6 bg-gradient-to-br from-tron-dark/80 to-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl group-hover:border-tron-cyan group-hover:shadow-xl group-hover:shadow-tron-cyan/20 transition-all duration-300">
+                  <div className="relative p-6 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-2xl group-hover:border-coral-500/50 group-hover:shadow-xl group-hover:shadow-coral-500/20 transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                       <div
                         className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-xl shadow-lg`}
@@ -201,10 +201,10 @@ export default function DashboardClient() {
                         <span>+0%</span>
                       </motion.div>
                     </div>
-                    <div className="text-3xl font-bold bg-gradient-to-r from-tron-text to-tron-cyan bg-clip-text text-transparent mb-1">
+                    <div className="text-3xl font-bold text-white mb-1">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-tron-text-muted font-medium">
+                    <div className="text-sm text-gray-300 font-medium">
                       {stat.label}
                     </div>
                   </div>
@@ -218,12 +218,12 @@ export default function DashboardClient() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="p-8 bg-gradient-to-br from-tron-dark/80 to-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl"
+            className="p-8 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl"
           >
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-tron-text flex items-center gap-3">
-                <div className="p-2 bg-tron-cyan/10 rounded-xl">
-                  <Sparkles className="w-6 h-6 text-tron-cyan" />
+              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                <div className="p-2 bg-coral-500/10 rounded-xl">
+                  <Sparkles className="w-6 h-6 text-coral-500" />
                 </div>
                 Recent Campaigns
               </h2>
@@ -232,7 +232,7 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="text-sm text-tron-cyan hover:text-tron-magenta transition-colors flex items-center gap-2"
+                    className="text-sm text-coral-500 hover:text-coral-400 transition-colors flex items-center gap-2"
                   >
                     View All
                     <ArrowRight className="w-4 h-4" />
@@ -253,25 +253,25 @@ export default function DashboardClient() {
                     className="group"
                   >
                     <Link href={`/campaigns/${campaign.id}`}>
-                      <div className="p-6 bg-gradient-to-br from-tron-grid/50 to-tron-dark/30 backdrop-blur border-2 border-tron-grid hover:border-tron-cyan rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-tron-cyan/20">
+                      <div className="p-6 bg-[#2b2b2b] backdrop-blur border-2 border-gray-700/50 hover:border-coral-500/50 rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-coral-500/20">
                         <div className="flex-1">
-                          <div className="font-semibold text-tron-text text-lg mb-2 group-hover:text-tron-cyan transition-colors">
+                          <div className="font-semibold text-white text-lg mb-2 group-hover:text-coral-400 transition-colors">
                             {campaign.name}
                           </div>
-                          <div className="text-sm text-tron-text-muted flex items-center gap-3">
-                            <span className="px-3 py-1 bg-tron-cyan/10 border border-tron-cyan/30 rounded-full text-tron-cyan capitalize text-xs font-medium">
+                          <div className="text-sm text-gray-300 flex items-center gap-3">
+                            <span className="px-3 py-1 bg-coral-500/10 border border-coral-500/30 rounded-full text-coral-400 capitalize text-xs font-medium">
                               {campaign.status}
                             </span>
                             {campaign.target_platforms && campaign.target_platforms.length > 0 && (
                               <>
-                                <span className="text-tron-grid">•</span>
+                                <span className="text-gray-600">•</span>
                                 <span className="flex items-center gap-1">
                                   <Target className="w-3 h-3" />
                                   {campaign.target_platforms.length} {campaign.target_platforms.length === 1 ? 'platform' : 'platforms'}
                                 </span>
                               </>
                             )}
-                            <span className="text-tron-grid">•</span>
+                            <span className="text-gray-600">•</span>
                             <span className="text-xs">
                               {new Date(campaign.created_at).toLocaleDateString('en-US', { 
                                 month: 'short', 
@@ -284,9 +284,9 @@ export default function DashboardClient() {
                         <motion.div
                           initial={{ x: -10, opacity: 0 }}
                           whileHover={{ x: 0, opacity: 1 }}
-                          className="p-2 bg-tron-cyan/10 rounded-full"
+                          className="p-2 bg-coral-500/10 rounded-full"
                         >
-                          <ArrowRight className="w-5 h-5 text-tron-cyan" />
+                          <ArrowRight className="w-5 h-5 text-coral-500" />
                         </motion.div>
                       </div>
                     </Link>
@@ -311,15 +311,15 @@ export default function DashboardClient() {
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="p-6 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-full"
+                    className="p-6 bg-coral-500/20 rounded-full"
                   >
-                    <Sparkles className="w-16 h-16 text-tron-cyan" />
+                    <Sparkles className="w-16 h-16 text-coral-500" />
                   </motion.div>
                 </div>
-                <h3 className="text-2xl font-bold text-tron-text mb-3">
+                <h3 className="text-2xl font-bold text-white mb-3">
                   No campaigns yet
                 </h3>
-                <p className="text-tron-text-muted mb-8 max-w-md mx-auto leading-relaxed">
+                <p className="text-gray-300 mb-8 max-w-md mx-auto leading-relaxed">
                   Start creating amazing content campaigns with AI-powered
                   generation. Your first campaign is just a click away!
                 </p>
@@ -327,7 +327,7 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 transition-colors flex items-center gap-3 mx-auto text-lg"
+                    className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
                   >
                     <Plus className="w-6 h-6" />
                     Create First Campaign

@@ -10,7 +10,7 @@ export const CTASection: React.FC<CTASectionProps> = ({
   onDemoClick,
 }) => {
   return (
-    <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-800 to-gray-900 text-white">
+    <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-[#343a40] text-white">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-4xl font-bold mb-6">
           Ready to Transform Your Content Marketing?

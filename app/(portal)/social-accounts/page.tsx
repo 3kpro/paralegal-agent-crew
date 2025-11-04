@@ -138,19 +138,19 @@ export default function SocialAccountsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-tron-dark">
+    <div className="min-h-screen bg-[#2b2b2b]">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="py-8 text-center">
-          <h1 className="text-3xl font-bold text-tron-text mb-3">Social Accounts</h1>
-          <p className="text-tron-text-muted text-lg">
+          <h1 className="text-3xl font-bold text-white mb-3">Social Accounts</h1>
+          <p className="text-gray-300 text-lg">
             Connect your social media accounts to publish campaigns directly
           </p>
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg flex items-center gap-3">
+          <div className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-red-400" />
             <p className="text-red-300">{error}</p>
           </div>
@@ -162,7 +162,7 @@ export default function SocialAccountsPage() {
           <div className="lg:col-span-2">
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-tron-cyan animate-spin" />
+                <Loader2 className="w-8 h-8 text-coral-500 animate-spin" />
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-4 max-w-md mx-auto py-4">
@@ -267,25 +267,25 @@ export default function SocialAccountsPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
+              className="bg-[#343a40] border-2 border-gray-700/50 rounded-lg p-6"
             >
-              <h3 className="text-lg font-semibold text-tron-text mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-tron-cyan" />
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-coral-500" />
                 Publishing Status
               </h3>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-tron-text-muted">
+                  <span className="text-sm text-gray-300">
                     Connected Accounts
                   </span>
-                  <span className="text-sm font-semibold text-tron-text">
+                  <span className="text-sm font-semibold text-white">
                     {connectedAccounts.length}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-tron-text-muted">
+                  <span className="text-sm text-gray-300">
                     Active Accounts
                   </span>
                   <span className="text-sm font-semibold text-green-400">
@@ -297,10 +297,10 @@ export default function SocialAccountsPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-tron-text-muted">
+                  <span className="text-sm text-gray-300">
                     Ready to Publish
                   </span>
-                  <span className="text-sm font-semibold text-tron-cyan">
+                  <span className="text-sm font-semibold text-coral-400">
                     {
                       connectedAccounts.filter(
                         (acc: any) => acc.is_active && acc.is_verified,
@@ -311,7 +311,7 @@ export default function SocialAccountsPage() {
               </div>
 
               {connectedAccounts.length > 0 && (
-                <div className="mt-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
+                <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
                   <div className="flex items-center gap-2 text-green-400 text-sm">
                     <Shield className="w-4 h-4" />
                     <span className="font-medium">Ready for Publishing</span>
@@ -329,31 +329,31 @@ export default function SocialAccountsPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
+              className="bg-[#343a40] border-2 border-gray-700/50 rounded-lg p-6"
             >
-              <h3 className="text-lg font-semibold text-tron-text mb-4 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-tron-cyan" />
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-coral-500" />
                 Security & Privacy
               </h3>
 
-              <div className="space-y-3 text-sm text-tron-text-muted">
+              <div className="space-y-3 text-sm text-gray-300">
                 <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-tron-cyan rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-coral-500 rounded-full mt-2 flex-shrink-0"></div>
                   <p>All account tokens are encrypted and stored securely</p>
                 </div>
 
                 <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-tron-cyan rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-coral-500 rounded-full mt-2 flex-shrink-0"></div>
                   <p>We only request minimum required permissions</p>
                 </div>
 
                 <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-tron-cyan rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-coral-500 rounded-full mt-2 flex-shrink-0"></div>
                   <p>You can revoke access at any time</p>
                 </div>
 
                 <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 bg-tron-cyan rounded-full mt-2 flex-shrink-0"></div>
+                  <div className="w-1.5 h-1.5 bg-coral-500 rounded-full mt-2 flex-shrink-0"></div>
                   <p>No content is stored beyond publishing queue</p>
                 </div>
               </div>
@@ -364,55 +364,55 @@ export default function SocialAccountsPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
+              className="bg-[#343a40] border-2 border-gray-700/50 rounded-lg p-6"
             >
-              <h3 className="text-lg font-semibold text-tron-text mb-4 flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-tron-cyan" />
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <HelpCircle className="w-5 h-5 text-coral-500" />
                 Need Help?
               </h3>
 
               <div className="space-y-3">
                 <button 
                   onClick={() => window.open('https://docs.contentcascade.ai/troubleshooting/connection-issues', '_blank')}
-                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                  className="w-full text-left p-3 bg-[#2b2b2b]/50 border border-gray-700/50 rounded-lg hover:border-coral-500/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-tron-text">
+                    <span className="text-sm font-medium text-white">
                       Connection Troubleshooting
                     </span>
-                    <ExternalLink className="w-4 h-4 text-tron-text-muted" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </div>
-                  <p className="text-xs text-tron-text-muted mt-1">
+                  <p className="text-xs text-gray-300 mt-1">
                     Having trouble connecting accounts?
                   </p>
                 </button>
 
                 <button 
                   onClick={() => window.open('https://docs.contentcascade.ai/publishing/guidelines', '_blank')}
-                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                  className="w-full text-left p-3 bg-[#2b2b2b]/50 border border-gray-700/50 rounded-lg hover:border-coral-500/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-tron-text">
+                    <span className="text-sm font-medium text-white">
                       Publishing Guidelines
                     </span>
-                    <ExternalLink className="w-4 h-4 text-tron-text-muted" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </div>
-                  <p className="text-xs text-tron-text-muted mt-1">
+                  <p className="text-xs text-gray-300 mt-1">
                     Best practices for social media publishing
                   </p>
                 </button>
 
                 <button 
                   onClick={() => window.open('https://docs.contentcascade.ai/api/platform-limitations', '_blank')}
-                  className="w-full text-left p-3 bg-tron-dark/50 rounded-lg hover:bg-tron-dark/70 transition-colors"
+                  className="w-full text-left p-3 bg-[#2b2b2b]/50 border border-gray-700/50 rounded-lg hover:border-coral-500/50 transition-colors"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-tron-text">
+                    <span className="text-sm font-medium text-white">
                       Platform Limitations
                     </span>
-                    <ExternalLink className="w-4 h-4 text-tron-text-muted" />
+                    <ExternalLink className="w-4 h-4 text-gray-400" />
                   </div>
-                  <p className="text-xs text-tron-text-muted mt-1">
+                  <p className="text-xs text-gray-300 mt-1">
                     Understanding API limits and restrictions
                   </p>
                 </button>

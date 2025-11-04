@@ -179,7 +179,7 @@ export function PublishSettings({
               variant={
                 selectedPlatforms.includes(platform.id) ? "primary" : "outline"
               }
-              aria-pressed={selectedPlatforms.includes(platform.id)}
+              aria-pressed={selectedPlatforms.includes(platform.id) ? "true" : "false"}
               data-testid={`platform-button-${platform.id}`}
             >
               <span className="text-2xl">{platform.icon}</span>

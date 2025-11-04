@@ -30,7 +30,7 @@ export default function WaitlistSection() {
 
   if (isSubmitted) {
     return (
-      <section className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600">
+      <section className="py-24 bg-[#343a40]">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -41,7 +41,7 @@ export default function WaitlistSection() {
             <h2 className="text-3xl font-bold text-white mb-4">
               🎉 You're on the list!
             </h2>
-            <p className="text-xl text-purple-100">
+            <p className="text-xl text-gray-300">
               We'll notify you when Content Cascade AI launches. Get ready to
               revolutionize your content workflow!
             </p>
@@ -54,13 +54,13 @@ export default function WaitlistSection() {
   return (
     <section
       id="waitlist"
-      className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600 relative overflow-hidden"
+      className="py-24 bg-[#343a40] relative overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-tron-cyan rounded-full opacity-20"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-tron-cyan rounded-full opacity-20"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-tron-magenta rounded-full opacity-20"></div>
+        <div className="absolute top-10 left-10 w-32 h-32 bg-coral-500 rounded-full opacity-20"></div>
+        <div className="absolute bottom-10 right-10 w-24 h-24 bg-coral-500 rounded-full opacity-20"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-coral-500 rounded-full opacity-20"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -71,12 +71,12 @@ export default function WaitlistSection() {
           className="max-w-3xl mx-auto text-center"
         >
           {/* Enhanced Beta Badge */}
-          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-full backdrop-blur-sm mb-8 border border-tron-cyan shadow-xl">
-            <Users className="w-5 h-5 text-white" />
-            <span className="text-sm font-bold text-white">
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-coral-500/20 rounded-full backdrop-blur-sm mb-8 border border-coral-500/30 shadow-xl">
+            <Users className="w-5 h-5 text-coral-400" />
+            <span className="text-sm font-bold text-coral-400">
               🎯 2,500+ Beta Creators Already Inside
             </span>
-            <span className="px-2 py-1 bg-white/20 rounded-full text-xs font-semibold text-white animate-pulse">
+            <span className="px-2 py-1 bg-coral-500/30 rounded-full text-xs font-semibold text-white animate-pulse">
               LIVE BETA
             </span>
           </div>
@@ -84,12 +84,12 @@ export default function WaitlistSection() {
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Join TrendPulse™ Beta
             <br />
-            <span className="bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-coral-400 to-coral-600 bg-clip-text text-transparent">
               Available Now
             </span>
           </h2>
 
-          <p className="text-xl text-purple-100 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
             Beta access includes full platform features plus exclusive early
             adopter benefits:
             <strong className="text-white"> 50% lifetime pricing</strong>,
@@ -104,24 +104,24 @@ export default function WaitlistSection() {
           <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-8">
             <div className="flex gap-3">
               <div className="flex-1 relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-tron-text-muted" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-tron-grid text-tron-text placeholder-tron-text-muted text-lg focus:outline-none focus:ring-4 focus:ring-tron-cyan/30"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#2b2b2b] text-white placeholder-gray-400 text-lg border-2 border-gray-700/50 focus:outline-none focus:border-coral-500/50"
                   required
                 />
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-tron-cyan hover:bg-tron-cyan text-tron-dark rounded-xl font-semibold text-lg transition-all duration-200 disabled:opacity-70 flex items-center gap-2 whitespace-nowrap"
+                className="px-8 py-4 bg-coral-500 hover:bg-coral-600 text-white rounded-xl font-semibold text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50 transition-all duration-200 disabled:opacity-70 flex items-center gap-2 whitespace-nowrap"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-tron-dark border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     Joining...
                   </>
                 ) : (
@@ -135,21 +135,21 @@ export default function WaitlistSection() {
           </form>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl">
+            <div className="bg-[#2b2b2b] backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200 shadow-xl">
               <div className="text-3xl font-bold text-white mb-2">50%</div>
-              <div className="text-purple-200">Lifetime Pricing Lock</div>
+              <div className="text-gray-300">Lifetime Pricing Lock</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl">
+            <div className="bg-[#2b2b2b] backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200 shadow-xl">
               <div className="text-3xl font-bold text-white mb-2">6+</div>
-              <div className="text-purple-200">Platform Publishing</div>
+              <div className="text-gray-300">Platform Publishing</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-xl">
+            <div className="bg-[#2b2b2b] backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200 shadow-xl">
               <div className="text-3xl font-bold text-white mb-2">24hr</div>
-              <div className="text-purple-200">Beta Support Response</div>
+              <div className="text-gray-300">Beta Support Response</div>
             </div>
           </div>
 
-          <p className="text-sm text-tron-text-muted mt-8">
+          <p className="text-sm text-gray-400 mt-8">
             No spam, unsubscribe anytime. We respect your inbox.
           </p>
         </motion.div>

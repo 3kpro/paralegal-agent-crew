@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,8 +11,32 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const router = useRouter();
   const supabase = createClient();
+
+  // Load saved remember me preference and handle session persistence
+  useEffect(() => {
+    const savedPreference = localStorage.getItem("rememberMe");
+    if (savedPreference !== null) {
+      setRememberMe(savedPreference === "true");
+    }
+
+    // Check if this is a temporary session (remember me was unchecked)
+    if (sessionStorage.getItem("tempSession") === "true") {
+      // Set up the beforeunload handler for this session
+      const handleBeforeUnload = async () => {
+        if (sessionStorage.getItem("tempSession") === "true") {
+          await supabase.auth.signOut();
+        }
+      };
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, [supabase]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +50,25 @@ export default function LoginPage() {
       });
 
       if (error) throw error;
+
+      // Store remember me preference
+      localStorage.setItem("rememberMe", rememberMe.toString());
+
+      // If remember me is false, set up session to expire when browser closes
+      if (!rememberMe) {
+        // Store a flag in sessionStorage to track this session
+        sessionStorage.setItem("tempSession", "true");
+
+        // Set up event listener to sign out when browser/tab closes
+        window.addEventListener("beforeunload", async () => {
+          if (sessionStorage.getItem("tempSession") === "true") {
+            await supabase.auth.signOut();
+          }
+        });
+      } else {
+        // Clear any temporary session flag
+        sessionStorage.removeItem("tempSession");
+      }
 
       // Track successful login
       trackLogin();
@@ -54,26 +97,26 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-tron-dark flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         {/* Logo & Tagline */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-tron-cyan to-tron-magenta rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-coral-500 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
-            <span className="text-2xl font-bold text-tron-text">
+            <span className="text-2xl font-bold text-white">
               Content Cascade AI
             </span>
           </Link>
-          <p className="text-tron-text-muted mt-2">
+          <p className="text-gray-300 mt-2">
             From trending topics to published content in minutes
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-tron-grid rounded-2xl shadow-xl p-8 border border-tron-cyan/30">
-          <h1 className="text-2xl font-bold text-tron-text mb-6">
+        <div className="bg-[#343a40] rounded-2xl shadow-xl p-8 border-2 border-gray-700/50">
+          <h1 className="text-2xl font-bold text-white mb-6">
             Welcome back
           </h1>
 
@@ -88,7 +131,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-tron-text-muted mb-2"
+                className="block text-sm font-medium text-gray-300 mb-2"
               >
                 Email
               </label>
@@ -98,7 +141,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-tron-dark border border-tron-cyan/30 rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
+                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
                 placeholder="you@example.com"
               />
             </div>
@@ -107,7 +150,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-tron-text-muted mb-2"
+                className="block text-sm font-medium text-gray-300 mb-2"
               >
                 Password
               </label>
@@ -117,16 +160,25 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-tron-dark border border-tron-cyan/30 rounded-lg focus:ring-2 focus:ring-tron-cyan focus:border-transparent text-tron-text placeholder-tron-text-muted"
+                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
                 placeholder="••••••••"
               />
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right">
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-700 bg-[#2b2b2b] text-coral-500 focus:ring-2 focus:ring-coral-500/50 cursor-pointer"
+                />
+                <span className="text-sm text-gray-300">Remember me</span>
+              </label>
               <Link
                 href="/forgot-password"
-                className="text-sm text-tron-cyan hover:text-tron-cyan/80"
+                className="text-sm text-coral-500 hover:text-coral-400"
               >
                 Forgot password?
               </Link>
@@ -136,7 +188,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-tron-cyan hover:bg-tron-cyan/80 disabled:bg-tron-cyan/50 text-tron-dark font-semibold rounded-lg transition-colors shadow-lg"
+              className="w-full h-14 bg-coral-500 hover:bg-coral-600 disabled:bg-coral-500/50 text-white font-semibold rounded-lg transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -144,15 +196,15 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-tron-cyan/30"></div>
-            <span className="px-4 text-sm text-tron-text-muted">OR</span>
-            <div className="flex-1 border-t border-tron-cyan/30"></div>
+            <div className="flex-1 border-t border-gray-700/50"></div>
+            <span className="px-4 text-sm text-gray-400">OR</span>
+            <div className="flex-1 border-t border-gray-700/50"></div>
           </div>
 
           {/* Google Login */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full h-12 border border-tron-cyan/30 hover:bg-tron-dark/50 text-tron-text font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
+            className="w-full h-12 border-2 border-gray-700/50 hover:border-coral-500/50 hover:bg-[#2b2b2b]/50 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -176,11 +228,11 @@ export default function LoginPage() {
           </button>
 
           {/* Sign Up Link */}
-          <p className="mt-6 text-center text-sm text-tron-text-muted">
+          <p className="mt-6 text-center text-sm text-gray-400">
             Don't have an account?{" "}
             <Link
               href="/signup"
-              className="text-tron-cyan hover:text-tron-cyan/80 font-medium"
+              className="text-coral-500 hover:text-coral-400 font-medium"
             >
               Sign up
             </Link>

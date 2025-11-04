@@ -8,24 +8,68 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Tron Legacy Color System
-        'tron-dark': '#0f0f1e',
-        'tron-cyan': '#00ffff',
-        'tron-green': '#00ff00',
-        'tron-magenta': '#ff00ff',
-        'tron-grid': '#1a1a2e',
-        'tron-text': '#ffffff',
-        'tron-text-muted': '#e5e5e5',
-        
+        // Claude AI Color Scheme
+        coral: {
+          50: '#fef7f5',
+          100: '#fdeee9',
+          200: '#fbdcd3',
+          300: '#f8c1b3',
+          400: '#f49d87',
+          500: '#ee8b72',  // Primary coral from Claude UI
+          600: '#e67056',
+          700: '#d15a42',
+          800: '#ad4b37',
+          900: '#8f4032',
+        },
         primary: {
-          50: '#f0f9ff',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          900: '#1e293b',
+          50: '#fef7f5',
+          100: '#fdeee9',
+          200: '#fbdcd3',
+          300: '#f8c1b3',
+          400: '#f49d87',
+          500: '#ee8b72',  // Using coral as primary
+          600: '#e67056',
+          700: '#d15a42',
+          800: '#ad4b37',
+          900: '#8f4032',
+        },
+        dark: {
+          50: '#f8f9fa',
+          100: '#e9ecef',
+          200: '#dee2e6',
+          300: '#ced4da',
+          400: '#adb5bd',
+          500: '#6c757d',
+          600: '#495057',
+          700: '#343a40',
+          800: '#2b2b2b',  // Main background from Claude UI
+          900: '#1a1a1a',
+        },
+        // Neutral grays for text
+        slate: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
         },
         navy: '#1e293b',
         charcoal: '#374151',
+        
+        // LEGACY TRON COLORS - Mapped to new coral/dark scheme
+        // This allows old code to work without changes
+        'tron-dark': '#2b2b2b',        // → dark-800
+        'tron-grid': '#343a40',        // → dark-700
+        'tron-cyan': '#ee8b72',        // → coral-500
+        'tron-magenta': '#e67056',     // → coral-600
+        'tron-text': '#ffffff',        // → white
+        'tron-text-muted': '#d1d5db',  // → gray-300
+        'tron-green': '#10b981',       // → green-500
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

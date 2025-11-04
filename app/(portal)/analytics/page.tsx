@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import ViralScoreAnalytics from "@/components/ViralScoreAnalytics";
 import {
   BarChart3,
   TrendingUp,
@@ -84,32 +85,17 @@ export default function AnalyticsPage() {
                 Performance insights and campaign analytics across all platforms
               </p>
             </div>
-
-            <div className="flex items-center gap-4">
-              <select
-                id="time-range"
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                aria-label="Time Range"
-                title="Select time range for analytics"
-                className="bg-tron-grid border border-tron-cyan/30 text-tron-text px-4 py-2 rounded-lg focus:border-tron-cyan focus:outline-none"
-              >
-                {timeRanges.map((range) => (
-                  <option key={range.value} value={range.value}>
-                    {range.label}
-                  </option>
-                ))}
-              </select>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Configure
-              </motion.button>
-            </div>
           </div>
+        </motion.div>
+
+        {/* Viral Score Analytics (Phase 1 & Phase 2 ML Training) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <ViralScoreAnalytics />
         </motion.div>
 
         {/* Coming Soon Notice */}

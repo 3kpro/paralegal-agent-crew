@@ -74,7 +74,7 @@ export default function ModernPricing() {
   return (
     <section
       id="pricing"
-      className="py-24 bg-tron-dark relative overflow-hidden"
+      className="py-24 bg-[#343a40] relative overflow-hidden"
     >
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -85,12 +85,10 @@ export default function ModernPricing() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Beta Launch Pricing
-            </span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Beta Launch Pricing
           </h2>
-          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Early adopter pricing available now. Lock in 50% savings for life.
             Beta features included.
           </p>
@@ -112,48 +110,48 @@ export default function ModernPricing() {
                 {/* Popular Badge */}
                 {plan.popular && (
                   <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                    <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                    <div className="bg-coral-500 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
                       Most Popular
                     </div>
                   </div>
                 )}
 
                 <div
-                  className={`h-full bg-tron-grid rounded-2xl p-8 shadow-xl border-2 ${
-                    plan.popular ? "border-tron-cyan" : "border-tron-cyan"
-                  } hover:shadow-2xl transition-all duration-300`}
+                  className={`h-full bg-[#2b2b2b] rounded-2xl p-8 shadow-xl border-2 ${
+                    plan.popular ? "border-coral-500/50 shadow-coral-500/20" : "border-gray-700/50"
+                  } hover:border-coral-500/70 transition-all duration-300`}
                 >
                   {/* Icon */}
                   <div
-                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-lg`}
+                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-sm`}
                   >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
 
                   {/* Plan Name */}
-                  <h3 className="text-2xl font-bold mb-2 text-tron-text">
+                  <h3 className="text-2xl font-bold mb-2 text-white">
                     {plan.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-tron-text-muted mb-6">
+                  <p className="text-gray-300 mb-6">
                     {plan.description}
                   </p>
 
                   {/* Price */}
                   <div className="mb-6">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-bold text-tron-text">
+                      <span className="text-5xl font-bold text-white">
                         {plan.price}
                       </span>
                       {plan.price !== "Free" && (
-                        <span className="text-tron-text-muted">
+                        <span className="text-gray-400">
                           / {plan.period}
                         </span>
                       )}
                     </div>
                     {plan.price === "Free" && (
-                      <span className="text-tron-text-muted">
+                      <span className="text-gray-400">
                         {plan.period}
                       </span>
                     )}
@@ -162,22 +160,20 @@ export default function ModernPricing() {
                   {/* CTA Button */}
                   <button
                     onClick={() => {
-                      if (plan.cta === "Contact Sales") {
+                      if (plan.cta === "Contact Sales" || plan.cta === "Contact Beta Sales") {
                         const contactElement =
                           document.getElementById("contact");
                         if (contactElement) {
                           contactElement.scrollIntoView({ behavior: "smooth" });
                         }
-                      } else if (plan.cta === "Start 14-Day Trial") {
-                        window.open("/trend-gen", "_blank");
                       } else {
                         window.open("/trend-gen", "_blank");
                       }
                     }}
                     className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
                       plan.popular
-                        ? "bg-tron-cyan text-tron-dark shadow-lg hover:shadow-xl hover:scale-105"
-                        : "bg-tron-grid text-tron-text hover:bg-tron-grid border border-tron-cyan"
+                        ? "bg-coral-500 text-white shadow-xl hover:shadow-2xl hover:bg-coral-600 hover:scale-105"
+                        : "bg-transparent text-gray-300 border-2 border-gray-600 hover:bg-gray-700/50 hover:border-gray-500"
                     }`}
                   >
                     {plan.cta}
@@ -196,7 +192,7 @@ export default function ModernPricing() {
                         >
                           <Check className="w-3 h-3 text-white" />
                         </div>
-                        <span className="text-tron-text-muted">{feature}</span>
+                        <span className="text-gray-300">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -214,11 +210,11 @@ export default function ModernPricing() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="max-w-4xl mx-auto mt-12"
         >
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white shadow-2xl">
+          <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-8 md:p-12 text-white shadow-lg">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
                 <h3 className="text-3xl font-bold mb-2">Enterprise</h3>
-                <p className="text-tron-text-muted text-lg">
+                <p className="text-gray-200 text-lg">
                   Custom solutions for large organizations. Self-hosted options,
                   SLAs, and dedicated support.
                 </p>
@@ -230,7 +226,7 @@ export default function ModernPricing() {
                     contactElement.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="flex-shrink-0 px-8 py-4 bg-tron-cyan text-tron-dark rounded-xl font-semibold text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className="flex-shrink-0 px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg hover:bg-coral-600 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               >
                 Contact Sales
               </button>
@@ -246,18 +242,18 @@ export default function ModernPricing() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-center mt-12"
         >
-          <p className="text-tron-text-muted">
+          <p className="text-gray-600">
             Have questions?{" "}
             <a
               href="#contact"
-              className="text-tron-cyan hover:text-tron-magenta font-semibold underline"
+              className="text-coral-500 hover:text-coral-600 font-semibold underline"
             >
               Contact us
             </a>{" "}
             or check out our{" "}
             <a
               href="#faq"
-              className="text-tron-cyan hover:text-tron-magenta font-semibold underline"
+              className="text-coral-500 hover:text-coral-600 font-semibold underline"
             >
               FAQ
             </a>

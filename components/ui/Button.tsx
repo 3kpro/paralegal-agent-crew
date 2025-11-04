@@ -18,11 +18,11 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary:
-      "bg-blue-600 hover:bg-blue-700 text-white shadow-lg focus:ring-cyan-500",
+      "bg-coral-500 hover:bg-coral-600 text-white shadow-xl border-2 border-transparent hover:border-coral-400/50 focus:ring-coral-500",
     secondary:
-      "bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-cyan-500",
+      "bg-transparent border-2 border-gray-600 text-white hover:border-coral-500/50 focus:ring-coral-500",
     outline:
-      "border-2 border-gray-300 text-gray-700 hover:border-cyan-400 hover:text-cyan-600 focus:ring-cyan-500",
+      "border-2 border-gray-700/70 text-white hover:border-coral-500/50 focus:ring-coral-500",
   };
 
   const sizeClasses = {
@@ -43,12 +43,11 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={props.disabled}
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       whileHover={{
-        boxShadow: "0 0 10px #00ffff",
+        boxShadow: "0 0 20px rgba(238, 139, 114, 0.2)",
         y: -2,
         transition: { duration: 0.3, ease: transitionTiming },
       }}
       whileTap={{
-        boxShadow: "0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)",
         scale: 0.98,
         transition: { duration: 0.2, ease: transitionTiming },
       }}

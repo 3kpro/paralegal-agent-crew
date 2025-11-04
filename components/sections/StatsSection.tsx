@@ -17,28 +17,28 @@ const stats: StatItem[] = [
     value: "1000+",
     label: "Beta Signups and Counting",
     icon: Users,
-    color: "text-tron-cyan",
+    color: "text-coral-500",
     animatedValue: 1000,
   },
   {
     value: "20+",
     label: "New Beta Features Launched",
     icon: Zap,
-    color: "text-tron-magenta",
+    color: "text-coral-600",
     animatedValue: 20,
   },
   {
     value: "98%",
     label: "User Satisfaction Rate",
     icon: Star,
-    color: "text-green-400",
+    color: "text-green-500",
     animatedValue: 98,
   },
   {
     value: "24h",
     label: "Average Response Time",
     icon: Clock,
-    color: "text-yellow-400",
+    color: "text-amber-500",
     animatedValue: 24,
   },
 ];
@@ -94,12 +94,12 @@ const Counter = ({
 
 export const StatsSection: React.FC = () => {
   return (
-    <section className="py-20 bg-tron-grid relative overflow-hidden">
+    <section className="py-20 bg-[#2b2b2b] relative overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-r from-tron-cyan/5 to-tron-magenta/5" />
+      <div className="absolute inset-0 bg-gradient-to-r from-coral-500/5 to-transparent opacity-50" />
       <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-tron-cyan/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-tron-magenta/10 rounded-full blur-2xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-coral-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-coral-500/5 rounded-full blur-2xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -110,17 +110,17 @@ export const StatsSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan/20 border border-tron-cyan rounded-full mb-6">
-            <Star className="w-4 h-4 text-tron-cyan" fill="currentColor" />
-            <span className="text-sm font-semibold text-tron-cyan">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
+            <Star className="w-4 h-4 text-coral-400" fill="currentColor" />
+            <span className="text-sm font-semibold text-coral-400">
               TrendPulse™ Beta Success
             </span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-tron-text mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Join the Beta Revolution
           </h2>
-          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Real numbers from our growing community of Beta testers
           </p>
         </motion.div>
@@ -137,23 +137,15 @@ export const StatsSection: React.FC = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: `0 20px 40px ${
-                    stat.color === "text-tron-cyan"
-                      ? "rgba(0, 255, 255, 0.2)"
-                      : stat.color === "text-tron-magenta"
-                        ? "rgba(255, 0, 255, 0.2)"
-                        : stat.color === "text-green-400"
-                          ? "rgba(34, 197, 94, 0.2)"
-                          : "rgba(251, 191, 36, 0.2)"
-                  }`,
+                  boxShadow: `0 20px 40px rgba(0, 0, 0, 0.2)`,
                 }}
-                className="text-center p-8 bg-tron-dark/50 backdrop-blur-sm border border-tron-cyan/30 rounded-2xl hover:border-tron-cyan/60 transition-all duration-300 group"
+                className="text-center p-8 bg-[#343a40] backdrop-blur-sm border-2 border-gray-700/50 rounded-2xl hover:border-coral-500/50 hover:shadow-xl hover:shadow-coral-500/10 transition-all duration-300 group"
               >
                 {/* Icon */}
                 <motion.div
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-2xl flex items-center justify-center group-hover:shadow-lg transition-all duration-300`}
+                  className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-coral-500/10 to-transparent rounded-2xl flex items-center justify-center border border-gray-700/30 group-hover:border-coral-500/30 group-hover:shadow-sm transition-all duration-300`}
                 >
                   <Icon className="w-8 h-8" />
                 </motion.div>
@@ -184,7 +176,7 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 {/* Label */}
-                <div className="text-tron-text-muted font-medium leading-tight">
+                <div className="text-gray-300 font-medium leading-tight">
                   {stat.label}
                 </div>
 
@@ -193,9 +185,9 @@ export const StatsSection: React.FC = () => {
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ delay: index * 0.1 + 0.3 }}
-                  className="mt-4 inline-flex px-3 py-1 bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border border-tron-cyan/40 rounded-full"
+                  className="mt-4 inline-flex px-3 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full"
                 >
-                  <span className="text-xs font-semibold text-tron-cyan">
+                  <span className="text-xs font-semibold text-coral-400">
                     BETA
                   </span>
                 </motion.div>
@@ -211,7 +203,7 @@ export const StatsSection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center mt-16"
         >
-          <p className="text-tron-text-muted mb-6 max-w-xl mx-auto">
+          <p className="text-gray-300 mb-6 max-w-xl mx-auto">
             Join our growing community of creators who are already experiencing
             the future of content creation
           </p>
@@ -224,7 +216,7 @@ export const StatsSection: React.FC = () => {
                 element.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-200"
+            className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform transition-all duration-200"
           >
             Request Beta Access
           </motion.button>

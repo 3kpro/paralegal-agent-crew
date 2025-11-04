@@ -65,10 +65,10 @@ export default function ModernFeatures() {
   return (
     <section
       id="features"
-      className="py-24 bg-tron-dark relative overflow-hidden"
+      className="py-24 bg-[#2b2b2b] relative overflow-hidden"
     >
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-gray-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
+      <div className="absolute inset-0 bg-grid-gray-900 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.05))] -z-10" />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -79,12 +79,10 @@ export default function ModernFeatures() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Supercharged for Beta
-            </span>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Supercharged for Beta
           </h2>
-          <p className="text-xl text-tron-text-muted max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Experience our most powerful features yet. The Beta release brings
             enhanced AI capabilities, faster processing, and seamless
             integrations.
@@ -104,26 +102,26 @@ export default function ModernFeatures() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group relative"
               >
-                <div className="h-full bg-tron-grid rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-tron-cyan hover:border-tron-magenta">
+                <div className="h-full bg-[#343a40] rounded-2xl p-8 shadow-xl transition-all duration-300 border-2 border-gray-700/50 hover:border-coral-500/50 hover:shadow-coral-500/10">
                   {/* Icon */}
                   <div
-                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-sm group-hover:scale-110 transition-transform duration-300`}
                   >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-2xl font-bold mb-1 text-tron-text">
+                  <h3 className="text-2xl font-bold mb-1 text-white">
                     {feature.title}
                   </h3>
 
                   {/* Subtitle */}
-                  <p className="text-sm font-semibold text-tron-magenta mb-3">
+                  <p className="text-sm font-semibold text-coral-400 mb-3">
                     {feature.subtitle}
                   </p>
 
                   {/* Description */}
-                  <p className="text-tron-text-muted leading-relaxed">
+                  <p className="text-gray-300 leading-relaxed">
                     {feature.description}
                   </p>
 
@@ -145,18 +143,18 @@ export default function ModernFeatures() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-16"
         >
-          <p className="text-tron-text-muted mb-6 text-lg">
+          <p className="text-gray-300 mb-6 text-lg">
             Ready to experience the future of content creation?
           </p>
           <div className="flex flex-col items-center gap-4">
             <a
               href="/trend-gen"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200"
             >
               <Sparkles className="w-5 h-5" />
               Join TrendPulse™ Beta
             </a>
-            <span className="text-sm text-tron-text-muted">
+            <span className="text-sm text-gray-400">
               Limited spots available
             </span>
           </div>

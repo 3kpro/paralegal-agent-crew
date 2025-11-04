@@ -121,7 +121,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-tron-dark">
+    <section id="faq" className="py-24 bg-[#2b2b2b]">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
@@ -131,23 +131,23 @@ export default function FAQSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-grid rounded-full mb-6 border border-tron-cyan">
-              <HelpCircle className="w-4 h-4 text-tron-cyan" />
-              <span className="text-sm font-semibold text-tron-cyan">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 rounded-full mb-6 border border-coral-500/30">
+              <HelpCircle className="w-4 h-4 text-coral-400" />
+              <span className="text-sm font-semibold text-coral-400">
                 Frequently Asked Questions
               </span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Everything You Need to Know
             </h2>
 
-            <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               Got questions? We've got answers. If you can't find what you're
               looking for,
               <a
                 href="#contact"
-                className="text-tron-cyan hover:text-tron-green font-semibold"
+                className="text-coral-500 hover:text-coral-400 font-semibold"
               >
                 {" "}
                 reach out to our team
@@ -165,7 +165,7 @@ export default function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
-                <h3 className="text-2xl font-bold text-tron-text mb-6 pb-3 border-b-2 border-tron-cyan">
+                <h3 className="text-2xl font-bold text-white mb-6 pb-3 border-b-2 border-coral-500/50">
                   {category.category}
                 </h3>
 
@@ -177,22 +177,22 @@ export default function FAQSection() {
                     return (
                       <div
                         key={questionIndex}
-                        className="bg-tron-grid rounded-xl shadow-sm border border-tron-cyan overflow-hidden"
+                        className="bg-[#343a40] rounded-xl shadow-sm border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200 overflow-hidden"
                       >
                         <button
                           onClick={() =>
                             toggleItem(categoryIndex, questionIndex)
                           }
-                          className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-tron-grid transition-colors duration-200"
+                          className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-[#3a4046] transition-colors duration-200"
                         >
-                          <span className="font-semibold text-tron-text text-lg pr-8">
+                          <span className="font-semibold text-white text-lg pr-8">
                             {faq.question}
                           </span>
                           <div className="flex-shrink-0">
                             {isOpen ? (
-                              <Minus className="w-6 h-6 text-tron-cyan" />
+                              <Minus className="w-6 h-6 text-coral-500" />
                             ) : (
-                              <Plus className="w-6 h-6 text-tron-text-muted" />
+                              <Plus className="w-6 h-6 text-gray-400" />
                             )}
                           </div>
                         </button>
@@ -207,7 +207,7 @@ export default function FAQSection() {
                               className="overflow-hidden"
                             >
                               <div className="px-6 pb-6">
-                                <p className="text-tron-text-muted leading-relaxed">
+                                <p className="text-gray-300 leading-relaxed">
                                   {faq.answer}
                                 </p>
                               </div>
@@ -227,12 +227,12 @@ export default function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center mt-16 bg-tron-grid rounded-2xl p-12 border border-tron-cyan"
+            className="text-center mt-16 bg-[#343a40] rounded-2xl p-12 border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200"
           >
-            <h3 className="text-2xl font-bold mb-4 text-tron-text">
+            <h3 className="text-2xl font-bold mb-4 text-white">
               Still Have Questions?
             </h3>
-            <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
               Our team is here to help! Book a free 15-minute consultation to
               discuss your content strategy and see if Content Cascade AI is
               right for you.
@@ -245,7 +245,7 @@ export default function FAQSection() {
                     contactElement.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="px-8 py-4 bg-tron-grid text-tron-cyan rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
+                className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-coral-500/20 transition-all duration-200"
               >
                 Book Free Consultation
               </button>
@@ -256,7 +256,7 @@ export default function FAQSection() {
                     contactElement.scrollIntoView({ behavior: "smooth" });
                   }
                 }}
-                className="px-8 py-4 bg-transparent text-tron-cyan rounded-xl font-semibold text-lg border-2 border-tron-cyan hover:bg-tron-cyan hover:text-tron-dark transition-all duration-200"
+                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-gray-700/70 hover:border-coral-500/50 transition-all duration-200"
               >
                 Contact Support
               </button>

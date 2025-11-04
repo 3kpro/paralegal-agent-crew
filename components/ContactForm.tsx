@@ -110,9 +110,9 @@ export default function ContactForm() {
       <motion.label
         htmlFor={id}
         className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
-          focusedField === name ? "text-cyan-400" : "text-tron-text700"
+          focusedField === name ? "text-coral-400" : "text-gray-300"
         }`}
-        animate={{ color: focusedField === name ? "#00ffff" : "#374151" }}
+        animate={{ color: focusedField === name ? "#ee8b72" : "#d1d5db" }}
         transition={{ duration: 0.3, ease: transitionTiming }}
       >
         {label} {required && "*"}
@@ -126,11 +126,11 @@ export default function ContactForm() {
         onChange={handleChange}
         onFocus={() => handleFocus(name)}
         onBlur={handleBlur}
-        className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
+        className="w-full px-4 py-3 bg-[#2b2b2b] border-2 border-gray-700/50 text-white placeholder-gray-400 rounded-lg transition-all duration-300 focus:border-coral-500/50 focus:outline-none"
         placeholder={placeholder}
         whileFocus={{
-          boxShadow: "0 0 0 2px #00ffff",
-          borderColor: "#00ffff",
+          boxShadow: "0 0 0 2px rgba(238, 139, 114, 0.2)",
+          borderColor: "rgba(238, 139, 114, 0.5)",
           transition: { duration: 0.3, ease: transitionTiming },
         }}
       />
@@ -155,9 +155,9 @@ export default function ContactForm() {
       <motion.label
         htmlFor={id}
         className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
-          focusedField === name ? "text-cyan-400" : "text-tron-text700"
+          focusedField === name ? "text-coral-400" : "text-gray-300"
         }`}
-        animate={{ color: focusedField === name ? "#00ffff" : "#374151" }}
+        animate={{ color: focusedField === name ? "#ee8b72" : "#d1d5db" }}
         transition={{ duration: 0.3, ease: transitionTiming }}
       >
         {label}
@@ -169,10 +169,10 @@ export default function ContactForm() {
         onChange={handleChange}
         onFocus={() => handleFocus(name)}
         onBlur={handleBlur}
-        className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
+        className="w-full px-4 py-3 bg-[#2b2b2b] border-2 border-gray-700/50 text-white rounded-lg transition-all duration-300 focus:border-coral-500/50 focus:outline-none"
         whileFocus={{
-          boxShadow: "0 0 0 2px #00ffff",
-          borderColor: "#00ffff",
+          boxShadow: "0 0 0 2px rgba(238, 139, 114, 0.2)",
+          borderColor: "rgba(238, 139, 114, 0.5)",
           transition: { duration: 0.3, ease: transitionTiming },
         }}
       >
@@ -192,12 +192,12 @@ export default function ContactForm() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: transitionTiming }}
     >
-      <div className="bg-tron-grid rounded-xl shadow-lg p-8 border border-tron-grid">
+      <div className="bg-[#343a40] rounded-xl shadow-lg p-8 border-2 border-gray-700/50">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-tron-text800 mb-4">
+          <h2 className="text-3xl font-bold text-white mb-4">
             Get Started Today
           </h2>
-          <p className="text-tron-text600">
+          <p className="text-gray-300">
             Tell us about your project and we'll create a custom campaign
             proposal for you.
           </p>
@@ -205,13 +205,13 @@ export default function ContactForm() {
 
         {submitStatus === "success" && (
           <motion.div
-            className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center form-success-message"
+            className="mb-6 p-4 bg-green-900/20 border border-green-500/30 rounded-lg flex items-center form-success-message"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, ease: transitionTiming }}
           >
-            <span className="text-green-600 mr-3">✅</span>
-            <span className="text-green-800">
+            <span className="text-green-400 mr-3">✅</span>
+            <span className="text-green-400">
               Thank you! We'll get back to you within 24 hours.
             </span>
           </motion.div>
@@ -219,13 +219,13 @@ export default function ContactForm() {
 
         {submitStatus === "error" && (
           <motion.div
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center form-error-message"
+            className="mb-6 p-4 bg-red-900/20 border border-red-500/30 rounded-lg flex items-center form-error-message"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, ease: transitionTiming }}
           >
-            <span className="text-red-600 mr-3">❌</span>
-            <span className="text-red-800">
+            <span className="text-red-400 mr-3">❌</span>
+            <span className="text-red-400">
               Something went wrong. Please try again or email us directly.
             </span>
           </motion.div>
@@ -297,11 +297,11 @@ export default function ContactForm() {
               htmlFor="message"
               className={`block text-sm font-medium mb-2 transition-colors duration-300 ${
                 focusedField === "message"
-                  ? "text-cyan-400"
-                  : "text-tron-text700"
+                  ? "text-coral-400"
+                  : "text-gray-300"
               }`}
               animate={{
-                color: focusedField === "message" ? "#00ffff" : "#374151",
+                color: focusedField === "message" ? "#ee8b72" : "#d1d5db",
               }}
               transition={{ duration: 0.3, ease: transitionTiming }}
             >
@@ -315,11 +315,11 @@ export default function ContactForm() {
               onChange={handleChange}
               onFocus={() => handleFocus("message")}
               onBlur={handleBlur}
-              className="w-full px-4 py-3 border border-tron-grid rounded-lg transition-all duration-300"
+              className="w-full px-4 py-3 bg-[#2b2b2b] border-2 border-gray-700/50 text-white placeholder-gray-400 rounded-lg transition-all duration-300 focus:border-coral-500/50 focus:outline-none"
               placeholder="Tell us about your content marketing goals, target audience, and any specific requirements..."
               whileFocus={{
-                boxShadow: "0 0 0 2px #00ffff",
-                borderColor: "#00ffff",
+                boxShadow: "0 0 0 2px rgba(238, 139, 114, 0.2)",
+                borderColor: "rgba(238, 139, 114, 0.5)",
                 transition: { duration: 0.3, ease: transitionTiming },
               }}
             />
@@ -328,11 +328,11 @@ export default function ContactForm() {
           <motion.button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-coral-500 hover:bg-coral-600 text-white font-semibold py-3 px-6 rounded-lg shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent hover:border-coral-400/50"
             whileHover={
               !isSubmitting
                 ? {
-                    boxShadow: "0 0 10px #00ffff",
+                    boxShadow: "0 0 20px rgba(238, 139, 114, 0.3)",
                     y: -2,
                     transition: { duration: 0.3, ease: transitionTiming },
                   }
@@ -342,8 +342,6 @@ export default function ContactForm() {
               !isSubmitting
                 ? {
                     scale: 0.98,
-                    boxShadow:
-                      "0 0 20px #00ffff, inset 0 0 5px rgba(0,255,255,0.3)",
                     transition: { duration: 0.2, ease: transitionTiming },
                   }
                 : undefined
@@ -353,7 +351,7 @@ export default function ContactForm() {
           </motion.button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-tron-text500">
+        <div className="mt-6 text-center text-sm text-gray-400">
           <p>We typically respond within 24 hours with a custom proposal.</p>
         </div>
       </div>

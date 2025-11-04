@@ -52,6 +52,19 @@ export function SidebarNav() {
 }
 
 export function SidebarFooter() {
+  const handleLogout = async () => {
+    // Clean up remember me preferences and session storage
+    localStorage.removeItem("rememberMe");
+    sessionStorage.removeItem("tempSession");
+
+    // Sign out via API
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/api/auth/signout";
+    document.body.appendChild(form);
+    form.submit();
+  };
+
   return (
     <div className="absolute bottom-0 w-64 border-t border-tron-grid px-3 py-3 space-y-2">
       <Link href="/help" className="block">
@@ -61,14 +74,13 @@ export function SidebarFooter() {
           className="w-full justify-start text-left border-tron-cyan/10 hover:border-tron-cyan/50"
         />
       </Link>
-      <form action="/api/auth/signout" method="post">
+      <button onClick={handleLogout} className="w-full">
         <InteractiveHoverButton
-          type="submit"
           text="Logout"
           variant="outline"
           className="w-full justify-start text-left border-tron-magenta/30 hover:border-tron-magenta"
         />
-      </form>
+      </button>
     </div>
   );
 }

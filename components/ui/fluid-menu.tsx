@@ -59,7 +59,7 @@ export function MenuItem({ children, onClick, disabled = false, icon, isActive =
   return (
     <button
       className={`relative block w-full h-full text-center group
-        ${disabled ? "text-gray-400 dark:text-gray-500 cursor-not-allowed" : "text-tron-cyan"}
+        ${disabled ? "text-gray-400 cursor-not-allowed" : "text-coral-400"}
         ${isActive ? "bg-white/10" : ""}
       `}
       role="menuitem"
@@ -77,10 +77,10 @@ export function MenuItem({ children, onClick, disabled = false, icon, isActive =
       
       {/* Hover Tooltip */}
       {label && (
-        <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-tron-dark/95 backdrop-blur-sm border-2 border-tron-cyan/50 rounded-lg text-tron-cyan font-semibold text-sm whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg shadow-tron-cyan/20 pointer-events-none z-[60]">
+        <span className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-4 py-2 bg-[#2b2b2b]/95 backdrop-blur-sm border-2 border-coral-500/50 rounded-lg text-coral-400 font-semibold text-sm whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-lg shadow-coral-500/20 pointer-events-none z-[60]">
           {label}
           {/* Arrow pointing left */}
-          <span className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-tron-cyan/50"></span>
+          <span className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-coral-500/50"></span>
         </span>
       )}
     </button>
@@ -105,7 +105,7 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
       <div className="relative">
         {/* First item - always visible */}
         <div 
-          className="relative w-[72px] h-[72px] bg-tron-dark/80 backdrop-blur-sm border-2 border-tron-cyan/30 cursor-pointer rounded-lg group will-change-transform z-50 hover:border-tron-cyan/50 transition-all shadow-lg shadow-tron-cyan/20"
+          className="relative w-[72px] h-[72px] bg-[#2b2b2b]/80 backdrop-blur-sm border-2 border-gray-700/50 cursor-pointer rounded-lg group will-change-transform z-50 hover:border-coral-500/50 transition-all shadow-lg shadow-coral-500/20"
           onClick={handleToggle}
         >
           {childrenArray[0]}
@@ -115,7 +115,7 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
         {childrenArray.slice(1).map((child, index) => (
           <div 
             key={index} 
-            className="absolute top-0 left-0 w-[72px] h-[72px] bg-tron-dark/80 backdrop-blur-sm border-2 border-tron-cyan/30 rounded-lg will-change-transform hover:border-tron-cyan/50 transition-colors shadow-lg shadow-tron-cyan/20"
+            className="absolute top-0 left-0 w-[72px] h-[72px] bg-[#2b2b2b]/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-lg will-change-transform hover:border-coral-500/50 transition-colors shadow-lg shadow-coral-500/20"
             style={{
               transform: `translateY(${isExpanded ? (index + 1) * 78 : 0}px)`,
               opacity: isExpanded ? 1 : 0,

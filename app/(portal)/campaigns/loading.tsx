@@ -8,11 +8,7 @@ export default function CampaignsLoading() {
         <div className="h-11 w-40 bg-tron-grid/30 rounded-lg animate-pulse" />
       </div>
       
-      <TableSkeleton 
-        columns={5} 
-        rows={5}
-        showHeader 
-      />
+      <TableSkeleton rows={5} />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redis, withCache, cacheKeys, isRedisConnected } from "@/lib/redis";
 import { performance } from "perf_hooks";
 import { getMixedTrends, getGoogleTrends, getTwitterTrends, getRedditTrends, getNewsTrends } from "@/lib/real-trends";
+import { calculateViralScore, sortByViralScore } from "@/lib/viral-score";
 
 // Cache TTL in seconds
 const CACHE_TTL = 900; // 15 minutes
@@ -201,7 +202,24 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
     const duration = performance.now() - startTime;
     const sourceInfo = (trendsData as any).source || source;
     console.log(`[Real Trends] ✓ Fetched ${sourceInfo} in ${Math.round(duration)}ms`);
-    
+
+    // Calculate viral scores for all trends
+    if (trendsData.trending && Array.isArray(trendsData.trending)) {
+      trendsData.trending = trendsData.trending.map((trend: any) =>
+        calculateViralScore({
+          title: trend.title,
+          formattedTraffic: trend.formattedTraffic || '0K searches',
+          sources: [source], // Single source for now
+          firstSeenAt: new Date() // Current time as first seen
+        })
+      );
+
+      // Sort by viral score (highest first)
+      trendsData.trending = sortByViralScore(trendsData.trending);
+
+      console.log(`[Viral Score] ✓ Calculated viral scores for ${trendsData.trending.length} trends`);
+    }
+
     return trendsData;
     
   } catch (error: any) {
@@ -273,8 +291,23 @@ Return ONLY the JSON array, no markdown formatting or explanations.`;
     const duration = performance.now() - startTime;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
+    // Calculate viral scores for Gemini-generated trends
+    const trendsWithScores = trends.map((trend: any) =>
+      calculateViralScore({
+        title: trend.title,
+        formattedTraffic: trend.formattedTraffic || '0K searches',
+        sources: ['gemini-ai'], // Mark as AI-generated
+        firstSeenAt: new Date()
+      })
+    );
+
+    // Sort by viral score
+    const sortedTrends = sortByViralScore(trendsWithScores);
+
+    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 0})`);
+
     return {
-      trending: trends,
+      trending: sortedTrends,
       relatedQueries: [
         { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
         { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },

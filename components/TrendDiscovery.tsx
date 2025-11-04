@@ -2,11 +2,21 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Flame, Zap, BarChart3, TrendingUp, Loader2, Search } from "lucide-react";
 
 interface TrendingTopic {
   title: string;
   formattedTraffic: string;
   relatedQueries?: string[];
+  viralScore?: number;
+  viralPotential?: 'high' | 'medium' | 'low';
+  viralFactors?: {
+    volume: number;
+    multiSource: number;
+    specificity: number;
+    freshness: number;
+  };
+  sources?: string[];
 }
 
 interface RelatedQuery {
@@ -160,16 +170,36 @@ export default function TrendDiscovery() {
             <button
               onClick={searchTrends}
               disabled={loading}
-              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2"
             >
-              {loading ? "🔍 Searching..." : "🔍 Search"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <Search className="w-4 h-4" />
+                  Search
+                </>
+              )}
             </button>
             <button
               onClick={getTrendingTopics}
               disabled={loading}
-              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2"
             >
-              {loading ? "⏳ Loading..." : "🔥 Daily Trends"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <TrendingUp className="w-4 h-4" />
+                  Daily Trends
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -206,7 +236,29 @@ export default function TrendDiscovery() {
                         : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
-                    <div className="font-medium">{trend.title}</div>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="font-medium">{trend.title}</div>
+                      {trend.viralScore !== undefined && (
+                        <div
+                          className={`px-2 py-0.5 rounded text-xs font-semibold inline-flex items-center gap-1 ${
+                            trend.viralPotential === 'high'
+                              ? 'bg-green-100 text-green-700 border border-green-300'
+                              : trend.viralPotential === 'medium'
+                              ? 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                              : 'bg-gray-100 text-gray-600 border border-gray-300'
+                          }`}
+                        >
+                          {trend.viralPotential === 'high' ? (
+                            <Flame className="w-3 h-3" />
+                          ) : trend.viralPotential === 'medium' ? (
+                            <Zap className="w-3 h-3" />
+                          ) : (
+                            <BarChart3 className="w-3 h-3" />
+                          )}
+                          {trend.viralScore}
+                        </div>
+                      )}
+                    </div>
                     <div className="text-sm text-gray-500">
                       {trend.formattedTraffic}
                     </div>

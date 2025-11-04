@@ -20,6 +20,15 @@ const profileUpdateSchema = z
       .optional()
       .or(z.literal("")),
     twitter_handle: z.string().max(15).optional(),
+    company_name: z.string().max(100).optional(),
+    avatar_url: z.string().url("Invalid avatar URL").optional().or(z.literal("")),
+    company_logo_url: z.string().url("Invalid logo URL").optional().or(z.literal("")),
+    instagram_handle: z.string().max(30).optional(),
+    tiktok_handle: z.string().max(24).optional(),
+    reddit_handle: z.string().max(20).optional(),
+    timezone: z.string().optional(),
+    language: z.string().optional(),
+    theme: z.enum(["light", "dark", "system"]).optional(),
   })
   .strict(); // Reject unknown fields
 
