@@ -13,7 +13,6 @@ import {
   Share2,
   Target,
   Activity,
-  Settings,
   Rocket,
   Twitter,
   Linkedin,
@@ -25,7 +24,7 @@ export default function AnalyticsPage() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("7d");
+  // const [timeRange, setTimeRange] = useState("7d"); // Removed - not currently used
 
   useEffect(() => {
     checkAuth();
@@ -59,12 +58,12 @@ export default function AnalyticsPage() {
     );
   }
 
-  const timeRanges = [
-    { value: "24h", label: "Last 24 Hours" },
-    { value: "7d", label: "Last 7 Days" },
-    { value: "30d", label: "Last 30 Days" },
-    { value: "90d", label: "Last 90 Days" },
-  ];
+  // const timeRanges = [
+  //   { value: "24h", label: "Last 24 Hours" },
+  //   { value: "7d", label: "Last 7 Days" },
+  //   { value: "30d", label: "Last 30 Days" },
+  //   { value: "90d", label: "Last 90 Days" },
+  // ];
 
   return (
     <div className="min-h-screen bg-tron-dark p-6">

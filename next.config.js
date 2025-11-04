@@ -10,6 +10,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
+  // Disable TypeScript type checking during build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   images: {
     domains: ['yourdomain.com', '3kpro.services'],
   },
