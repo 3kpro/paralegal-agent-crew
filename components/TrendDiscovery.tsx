@@ -59,13 +59,28 @@ export default function TrendDiscovery() {
       }
 
       const result = await response.json();
+      
+      // Debug logging
+      console.log('[TrendDiscovery] API Response:', {
+        success: result.success,
+        source: result.source,
+        dataSource: result.data?.source,
+        trendCount: result.data?.trending?.length,
+        firstTrend: result.data?.trending?.[0]?.title
+      });
 
       if (result.success) {
         setTrends(result.data);
+        
+        // Show warning if using fallback data
+        if (result.source === 'Mixed Trends (Fallback)' || result.data?.source?.includes('Fallback')) {
+          console.warn('[TrendDiscovery] ⚠️ Using fallback data - Gemini AI may have failed');
+        }
       } else {
         setError(result.message || "Failed to fetch trends");
       }
     } catch (err) {
+      console.error('[TrendDiscovery] Error:', err);
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
