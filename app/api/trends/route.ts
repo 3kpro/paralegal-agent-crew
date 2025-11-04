@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { redis, withCache, cacheKeys, isRedisConnected } from "@/lib/redis";
 import { performance } from "perf_hooks";
-import { getMixedTrends, getGoogleTrends, getTwitterTrends, getRedditTrends, getNewsTrends } from "@/lib/real-trends";
+import { getMixedTrends, getGoogleTrends, getTwitterTrends, getRedditTrends } from "@/lib/real-trends";
 import { calculateViralScore, sortByViralScore } from "@/lib/viral-score";
 
 // Cache TTL in seconds
@@ -107,7 +107,7 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
     let trendsData;
     
     switch (source) {
-      case 'google':
+      case 'google': {
         const googleTrends = await getGoogleTrends(keyword);
         trendsData = {
           trending: googleTrends,
@@ -124,8 +124,9 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
           source: 'Google Trends',
         };
         break;
+      }
         
-      case 'twitter':
+      case 'twitter': {
         const twitterTrends = await getTwitterTrends();
         trendsData = {
           trending: twitterTrends,
@@ -142,8 +143,9 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
           source: 'Twitter Trends',
         };
         break;
+      }
         
-      case 'reddit':
+      case 'reddit': {
         const redditTrends = await getRedditTrends();
         trendsData = {
           trending: redditTrends,
@@ -160,9 +162,10 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
           source: 'Reddit Hot Topics',
         };
         break;
+      }
         
       case 'mixed':
-      default:
+      default: {
         // For keyword searches, use Gemini AI to generate relevant trends
         // Real trend APIs (Google/Twitter/Reddit) are better for discovering trending topics
         // but Gemini is better for generating content ideas around a specific keyword
@@ -199,6 +202,7 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
           });
         }
         break;
+      }
     }
     
     const duration = performance.now() - startTime;
@@ -238,7 +242,7 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
  * Generate trending topics using Google Gemini AI
  * Fallback function when real trends are unavailable
  */
-async function generateTrendsWithGemini(keyword: string, userId: string) {
+async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
   try {
