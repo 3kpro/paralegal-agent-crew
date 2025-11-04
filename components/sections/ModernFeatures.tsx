@@ -13,18 +13,18 @@ import {
 const features = [
   {
     icon: TrendingUp,
-    title: "TrendPulse™ Discovery",
-    subtitle: "Real-Time Intelligence",
+    title: "Viral Score™ Predictions",
+    subtitle: "Predictive Trend Intelligence",
     description:
-      "Advanced AI monitors 1M+ sources across platforms to identify trending topics 72 hours before they peak. Includes competitor analysis and viral prediction scoring.",
-    gradient: "from-blue-500 to-cyan-500",
+      "AI predicts viral potential (0-100 score) before you create. 4-factor algorithm analyzes Volume, Multi-source validation, Specificity, and Freshness. Know what will perform before you post.",
+    gradient: "from-emerald-500 to-teal-500",
   },
   {
     icon: Sparkles,
-    title: "AI Studio™ Multi-Provider",
-    subtitle: "Enterprise AI Generation",
+    title: "AI Content Studio™",
+    subtitle: "Intelligent Content Generation",
     description:
-      "Choose from GPT-4, Claude 3.5 Sonnet, Gemini Pro, and 8+ premium AI models. Auto-optimization selects the best AI for each content type and platform.",
+      "AI intelligently routes to the best model for your content type and platform. Optimized for quality and performance, not choice. Generates platform-specific content in seconds.",
     gradient: "from-purple-500 to-pink-500",
   },
   {

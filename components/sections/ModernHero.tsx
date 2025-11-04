@@ -61,10 +61,10 @@ export default function ModernHero() {
             className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight"
           >
             <span className="bg-gradient-to-r from-gray-100 via-white to-gray-100 bg-clip-text text-transparent">
-              Content Creation
+              Predict What Goes Viral
             </span>
             <br />
-            <span className="text-white">At The Speed Of AI</span>
+            <span className="text-white">Before You Create</span>
           </motion.h1>
 
           {/* Subheadline */}
@@ -74,18 +74,17 @@ export default function ModernHero() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
           >
-            Experience the future of content creation with our{" "}
-            <span className="font-semibold text-coral-400">Public Beta</span>.
-            <span className="font-semibold text-white"> TrendPulse™</span>{" "}
-            delivers enterprise-grade AI tools to
+            <span className="font-semibold text-white">TrendPulse™</span> with{" "}
+            <span className="font-semibold text-coral-400">Viral Score™</span>{" "}
+            predicts content performance before you publish.
             <span className="font-semibold text-white">
               {" "}
-              discover trending topics, generate viral content, and publish
+              Discover trending topics, get AI-powered viral predictions, and publish
               across 6+ platforms
             </span>
             <span className="font-bold text-coral-400">
               {" "}
-              — all in minutes, not hours
+              — know what will perform before you post
             </span>
             .
           </motion.p>
@@ -150,14 +149,14 @@ export default function ModernHero() {
             className="mt-16 flex flex-wrap gap-3 justify-center"
           >
             {[
-              "🎯 Real-Time Trend Detection",
-              "🧠 GPT-4 & Claude AI Generation",
+              "🎯 Viral Score™ Predictions",
+              "🧠 Intelligent Content Workflows",
               "🚀 6-Platform Auto-Publishing",
               "⚡ 10x Faster Content Pipeline",
               "🔒 Enterprise-Grade Security",
               "🎨 Brand Voice Intelligence",
-              "📊 Predictive Analytics",
-              "🔄 Content Automation Workflows",
+              "📊 Real-Time Performance Tracking",
+              "🔄 Predictive Trend Discovery",
             ].map((feature, index) => (
               <motion.div
                 key={index}
