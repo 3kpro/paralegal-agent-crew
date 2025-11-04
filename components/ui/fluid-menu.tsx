@@ -40,10 +40,8 @@ export function Menu({ trigger, children, align = "left", showChevron = true }: 
           className={`absolute ${
             align === "right" ? "right-0" : "left-0"
           } mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-9 focus:outline-none z-50`}
-          role="menu"
-          aria-orientation="vertical"
         >
-          <div className="py-1">
+          <div className="py-1" role="menu" aria-orientation="vertical">
             {children}
           </div>
         </div>
@@ -121,16 +119,14 @@ export function MenuContainer({ children }: { children: React.ReactNode }) {
         {childrenArray.slice(1).map((child, index) => (
           <div 
             key={index} 
-            className="absolute top-0 left-0 w-[72px] h-[72px] bg-[#2b2b2b]/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-lg will-change-transform hover:border-coral-500/50 transition-colors shadow-lg shadow-coral-500/20"
+            className={`absolute top-0 left-0 w-[72px] h-[72px] bg-[#2b2b2b]/80 backdrop-blur-sm border-2 border-gray-700/50 rounded-lg will-change-transform hover:border-coral-500/50 transition-all shadow-lg shadow-coral-500/20 ${
+              isExpanded ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{
               transform: `translateY(${isExpanded ? (index + 1) * 78 : 0}px)`,
-              opacity: isExpanded ? 1 : 0,
               zIndex: 40 - index,
-              transition: `transform ${isExpanded ? '300ms' : '300ms'} cubic-bezier(0.4, 0, 0.2, 1),
-                         opacity ${isExpanded ? '300ms' : '350ms'}`,
-              backfaceVisibility: 'hidden',
-              perspective: 1000,
-              WebkitFontSmoothing: 'antialiased'
+              transitionDuration: isExpanded ? '300ms' : '300ms, 350ms',
+              transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
             }}
           >
             {child}
