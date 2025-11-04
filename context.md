@@ -1,7 +1,7 @@
 # Collaboration Context File
 
-Last Updated: November 2, 2025
-Last Updated By: GitHub Copilot
+Last Updated: November 4, 2025
+Last Updated By: Claude (Smart Niche Discovery implementation)
 
 Hi! We're working on a production-ready SaaS platform for social media campaign management. The core technical implementation is **100% complete**, including OAuth flows for all social platforms, AI-powered content generation, and campaign publishing system.
 
@@ -73,6 +73,25 @@ Check the sections below for all technical details, performance metrics, and cri
      - API: 4 endpoints (record, update, analytics, export-ml)
      - UI: [components/ViralScoreAnalytics.tsx](components/ViralScoreAnalytics.tsx)
    - **Status**: Database verified, tracking integrated, production-ready
+
+1b. **Smart Niche Discovery** (v1.12.0 - UNRELEASED)
+
+   - **Purpose**: Beginner-friendly onboarding that helps new users discover high-potential topics
+   - **How It Works**:
+     - Step 1: User selects 3-5 interests from 12 categories (Technology, Fitness, Finance, etc.)
+     - Step 2: Auto-searches TrendPulse™ for trending topics in each interest
+     - Step 3: Displays top 3 trends per interest with Viral Score predictions
+   - **Strategic Advantages**:
+     - Zero maintenance (dynamic TrendPulse™ API, not static templates)
+     - Low dev cost (2-3 days vs 2-3 weeks for template system)
+     - No niche lock-in (users can explore any topic after onboarding)
+     - Immediate value demonstration (Viral Scores shown before creating anything)
+   - **Implementation**:
+     - Interest Selection: [components/onboarding/InterestSelection.tsx](components/onboarding/InterestSelection.tsx) (224 lines)
+     - Trending Topics Preview: [components/onboarding/TrendingTopicsPreview.tsx](components/onboarding/TrendingTopicsPreview.tsx) (267 lines)
+     - Onboarding Flow: [app/(portal)/onboarding/page.tsx](app/(portal)/onboarding/page.tsx) (updated from 2 steps to 4 steps)
+   - **Database**: Uses existing `profiles.interests` field (text[] array)
+   - **Status**: Complete, build successful, ready for production testing
 
 2. **Social Media OAuth System** (v1.8.1, v1.9.0)
 

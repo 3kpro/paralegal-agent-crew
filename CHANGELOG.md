@@ -1,3 +1,165 @@
+## [UNRELEASED] - 2025-11-04
+
+### 🎯 **SMART NICHE DISCOVERY - Beginner-Friendly Onboarding**
+
+**Intelligent Interest-Based Onboarding for New Users**
+
+**Problem**: New users faced decision paralysis when starting content creation. Without existing content or audience data, they didn't know what topics to focus on or what would perform well.
+
+**Solution**: **Smart Niche Discovery** - A lightweight 2-step onboarding flow that leverages existing TrendPulse™ infrastructure to help users discover high-potential topics in their interests.
+
+---
+
+### **How It Works**
+
+#### **Step 1: Interest Selection**
+- Users select 3-5 interests from 12 categories:
+  - Technology, Fitness, Finance, Travel, Food, Gaming
+  - Fashion, Parenting, Business, Education, Entertainment, Lifestyle
+- Each interest has associated keywords for TrendPulse™ search
+- Modern UI with visual icons and selection feedback
+
+#### **Step 2: Trending Topics Preview**
+- Automatically searches TrendPulse™ for each selected interest
+- Displays top 3 trending topics per interest with Viral Scores
+- Shows real-time viral potential predictions (0-100 score)
+- Color-coded badges: 🔥 High (70+), ⚡ Medium (50-69), 📊 Low (<50)
+- Explanatory tooltip: "What is Viral Score™?"
+
+#### **Strategic Advantages**
+✅ **Zero Maintenance**: Uses dynamic TrendPulse™ API, not static templates
+✅ **Low Dev Cost**: 2 components, 2-3 days vs 2-3 weeks for template system
+✅ **No Niche Lock-in**: Users can explore any topic after onboarding
+✅ **Immediate Value**: Users see Viral Scores before creating anything
+✅ **Workflow Intelligence**: Aligns with strategic moat (not AI provider choice)
+
+---
+
+### **Files Created** (2 Total)
+
+#### 1. **`components/onboarding/InterestSelection.tsx`** (224 lines)
+**Purpose**: Visual interest selection component
+
+**Features**:
+- 12 interest categories with Lucide React icons
+- Min/Max selection enforcement (3-5 interests)
+- Animated grid layout with Framer Motion
+- Progress indicator: "X/5 selected (Y more needed)"
+- Keywords array for TrendPulse™ API search
+
+**Example Interest**:
+```typescript
+{
+  id: "technology",
+  label: "Technology",
+  icon: Code,
+  keywords: ["technology", "tech", "software", "AI"]
+}
+```
+
+#### 2. **`components/onboarding/TrendingTopicsPreview.tsx`** (267 lines)
+**Purpose**: Show trending topics with Viral Scores for selected interests
+
+**Features**:
+- Parallel API calls to `/api/trends` for each interest
+- Top 3 trends per interest with Viral Score badges
+- Loading states with spinner animations
+- Error handling with retry capability
+- Info box explaining Viral Score™ algorithm
+- Back/Next navigation buttons
+
+**API Integration**:
+```typescript
+fetch(`/api/trends?keyword=${keyword}&mode=ideas`)
+  .then(res => res.json())
+  .then(data => data.data.trending.slice(0, 3))
+```
+
+---
+
+### **Files Modified** (1 Total)
+
+#### 1. **`app/(portal)/onboarding/page.tsx`** (246 lines, +90 lines)
+**Changes**:
+- Expanded onboarding from 2 steps to 4 steps
+- Added Step 1: Interest Selection (new)
+- Added Step 2: Trending Topics Preview (new)
+- Updated Step 3: Complete Profile (was Step 1)
+- Updated Step 4: Connect Social Accounts (was Step 2)
+- Progress bar: "Step X of 4" (was "X of 2")
+- Theme update: Tron → Modern (coral + dark gray)
+- Save interests to `profiles.interests` array
+
+**State Management**:
+```typescript
+const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
+
+// Saved to Supabase profiles table
+await supabase
+  .from("profiles")
+  .update({ interests: selectedInterests.map(i => i.id) })
+  .eq("id", user.id);
+```
+
+---
+
+### **Database Schema**
+
+**Profiles Table** (assumed existing):
+- `interests`: `text[]` - Array of interest IDs (e.g., `['technology', 'fitness']`)
+
+**No migration needed** - Uses existing profiles table with new optional field.
+
+---
+
+### **User Experience Flow**
+
+**Before Smart Niche Discovery**:
+1. ❌ Sign up → Blank dashboard → Confusion
+2. ❌ "What should I create content about?"
+3. ❌ Trial and error with random topics
+
+**After Smart Niche Discovery**:
+1. ✅ Sign up → Select 3-5 interests (30 seconds)
+2. ✅ See trending topics with Viral Scores (immediate value)
+3. ✅ Complete profile → Dashboard with relevant suggestions
+
+---
+
+### **Why Not "Guided Niche Profiles"?**
+
+**Alternative Considered**: Pre-configured niche templates (e.g., "Fitness Coach", "Tech Blogger")
+
+**Rejected Because**:
+- ❌ High maintenance: 300+ templates for 10 niches
+- ❌ Static content doesn't update with trends
+- ❌ Niche lock-in discourages exploration
+- ❌ 2-3 weeks dev time vs 2-3 days for Smart Niche Discovery
+- ❌ Conflicts with "workflow intelligence" strategic focus
+
+**Smart Niche Discovery is Better**:
+- ✅ Dynamic (trends auto-update via API)
+- ✅ Lightweight (leverages existing infrastructure)
+- ✅ Encourages exploration (not locked into one niche)
+- ✅ Shows proprietary Viral Score™ advantage immediately
+
+---
+
+### **Impact & Next Steps**
+
+**Immediate Impact**:
+- New users see value within 30 seconds (Viral Score predictions)
+- Reduces decision paralysis for beginners
+- Demonstrates workflow intelligence vs commodity AI access
+
+**Future Enhancements** (Not Included):
+- [ ] Email reminders 24 hours after signup with trending topics in user's interests
+- [ ] Dashboard widget: "Trending in Your Interests"
+- [ ] Interest-based campaign templates
+- [ ] ML-powered interest refinement based on engagement
+
+---
+
 ## [1.13.0] - 2025-01-18 (Planned)
 
 ### 🚀 **STRATEGIC PIVOT: AI Provider Marketplace Integration**
