@@ -1,3 +1,28 @@
+## [1.12.1] - 2025-01-11
+
+### 🎯 **PWA Manifest Fix**
+
+**Auto-Generated Manifest with SVG Icons**
+
+**Fixed**:
+- 🐛 404 errors for `/icons/icon-192x192.png` and `/icons/icon-512x512.png`
+- 🔧 Removed manual `app/manifest.ts` (modern Next.js approach)
+- 📱 Next.js now auto-generates `manifest.webmanifest` from icon files
+- ✅ Moved `themeColor` from metadata to viewport export (Next.js 15 requirement)
+
+**Added**:
+- ✨ `app/icon.svg` - 512x512 TrendPulse™ branding icon
+- ✨ `app/apple-icon.svg` - 180x180 Apple touch icon
+- 🎨 Theme color properly configured in viewport export
+
+**Technical**:
+- Deleted `app/manifest.ts` (26 lines)
+- Created `app/icon.svg` - Blue gradient background with "TP" branding
+- Created `app/apple-icon.svg` - Apple-optimized touch icon
+- Modified `app/layout.tsx` - Added viewport export with themeColor
+
+---
+
 ## [1.12.0] - 2025-11-03
 
 ### 🎨 **Settings Modal & Theme Preferences**
