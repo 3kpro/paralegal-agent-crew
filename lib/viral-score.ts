@@ -120,6 +120,11 @@ function calculateVolumeScore(volume: number): number {
 function calculateMultiSourceScore(sources: string[]): number {
   const numSources = sources.length;
 
+  // If the only source is Gemini AI, it's a high-quality generated idea.
+  // Give it a baseline score instead of 0.
+  if (numSources === 1 && sources[0] === 'gemini-ai') {
+    return 15; // Baseline score for AI-generated ideas (out of 30)
+  }
   if (numSources >= 4) return 30;
   if (numSources === 3) return 20;
   if (numSources === 2) return 10;
