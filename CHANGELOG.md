@@ -197,6 +197,345 @@ After:  65/100 🔥 High   (Volume 25 + Source 15 + Specificity 20 + Fresh 5)
 
 ---
 
+## [1.11.0] - 2025-11-04
+
+### 🤖 **FEEDBACK TRACKING SYSTEM - Phase 2 ML Training Infrastructure**
+
+**Two-Phase Strategy for Viral Score™ Evolution: Heuristic → Machine Learning**
+
+**Problem**: The heuristic Viral Score™ algorithm (4-factor scoring) provides immediate value but lacks real-world validation. To improve prediction accuracy, we need to collect actual engagement data and train a machine learning model.
+
+**Solution**: Built a complete feedback tracking system that automatically collects viral score predictions at publish time and tracks actual engagement metrics, creating a dataset for future ML model training.
+
+---
+
+### **System Architecture**
+
+#### **Two-Phase ML Strategy**
+
+**Phase 1 (Current - v1.11.0)**:
+- Heuristic algorithm calculates viral scores (Volume, Multi-source, Specificity, Freshness)
+- Automatic tracking records predictions when content is published
+- Collects real-world engagement data (likes, shares, comments, views)
+- Builds training dataset for Phase 2
+
+**Phase 2 (Future - Months 3-9)**:
+- Train RandomForest regression model on 100+ performance records
+- Deploy ML model to Vertex AI endpoint (see [AI_INFRASTRUCTURE_ROADMAP.md](docs/AI_INFRASTRUCTURE_ROADMAP.md))
+- A/B test ML predictions vs heuristic algorithm
+- Replace heuristic when ML proves superior accuracy
+
+---
+
+### **Files Created (11 Total)**
+
+#### 1. **Database Migration** - `supabase/migrations/009_viral_score_feedback.sql` (421 lines)
+
+**Core Components**:
+- **Table**: `content_performance` (30+ columns)
+  - Stores predicted viral scores, actual engagement metrics, training data flags
+  - Supports 5 platforms (Twitter, LinkedIn, Facebook, Instagram, TikTok)
+  - Auto-calculated fields: `total_engagement`, `viral_score_actual`, `prediction_accuracy`
+
+- **Functions** (3 total):
+  - `calculate_total_engagement()` - Sums engagement across all platforms
+  - `calculate_actual_viral_score()` - Logarithmic mapping (0-100K engagement → 0-100 score)
+  - `update_content_performance_metrics()` - Trigger function that auto-calculates on INSERT/UPDATE
+
+- **Views** (2 total):
+  - `ml_training_data` - Pre-filtered, ML-ready training records
+  - `viral_score_analytics` - Aggregated prediction accuracy statistics
+
+- **Security**: 3 Row-Level Security (RLS) policies for user data isolation
+
+**Status**: ✅ Migration successful, test insert verified all auto-calculations working
+
+#### 2. **TypeScript Types** - `types/feedback.ts` (273 lines)
+
+**Interfaces**:
+- Platform-specific engagement types (TwitterEngagement, LinkedInEngagement, etc.)
+- `ContentPerformance` - Main tracking interface
+- `RecordPerformanceRequest/Response` - API contracts
+- `AnalyticsSummary` - Dashboard statistics
+- `MLTrainingRecord` - ML export format
+
+#### 3. **Utility Functions** - `lib/feedback-tracking.ts` (471 lines)
+
+**Core Functions**:
+```typescript
+calculateTotalEngagement(twitter?, linkedin?, ...) → number
+calculateActualViralScore(totalEngagement) → number (0-100)
+calculatePredictionAccuracy(predicted, actual) → number (0-100)
+extractMLFeatures(record) → MLFeatures
+assessTrainingDataQuality(record) → 'high' | 'medium' | 'low'
+exportToCSV(records) → string
+exportToJSON(records) → string
+```
+
+**Scoring Logic**:
+- Logarithmic scaling: 0-100 → 0-20pts, 100-1K → 20-40pts, 1K-10K → 40-70pts, 10K+ → 70-100pts
+- Quality thresholds: High (1K+ engagement), Medium (100-999), Low (<100)
+
+#### 4-7. **API Endpoints** (4 routes)
+
+**`app/api/feedback/record/route.ts`** - Record initial prediction (POST)
+- Called automatically when content is published
+- Records viral score, predicted factors, platforms, content
+- Non-blocking (publish succeeds even if tracking fails)
+
+**`app/api/feedback/update/route.ts`** - Update with actual engagement (PUT)
+- Called 24-48 hours after publishing (manual or automated)
+- Triggers auto-calculation of actual scores and accuracy
+- Flags record as training data when quality threshold met
+
+**`app/api/feedback/analytics/route.ts`** - Get prediction statistics (GET)
+- Returns total predictions, average accuracy, training data count
+- Powers the analytics dashboard
+
+**`app/api/feedback/export-ml/route.ts`** - Export training data (GET)
+- Supports CSV (scikit-learn) and JSON formats
+- Quality filters: high/medium/all
+- Includes feature engineering for ML training
+
+#### 8. **Analytics Component** - `components/ViralScoreAnalytics.tsx` (254 lines)
+
+**Features**:
+- Real-time prediction accuracy dashboard
+- Training data readiness indicator (100+ records needed)
+- One-click CSV/JSON export
+- Phase 2 ML readiness banner
+- Visual progress tracking
+
+**Integration**: Added to `/analytics` page (lines 91-99)
+
+#### 9-11. **Documentation** (3 comprehensive guides)
+
+- **`docs/FEEDBACK_TRACKING_SYSTEM.md`** (390 lines) - Complete system documentation
+- **`docs/QUICK_INTEGRATION_GUIDE.md`** (290 lines) - 5-minute setup guide
+- **`docs/SUPABASE_HANDOFF.md`** (229 lines) - Database migration instructions
+
+---
+
+### **Files Modified (3 Total)**
+
+#### 1. **`app/api/publish/route.ts`** (Lines 120-160 added)
+
+**Primary Integration Point** - Tracks all scheduled post publishing
+
+```typescript
+// After successful publish
+try {
+  const { data: campaign } = await supabase
+    .from("campaigns")
+    .select("source_data")
+    .eq("id", post.campaign_id)
+    .single();
+
+  if (campaign?.source_data?.trend?.viralScore) {
+    await supabase.from("content_performance").insert({
+      user_id: user.id,
+      campaign_id: post.campaign_id,
+      trend_title: trend.title,
+      viral_score_predicted: trend.viralScore,
+      viral_potential_predicted: trend.viralPotential,
+      predicted_factors: trend.viralFactors,
+      platforms: [post.platform],
+      published_at: new Date().toISOString(),
+    });
+
+    console.log(`[Feedback Tracking] ✓ Performance tracking enabled for: ${trend.title}`);
+  }
+} catch (trackingError) {
+  console.error("[Feedback Tracking] Failed to record:", trackingError);
+  // Non-blocking: publish still succeeds
+}
+```
+
+#### 2. **`app/api/social/post/route.ts`** (Lines 10, 26, 65-105)
+
+- Added optional `campaignId` parameter to `PostRequest` interface
+- Same tracking logic for direct posts (not scheduled)
+- Only tracks when `campaignId` is provided
+
+#### 3. **`app/(portal)/analytics/page.tsx`** (Lines 7, 91-99)
+
+- Imported `ViralScoreAnalytics` component
+- Added analytics section to dashboard
+- Displays real-time prediction accuracy and ML readiness
+
+---
+
+### **Database Verification (Successful)**
+
+**Test Insert** (User: james@3kpro.services, ID: `a9e1cd34-b05d-478d-9cfa-aff7263f9af1`):
+
+```
+Trend: "AI Content Tools for Creators"
+Predicted Score: 85
+Engagement: 1,679 total (1,250 likes + 340 retweets + 89 replies)
+```
+
+**Auto-Calculated Results**:
+- ✅ `total_engagement`: 1,679
+- ✅ `viral_score_actual`: 50 (logarithmic mapping)
+- ✅ `prediction_accuracy`: 59%
+- ✅ `is_training_data`: true
+- ✅ `training_data_quality`: 'high'
+- ✅ `was_viral`: false (<10K threshold)
+
+**Verification Queries Passed**:
+1. ✅ Table `content_performance` exists
+2. ✅ 3 calculation functions exist
+3. ✅ 2 views (`ml_training_data`, `viral_score_analytics`) exist
+4. ✅ 3 RLS policies active
+
+---
+
+### **How It Works**
+
+#### Phase 1: Record Prediction (Automatic)
+```
+User publishes content → /api/publish or /api/social/post
+  ↓
+Fetch campaign.source_data.trend (contains viral score)
+  ↓
+Insert to content_performance table:
+  - viral_score_predicted (0-100)
+  - viral_potential_predicted (high/medium/low)
+  - predicted_factors (4-factor breakdown)
+  - platforms, content_text, published_at
+  ↓
+✅ Performance tracking enabled
+```
+
+#### Phase 2: Collect Engagement (24-48 hours later)
+```
+Manual entry OR automated API collection
+  ↓
+PUT /api/feedback/update with engagement data
+  ↓
+Database trigger auto-calculates:
+  - total_engagement (sum across platforms)
+  - viral_score_actual (logarithmic mapping)
+  - prediction_accuracy (% difference)
+  - was_viral (>10K engagement flag)
+  - is_training_data (quality threshold)
+  ↓
+✅ Training data ready
+```
+
+#### Phase 3: ML Training (After 100+ records)
+```
+Visit /analytics → Click "Export ML Data"
+  ↓
+Download CSV with 100+ training records
+  ↓
+Train RandomForest regression model (Python/scikit-learn)
+  ↓
+Deploy to Vertex AI endpoint
+  ↓
+A/B test ML vs Heuristic
+  ↓
+✅ Replace heuristic when ML proves superior
+```
+
+---
+
+### **Key Features**
+
+**Automatic Tracking**:
+- Zero manual intervention required for prediction recording
+- Triggers on every publish (scheduled + direct posts)
+- Records viral score from campaign trend data
+- Non-blocking (publish succeeds even if tracking fails)
+- Server-side integration (more reliable than client-side)
+
+**Auto-Calculation**:
+- PostgreSQL triggers calculate all metrics automatically
+- No manual SQL queries needed
+- Total engagement summed across all platforms
+- Viral score mapped to 0-100 scale (logarithmic)
+- Prediction accuracy percentage calculated
+- Training data quality assessed
+
+**Analytics Dashboard**:
+- Real-time statistics at `/analytics`
+- Total predictions count
+- Average prediction accuracy
+- Training data count (toward 100+ goal)
+- Viral content count (>10K engagement)
+- One-click export for ML training
+
+**ML Export**:
+- CSV format for scikit-learn RandomForest
+- JSON format for custom processing
+- Quality filters (high/medium/all)
+- Feature engineering included
+- Ready for Vertex AI training pipeline
+
+---
+
+### **Future Roadmap**
+
+#### Next Steps (Months 1-2)
+1. **Engagement Collection UI** (Manual MVP):
+   - Build form for users to input engagement metrics
+   - Scheduled email reminders 24-48 hours after publishing
+   - Mobile-friendly input interface
+
+2. **Automated Collection** (Months 2-3):
+   - Scheduled cron job to fetch engagement from platform APIs
+   - Requires OAuth tokens with read permissions
+   - Daily batch processing
+
+#### Phase 2: ML Model (Months 3-9)
+1. **Data Collection**: Accumulate 100-1000 training records
+2. **Model Training**: Train RandomForest regression on Vertex AI
+3. **Deployment**: Deploy model to Vertex AI endpoint
+4. **Integration**: Replace heuristic with ML predictions
+5. **A/B Testing**: Compare ML vs heuristic accuracy
+6. **Monitoring**: Track prediction accuracy over time
+
+**See**: [AI_INFRASTRUCTURE_ROADMAP.md](docs/AI_INFRASTRUCTURE_ROADMAP.md) for complete Vertex AI integration strategy
+
+---
+
+### **Impact**
+
+**User Value**:
+- Data-driven validation of viral score predictions
+- Continuous improvement as ML model learns from real outcomes
+- Transparent accuracy metrics build trust
+
+**Technical Value**:
+- Clean architecture for ML pipeline (collect → train → deploy → monitor)
+- Scalable database design (handles millions of records)
+- Production-ready infrastructure for Phase 2
+
+**Business Value**:
+- Proprietary ML model trained on user data (competitive moat)
+- Premium feature opportunity (ML-powered predictions)
+- Data flywheel: more users → more data → better predictions → more users
+
+---
+
+### **Documentation Links**
+
+- **Full System Docs**: [FEEDBACK_TRACKING_SYSTEM.md](docs/FEEDBACK_TRACKING_SYSTEM.md)
+- **Quick Setup Guide**: [QUICK_INTEGRATION_GUIDE.md](docs/QUICK_INTEGRATION_GUIDE.md)
+- **Database Handoff**: [SUPABASE_HANDOFF.md](docs/SUPABASE_HANDOFF.md)
+- **AI Strategy**: [AI_INFRASTRUCTURE_ROADMAP.md](docs/AI_INFRASTRUCTURE_ROADMAP.md)
+
+---
+
+**Status**: ✅ Complete and production-ready
+**Database**: ✅ Migration 009 verified
+**Integration**: ✅ Automatic tracking active
+**Analytics**: ✅ Dashboard live at `/analytics`
+**ML Training**: ⏸️ Awaiting 100+ training records
+
+---
+
 ## [UNRELEASED] - 2025-01-XX
 
 ### 🎨 **VISUAL REDESIGN: Professional Modern Aesthetic**
