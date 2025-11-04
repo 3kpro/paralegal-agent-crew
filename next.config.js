@@ -34,7 +34,7 @@ const nextConfig = {
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' data: https://fonts.gstatic.com https://r2cdn.perplexity.ai",
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://generativelanguage.googleapis.com https://vercel.live wss://ws-us3.pusher.com https://*.vercel.app",
-              "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com",
+              "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://vercel.live",
               "worker-src 'self' blob:",
               "object-src 'none'",
               "base-uri 'self'",
