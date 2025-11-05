@@ -88,14 +88,14 @@ export async function GET(
       facebook:
         `https://www.facebook.com/v18.0/dialog/oauth?` +
         `client_id=${process.env.FACEBOOK_CLIENT_ID}` +
-        `&scope=pages_manage_posts,pages_read_engagement,public_profile` +
+        `&scope=pages_manage_posts,pages_read_engagement,public_profile,instagram_basic,instagram_content_publish` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
       instagram:
-        `https://api.instagram.com/oauth/authorize?` +
+        `https://www.facebook.com/v18.0/dialog/oauth?` +
         `client_id=${process.env.INSTAGRAM_CLIENT_ID}` +
-        `&scope=user_profile,user_media` +
+        `&scope=instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,

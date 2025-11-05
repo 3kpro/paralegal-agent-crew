@@ -81,7 +81,8 @@
       "Bash(nul)",
       "Bash(\"c:\\DEV\\3K-Pro-Services\\landing-page\\docs\\SUPABASE_HANDOFF.md\")",
       "Bash(tasklist /FI \"IMAGENAME eq powershell.exe\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": []

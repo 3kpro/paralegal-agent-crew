@@ -112,10 +112,28 @@ export default function NewCampaignPage() {
     temperature: 0.7,
     tone: "professional",
     length: "standard",
-    targetAudience: "general",
+    targetAudience: "professionals",
     contentFocus: "informative",
     callToAction: "engage",
   });
+
+  // NEW: Multi-select audiences (replaces single targetAudience)
+  const [selectedAudiences, setSelectedAudiences] = useState<string[]>(["professionals"]);
+
+  // NEW: Predicted viral score based on current settings
+  const [predictedViralScore, setPredictedViralScore] = useState(65);
+
+  // NEW: Show AI optimization reasoning
+  const [showOptimizationReason, setShowOptimizationReason] = useState(false);
+  const [optimizationReason, setOptimizationReason] = useState("");
+
+  // NEW: User's saved templates
+  const [savedTemplates, setSavedTemplates] = useState<any[]>([]);
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+
+  // NEW: User's interests from onboarding
+  const [userInterests, setUserInterests] = useState<string[]>([]);
 
   // Post-generation editing
   const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
@@ -159,6 +177,99 @@ export default function NewCampaignPage() {
     ],
     []
   );
+
+  // NEW: Engagement data for tooltips
+  const engagementData = useMemo(() => ({
+    tone: {
+      professional: { boost: "+23%", desc: "Higher B2B engagement, builds authority" },
+      casual: { boost: "+18%", desc: "More relatable, increases shares" },
+      friendly: { boost: "+15%", desc: "Better for community building" },
+    },
+    contentFocus: {
+      informative: { boost: "+20%", desc: "Builds trust, high saves" },
+      discussion: { boost: "+25%", desc: "Drives comments and replies" },
+      opinion: { boost: "+15%", desc: "Polarizing, high engagement" },
+      news: { boost: "+18%", desc: "Timely content performs well" },
+      tips: { boost: "+28%", desc: "Most saved content type" },
+      story: { boost: "+22%", desc: "Emotional connection, high shares" },
+      walkthrough: { boost: "+26%", desc: "Tutorial content, high value" },
+    },
+    targetAudience: {
+      professionals: { boost: "+20%", desc: "LinkedIn best performer" },
+      entrepreneurs: { boost: "+22%", desc: "Action-oriented, high engagement" },
+      creators: { boost: "+24%", desc: "Highly engaged community" },
+      students: { boost: "+16%", desc: "TikTok/Instagram strong" },
+      techies: { boost: "+21%", desc: "Twitter/Reddit strong" },
+      gamers: { boost: "+19%", desc: "Twitch/YouTube crossover" },
+      hobbyists: { boost: "+17%", desc: "Niche communities" },
+    },
+    callToAction: {
+      engage: { boost: "+12%", desc: "Generic but effective" },
+      share: { boost: "+18%", desc: "Viral amplification" },
+      comment: { boost: "+22%", desc: "Algorithm boost from comments" },
+      follow: { boost: "+8%", desc: "Growth-focused" },
+      learn: { boost: "+15%", desc: "Educational content" },
+    },
+  }), []);
+
+  // NEW: Platform presets
+  const platformPresets = useMemo(() => ({
+    twitter: {
+      tone: "casual",
+      length: "short",
+      contentFocus: "discussion",
+      audiences: ["techies", "professionals"],
+      callToAction: "comment",
+      reason: "Twitter thrives on quick, conversational content that sparks discussion. Short threads with debate-worthy takes get the most engagement.",
+    },
+    tiktok: {
+      tone: "friendly",
+      length: "short",
+      contentFocus: "tips",
+      audiences: ["creators", "students"],
+      callToAction: "share",
+      reason: "TikTok's algorithm loves bite-sized tips and tutorials that viewers save and share. Friendly, approachable tone performs best.",
+    },
+    linkedin: {
+      tone: "professional",
+      length: "standard",
+      contentFocus: "informative",
+      audiences: ["professionals", "entrepreneurs"],
+      callToAction: "engage",
+      reason: "LinkedIn rewards thoughtful, professional content that provides value. Standard length posts with clear insights drive engagement.",
+    },
+  }), []);
+
+  // NEW: Trending combinations (simulated - could be fetched from analytics)
+  const trendingCombinations = useMemo(() => [
+    {
+      name: "Viral Thread Formula",
+      tone: "casual",
+      contentFocus: "tips",
+      audiences: ["creators", "entrepreneurs"],
+      callToAction: "share",
+      successRate: "89%",
+      uses: 1247,
+    },
+    {
+      name: "LinkedIn Authority",
+      tone: "professional",
+      contentFocus: "informative",
+      audiences: ["professionals"],
+      callToAction: "engage",
+      successRate: "85%",
+      uses: 892,
+    },
+    {
+      name: "TikTok Viral",
+      tone: "friendly",
+      contentFocus: "story",
+      audiences: ["students", "hobbyists"],
+      callToAction: "share",
+      successRate: "91%",
+      uses: 2103,
+    },
+  ], []);
 
   // Memoized step configuration
   const stepConfig = useMemo<StepConfig[]>(
@@ -214,6 +325,144 @@ export default function NewCampaignPage() {
     setCardDirection(-1);
     setCurrentCard((prev) => Math.max(prev - 1, 1));
   }, []);
+
+  /**
+   * NEW: AI Optimize - Auto-select best settings based on user interests and target platforms
+   */
+  const handleAIOptimize = useCallback(() => {
+    const primaryPlatform = targetPlatforms[0] || "linkedin";
+    const preset = platformPresets[primaryPlatform as keyof typeof platformPresets] || platformPresets.linkedin;
+
+    // Apply preset
+    setControls({
+      ...controls,
+      tone: preset.tone,
+      length: preset.length,
+      contentFocus: preset.contentFocus,
+      callToAction: preset.callToAction,
+    });
+
+    // Set multi-select audiences
+    setSelectedAudiences(preset.audiences);
+
+    // Show reasoning
+    setOptimizationReason(preset.reason);
+    setShowOptimizationReason(true);
+
+    // Calculate and show predicted viral score
+    calculatePredictedViralScore(preset.tone, preset.contentFocus, preset.audiences, preset.callToAction);
+
+    showToast("🎯 Settings optimized for maximum engagement!", "success");
+  }, [targetPlatforms, platformPresets, controls, showToast]);
+
+  /**
+   * NEW: Calculate predicted viral score based on selected settings
+   */
+  const calculatePredictedViralScore = useCallback((
+    tone: string,
+    focus: string,
+    audiences: string[],
+    cta: string
+  ) => {
+    // Base score
+    let score = 50;
+
+    // Add boosts from each setting
+    const toneBoost = parseInt(engagementData.tone[tone as keyof typeof engagementData.tone]?.boost || "0");
+    const focusBoost = parseInt(engagementData.contentFocus[focus as keyof typeof engagementData.contentFocus]?.boost || "0");
+    const ctaBoost = parseInt(engagementData.callToAction[cta as keyof typeof engagementData.callToAction]?.boost || "0");
+
+    // Average audience boost (for multi-select)
+    const audienceBoosts = audiences.map(a =>
+      parseInt(engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost || "0")
+    );
+    const avgAudienceBoost = audienceBoosts.length > 0
+      ? audienceBoosts.reduce((sum, b) => sum + b, 0) / audienceBoosts.length
+      : 0;
+
+    // Calculate total score (max 100)
+    score = Math.min(100, Math.round(score + toneBoost + focusBoost + avgAudienceBoost + ctaBoost));
+
+    setPredictedViralScore(score);
+    return score;
+  }, [engagementData]);
+
+  /**
+   * NEW: Toggle audience selection (multi-select, max 3)
+   */
+  const toggleAudience = useCallback((audience: string) => {
+    setSelectedAudiences(prev => {
+      const isSelected = prev.includes(audience);
+      if (isSelected) {
+        // Remove if already selected
+        return prev.filter(a => a !== audience);
+      } else if (prev.length < 3) {
+        // Add if under limit
+        return [...prev, audience];
+      }
+      return prev; // Already at max
+    });
+  }, []);
+
+  /**
+   * NEW: Apply platform preset
+   */
+  const applyPlatformPreset = useCallback((platform: "twitter" | "tiktok" | "linkedin") => {
+    const preset = platformPresets[platform];
+    setControls({
+      ...controls,
+      tone: preset.tone,
+      length: preset.length,
+      contentFocus: preset.contentFocus,
+      callToAction: preset.callToAction,
+    });
+    setSelectedAudiences(preset.audiences);
+    setOptimizationReason(preset.reason);
+    setShowOptimizationReason(true);
+    calculatePredictedViralScore(preset.tone, preset.contentFocus, preset.audiences, preset.callToAction);
+    showToast(`Applied ${platform.charAt(0).toUpperCase() + platform.slice(1)} best practices`, "success");
+  }, [platformPresets, controls, calculatePredictedViralScore, showToast]);
+
+  /**
+   * NEW: Save current settings as template
+   */
+  const handleSaveTemplate = useCallback(async () => {
+    if (!templateName.trim()) {
+      showToast("Please enter a template name", "error");
+      return;
+    }
+
+    const newTemplate = {
+      name: templateName,
+      tone: controls.tone,
+      length: controls.length,
+      contentFocus: controls.contentFocus,
+      audiences: selectedAudiences,
+      callToAction: controls.callToAction,
+      createdAt: new Date().toISOString(),
+    };
+
+    // In production, save to Supabase user_templates table
+    setSavedTemplates(prev => [...prev, newTemplate]);
+    setShowSaveTemplateDialog(false);
+    setTemplateName("");
+    showToast(`Template "${templateName}" saved!`, "success");
+  }, [templateName, controls, selectedAudiences, showToast]);
+
+  /**
+   * NEW: Apply trending combination
+   */
+  const applyTrendingCombination = useCallback((combo: typeof trendingCombinations[0]) => {
+    setControls({
+      ...controls,
+      tone: combo.tone,
+      contentFocus: combo.contentFocus,
+      callToAction: combo.callToAction,
+    });
+    setSelectedAudiences(combo.audiences);
+    calculatePredictedViralScore(combo.tone, combo.contentFocus, combo.audiences, combo.callToAction);
+    showToast(`Applied "${combo.name}" (${combo.successRate} success rate)`, "success");
+  }, [controls, calculatePredictedViralScore, trendingCombinations, showToast]);
 
   const goToCard = useCallback((cardNum: number) => {
     setCardDirection(cardNum > currentCard ? 1 : -1);
@@ -338,12 +587,123 @@ export default function NewCampaignPage() {
     loadSocialAccounts();
   }, []);
 
+  // NEW: Load user interests from onboarding
+  useEffect(() => {
+    async function loadUserInterests() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("interests")
+            .eq("id", user.id)
+            .single();
+
+          if (profile?.interests) {
+            setUserInterests(profile.interests);
+            // Pre-populate audiences based on interests mapping
+            const mappedAudiences = mapInterestsToAudiences(profile.interests);
+            if (mappedAudiences.length > 0) {
+              setSelectedAudiences(mappedAudiences.slice(0, 2)); // Max 2 by default
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load user interests:", error);
+      }
+    }
+    loadUserInterests();
+  }, [supabase]);
+
+  // NEW: Helper to map interests to audiences
+  const mapInterestsToAudiences = (interests: string[]): string[] => {
+    const mapping: Record<string, string[]> = {
+      technology: ["techies", "professionals"],
+      business: ["entrepreneurs", "professionals"],
+      gaming: ["gamers"],
+      education: ["students", "professionals"],
+      fitness: ["hobbyists"],
+      finance: ["professionals", "entrepreneurs"],
+      travel: ["hobbyists"],
+      food: ["hobbyists"],
+      fashion: ["creators"],
+      entertainment: ["creators"],
+      parenting: ["hobbyists"],
+      lifestyle: ["hobbyists"],
+    };
+
+    const audiences = new Set<string>();
+    interests.forEach(interest => {
+      const mapped = mapping[interest];
+      if (mapped) {
+        mapped.forEach(a => audiences.add(a));
+      }
+    });
+
+    return Array.from(audiences);
+  };
+
+  // NEW: Update viral score when settings change
+  useEffect(() => {
+    if (currentCard === 6) {
+      calculatePredictedViralScore(
+        controls.tone,
+        controls.contentFocus,
+        selectedAudiences,
+        controls.callToAction
+      );
+    }
+  }, [controls.tone, controls.contentFocus, selectedAudiences, controls.callToAction, currentCard, calculatePredictedViralScore]);
+
+  // NEW: Keyboard shortcuts
+  useEffect(() => {
+    if (currentCard !== 6) return; // Only active on customization card
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input
+      if ((e.target as HTMLElement).tagName === 'INPUT' || (e.target as HTMLElement).tagName === 'TEXTAREA') {
+        return;
+      }
+
+      // Tone shortcuts: 1=professional, 2=casual, 3=friendly
+      if (e.key === '1') {
+        setControls(prev => ({ ...prev, tone: 'professional' }));
+      } else if (e.key === '2') {
+        setControls(prev => ({ ...prev, tone: 'casual' }));
+      } else if (e.key === '3') {
+        setControls(prev => ({ ...prev, tone: 'friendly' }));
+      }
+
+      // Length shortcuts: S=short, M=standard, L=long
+      else if (e.key.toLowerCase() === 's') {
+        setControls(prev => ({ ...prev, length: 'short' }));
+      } else if (e.key.toLowerCase() === 'm') {
+        setControls(prev => ({ ...prev, length: 'standard' }));
+      } else if (e.key.toLowerCase() === 'l') {
+        setControls(prev => ({ ...prev, length: 'long' }));
+      }
+
+      // A = AI Optimize
+      else if (e.key.toLowerCase() === 'a') {
+        handleAIOptimize();
+      }
+    };
+
+    window.addEventListener('keypress', handleKeyPress);
+    return () => window.removeEventListener('keypress', handleKeyPress);
+  }, [currentCard, handleAIOptimize]);
+
   /**
    * Generate content for selected platforms
    */
   const generateContent = useCallback(async () => {
     if (selectedTrends.length === 0) {
       showToast("Please select at least one trend before generating content", "error");
+      return;
+    }
+
+    if (selectedAudiences.length === 0) {
+      showToast("Please select at least one target audience", "error");
       return;
     }
 
@@ -357,22 +717,34 @@ export default function NewCampaignPage() {
         temperature: controls.temperature,
         tone: controls.tone,
         length: controls.length,
-        audience: controls.targetAudience, // API expects "audience" not "targetAudience"
+        audience: selectedAudiences[0] || 'professionals', // Use first selected audience
         contentFocus: controls.contentFocus,
         callToAction: controls.callToAction,
       };
       
       console.log('[Generate Content] Request:', requestBody);
-      
+
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
 
-      const data = await response.json();
-      
-      console.log('[Generate Content] Response:', { status: response.status, data });
+      console.log('[Generate Content] Response status:', response.status, response.statusText);
+
+      const responseText = await response.text();
+      console.log('[Generate Content] Response text:', responseText);
+
+      let data;
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error('[Generate Content] Failed to parse response:', parseError);
+        showToast(`Server error: ${response.status} ${response.statusText}`, "error");
+        return;
+      }
+
+      console.log('[Generate Content] Parsed data:', data);
 
       if (data.success) {
         setGeneratedContent(data.content);
@@ -404,7 +776,7 @@ export default function NewCampaignPage() {
     } finally {
       setGeneratingContent(false);
     }
-  }, [selectedTrends, targetPlatforms, aiProvider, controls, showToast, router]);
+  }, [selectedTrends, targetPlatforms, aiProvider, controls, selectedAudiences, showToast, router]);
 
   /**
    * Toggle edit mode for a platform's content
@@ -1170,7 +1542,7 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* CARD 6: Content Controls/Shaping */}
+          {/* CARD 6: Content Controls/Shaping - Enhanced with AI Optimization */}
           {currentCard === 6 && (
             <motion.div
               key="card-6"
@@ -1190,66 +1562,181 @@ export default function NewCampaignPage() {
                 </p>
               </div>
 
-              <div className="max-w-4xl mx-auto">
+              <div className="max-w-5xl mx-auto space-y-6">
+                {/* AI Optimize & Viral Score Section */}
+                <div className="flex items-center gap-4 mb-4">
+                  <motion.button
+                    onClick={handleAIOptimize}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-white shadow-lg flex items-center gap-2"
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    AI Optimize (A)
+                  </motion.button>
+
+                  <div className="flex items-center gap-3 px-4 py-2 bg-tron-dark/70 border border-tron-cyan/30 rounded-xl">
+                    <Flame className={`w-5 h-5 ${predictedViralScore >= 70 ? 'text-green-400' : predictedViralScore >= 50 ? 'text-yellow-400' : 'text-gray-400'}`} />
+                    <div>
+                      <div className="text-xs text-tron-text-muted">Predicted Viral Score</div>
+                      <div className="text-lg font-bold text-tron-text">{predictedViralScore}/100</div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowSaveTemplateDialog(true)}
+                    className="ml-auto px-4 py-2 bg-tron-dark/70 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                  >
+                    Save as Template
+                  </button>
+                </div>
+
+                {/* Platform Presets */}
+                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                  <div className="text-sm text-tron-text-muted mb-3 font-semibold">Quick Presets</div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => applyPlatformPreset("twitter")}
+                      className="px-4 py-2 bg-[#1DA1F2]/20 border border-[#1DA1F2]/30 rounded-lg text-sm text-[#1DA1F2] hover:bg-[#1DA1F2]/30 transition-all flex items-center gap-2"
+                    >
+                      <Twitter className="w-4 h-4" />
+                      Twitter Best Practices
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyPlatformPreset("tiktok")}
+                      className="px-4 py-2 bg-black/20 border border-gray-700 rounded-lg text-sm text-white hover:bg-black/40 transition-all flex items-center gap-2"
+                    >
+                      <Music className="w-4 h-4" />
+                      TikTok Viral
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyPlatformPreset("linkedin")}
+                      className="px-4 py-2 bg-[#0A66C2]/20 border border-[#0A66C2]/30 rounded-lg text-sm text-[#0A66C2] hover:bg-[#0A66C2]/30 transition-all flex items-center gap-2"
+                    >
+                      <Linkedin className="w-4 h-4" />
+                      LinkedIn Authority
+                    </button>
+                  </div>
+                </div>
+
+                {/* Validation Warnings */}
+                {selectedAudiences.length === 0 && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 text-yellow-200 text-sm">
+                    ⚠️ Please select at least one target audience for better results
+                  </div>
+                )}
+
+                {/* Why These Options? */}
+                {showOptimizationReason && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <div className="font-semibold text-purple-200 mb-1">Why These Options?</div>
+                        <div className="text-sm text-purple-100">{optimizationReason}</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowOptimizationReason(false)}
+                        className="ml-auto text-purple-400 hover:text-purple-200"
+                        aria-label="Close optimization explanation"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Left Column */}
                   <div className="space-y-5">
-                    {/* Tone */}
+                    {/* Tone with Tooltips */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Tone</label>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
+                        Tone <span className="text-xs text-tron-text-muted">(Press 1-3)</span>
+                      </label>
                       <div className="grid grid-cols-3 gap-2">
                         {['professional', 'casual', 'friendly'].map((t) => (
-                          <button
-                            key={t}
-                            onClick={() => setControls({ ...controls, tone: t })}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                              controls.tone === t
-                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                            }`}
-                          >
-                            {t.charAt(0).toUpperCase() + t.slice(1)}
-                          </button>
+                          <div key={t} className="group relative">
+                            <button
+                              type="button"
+                              onClick={() => setControls({ ...controls, tone: t })}
+                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                                controls.tone === t
+                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                              }`}
+                            >
+                              {t.charAt(0).toUpperCase() + t.slice(1)}
+                            </button>
+                            {/* Tooltip */}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
+                              <div className="font-semibold text-tron-cyan">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
+                              <div className="text-tron-text-muted">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
 
-                    {/* Length */}
+                    {/* Length Slider */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Content Length</label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {['short', 'standard', 'long'].map((l) => (
-                          <button
-                            key={l}
-                            onClick={() => setControls({ ...controls, length: l })}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                              controls.length === l
-                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                            }`}
-                          >
-                            {l.charAt(0).toUpperCase() + l.slice(1)}
-                          </button>
-                        ))}
+                      <label htmlFor="content-length-slider" className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
+                        Content Length <span className="text-xs text-tron-text-muted">(Press S/M/L)</span>
+                      </label>
+                      <div className="space-y-3">
+                        <input
+                          id="content-length-slider"
+                          type="range"
+                          min="0"
+                          max="2"
+                          step="1"
+                          value={controls.length === 'short' ? 0 : controls.length === 'standard' ? 1 : 2}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value);
+                            setControls({ ...controls, length: val === 0 ? 'short' : val === 1 ? 'standard' : 'long' });
+                          }}
+                          aria-label="Select content length"
+                          className="w-full h-2 bg-tron-dark/50 rounded-lg appearance-none cursor-pointer range-slider"
+                        />
+                        <div className="flex justify-between text-xs text-tron-text-muted">
+                          <span className={controls.length === 'short' ? 'text-tron-cyan font-semibold' : ''}>Short (280 chars)</span>
+                          <span className={controls.length === 'standard' ? 'text-tron-cyan font-semibold' : ''}>Standard (500 chars)</span>
+                          <span className={controls.length === 'long' ? 'text-tron-cyan font-semibold' : ''}>Long (1000+ chars)</span>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Content Focus */}
+                    {/* Content Focus with Tooltips */}
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
                       <div className="grid grid-cols-2 gap-2">
                         {['informative', 'discussion', 'opinion', 'news', 'tips', 'story', 'walkthrough'].map((f) => (
-                          <button
-                            key={f}
-                            onClick={() => setControls({ ...controls, contentFocus: f })}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                              controls.contentFocus === f
-                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                            }`}
-                          >
-                            {f.charAt(0).toUpperCase() + f.slice(1)}
-                          </button>
+                          <div key={f} className="group relative">
+                            <button
+                              type="button"
+                              onClick={() => setControls({ ...controls, contentFocus: f })}
+                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                                controls.contentFocus === f
+                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                              }`}
+                            >
+                              {f.charAt(0).toUpperCase() + f.slice(1)}
+                            </button>
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
+                              <div className="font-semibold text-tron-cyan">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
+                              <div className="text-tron-text-muted">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -1257,46 +1744,99 @@ export default function NewCampaignPage() {
 
                   {/* Right Column */}
                   <div className="space-y-5">
-                    {/* Target Audience */}
+                    {/* Target Audience - Multi-Select (NO "general") */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Target Audience</label>
+                      <label className="block text-tron-text font-semibold mb-2 text-sm">
+                        Target Audience <span className="text-xs text-tron-text-muted">(Select up to 3)</span>
+                      </label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['general', 'professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists'].map((a) => (
-                          <button
-                            key={a}
-                            onClick={() => setControls({ ...controls, targetAudience: a })}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                              controls.targetAudience === a
-                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                            }`}
-                          >
-                            {a.charAt(0).toUpperCase() + a.slice(1)}
-                          </button>
+                        {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists'].map((a) => (
+                          <div key={a} className="group relative">
+                            <button
+                              type="button"
+                              onClick={() => toggleAudience(a)}
+                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 relative ${
+                                selectedAudiences.includes(a)
+                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                              } ${selectedAudiences.length >= 3 && !selectedAudiences.includes(a) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              disabled={selectedAudiences.length >= 3 && !selectedAudiences.includes(a)}
+                            >
+                              {selectedAudiences.includes(a) && (
+                                <Check className="w-4 h-4 absolute left-1 top-1/2 -translate-y-1/2" />
+                              )}
+                              {a.charAt(0).toUpperCase() + a.slice(1)}
+                            </button>
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
+                              <div className="font-semibold text-tron-cyan">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
+                              <div className="text-tron-text-muted">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
+                            </div>
+                          </div>
                         ))}
                       </div>
+                      {selectedAudiences.length > 0 && (
+                        <div className="mt-2 text-xs text-tron-text-muted">
+                          Selected: {selectedAudiences.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}
+                        </div>
+                      )}
                     </div>
 
-                    {/* Call to Action */}
+                    {/* Call to Action with Tooltips (NO "none") */}
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['engage', 'share', 'comment', 'follow', 'learn', 'none'].map((c) => (
-                          <button
-                            key={c}
-                            onClick={() => setControls({ ...controls, callToAction: c })}
-                            className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                              controls.callToAction === c
-                                ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                            }`}
-                          >
-                            {c.charAt(0).toUpperCase() + c.slice(1)}
-                          </button>
+                        {['engage', 'share', 'comment', 'follow', 'learn'].map((c) => (
+                          <div key={c} className="group relative">
+                            <button
+                              type="button"
+                              onClick={() => setControls({ ...controls, callToAction: c })}
+                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
+                                controls.callToAction === c
+                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
+                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
+                              }`}
+                            >
+                              {c.charAt(0).toUpperCase() + c.slice(1)}
+                            </button>
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
+                              <div className="font-semibold text-tron-cyan">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
+                              <div className="text-tron-text-muted">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
                   </div>
+                </div>
+
+                {/* Trending This Week */}
+                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="w-4 h-4 text-tron-cyan" />
+                    <div className="text-sm text-tron-text font-semibold">Trending This Week</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {trendingCombinations.map((combo) => (
+                      <button
+                        type="button"
+                        key={combo.name}
+                        onClick={() => applyTrendingCombination(combo)}
+                        className="text-left px-3 py-2 bg-tron-dark/50 border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/50 transition-all"
+                      >
+                        <div className="text-xs font-semibold text-tron-text mb-1">{combo.name}</div>
+                        <div className="flex items-center gap-2 text-xs text-tron-text-muted">
+                          <span className="text-green-400">{combo.successRate}</span>
+                          <span>•</span>
+                          <span>{combo.uses} uses</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Keyboard Shortcuts Hint */}
+                <div className="text-center text-xs text-tron-text-muted">
+                  💡 Tip: Use keyboard shortcuts - 1-3 for tone, S/M/L for length, A for AI optimize
                 </div>
 
                 {/* Navigation */}
@@ -1323,6 +1863,45 @@ export default function NewCampaignPage() {
                   </motion.button>
                 </div>
               </div>
+
+              {/* Save Template Dialog */}
+              {showSaveTemplateDialog && (
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50" onClick={() => setShowSaveTemplateDialog(false)}>
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-tron-dark border-2 border-tron-cyan/30 rounded-2xl p-6 max-w-md w-full mx-4"
+                  >
+                    <h3 className="text-xl font-bold text-tron-text mb-4">Save as Template</h3>
+                    <input
+                      type="text"
+                      value={templateName}
+                      onChange={(e) => setTemplateName(e.target.value)}
+                      placeholder="Enter template name..."
+                      className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text outline-none focus:border-tron-cyan/50 mb-4"
+                      autoFocus
+                      onKeyPress={(e) => e.key === 'Enter' && handleSaveTemplate()}
+                    />
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowSaveTemplateDialog(false)}
+                        className="flex-1 px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text hover:bg-tron-cyan/10"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveTemplate}
+                        className="flex-1 px-4 py-2 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-lg text-white font-semibold"
+                      >
+                        Save Template
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
             </motion.div>
           )}
 

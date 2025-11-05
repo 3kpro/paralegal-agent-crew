@@ -58,8 +58,11 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 1. Click **Create app**
 2. Fill in app details
 3. Go to **Auth** tab
-4. Add Redirect URL: `https://YOUR_DOMAIN/api/auth/callback/linkedin`
-   - Example: `https://ccai.3kpro.services/api/auth/callback/linkedin`
+4. Add Redirect URLs (add BOTH):
+   ```
+   https://trendpulse.3kpro.services/api/auth/callback/linkedin
+   https://ccai.3kpro.services/api/auth/callback/linkedin
+   ```
 5. Request access to **Sign In with LinkedIn** and **Share on LinkedIn** products
 6. **Save credentials:**
    - Client ID
@@ -80,20 +83,29 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 **Steps:**
 1. Click **Create App** → Choose **Business** type
 2. Add **Facebook Login** product
-3. Go to **Facebook Login** → **Settings**
-4. Add Valid OAuth Redirect URI: `https://YOUR_DOMAIN/api/auth/callback/facebook`
-   - Example: `https://ccai.3kpro.services/api/auth/callback/facebook`
+3. Go to **Settings → Basic**
+   - Add **App Domains**: 
+     - `trendpulse.3kpro.services`
+     - `ccai.3kpro.services`
+   - Add **Privacy Policy URL**: `https://trendpulse.3kpro.services/privacy`
+   - Add **Terms of Service URL**: `https://trendpulse.3kpro.services/terms`
+4. Go to **Facebook Login → Settings**
+   - Add Valid OAuth Redirect URIs:
+     ```
+     https://trendpulse.3kpro.services/api/auth/callback/facebook
+     https://ccai.3kpro.services/api/auth/callback/facebook
+     https://trendpulse.3kpro.services/api/auth/callback/instagram
+     https://ccai.3kpro.services/api/auth/callback/instagram
+     ```
 5. Add **Instagram Basic Display** product (for Instagram)
-6. Add Instagram Redirect URI: `https://YOUR_DOMAIN/api/auth/callback/instagram`
-   - Example: `https://ccai.3kpro.services/api/auth/callback/instagram`
+6. **Request Permissions** (App Review):
+   - `pages_manage_posts` (Facebook posting)
+   - `pages_read_engagement` (Facebook insights)
+   - `instagram_basic` (Instagram profile)
+   - `instagram_content_publish` (Instagram posting)
 7. **Save credentials:**
-   - App ID (use as FACEBOOK_CLIENT_ID)
-   - App Secret (use as FACEBOOK_CLIENT_SECRET)
-
-**Permissions needed:**
-- `pages_manage_posts` (Facebook posting)
-- `instagram_basic` (Instagram profile)
-- `instagram_content_publish` (Instagram posting)
+   - App ID (use as FACEBOOK_CLIENT_ID and INSTAGRAM_CLIENT_ID)
+   - App Secret (use as FACEBOOK_CLIENT_SECRET and INSTAGRAM_CLIENT_SECRET)
 
 ---
 
