@@ -376,7 +376,12 @@ export default function NewCampaignPage() {
         showToast("No AI tools configured. Redirecting to Settings...", "error");
         setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
       } else {
-        showToast(`Generation failed: ${data.error}`, "error");
+        // Show detailed validation errors if available
+        const errorMessage = data.details 
+          ? `Validation Error: ${data.details.map((d: any) => `${d.field}: ${d.message}`).join(', ')}`
+          : `Generation failed: ${data.error}`;
+        console.error('Generation error details:', data);
+        showToast(errorMessage, "error");
       }
     } catch (error) {
       console.error("Failed to generate content:", error);
