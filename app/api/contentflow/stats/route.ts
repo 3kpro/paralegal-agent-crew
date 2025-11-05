@@ -137,7 +137,7 @@ function generateDailyActivity(posts: any[], startDate: Date, endDate: Date) {
     const date = post.published_at || post.created_at;
     if (date) {
       const dateKey = new Date(date).toISOString().split("T")[0];
-      if (dailyData.hasOwnProperty(dateKey)) {
+      if (Object.prototype.hasOwnProperty.call(dailyData, dateKey)) {
         dailyData[dateKey]++;
       }
     }

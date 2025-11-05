@@ -54,13 +54,13 @@ interface HealthCheck {
   };
 }
 
-let serviceStartTime = Date.now();
+const serviceStartTime = Date.now();
 
 export async function GET(): Promise<NextResponse> {
   const isProduction = process.env.NODE_ENV === "production";
   const isVercel = process.env.VERCEL === "1";
 
-  const serviceStartTime = Date.now();
+  const currentTime = Date.now();
 
   const healthCheck: HealthCheck = {
     status: 'healthy',
@@ -76,7 +76,7 @@ export async function GET(): Promise<NextResponse> {
         lastChecked: new Date().toISOString(),
       },
     },
-    uptime: Date.now() - serviceStartTime,
+    uptime: currentTime - serviceStartTime,
     memory: {
       used: process.memoryUsage().heapUsed / 1024 / 1024, // MB
       total: process.memoryUsage().heapTotal / 1024 / 1024, // MB

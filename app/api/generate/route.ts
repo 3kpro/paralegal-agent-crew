@@ -112,7 +112,7 @@ export async function POST(request: Request) {
 
       try {
         switch (provider.provider_key) {
-          case "openai":
+          case "openai": {
             const openaiResult = await generateWithOpenAI(
               apiKey!,
               topic,
@@ -126,8 +126,9 @@ export async function POST(request: Request) {
             tokensUsed = openaiResult.tokensUsed;
             estimatedCost = openaiResult.estimatedCost;
             break;
+          }
 
-          case "anthropic":
+          case "anthropic": {
             const claudeResult = await generateWithClaude(
               apiKey!,
               topic,
@@ -141,8 +142,9 @@ export async function POST(request: Request) {
             tokensUsed = claudeResult.tokensUsed;
             estimatedCost = claudeResult.estimatedCost;
             break;
+          }
 
-          case "google":
+          case "google": {
             const geminiResult = await generateWithGemini(
               apiKey!,
               topic,
@@ -159,8 +161,9 @@ export async function POST(request: Request) {
             tokensUsed = geminiResult.tokensUsed;
             estimatedCost = geminiResult.estimatedCost;
             break;
+          }
 
-          case "lmstudio":
+          case "lmstudio": {
             const lmResult = await generateWithLMStudio(
               topic,
               formats,
@@ -175,6 +178,7 @@ export async function POST(request: Request) {
             tokensUsed = lmResult.tokensUsed;
             estimatedCost = 0; // Local is free
             break;
+          }
 
           default:
             throw new Error(
@@ -706,7 +710,7 @@ function formatContent(
   const cleaned = generatedText.trim();
 
   switch (format) {
-    case "twitter":
+    case "twitter": {
       const hashtags = extractHashtags(cleaned);
       return {
         content: cleaned,
@@ -714,6 +718,7 @@ function formatContent(
         hashtags,
         platform: "twitter",
       };
+    }
 
     case "linkedin":
       return {
@@ -722,7 +727,7 @@ function formatContent(
         platform: "linkedin",
       };
 
-    case "email":
+    case "email": {
       const subjectMatch = cleaned.match(/SUBJECT:\s*(.+?)(?:\n|$)/i);
       const bodyMatch = cleaned.match(/BODY:\s*([\s\S]+)/i);
       return {
@@ -730,6 +735,7 @@ function formatContent(
         content: bodyMatch ? bodyMatch[1].trim() : cleaned,
         platform: "email",
       };
+    }
 
     case "facebook":
       return {
