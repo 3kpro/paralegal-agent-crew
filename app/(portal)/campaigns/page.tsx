@@ -10,12 +10,16 @@ export default async function CampaignsPage() {
 
   if (!user) redirect("/login");
 
-  // Get user's campaigns
-  const { data: campaigns } = await supabase
+  // Get user's campaigns (all, including archived for filtering)
+  const { data: campaigns, error } = await supabase
     .from("campaigns")
     .select("*")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching campaigns:", error);
+  }
 
   return <CampaignsClient campaigns={campaigns || []} />;
 }
