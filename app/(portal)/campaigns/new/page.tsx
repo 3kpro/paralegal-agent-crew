@@ -2130,12 +2130,13 @@ export default function NewCampaignPage() {
                                 Post
                               </motion.button>
                               <motion.button
-                                onClick={() => router.push("/campaigns")}
-                                whileHover={{ scale: 1.02 }}
+                                onClick={() => saveCampaign(false)}
+                                disabled={loading}
+                                whileHover={{ scale: loading ? 1 : 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="px-6 py-2.5 bg-tron-dark/50 border border-tron-magenta/30 rounded-lg font-semibold text-tron-magenta hover:bg-tron-magenta/10 text-sm"
+                                className="px-6 py-2.5 bg-tron-dark/50 border border-tron-magenta/30 rounded-lg font-semibold text-tron-magenta hover:bg-tron-magenta/10 text-sm disabled:opacity-50"
                               >
-                                Save
+                                {loading ? "Saving..." : "Save"}
                               </motion.button>
                             </div>
                           </div>
