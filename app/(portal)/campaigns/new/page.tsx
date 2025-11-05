@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Fireworks from "@/components/Fireworks";
 import {
   Twitter,
@@ -59,8 +59,14 @@ interface ContentData {
 
 export default function NewCampaignPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
-  
+
+  // Edit mode detection
+  const editId = searchParams.get('edit');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [loadingCampaignData, setLoadingCampaignData] = useState(false);
+
   // Card-based navigation state
   const [currentCard, setCurrentCard] = useState(1);
   const [cardDirection, setCardDirection] = useState(1); // 1 for forward, -1 for back
@@ -128,12 +134,12 @@ export default function NewCampaignPage() {
   const [optimizationReason, setOptimizationReason] = useState("");
 
   // NEW: User's saved templates
-  const [savedTemplates, setSavedTemplates] = useState<any[]>([]);
+  const [_savedTemplates, setSavedTemplates] = useState<any[]>([]);
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
   const [templateName, setTemplateName] = useState("");
 
   // NEW: User's interests from onboarding
-  const [userInterests, setUserInterests] = useState<string[]>([]);
+  const [_userInterests, setUserInterests] = useState<string[]>([]);
 
   // Post-generation editing
   const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
@@ -615,6 +621,68 @@ export default function NewCampaignPage() {
     loadUserInterests();
   }, [supabase]);
 
+  // Load existing campaign data when in edit mode
+  useEffect(() => {
+    if (!editId) return;
+
+    async function loadCampaignData() {
+      setLoadingCampaignData(true);
+      setIsEditMode(true);
+
+      try {
+        const { data: campaign, error } = await supabase
+          .from("campaigns")
+          .select("*")
+          .eq("id", editId)
+          .single();
+
+        if (error) throw error;
+
+        if (campaign) {
+          // Populate basic info (Card 1)
+          setCampaignName(campaign.name || "");
+          setTargetPlatforms(campaign.target_platforms || []);
+
+          // Populate trends (Card 3)
+          if (campaign.selected_trends) {
+            setSelectedTrends(campaign.selected_trends);
+          }
+
+          // Populate content controls (Card 6)
+          if (campaign.content_settings) {
+            const settings = campaign.content_settings;
+            setControls({
+              temperature: settings.temperature || 0.7,
+              tone: settings.tone || "professional",
+              length: settings.length || "standard",
+              targetAudience: settings.targetAudience || "professionals",
+              contentFocus: settings.contentFocus || "informative",
+              callToAction: settings.callToAction || "engage",
+            });
+
+            if (settings.selectedAudiences) {
+              setSelectedAudiences(settings.selectedAudiences);
+            }
+          }
+
+          // Load generated content if exists
+          if (campaign.generated_content) {
+            setGeneratedContent(campaign.generated_content);
+          }
+
+          showToast("Campaign loaded successfully", "success");
+        }
+      } catch (error) {
+        console.error("Failed to load campaign:", error);
+        showToast("Failed to load campaign data", "error");
+      } finally {
+        setLoadingCampaignData(false);
+      }
+    }
+
+    loadCampaignData();
+  }, [editId, supabase, showToast]);
+
   // NEW: Helper to map interests to audiences
   const mapInterestsToAudiences = (interests: string[]): string[] => {
     const mapping: Record<string, string[]> = {
@@ -709,14 +777,21 @@ export default function NewCampaignPage() {
 
     setGeneratingContent(true);
     try {
+      // Map UI length values to API format
+      const lengthMapping: Record<string, string> = {
+        'short': 'concise',
+        'standard': 'standard',
+        'long': 'detailed',
+      };
+
       const requestBody = {
         topic: selectedTrends.map(t => t.title).join(", "),
         formats: targetPlatforms,
         preferredProvider: aiProvider,
-        // Pass content controls to API (map targetAudience to audience for API)
+        // Pass content controls to API (map values to API format)
         temperature: controls.temperature,
         tone: controls.tone,
-        length: controls.length,
+        length: lengthMapping[controls.length] || 'standard', // Map: short→concise, long→detailed
         audience: selectedAudiences[0] || 'professionals', // Use first selected audience
         contentFocus: controls.contentFocus,
         callToAction: controls.callToAction,
@@ -914,11 +989,29 @@ export default function NewCampaignPage() {
           tone: controls.tone,
         };
 
-        const { data: campaign, error: campaignError } = await supabase
-          .from("campaigns")
-          .insert(campaignPayload)
-          .select()
-          .single();
+        let campaign;
+        let campaignError;
+
+        if (isEditMode && editId) {
+          // UPDATE existing campaign
+          const { data, error } = await supabase
+            .from("campaigns")
+            .update(campaignPayload)
+            .eq("id", editId)
+            .select()
+            .single();
+          campaign = data;
+          campaignError = error;
+        } else {
+          // INSERT new campaign
+          const { data, error } = await supabase
+            .from("campaigns")
+            .insert(campaignPayload)
+            .select()
+            .single();
+          campaign = data;
+          campaignError = error;
+        }
 
         if (campaignError) throw campaignError;
 
@@ -953,6 +1046,15 @@ export default function NewCampaignPage() {
         }
 
         if (postsToInsert.length > 0) {
+          // If editing, delete old posts first
+          if (isEditMode && editId) {
+            await supabase
+              .from("scheduled_posts")
+              .delete()
+              .eq("campaign_id", editId);
+          }
+
+          // Insert new/updated posts
           const { error: postsError } = await supabase
             .from("scheduled_posts")
             .insert(postsToInsert);
@@ -961,9 +1063,13 @@ export default function NewCampaignPage() {
         }
 
         showToast(
-          publishNow
-            ? "Campaign scheduled successfully!"
-            : "Campaign saved as draft!",
+          isEditMode
+            ? (publishNow
+                ? "Campaign updated and scheduled!"
+                : "Campaign updated successfully!")
+            : (publishNow
+                ? "Campaign scheduled successfully!"
+                : "Campaign saved as draft!"),
           "success"
         );
 
@@ -1000,11 +1106,25 @@ export default function NewCampaignPage() {
     ]
   );
 
+  // Show loading screen while loading campaign data in edit mode
+  if (loadingCampaignData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4">
+            <AnimatedLoader />
+          </div>
+          <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Fireworks celebration effect */}
       <Fireworks active={showFireworks} duration={5000} />
-      
+
       {/* Hide the default sidebar on this page */}
       <style jsx global>{`
         aside.w-64 {
