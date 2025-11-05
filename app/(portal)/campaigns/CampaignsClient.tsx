@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Trash2, Plus } from "lucide-react";
+import { Check, Trash2, Plus, Archive } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CampaignActions } from "@/components/CampaignActions";
 
@@ -14,6 +14,7 @@ interface Campaign {
   status: string;
   created_at: string;
   target_platforms?: string[];
+  archived?: boolean;
 }
 
 interface CampaignsClientProps {
@@ -23,6 +24,7 @@ interface CampaignsClientProps {
 export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
   const router = useRouter();
   const supabase = createClient();
+  const [showArchived, setShowArchived] = useState(false);
   const [selectedCampaigns, setSelectedCampaigns] = useState<Set<string>>(
     new Set(),
   );
@@ -32,6 +34,15 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
     message: string;
     type: "success" | "error";
   }>({ show: false, message: "", type: "success" });
+
+  // Filter campaigns based on archived toggle
+  const filteredCampaigns = useMemo(() => {
+    return campaigns.filter((c) =>
+      showArchived ? c.archived === true : c.archived !== true
+    );
+  }, [campaigns, showArchived]);
+
+  const archivedCount = campaigns.filter((c) => c.archived === true).length;
 
   const showToast = (
     message: string,
@@ -45,10 +56,10 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
   };
 
   const toggleSelectAll = () => {
-    if (selectedCampaigns.size === campaigns.length) {
+    if (selectedCampaigns.size === filteredCampaigns.length) {
       setSelectedCampaigns(new Set());
     } else {
-      setSelectedCampaigns(new Set(campaigns.map((c) => c.id)));
+      setSelectedCampaigns(new Set(filteredCampaigns.map((c) => c.id)));
     }
   };
 
@@ -93,7 +104,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
   };
 
   const allSelected =
-    campaigns.length > 0 && selectedCampaigns.size === campaigns.length;
+    filteredCampaigns.length > 0 && selectedCampaigns.size === filteredCampaigns.length;
   const someSelected = selectedCampaigns.size > 0 && !allSelected;
 
   return (
@@ -127,7 +138,9 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
 
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-white">My Campaigns</h1>
+          <h1 className="text-3xl font-bold text-white">
+            {showArchived ? "Archived Campaigns" : "My Campaigns"}
+          </h1>
           {selectedCampaigns.size > 0 && (
             <motion.button
               initial={{ opacity: 0, scale: 0.9 }}
@@ -144,16 +157,28 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
             </motion.button>
           )}
         </div>
-        <Link
-          href="/campaigns/new"
-          className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
-        >
-          <Plus className="w-6 h-6" />
-          New Campaign
-        </Link>
+        <div className="flex items-center gap-4">
+          {archivedCount > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowArchived(!showArchived)}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-900/20 border-2 border-amber-500/50 text-amber-400 hover:bg-amber-900/30 font-semibold rounded-lg transition-colors"
+            >
+              <Archive className="w-4 h-4" />
+              {showArchived ? "Show Active" : `Show Archived (${archivedCount})`}
+            </button>
+          )}
+          <Link
+            href="/campaigns/new"
+            className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
+          >
+            <Plus className="w-6 h-6" />
+            New Campaign
+          </Link>
+        </div>
       </div>
 
-      {campaigns && campaigns.length > 0 ? (
+      {filteredCampaigns && filteredCampaigns.length > 0 ? (
         <div className="bg-[#343a40] rounded-xl border-2 border-gray-700/50">
           <table className="w-full">
             <thead className="border-b border-gray-700/50">
@@ -191,7 +216,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
               </tr>
             </thead>
             <tbody>
-              {campaigns.map((campaign) => (
+              {filteredCampaigns.map((campaign) => (
                 <tr
                   key={campaign.id}
                   className={`border-b border-gray-700/50 last:border-0 transition-colors ${
@@ -236,6 +261,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
                       <CampaignActions
                         campaignId={campaign.id}
                         campaignName={campaign.name}
+                        archived={campaign.archived}
                       />
                     </div>
                   </td>
@@ -246,19 +272,23 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
         </div>
       ) : (
         <div className="bg-[#343a40] rounded-xl p-12 text-center border-2 border-gray-700/50">
-          <div className="text-6xl mb-4">📝</div>
+          <div className="text-6xl mb-4">{showArchived ? "📦" : "📝"}</div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            No campaigns yet
+            {showArchived ? "No archived campaigns" : "No campaigns yet"}
           </h3>
           <p className="text-gray-300 mb-6">
-            Create your first campaign to get started
+            {showArchived
+              ? "Archived campaigns will appear here"
+              : "Create your first campaign to get started"}
           </p>
-          <Link
-            href="/campaigns/new"
-            className="inline-block px-6 py-3 bg-coral-500 text-white hover:bg-coral-600 font-semibold rounded-lg transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
-          >
-            Create First Campaign
-          </Link>
+          {!showArchived && (
+            <Link
+              href="/campaigns/new"
+              className="inline-block px-6 py-3 bg-coral-500 text-white hover:bg-coral-600 font-semibold rounded-lg transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
+            >
+              Create First Campaign
+            </Link>
+          )}
         </div>
       )}
     </div>

@@ -1,5 +1,139 @@
 ## [UNRELEASED] - 2025-11-05
 
+### 📦 **CAMPAIGN ARCHIVE: Soft Delete with Archive/Restore Functionality**
+
+**Implemented Non-Destructive Campaign Management**
+
+**Problem**: Users had only hard delete option for campaigns. No way to hide old campaigns without permanently losing data. Cluttered workspace with completed/old campaigns.
+
+**Solution**: Added archive functionality with soft delete pattern. Users can archive campaigns to hide them from main view while preserving all data, and restore them later if needed.
+
+---
+
+#### **Database Migration** ([supabase/migrations/011_add_campaign_archive.sql](supabase/migrations/011_add_campaign_archive.sql))
+
+**Schema Changes**:
+- Added `archived` boolean column to campaigns table (default: false)
+- Created composite index: `idx_campaigns_archived (user_id, archived, created_at DESC)`
+- Created partial index for archived-only queries: `idx_campaigns_archived_only`
+- Added column documentation comment
+
+**Performance Optimization**:
+- Composite index enables fast filtering of active vs archived campaigns
+- Partial index optimizes "show archived" view queries
+- Proper index ordering (user_id → archived → created_at) for efficient WHERE + ORDER BY
+
+---
+
+#### **API Endpoint** ([app/api/campaigns/[id]/route.ts](app/api/campaigns/[id]/route.ts) lines 10-66)
+
+**PATCH /api/campaigns/[id]**:
+- Accepts `{ action: "archive" | "restore" }`
+- Updates `archived` boolean based on action
+- Returns updated archived status in response
+- User authorization check (eq("user_id", user.id))
+- Proper error handling and logging
+
+**Example Usage**:
+```typescript
+await fetch(`/api/campaigns/${id}`, {
+  method: "PATCH",
+  body: JSON.stringify({ action: "archive" })
+});
+```
+
+---
+
+#### **UI Components**
+
+**CampaignActions Component** ([components/CampaignActions.tsx](components/CampaignActions.tsx)):
+- Added `archived` prop (optional, default: false)
+- New `handleArchiveToggle` function with confirmation dialog
+- Archive button (amber) with Archive icon for active campaigns
+- Restore button (amber) with ArchiveRestore icon for archived campaigns
+- Hide Edit button for archived campaigns (prevents editing archived content)
+- Disabled state during archive/restore operations
+- User-friendly confirmation messages
+
+**CampaignsClient Component** ([app/(portal)/campaigns/CampaignsClient.tsx](app/(portal)/campaigns/CampaignsClient.tsx)):
+- Added `showArchived` state toggle
+- Implemented `filteredCampaigns` using useMemo for performance
+- Archive count badge showing number of archived campaigns
+- "Show Archived (N)" / "Show Active" toggle button
+- Dynamic page title: "My Campaigns" vs "Archived Campaigns"
+- Updated empty states for both active and archived views
+- Pass `archived` prop to CampaignActions component
+- Archive toggle button only shows when archived campaigns exist
+
+---
+
+### **User Experience Flow**
+
+**Archive Flow**:
+1. User clicks Archive icon (amber) on campaign
+2. Confirmation dialog: "Archive 'Campaign Name'? You can restore it later..."
+3. Campaign moves to archived view (hidden from main list)
+4. Success: Page refreshes, campaign no longer in active list
+
+**Restore Flow**:
+1. User clicks "Show Archived (N)" button
+2. View switches to archived campaigns
+3. User clicks Restore icon on archived campaign
+4. Confirmation dialog: "Restore 'Campaign Name' to active campaigns?"
+5. Campaign restored to active campaigns list
+
+**Visual Indicators**:
+- Archive button: Amber color (distinct from delete red and edit cyan)
+- Archive icon (folder with arrow down) vs Restore icon (folder with arrow up)
+- Count badge shows number of archived items
+- Empty state messages differ for active vs archived views
+
+---
+
+### **Strategic Benefits**
+
+✅ **Non-Destructive**: Users can hide campaigns without losing data
+✅ **Clean Workspace**: Separates active and completed campaigns
+✅ **Compliance**: Archived campaigns retained for records/compliance
+✅ **Undo Safety**: Easy to restore if archived by mistake
+✅ **Performance**: Indexes ensure fast queries even with many archived items
+✅ **User Expectation**: Common pattern in email, task managers, etc.
+
+---
+
+### **Files Modified**
+
+1. **`supabase/migrations/011_add_campaign_archive.sql`** (17 lines) - NEW
+   - Database schema changes and indexes
+
+2. **`app/api/campaigns/[id]/route.ts`** (57 lines added)
+   - Added PATCH endpoint for archive/restore
+
+3. **`components/CampaignActions.tsx`** (126 lines)
+   - Added archive/restore functionality
+   - Archive button with Archive/ArchiveRestore icons
+   - Hide edit for archived campaigns
+
+4. **`app/(portal)/campaigns/CampaignsClient.tsx`** (297 lines)
+   - Added showArchived toggle state
+   - Filtered campaigns display
+   - Archive count and toggle button
+   - Dynamic empty states
+
+---
+
+### **Next Steps for User**
+
+**To Complete Setup**:
+1. Run migration manually in Supabase SQL Editor:
+   - Copy contents of `supabase/migrations/011_add_campaign_archive.sql`
+   - Paste into Supabase dashboard → SQL Editor
+   - Click "Run"
+2. Verify migration with: `SELECT archived FROM campaigns LIMIT 1;`
+3. Test archive/restore flow in production
+
+---
+
 ### ✨ **CAMPAIGN EDITOR: Full Edit Functionality & Content Generation Fixes**
 
 **Implemented Campaign Editing with Data Loading and Smart Updates**
