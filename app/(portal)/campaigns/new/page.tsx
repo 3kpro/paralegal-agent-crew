@@ -977,7 +977,8 @@ export default function NewCampaignPage() {
           campaign_type: "trending",
           source_type: "trending",
           source_data: {
-            trend: selectedTrend!,
+            trend: selectedTrend || selectedTrends[0] || null,
+            trends: selectedTrends,
             query: searchQuery,
             controls: {
               temperature: controls.temperature,
@@ -987,6 +988,16 @@ export default function NewCampaignPage() {
           },
           ai_provider: aiProvider,
           tone: controls.tone,
+          generated_content: generatedContent,
+          content_settings: {
+            temperature: controls.temperature,
+            tone: controls.tone,
+            length: controls.length,
+            targetAudience: controls.targetAudience,
+            contentFocus: controls.contentFocus,
+            callToAction: controls.callToAction,
+            selectedAudiences: selectedAudiences,
+          },
         };
 
         let campaign;
@@ -1004,6 +1015,7 @@ export default function NewCampaignPage() {
           campaignError = error;
         } else {
           // INSERT new campaign
+          console.log("[Campaign Save] Payload:", campaignPayload);
           const { data, error } = await supabase
             .from("campaigns")
             .insert(campaignPayload)
@@ -1011,9 +1023,13 @@ export default function NewCampaignPage() {
             .single();
           campaign = data;
           campaignError = error;
+          console.log("[Campaign Save] Result:", { data, error });
         }
 
-        if (campaignError) throw campaignError;
+        if (campaignError) {
+          console.error("[Campaign Save] Error:", campaignError);
+          throw campaignError;
+        }
 
         // Save generated content for each platform
         const postsToInsert: ScheduledPost[] = [];
