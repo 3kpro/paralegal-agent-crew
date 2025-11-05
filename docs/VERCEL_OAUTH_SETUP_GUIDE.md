@@ -4,11 +4,22 @@
 
 This guide walks you through setting up **centralized OAuth credentials** for all social media platforms. This enables **one-click social account connection** for all users without them needing to create their own OAuth apps.
 
+## Production Domain
+
+**Current Options:**
+- Option 1: `https://ccai.3kpro.services` (current domain)
+- Option 2: `https://trendpulse.3kpro.services` (planned domain)
+
+**⚠️ IMPORTANT:** Use whichever domain you're actually deploying to. Replace `YOUR_DOMAIN` in all URLs below with:
+- `ccai.3kpro.services` (if using current domain)
+- `trendpulse.3kpro.services` (if switching to new domain)
+
 ## Prerequisites
 
-✅ Vercel CLI installed and logged in (`vercel whoami` shows `3kpro`)  
-✅ Project deployed to Vercel (`landing-page` project exists)  
+✅ Vercel CLI installed and logged in (`vercel whoami` shows `3kpro`)
+✅ Project deployed to Vercel (`landing-page` project exists)
 ✅ Production deployment running
+✅ Custom domain configured in Vercel (add via `vercel domains add YOUR_DOMAIN`)
 
 ## Phase 1: Register OAuth Applications
 
@@ -23,8 +34,10 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 2. Go to **App settings** → **User authentication settings**
 3. Enable **OAuth 2.0**
 4. App type: **Web App, Automated App or Bot**
-5. Callback URL: `https://your-production-domain.vercel.app/api/auth/callback/twitter`
-6. Website URL: `https://your-production-domain.vercel.app`
+5. Callback URL: `https://YOUR_DOMAIN/api/auth/callback/twitter`
+   - Example: `https://ccai.3kpro.services/api/auth/callback/twitter`
+6. Website URL: `https://YOUR_DOMAIN`
+   - Example: `https://ccai.3kpro.services`
 7. **Save credentials:**
    - Client ID
    - Client Secret
@@ -45,7 +58,8 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 1. Click **Create app**
 2. Fill in app details
 3. Go to **Auth** tab
-4. Add Redirect URL: `https://your-production-domain.vercel.app/api/auth/callback/linkedin`
+4. Add Redirect URL: `https://YOUR_DOMAIN/api/auth/callback/linkedin`
+   - Example: `https://ccai.3kpro.services/api/auth/callback/linkedin`
 5. Request access to **Sign In with LinkedIn** and **Share on LinkedIn** products
 6. **Save credentials:**
    - Client ID
@@ -67,11 +81,14 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 1. Click **Create App** → Choose **Business** type
 2. Add **Facebook Login** product
 3. Go to **Facebook Login** → **Settings**
-4. Add Valid OAuth Redirect URI: `https://your-production-domain.vercel.app/api/auth/callback/facebook`
+4. Add Valid OAuth Redirect URI: `https://YOUR_DOMAIN/api/auth/callback/facebook`
+   - Example: `https://ccai.3kpro.services/api/auth/callback/facebook`
 5. Add **Instagram Basic Display** product (for Instagram)
-6. **Save credentials:**
-   - App ID
-   - App Secret
+6. Add Instagram Redirect URI: `https://YOUR_DOMAIN/api/auth/callback/instagram`
+   - Example: `https://ccai.3kpro.services/api/auth/callback/instagram`
+7. **Save credentials:**
+   - App ID (use as FACEBOOK_CLIENT_ID)
+   - App Secret (use as FACEBOOK_CLIENT_SECRET)
 
 **Permissions needed:**
 - `pages_manage_posts` (Facebook posting)
@@ -87,12 +104,13 @@ You need to register **ONE OAuth app per platform** that will serve ALL users.
 **Steps:**
 1. Go to **My Apps** → **Create App**
 2. Add **Login Kit** capability
-3. Configure **Redirect URIs**: `https://your-production-domain.vercel.app/api/auth/callback/tiktok`
+3. Configure **Redirect URIs**: `https://YOUR_DOMAIN/api/auth/callback/tiktok`
+   - Example: `https://ccai.3kpro.services/api/auth/callback/tiktok`
 4. Enable **Video Kit** for posting
 5. Submit for review (may take 1-2 days)
 6. **Save credentials:**
-   - Client Key
-   - Client Secret
+   - Client Key (use as TIKTOK_CLIENT_KEY)
+   - Client Secret (use as TIKTOK_CLIENT_SECRET)
 
 **Scopes needed:**
 - `user.info.basic`
@@ -177,14 +195,29 @@ This will rebuild your app with the new OAuth credentials.
 
 Make sure these EXACT URLs are configured in each platform:
 
+### Option 1: Using ccai.3kpro.services (Current Domain)
+
 | Platform | Callback URL |
 |----------|-------------|
-| Twitter | `https://your-domain.vercel.app/api/auth/callback/twitter` |
-| LinkedIn | `https://your-domain.vercel.app/api/auth/callback/linkedin` |
-| Facebook | `https://your-domain.vercel.app/api/auth/callback/facebook` |
-| TikTok | `https://your-domain.vercel.app/api/auth/callback/tiktok` |
+| Twitter | `https://ccai.3kpro.services/api/auth/callback/twitter` |
+| LinkedIn | `https://ccai.3kpro.services/api/auth/callback/linkedin` |
+| Facebook | `https://ccai.3kpro.services/api/auth/callback/facebook` |
+| Instagram | `https://ccai.3kpro.services/api/auth/callback/instagram` |
+| TikTok | `https://ccai.3kpro.services/api/auth/callback/tiktok` |
+| Reddit | `https://ccai.3kpro.services/api/auth/callback/reddit` |
 
-⚠️ **Important:** Replace `your-domain.vercel.app` with your actual production URL
+### Option 2: Using trendpulse.3kpro.services (Planned Domain)
+
+| Platform | Callback URL |
+|----------|-------------|
+| Twitter | `https://trendpulse.3kpro.services/api/auth/callback/twitter` |
+| LinkedIn | `https://trendpulse.3kpro.services/api/auth/callback/linkedin` |
+| Facebook | `https://trendpulse.3kpro.services/api/auth/callback/facebook` |
+| Instagram | `https://trendpulse.3kpro.services/api/auth/callback/instagram` |
+| TikTok | `https://trendpulse.3kpro.services/api/auth/callback/tiktok` |
+| Reddit | `https://trendpulse.3kpro.services/api/auth/callback/reddit` |
+
+⚠️ **Important:** Use ONLY ONE set of URLs - whichever domain you're actually deploying to
 
 ---
 

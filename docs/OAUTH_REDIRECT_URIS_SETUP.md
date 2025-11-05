@@ -2,7 +2,11 @@
 
 **Task**: Update OAuth redirect URIs in each platform's developer console to point to production domain.
 
-**Production Domain**: `https://trendpulse.3kpro.services` (or final production domain)
+**Production Domain Options:**
+- **Option 1**: `https://ccai.3kpro.services` (current domain)
+- **Option 2**: `https://trendpulse.3kpro.services` (planned domain)
+
+**⚠️ CHOOSE ONE:** Ask the owner which domain to use, then use that domain for ALL platforms below.
 
 ---
 
@@ -15,11 +19,13 @@
 **Steps**:
 1. Navigate to **Your App** → **User authentication settings**
 2. Find **Callback URI / Redirect URL** section
-3. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/twitter
-   ```
-4. Save changes
+3. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/twitter`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/twitter`
+4. Add Website URL (same domain):
+   - **Option 1**: `https://ccai.3kpro.services`
+   - **Option 2**: `https://trendpulse.3kpro.services`
+5. Save changes
 
 **Required Scopes** (verify these are enabled):
 - `tweet.read`
@@ -36,10 +42,9 @@
 **Steps**:
 1. Navigate to **Your App** → **Auth** tab
 2. Find **Redirect URLs** section
-3. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/linkedin
-   ```
+3. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/linkedin`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/linkedin`
 4. Click **Update**
 
 **Required Products** (verify access):
@@ -61,10 +66,9 @@
 **Steps**:
 1. Navigate to **Your App** → **Facebook Login** → **Settings**
 2. Find **Valid OAuth Redirect URIs** section
-3. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/facebook
-   ```
+3. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/facebook`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/facebook`
 4. Click **Save Changes**
 
 **Required Permissions**:
@@ -83,13 +87,12 @@
 **Steps**:
 1. Navigate to **Your App** → **Instagram Basic Display** → **Basic Display**
 2. Find **Valid OAuth Redirect URIs** section
-3. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/instagram
-   ```
+3. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/instagram`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/instagram`
 4. Also update these fields with the same URI:
-   - **Deauthorize Callback URL**
-   - **Data Deletion Request URL**
+   - **Deauthorize Callback URL** (use same URI as above)
+   - **Data Deletion Request URL** (use same URI as above)
 5. Click **Save Changes**
 
 **Required Scopes**:
@@ -107,10 +110,9 @@
 **Steps**:
 1. Navigate to **Your App** → **Login Kit**
 2. Find **Redirect URI** section
-3. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/tiktok
-   ```
+3. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/tiktok`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/tiktok`
 4. Click **Submit** or **Save**
 
 **Required Scopes**:
@@ -133,10 +135,9 @@
 1. Navigate to **Your App** (or create new app if needed)
 2. Set **App Type**: Web App
 3. Find **redirect uri** field
-4. Add production redirect URI:
-   ```
-   https://trendpulse.3kpro.services/api/auth/callback/reddit
-   ```
+4. Add production redirect URI (choose one):
+   - **Option 1**: `https://ccai.3kpro.services/api/auth/callback/reddit`
+   - **Option 2**: `https://trendpulse.3kpro.services/api/auth/callback/reddit`
 5. Click **Update app**
 
 **Required Scopes**:
