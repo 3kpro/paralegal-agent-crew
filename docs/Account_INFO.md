@@ -25,7 +25,7 @@ cTd1STFLbms1RXRaSWFmQnBPaFQ6MTpjaQ
 Client Secret:
 6QVXUiWzcl59bpYeWtdyzyGfFIxuLzVF_7oqJptBlMQEQ1TeOw
 ##################
-META - FB
+META - FB/IG
 USER TOKEN:
 EAALRyQJ4UQsBPZBssHefcEhBgoGaoBcdTCttm6TLPQ4EC8LM2sI2fUFEpkbWhlRpdRcSLhZCpmR3xCvd6gxulmew5EwUV3Y04Bo4b7LiWX0NYC7EIadWBPk00t4KRQD2txtmSlR8WE0SUbc7lBqAyj9oto5ey56Weq3lmJqwgsPj6fxcvlYjj47vZAX0AZDZD
 App Token:
@@ -46,6 +46,13 @@ Client Secret:
 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
 JSON:
 {"web":{"client_id":"746032461261-p0t5972jg702jg14m60cm8dni5mm4v17.apps.googleusercontent.com","project_id":"kpro-gemini","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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"}}
+LWEK HZJL ZSKW MFYI CMGY BXDW XBFM V6FH
+Instagram app ID
+819673823982726
+App ID:
+793611213492491
+App Secret
+15c77c9086976f40ac74a29db020c5ef
 ###################
 Serp API
 
