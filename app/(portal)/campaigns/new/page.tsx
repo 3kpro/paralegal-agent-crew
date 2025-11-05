@@ -349,24 +349,30 @@ export default function NewCampaignPage() {
 
     setGeneratingContent(true);
     try {
+      const requestBody = {
+        topic: selectedTrends.map(t => t.title).join(", "),
+        formats: targetPlatforms,
+        preferredProvider: aiProvider,
+        // Pass content controls to API (map targetAudience to audience for API)
+        temperature: controls.temperature,
+        tone: controls.tone,
+        length: controls.length,
+        audience: controls.targetAudience, // API expects "audience" not "targetAudience"
+        contentFocus: controls.contentFocus,
+        callToAction: controls.callToAction,
+      };
+      
+      console.log('[Generate Content] Request:', requestBody);
+      
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          topic: selectedTrends.map(t => t.title).join(", "),
-          formats: targetPlatforms,
-          preferredProvider: aiProvider,
-          // Pass content controls to API (map targetAudience to audience for API)
-          temperature: controls.temperature,
-          tone: controls.tone,
-          length: controls.length,
-          audience: controls.targetAudience, // API expects "audience" not "targetAudience"
-          contentFocus: controls.contentFocus,
-          callToAction: controls.callToAction,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
+      
+      console.log('[Generate Content] Response:', { status: response.status, data });
 
       if (data.success) {
         setGeneratedContent(data.content);
