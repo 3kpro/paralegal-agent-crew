@@ -109,7 +109,7 @@ export default function WaitlistSection() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder="Your email"
                   className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#2b2b2b] text-white placeholder-gray-400 text-lg border-2 border-gray-700/50 focus:outline-none focus:border-coral-500/50"
                   required
                 />
