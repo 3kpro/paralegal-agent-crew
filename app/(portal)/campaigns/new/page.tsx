@@ -954,19 +954,24 @@ export default function NewCampaignPage() {
    */
   const saveCampaign = useCallback(
     async (publishNow = false) => {
+      console.log("[SAVE CAMPAIGN] Function called. publishNow:", publishNow, "generatedContent exists:", !!generatedContent);
       setLoading(true);
       try {
         const {
           data: { user },
         } = await supabase.auth.getUser();
 
+        console.log("[SAVE CAMPAIGN] User:", user?.id);
+
         if (!user) {
+          console.error("[SAVE CAMPAIGN] No user - redirecting to login");
           showToast("Please log in to save campaigns", "error");
           router.push("/login");
           return;
         }
 
         if (!generatedContent) {
+          console.error("[SAVE CAMPAIGN] No generated content - aborting save");
           showToast("No content to save. Please generate content first.", "error");
           return;
         }
