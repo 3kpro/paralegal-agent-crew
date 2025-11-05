@@ -647,30 +647,30 @@ export default function NewCampaignPage() {
           setTargetPlatforms(campaign.target_platforms || []);
 
           // Populate trends (Card 3)
-          if (campaign.selected_trends) {
-            setSelectedTrends(campaign.selected_trends);
+          if (campaign.source_data?.trends) {
+            setSelectedTrends(campaign.source_data.trends);
           }
 
           // Populate content controls (Card 6)
-          if (campaign.content_settings) {
-            const settings = campaign.content_settings;
+          if (campaign.source_data?.controls) {
+            const controls = campaign.source_data.controls;
             setControls({
-              temperature: settings.temperature || 0.7,
-              tone: settings.tone || "professional",
-              length: settings.length || "standard",
-              targetAudience: settings.targetAudience || "professionals",
-              contentFocus: settings.contentFocus || "informative",
-              callToAction: settings.callToAction || "engage",
+              temperature: controls.temperature || 0.7,
+              tone: controls.tone || "professional",
+              length: controls.length || "standard",
+              targetAudience: controls.targetAudience || "professionals",
+              contentFocus: controls.contentFocus || "informative",
+              callToAction: controls.callToAction || "engage",
             });
+          }
 
-            if (settings.selectedAudiences) {
-              setSelectedAudiences(settings.selectedAudiences);
-            }
+          if (campaign.source_data?.selectedAudiences) {
+            setSelectedAudiences(campaign.source_data.selectedAudiences);
           }
 
           // Load generated content if exists
-          if (campaign.generated_content) {
-            setGeneratedContent(campaign.generated_content);
+          if (campaign.source_data?.generatedContent) {
+            setGeneratedContent(campaign.source_data.generatedContent);
           }
 
           showToast("Campaign loaded successfully", "success");
@@ -987,20 +987,15 @@ export default function NewCampaignPage() {
               temperature: controls.temperature,
               tone: controls.tone,
               length: controls.length,
+              targetAudience: controls.targetAudience,
+              contentFocus: controls.contentFocus,
+              callToAction: controls.callToAction,
             },
+            selectedAudiences: selectedAudiences,
+            generatedContent: generatedContent,
           },
           ai_provider: aiProvider,
           tone: controls.tone,
-          generated_content: generatedContent,
-          content_settings: {
-            temperature: controls.temperature,
-            tone: controls.tone,
-            length: controls.length,
-            targetAudience: controls.targetAudience,
-            contentFocus: controls.contentFocus,
-            callToAction: controls.callToAction,
-            selectedAudiences: selectedAudiences,
-          },
         };
 
         let campaign;
