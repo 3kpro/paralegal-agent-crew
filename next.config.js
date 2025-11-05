@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
 
 const nextConfig = {
@@ -29,12 +30,12 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://challenges.cloudflare.com https://vercel.live https://va.vercel-scripts.com https://*.vercel-scripts.com",
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.vercel.app",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://challenges.cloudflare.com https://vercel.live https://va.vercel-scripts.com https://*.vercel-scripts.com https://*.linkedin.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.vercel.app https://*.linkedin.com",
               "img-src 'self' data: blob: https: http:",
-              "font-src 'self' data: https://fonts.gstatic.com https://r2cdn.perplexity.ai",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://generativelanguage.googleapis.com https://vercel.live wss://ws-us3.pusher.com https://*.vercel.app",
-              "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://vercel.live",
+              "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://r2cdn.perplexity.ai https://*.linkedin.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://generativelanguage.googleapis.com https://vercel.live wss://ws-us3.pusher.com https://*.vercel.app https://*.linkedin.com",
+              "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://vercel.live https://www.linkedin.com https://*.linkedin.com",
               "worker-src 'self' blob:",
               "object-src 'none'",
               "base-uri 'self'",
@@ -82,4 +83,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
