@@ -599,11 +599,14 @@ export default function NewCampaignPage() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          const { data: profile } = await supabase
+          const { data: profile, error } = await supabase
             .from("profiles")
             .select("interests")
             .eq("id", user.id)
             .single();
+
+          // Silently skip if interests column doesn't exist (not critical)
+          if (error) return;
 
           if (profile?.interests) {
             setUserInterests(profile.interests);
@@ -615,7 +618,7 @@ export default function NewCampaignPage() {
           }
         }
       } catch (error) {
-        console.error("Failed to load user interests:", error);
+        // Silently skip interests loading errors (non-critical feature)
       }
     }
     loadUserInterests();
