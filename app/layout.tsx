@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import "@/lib/env"; // Validate environment variables at startup
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "TrendPulse™ Beta - AI-Powered Content Creation | Early Access Live",
@@ -52,6 +53,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="bg-tron-dark text-tron-text antialiased">
         <ErrorBoundary>{children}</ErrorBoundary>
+        <Analytics />
       </body>
     </html>
   );
