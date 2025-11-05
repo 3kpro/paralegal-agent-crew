@@ -15,28 +15,13 @@ export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  // Load saved remember me preference and handle session persistence
+  // Load saved remember me preference
   useEffect(() => {
     const savedPreference = localStorage.getItem("rememberMe");
     if (savedPreference !== null) {
       setRememberMe(savedPreference === "true");
     }
-
-    // Check if this is a temporary session (remember me was unchecked)
-    if (sessionStorage.getItem("tempSession") === "true") {
-      // Set up the beforeunload handler for this session
-      const handleBeforeUnload = async () => {
-        if (sessionStorage.getItem("tempSession") === "true") {
-          await supabase.auth.signOut();
-        }
-      };
-      window.addEventListener("beforeunload", handleBeforeUnload);
-
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      };
-    }
-  }, [supabase]);
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,17 +39,9 @@ export default function LoginPage() {
       // Store remember me preference
       localStorage.setItem("rememberMe", rememberMe.toString());
 
-      // If remember me is false, set up session to expire when browser closes
+      // If remember me is false, use sessionStorage for session-only persistence
       if (!rememberMe) {
-        // Store a flag in sessionStorage to track this session
         sessionStorage.setItem("tempSession", "true");
-
-        // Set up event listener to sign out when browser/tab closes
-        window.addEventListener("beforeunload", async () => {
-          if (sessionStorage.getItem("tempSession") === "true") {
-            await supabase.auth.signOut();
-          }
-        });
       } else {
         // Clear any temporary session flag
         sessionStorage.removeItem("tempSession");
