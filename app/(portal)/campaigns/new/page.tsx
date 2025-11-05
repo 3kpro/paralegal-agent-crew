@@ -1238,7 +1238,7 @@ export default function NewCampaignPage() {
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['informative', 'entertaining', 'educational', 'promotional'].map((f) => (
+                        {['informative', 'discussion', 'opinion', 'news', 'tips', 'story', 'walkthrough'].map((f) => (
                           <button
                             key={f}
                             onClick={() => setControls({ ...controls, contentFocus: f })}
@@ -1261,7 +1261,7 @@ export default function NewCampaignPage() {
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Target Audience</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['general', 'technical', 'business', 'creative'].map((a) => (
+                        {['general', 'professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists'].map((a) => (
                           <button
                             key={a}
                             onClick={() => setControls({ ...controls, targetAudience: a })}
@@ -1281,7 +1281,7 @@ export default function NewCampaignPage() {
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
                       <div className="grid grid-cols-2 gap-2">
-                        {['engage', 'convert', 'learn', 'share'].map((c) => (
+                        {['engage', 'share', 'comment', 'follow', 'learn', 'none'].map((c) => (
                           <button
                             key={c}
                             onClick={() => setControls({ ...controls, callToAction: c })}

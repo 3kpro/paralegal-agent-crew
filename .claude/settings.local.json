@@ -79,7 +79,8 @@
       "Bash(cd:*)",
       "Bash(cmd /c restart-dev.bat:*)",
       "Bash(nul)",
-      "Bash(\"c:\\DEV\\3K-Pro-Services\\landing-page\\docs\\SUPABASE_HANDOFF.md\")"
+      "Bash(\"c:\\DEV\\3K-Pro-Services\\landing-page\\docs\\SUPABASE_HANDOFF.md\")",
+      "Bash(tasklist /FI \"IMAGENAME eq powershell.exe\")"
     ],
     "deny": [],
     "ask": []

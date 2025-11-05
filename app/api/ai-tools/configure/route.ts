@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { encryptAPIKey } from "@/lib/encryption";
 import { z } from "zod";
 
@@ -10,7 +10,7 @@ const configureToolSchema = z.object({
   configuration: z.record(z.string(), z.any()).optional(),
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
 
@@ -124,7 +124,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
     const supabase = await createClient();
 
