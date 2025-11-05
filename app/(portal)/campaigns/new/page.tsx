@@ -17,27 +17,13 @@ import {
   ChevronRight,
   Check,
   FileText,
-  Loader2,
-  Link,
   X,
-  Menu as MenuIcon,
-  Home,
-  Settings,
-  Save,
-  Eye,
-  Calendar,
-  LayoutDashboard,
-  Palette,
-  Users,
   BarChart3,
-  HelpCircle,
-  LogOut,
   Flame,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendSourceSelector, AnimatedLoader } from "@/components/ui";
+import { AnimatedLoader } from "@/components/ui";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import CreativitySlider from "./components/CreativitySlider";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
@@ -51,6 +37,25 @@ import {
   CampaignPayload,
   ScheduledPost,
 } from "./types";
+
+// Interface for AI provider data
+interface AIProvider {
+  provider_key: string;
+  isConfigured: boolean;
+  name?: string;
+}
+
+// Interface for connected account data
+interface ConnectedAccount {
+  platform: string;
+  platformUsername?: string;
+}
+
+// Interface for generated content data
+interface ContentData {
+  content?: string;
+  [key: string]: unknown;
+}
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -72,12 +77,12 @@ export default function NewCampaignPage() {
 
   // Step 2: Trend Discovery
   const [searchQuery, setSearchQuery] = useState("");
-  const [trendSource, setTrendSource] = useState("mixed");
+  const [trendSource] = useState("mixed");
   const [trends, setTrends] = useState<Trend[]>([]);
   const [selectedTrends, setSelectedTrends] = useState<Trend[]>([]); // Multiple trends
   const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [loadingTrends, setLoadingTrends] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [_hasSearched, setHasSearched] = useState(false);
 
   // Generate button motivational messages
   const [generateButtonText] = useState(() => {
@@ -298,7 +303,7 @@ export default function NewCampaignPage() {
         const data = await response.json();
         if (data.success) {
           const configuredTools = data.providers.filter(
-            (p: any) =>
+            (p: AIProvider) =>
               p.isConfigured &&
               p.provider_key !== "openai" &&
               p.provider_key !== "anthropic",
@@ -322,7 +327,7 @@ export default function NewCampaignPage() {
         const data = await response.json();
         if (data.success && data.accounts) {
           const connected = data.accounts.map(
-            (account: any) => account.platform,
+            (account: ConnectedAccount) => account.platform,
           );
           setConnectedPlatforms(connected);
         }
@@ -377,8 +382,12 @@ export default function NewCampaignPage() {
         setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
       } else {
         // Show detailed validation errors if available
+        interface ValidationDetail {
+          field: string;
+          message: string;
+        }
         const errorMessage = data.details 
-          ? `Validation Error: ${data.details.map((d: any) => `${d.field}: ${d.message}`).join(', ')}`
+          ? `Validation Error: ${data.details.map((d: ValidationDetail) => `${d.field}: ${d.message}`).join(', ')}`
           : `Generation failed: ${data.error}`;
         console.error('Generation error details:', data);
         showToast(errorMessage, "error");
@@ -544,7 +553,7 @@ export default function NewCampaignPage() {
           const content =
             typeof contentData === "string"
               ? contentData
-              : (contentData as any)?.content || "";
+              : (contentData as ContentData)?.content || "";
 
           if (!content) continue;
 
@@ -588,10 +597,11 @@ export default function NewCampaignPage() {
 
         // Delay navigation to show toast and fireworks
         setTimeout(() => router.push("/campaigns"), 6500);
-      } catch (error: any) {
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
         console.error("Error saving campaign:", error);
         showToast(
-          `Failed to save campaign: ${error.message || "Unknown error"}`,
+          `Failed to save campaign: ${errorMessage}`,
           "error"
         );
       } finally {
@@ -2023,7 +2033,7 @@ export default function NewCampaignPage() {
                       const content =
                         typeof contentData === "string"
                           ? contentData
-                          : (contentData as any)?.content || "";
+                          : (contentData as ContentData)?.content || "";
 
                       if (!content) return null;
 
