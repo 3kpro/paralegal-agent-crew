@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Trash2, Plus, Archive } from "lucide-react";
@@ -23,6 +23,7 @@ interface CampaignsClientProps {
 
 export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const [showArchived, setShowArchived] = useState(false);
   const [selectedCampaigns, setSelectedCampaigns] = useState<Set<string>>(
@@ -54,6 +55,24 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
       4000,
     );
   };
+
+  // Check for success message from campaign save/publish
+  useEffect(() => {
+    const action = searchParams.get("action");
+    const name = searchParams.get("name");
+
+    if (action && name) {
+      const message =
+        action === "published"
+          ? `"${decodeURIComponent(name)}" published successfully!`
+          : `"${decodeURIComponent(name)}" saved as draft!`;
+
+      showToast(message, "success");
+
+      // Clean up URL
+      router.replace("/campaigns");
+    }
+  }, [searchParams, router]);
 
   const toggleSelectAll = () => {
     if (selectedCampaigns.size === filteredCampaigns.length) {

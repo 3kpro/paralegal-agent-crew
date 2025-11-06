@@ -1083,16 +1083,15 @@ export default function NewCampaignPage() {
           if (postsError) throw postsError;
         }
 
-        showToast(
-          isEditMode
-            ? (publishNow
-                ? "Campaign updated and scheduled!"
-                : "Campaign updated successfully!")
-            : (publishNow
-                ? "Campaign scheduled successfully!"
-                : "Campaign saved as draft!"),
-          "success"
-        );
+        const successMessage = isEditMode
+          ? (publishNow
+              ? `"${campaignName}" updated and scheduled!`
+              : `"${campaignName}" updated successfully!`)
+          : (publishNow
+              ? `"${campaignName}" scheduled successfully!`
+              : `"${campaignName}" saved as draft!`);
+
+        showToast(successMessage, "success");
 
         // Trigger fireworks celebration after a delay so toast shows first
         setTimeout(() => {
@@ -1101,7 +1100,10 @@ export default function NewCampaignPage() {
         }, 1000);
 
         // Delay navigation to show toast and fireworks
-        setTimeout(() => router.push("/campaigns"), 6500);
+        setTimeout(() => {
+          const action = publishNow ? "published" : "saved";
+          router.push(`/campaigns?action=${action}&name=${encodeURIComponent(campaignName)}`);
+        }, 6500);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         console.error("Error saving campaign:", error);
