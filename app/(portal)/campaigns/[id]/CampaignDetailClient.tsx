@@ -72,9 +72,8 @@ export default function CampaignDetailClient({
   }
 
   function handleEdit() {
-    // Navigate to campaigns/new page which can be used for editing
-    // In the future, we can create a dedicated edit page
-    router.push(`/campaigns/new`);
+    // Navigate to edit page which redirects to /campaigns/new?edit=id
+    router.push(`/campaigns/${campaign.id}/edit`);
   }
 
   return (
