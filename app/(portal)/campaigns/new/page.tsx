@@ -67,6 +67,8 @@ export default function NewCampaignPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loadingCampaignData, setLoadingCampaignData] = useState(false);
 
+  console.log("[EDIT MODE] editId:", editId, "isEditMode:", isEditMode);
+
   // Card-based navigation state
   const [currentCard, setCurrentCard] = useState(1);
   const [cardDirection, setCardDirection] = useState(1); // 1 for forward, -1 for back
@@ -2170,6 +2172,34 @@ export default function NewCampaignPage() {
                   </div>
                 )}
                   </div>
+
+                  {/* Campaign Save Buttons */}
+                  {generatedContent && Object.keys(generatedContent).length > 0 && (
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <motion.button
+                        onClick={() => saveCampaign(false)}
+                        disabled={loading}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        aria-label="Save campaign as draft"
+                      >
+                        <Check className="w-5 h-5" />
+                        {loading ? "Saving..." : "Save for Later"}
+                      </motion.button>
+                      <motion.button
+                        onClick={() => saveCampaign(true)}
+                        disabled={loading}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-8 py-5 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                        aria-label="Publish campaign now"
+                      >
+                        <Sparkles className="w-5 h-5" />
+                        {loading ? "Publishing..." : "Publish Now"}
+                      </motion.button>
+                    </div>
+                  )}
                 </>
               )}
             </motion.div>
