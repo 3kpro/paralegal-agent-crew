@@ -2109,35 +2109,17 @@ export default function NewCampaignPage() {
                           transition={{ duration: 0.3 }}
                           className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
                         >
-                          {/* Header with Platform Name and Action Buttons */}
+                          {/* Header with Platform Name */}
                           <div className="flex items-center justify-between mb-4">
                             <div>
                               <h3 className="text-xl font-bold text-tron-text">
                                 {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
                               </h3>
                               <p className="text-sm text-tron-text-muted">
-                                {typeof generatedContent[activePlatformView] === 'string' 
-                                  ? generatedContent[activePlatformView].length 
+                                {typeof generatedContent[activePlatformView] === 'string'
+                                  ? generatedContent[activePlatformView].length
                                   : generatedContent[activePlatformView]?.content?.length || 0} characters
                               </p>
-                            </div>
-                            <div className="flex gap-3">
-                              <motion.button
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="px-6 py-2.5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-lg font-semibold text-white shadow-lg text-sm"
-                              >
-                                Post
-                              </motion.button>
-                              <motion.button
-                                onClick={() => saveCampaign(false)}
-                                disabled={loading}
-                                whileHover={{ scale: loading ? 1 : 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="px-6 py-2.5 bg-tron-dark/50 border border-tron-magenta/30 rounded-lg font-semibold text-tron-magenta hover:bg-tron-magenta/10 text-sm disabled:opacity-50"
-                              >
-                                {loading ? "Saving..." : "Save"}
-                              </motion.button>
                             </div>
                           </div>
 
