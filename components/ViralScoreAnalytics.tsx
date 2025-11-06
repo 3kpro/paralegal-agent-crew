@@ -143,7 +143,7 @@ export default function ViralScoreAnalyticsComponent() {
             {hasData ? formatAccuracy(accuracyPercentage) : "N/A"}
           </p>
           <p className="text-xs text-tron-text-muted mt-1">
-            ±{analytics.avg_prediction_error.toFixed(1)} points error
+            ±{analytics.avg_prediction_error?.toFixed(1) ?? "N/A"} points error
           </p>
         </div>
 
