@@ -74,7 +74,8 @@ export default function NewCampaignPage() {
   const [cardDirection, setCardDirection] = useState(1); // 1 for forward, -1 for back
   const [activePlatformView, setActivePlatformView] = useState<string>(""); // For Card 6 platform switcher
   const [showFireworks, setShowFireworks] = useState(false);
-  
+  const [campaignSaved, setCampaignSaved] = useState(false);
+
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -1093,17 +1094,23 @@ export default function NewCampaignPage() {
 
         showToast(successMessage, "success");
 
+        // Mark campaign as saved
+        if (!publishNow) {
+          setCampaignSaved(true);
+        }
+
         // Trigger fireworks celebration after a delay so toast shows first
         setTimeout(() => {
           setShowFireworks(true);
           setTimeout(() => setShowFireworks(false), 5000);
         }, 1000);
 
-        // Delay navigation to show toast and fireworks
-        setTimeout(() => {
-          const action = publishNow ? "published" : "saved";
-          router.push(`/campaigns?action=${action}&name=${encodeURIComponent(campaignName)}`);
-        }, 6500);
+        // Only redirect if publishing, stay on page if just saving
+        if (publishNow) {
+          setTimeout(() => {
+            router.push(`/campaigns?action=published&name=${encodeURIComponent(campaignName)}`);
+          }, 6500);
+        }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         console.error("Error saving campaign:", error);
@@ -2180,14 +2187,14 @@ export default function NewCampaignPage() {
                     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <motion.button
                         onClick={() => saveCampaign(false)}
-                        disabled={loading}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        disabled={loading || campaignSaved}
+                        whileHover={{ scale: loading || campaignSaved ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         aria-label="Save campaign as draft"
                       >
                         <Check className="w-5 h-5" />
-                        {loading ? "Saving..." : "Save for Later"}
+                        {loading ? "Saving..." : campaignSaved ? "Saved" : "Save for Later"}
                       </motion.button>
                       <motion.button
                         onClick={() => saveCampaign(true)}
