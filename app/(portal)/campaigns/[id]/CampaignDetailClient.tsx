@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 
 interface Campaign {
   id: string;
@@ -44,6 +44,22 @@ export default function CampaignDetailClient({
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "success" }), 4000);
   };
+
+  function copyContent(content: string, platform: string) {
+    if (!content) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        showToast(`${platform} content copied!`, "success");
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        showToast("Failed to copy content", "error");
+      });
+  }
 
   async function handleDelete() {
     setDeleting(true);
@@ -292,13 +308,14 @@ export default function CampaignDetailClient({
 
                 <div className="mt-4 pt-4 border-t border-tron-grid flex gap-3">
                   <button
-                    className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-cyan hover:border-tron-cyan rounded-lg transition-colors text-sm"
-                    disabled
+                    onClick={() => copyContent(item.content, item.platform)}
+                    className="px-4 py-2 bg-tron-grid border border-green-500/30 text-green-400 hover:border-green-500 hover:bg-green-500/10 rounded-lg transition-colors text-sm flex items-center gap-2"
                   >
+                    <Copy className="w-4 h-4" />
                     Copy Content
                   </button>
                   <button
-                    className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-text hover:border-tron-cyan rounded-lg transition-colors text-sm"
+                    className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-text-muted rounded-lg transition-colors text-sm cursor-not-allowed"
                     disabled
                   >
                     Publish (Coming Soon)

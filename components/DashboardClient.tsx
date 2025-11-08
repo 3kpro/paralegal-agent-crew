@@ -6,6 +6,7 @@ import Link from "next/link";
 import { DashboardSkeleton } from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import WelcomeAnimation from "./WelcomeAnimation";
+import UsageMeter from "./UsageMeter";
 import {
   Zap,
   TrendingUp,
@@ -213,13 +214,25 @@ export default function DashboardClient() {
             })}
           </div>
 
-          {/* Recent Campaigns */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="p-8 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl"
-          >
+          {/* Usage Meter and Recent Campaigns Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Usage Meter */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="lg:col-span-1"
+            >
+              <UsageMeter />
+            </motion.div>
+
+            {/* Recent Campaigns */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="lg:col-span-2 p-8 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl"
+            >
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                 <div className="p-2 bg-coral-500/10 rounded-xl">
@@ -336,6 +349,7 @@ export default function DashboardClient() {
               </motion.div>
             )}
           </motion.div>
+          </div>
         </div>
       </div>
     </>

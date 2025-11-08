@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { SchedulePostDialog } from "@/components/SchedulePostDialog";
 import { Send, RotateCcw, Check } from "lucide-react";
 
@@ -154,14 +155,15 @@ export default function ContentFlowPage() {
               </p>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowScheduleDialog(true)}
-              className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
-            >
-              + Schedule New Post
-            </motion.button>
+            <Link href="/social-accounts">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-coral-500 hover:bg-coral-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
+              >
+                Connect Social Accounts
+              </motion.button>
+            </Link>
           </div>
 
           {/* Navigation Tabs */}
@@ -389,25 +391,16 @@ function QueueView({
                 <div className="text-xs text-tron-text-muted mt-1">
                   {new Date(post.scheduled_at).toLocaleString()}
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => onPublish(post.id)}
-                  disabled={publishingPostId === post.id}
-                  className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan text-xs font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {publishingPostId === post.id ? (
-                    <>
-                      <div className="w-3 h-3 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin" />
-                      Publishing...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-3 h-3" />
-                      Publish Now
-                    </>
-                  )}
-                </motion.button>
+                <Link href="/social-accounts" className="mt-2 w-full block">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-coral-500/20 hover:bg-coral-500/30 text-coral-400 text-xs font-medium rounded transition-colors"
+                  >
+                    <Send className="w-3 h-3" />
+                    Connect Account
+                  </motion.button>
+                </Link>
               </div>
             ))}
           </div>
@@ -466,25 +459,16 @@ function QueueView({
                 <div className="text-xs text-red-400 mt-1 line-clamp-2">
                   {post.failed_reason || "Publishing failed"}
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => onPublish(post.id)}
-                  disabled={publishingPostId === post.id}
-                  className="mt-2 w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 text-xs font-medium rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {publishingPostId === post.id ? (
-                    <>
-                      <div className="w-3 h-3 border-2 border-red-400 border-t-transparent rounded-full animate-spin" />
-                      Retrying...
-                    </>
-                  ) : (
-                    <>
-                      <RotateCcw className="w-3 h-3" />
-                      Retry
-                    </>
-                  )}
-                </motion.button>
+                <Link href="/social-accounts" className="mt-2 w-full block">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-coral-500/20 hover:bg-coral-500/30 text-coral-400 text-xs font-medium rounded transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Connect Account
+                  </motion.button>
+                </Link>
               </div>
             ))}
           </div>

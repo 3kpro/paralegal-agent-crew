@@ -20,6 +20,7 @@ import {
   X,
   BarChart3,
   Flame,
+  Copy,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedLoader } from "@/components/ui";
@@ -331,9 +332,23 @@ export default function NewCampaignPage() {
   }, [targetPlatforms]);
 
   const goToPrevCard = useCallback(() => {
-    setCardDirection(-1);
-    setCurrentCard((prev) => Math.max(prev - 1, 1));
-  }, []);
+    // Smart back button for Card 7 (content display)
+    if (currentCard === 7 && generatedContent && Object.keys(generatedContent).length > 0) {
+      if (campaignSaved || isEditMode) {
+        // If saved or in edit mode, go to campaigns page
+        router.push("/campaigns");
+      } else {
+        // If not saved, warn about unsaved changes
+        if (confirm("You have unsaved changes. Exit anyway? Your generated content will be lost.")) {
+          router.push("/campaigns");
+        }
+      }
+    } else {
+      // For other cards, normal navigation
+      setCardDirection(-1);
+      setCurrentCard((prev) => Math.max(prev - 1, 1));
+    }
+  }, [currentCard, generatedContent, campaignSaved, isEditMode, router]);
 
   /**
    * NEW: AI Optimize - Auto-select best settings based on user interests and target platforms
@@ -1135,6 +1150,30 @@ export default function NewCampaignPage() {
       aiProvider,
     ]
   );
+
+  /**
+   * Copy platform content to clipboard
+   */
+  const copyContent = useCallback((platform: string) => {
+    const content = editedContent[platform] ||
+      (typeof generatedContent[platform] === 'string'
+        ? generatedContent[platform]
+        : generatedContent[platform]?.content || '');
+
+    if (!content) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        showToast(`${platform.charAt(0).toUpperCase() + platform.slice(1)} content copied!`, "success");
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        showToast("Failed to copy content", "error");
+      });
+  }, [editedContent, generatedContent, showToast]);
 
   // Show loading screen while loading campaign data in edit mode
   if (loadingCampaignData) {
@@ -2153,7 +2192,7 @@ export default function NewCampaignPage() {
                       )}
                     </AnimatePresence>
 
-                    {/* Navigation - Just Back and Edit */}
+                    {/* Navigation - Back, Copy, and Edit */}
                     <div className="flex gap-3">
                       <motion.button
                         onClick={goToPrevCard}
@@ -2164,14 +2203,25 @@ export default function NewCampaignPage() {
                         ← Back
                       </motion.button>
                       {activePlatformView && generatedContent[activePlatformView] && (
-                        <motion.button
-                          onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className="flex-1 px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
-                        >
-                          {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
-                        </motion.button>
+                        <>
+                          <motion.button
+                            onClick={() => copyContent(activePlatformView)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="px-6 py-3 bg-tron-dark/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
+                          >
+                            <Copy className="w-4 h-4" />
+                            Copy Content
+                          </motion.button>
+                          <motion.button
+                            onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="flex-1 px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                          >
+                            {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
+                          </motion.button>
+                        </>
                       )}
                     </div>
                   </>
@@ -2202,10 +2252,10 @@ export default function NewCampaignPage() {
                         whileHover={{ scale: loading ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="px-8 py-5 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                        aria-label="Publish campaign now"
+                        aria-label="Publish campaign (coming soon)"
                       >
                         <Sparkles className="w-5 h-5" />
-                        {loading ? "Publishing..." : "Publish Now"}
+                        {loading ? "Publishing..." : "Publish (Coming Soon)"}
                       </motion.button>
                     </div>
                   )}

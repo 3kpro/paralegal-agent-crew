@@ -146,6 +146,18 @@ export default function SocialAccountsPage() {
           <p className="text-gray-300 text-lg">
             Connect your social media accounts to publish campaigns directly
           </p>
+
+          {/* Beta Access Info */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-4 max-w-2xl mx-auto p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg"
+          >
+            <p className="text-blue-300 text-sm">
+              <strong>Early Access:</strong> Direct publishing is rolling out in phases. Use TrendPulse to generate content and the Copy button to share manually while we activate your account.
+            </p>
+          </motion.div>
         </div>
 
         {/* Error Display */}
@@ -179,13 +191,9 @@ export default function SocialAccountsPage() {
                       transition={{ delay: index * 0.1 }}
                       className="relative"
                     >
-                      <button
-                        onClick={() => !connected && !connecting && handleConnect(platform.id)}
-                        disabled={connected || connecting}
-                        className={`relative group aspect-square rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 overflow-hidden w-full
+                      <div
+                        className={`relative group aspect-square rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 overflow-hidden w-full cursor-default
                           ${platform.bgClass}
-                          ${connected ? 'cursor-default' : 'hover:transform hover:scale-105'}
-                          ${connecting ? 'opacity-75' : ''}
                           transition-all duration-300`}
                       >
                         {/* Platform Icon */}
@@ -203,23 +211,13 @@ export default function SocialAccountsPage() {
                           </div>
                         )}
 
-                        {/* Connecting Indicator */}
-                        {connecting && (
+                        {/* Coming Soon Badge */}
+                        {!connected && (
                           <motion.div
-                            className="absolute inset-0 bg-black/60 flex items-center justify-center"
-                          >
-                            <Loader2 className="w-5 h-5 text-white animate-spin" />
-                          </motion.div>
-                        )}
-
-                        {/* Connect Button */}
-                        {!connected && !connecting && (
-                          <motion.div
-                            whileHover={{ scale: 1.1 }}
                             className="absolute bottom-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                           >
                             <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-medium">
-                              Connect
+                              Coming Soon
                             </div>
                           </motion.div>
                         )}
@@ -242,7 +240,7 @@ export default function SocialAccountsPage() {
                         {!connected && (
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         )}
-                      </button>
+                      </div>
 
                       {/* Disconnect Button */}
                       {connected && account && (

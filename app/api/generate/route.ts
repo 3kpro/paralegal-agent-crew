@@ -24,6 +24,41 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check daily usage limits
+    const { data: canGenerate, error: limitError } = await supabase.rpc(
+      "can_user_generate",
+      { p_user_id: user.id }
+    );
+
+    if (limitError) {
+      console.error("[Generate API] Error checking usage limits:", limitError);
+    }
+
+    if (!canGenerate) {
+      // Get usage details for error message
+      const { data: usageData } = await supabase.rpc("get_user_daily_usage", {
+        p_user_id: user.id,
+      });
+      const { data: tierData } = await supabase.rpc("get_user_tier_limits", {
+        p_user_id: user.id,
+      });
+
+      const usage = usageData?.[0] || { generations_count: 0 };
+      const limit = tierData?.[0]?.daily_generations_limit || 3;
+
+      return NextResponse.json(
+        {
+          error: "Daily generation limit reached",
+          message: `You've used ${usage.generations_count} of ${limit} daily generations. Upgrade to Pro for 25 daily generations or Premium for unlimited access.`,
+          limit_reached: true,
+          current_usage: usage.generations_count,
+          daily_limit: limit,
+          upgrade_url: "/settings?tab=membership",
+        },
+        { status: 429 }
+      );
+    }
+
     // Parse and validate request body
     const body = await request.json();
     console.log('[Generate API] Request body:', JSON.stringify(body, null, 2));
@@ -262,6 +297,16 @@ export async function POST(request: Request) {
 
         if (rpcError) {
           console.error("Usage metric error:", rpcError);
+        }
+
+        // Increment daily generation count for tier limits
+        const { error: dailyError } = await supabase.rpc("increment_daily_usage", {
+          p_user_id: user.id,
+          p_tokens: 0 // Token counting can be added later if needed
+        });
+
+        if (dailyError) {
+          console.error("Daily usage increment error:", dailyError);
         }
       } catch (err) {
         console.error("Usage metric error:", err);

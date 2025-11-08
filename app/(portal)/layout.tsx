@@ -25,6 +25,7 @@ export default function PortalLayout({
   const [loading, setLoading] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showWhatsNew, setShowWhatsNew] = useState(false);
 
   useEffect(() => {
     async function checkUser() {
@@ -176,7 +177,10 @@ export default function PortalLayout({
               </h2>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}
-                <button className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors">
+                <button
+                  onClick={() => setShowWhatsNew(true)}
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
+                >
                   <Sparkles className="w-4 h-4" />
                   <span className="hidden md:inline">What's New</span>
                 </button>
@@ -249,10 +253,129 @@ export default function PortalLayout({
           </header>
 
           {/* Settings Modal */}
-          <SettingsModal 
+          <SettingsModal
             isOpen={isSettingsOpen}
             onClose={() => setIsSettingsOpen(false)}
           />
+
+          {/* What's New Modal */}
+          {showWhatsNew && (
+            <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+              <div className="bg-[#343a40] border-2 border-coral-500/50 rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+                {/* Modal Header */}
+                <div className="bg-gradient-to-r from-coral-500/20 to-purple-500/20 border-b border-coral-500/30 p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="w-6 h-6 text-coral-400" />
+                      <h2 className="text-2xl font-bold text-white">What's New</h2>
+                      <span className="text-xs px-2 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300">
+                        November 5, 2025
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowWhatsNew(false)}
+                      className="text-gray-400 hover:text-white transition-colors"
+                      aria-label="Close What's New modal"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Content */}
+                <div className="overflow-y-auto p-6 space-y-6">
+                  {/* Campaign Archive Feature */}
+                  <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">📦</span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">Campaign Archive</h3>
+                        <p className="text-gray-300 text-sm mb-3">
+                          Keep your workspace clean without losing data! Archive old campaigns to hide them from your main view, and restore them anytime.
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="text-green-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Non-destructive archiving - restore anytime</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-green-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Clean workspace for active campaigns</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-green-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Keep records for compliance</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI Studio Coming Soon */}
+                  <div className="bg-[#2b2b2b] border border-purple-500/30 rounded-lg p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">🧠</span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">
+                          AI Studio <span className="text-xs px-2 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300">Coming Soon</span>
+                        </h3>
+                        <p className="text-gray-300 text-sm mb-3">
+                          Access 50+ AI models from 8 major providers through one powerful interface. Mix and match for optimal results!
+                        </p>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {['OpenAI', 'Claude', 'Gemini', 'Llama', 'Mistral', 'Groq', 'Cohere', 'Perplexity'].map(provider => (
+                            <span key={provider} className="text-xs px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded text-purple-300">
+                              {provider}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Font Upgrade */}
+                  <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">✨</span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">Modern Font Upgrade</h3>
+                        <p className="text-gray-300 text-sm">
+                          Upgraded to <strong>Space Grotesk</strong> for a more modern, tech-forward aesthetic throughout the platform.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pre-launch Polish */}
+                  <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">🚀</span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">Pre-launch Polish</h3>
+                        <p className="text-gray-300 text-sm mb-3">
+                          Enhanced all pages with professional "Coming Soon" messaging. Features are showcased beautifully without appearing unfinished.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="border-t border-gray-700/50 p-4 bg-[#2b2b2b]">
+                  <button
+                    type="button"
+                    onClick={() => setShowWhatsNew(false)}
+                    className="w-full bg-coral-500 hover:bg-coral-600 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors"
+                  >
+                    Got it!
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Page Content */}
           <main className="min-h-[calc(100vh-73px)] pb-16 md:pb-0 md:pl-32">

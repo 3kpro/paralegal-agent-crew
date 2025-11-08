@@ -4,139 +4,118 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const supabase = await createClient();
-
     const {
       data: { user },
-      error: authError,
     } = await supabase.auth.getUser();
-    if (authError || !user) {
+
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get profile with limits
+    // Get user's tier limits
+    const { data: tierLimits, error: tierError } = await supabase.rpc(
+      "get_user_tier_limits",
+      { p_user_id: user.id }
+    );
+
+    if (tierError) {
+      console.error("Error fetching tier limits:", tierError);
+      return NextResponse.json(
+        { error: "Failed to fetch tier limits" },
+        { status: 500 }
+      );
+    }
+
+    // Get user's daily usage
+    const { data: dailyUsage, error: usageError } = await supabase.rpc(
+      "get_user_daily_usage",
+      { p_user_id: user.id }
+    );
+
+    if (usageError) {
+      console.error("Error fetching daily usage:", usageError);
+      return NextResponse.json(
+        { error: "Failed to fetch daily usage" },
+        { status: 500 }
+      );
+    }
+
+    // Get user profile for tier info
     const { data: profile } = await supabase
       .from("profiles")
-      .select("subscription_tier, ai_tools_limit")
+      .select("subscription_tier")
       .eq("id", user.id)
       .single();
 
-    // Calculate start of current month
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    startOfMonth.setHours(0, 0, 0, 0);
-
-    // Get campaign usage this month
-    const { count: campaignsThisMonth } = await supabase
-      .from("campaigns")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .gte("created_at", startOfMonth.toISOString());
-
-    // Get AI tools count
-    const { count: aiToolsCount } = await supabase
-      .from("user_ai_tools")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("is_active", true);
-
-    // Get API usage and costs this month
-    const { data: apiUsage } = await supabase
-      .from("ai_tool_usage")
-      .select("tokens_used, estimated_cost")
-      .eq("user_id", user.id)
-      .gte("created_at", startOfMonth.toISOString());
-
-    const totalTokens =
-      apiUsage?.reduce((sum, u) => sum + (u.tokens_used || 0), 0) || 0;
-    const totalCost =
-      apiUsage?.reduce((sum, u) => sum + Number(u.estimated_cost || 0), 0) || 0;
-    const apiCallsCount = apiUsage?.length || 0;
-
-    // Campaign limits based on tier
-    const tierLimits: Record<string, number> = {
-      free: 5,
-      pro: 999999,
-      premium: 999999,
+    const limits = tierLimits?.[0] || {
+      tier: "free",
+      daily_generations_limit: 3,
+      daily_tokens_limit: 10000,
+      monthly_campaigns_limit: 5,
+      ai_tools_limit: 1,
+      can_schedule: false,
+      can_publish: false,
+      can_use_ai_studio: false,
+      features: ["trendpulse", "copy_content"],
     };
 
-    const currentTier = profile?.subscription_tier || "free";
-    const campaignLimit = tierLimits[currentTier] || 5;
-
-    // Calculate storage usage (placeholder - implement when file uploads are added)
-    const storageUsedMB = 0;
-    const storageLimits: Record<string, number> = {
-      free: 100, // 100MB
-      pro: 10240, // 10GB
-      premium: 102400, // 100GB
+    const usage = dailyUsage?.[0] || {
+      generations_count: 0,
+      tokens_used: 0,
+      campaigns_created: 0,
+      usage_date: new Date().toISOString().split("T")[0],
     };
 
-    // Platform limits
-    const platformLimits: Record<string, number> = {
-      free: 3,
-      pro: 999,
-      premium: 999,
-    };
+    // Check if user can generate
+    const { data: canGenerate } = await supabase.rpc("can_user_generate", {
+      p_user_id: user.id,
+    });
 
-    // Get connected social accounts
-    const { count: connectedPlatforms } = await supabase
-      .from("social_accounts")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("is_active", true);
+    // Calculate remaining generations
+    const remainingGenerations =
+      limits.daily_generations_limit === -1
+        ? -1 // Unlimited
+        : Math.max(
+            0,
+            limits.daily_generations_limit - usage.generations_count
+          );
 
-    // Calculate estimated savings (if using LM Studio vs paid APIs)
-    // Rough estimate: GPT-4 costs ~$0.03 per 1K tokens input, $0.06 per 1K tokens output
-    // Average: ~$0.045 per 1K tokens
-    const estimatedSaved = (totalTokens / 1000) * 0.045;
+    // Calculate percentage used
+    const percentageUsed =
+      limits.daily_generations_limit === -1
+        ? 0
+        : (usage.generations_count / limits.daily_generations_limit) * 100;
 
     return NextResponse.json({
       success: true,
-      usage: {
-        // Campaigns
-        campaignsUsed: campaignsThisMonth || 0,
-        campaignsLimit: campaignLimit,
-        campaignsPercentage: Math.round(
-          ((campaignsThisMonth || 0) / campaignLimit) * 100,
-        ),
-
-        // AI Tools
-        aiToolsUsed: aiToolsCount || 0,
-        aiToolsLimit: profile?.ai_tools_limit || 1,
-        aiToolsPercentage: Math.round(
-          ((aiToolsCount || 0) / (profile?.ai_tools_limit || 1)) * 100,
-        ),
-
-        // Social Platforms
-        platformsConnected: connectedPlatforms || 0,
-        platformsLimit: platformLimits[currentTier] || 3,
-
-        // Storage
-        storageUsedMB,
-        storageLimitMB: storageLimits[currentTier] || 100,
-        storagePercentage: Math.round(
-          (storageUsedMB / (storageLimits[currentTier] || 100)) * 100,
-        ),
-
-        // API Usage
-        apiCallsThisMonth: apiCallsCount,
-        tokensUsed: totalTokens,
-        estimatedCost: totalCost,
-        estimatedCostSaved: estimatedSaved,
-
-        // Current Plan
-        currentTier,
-        billingCycle: "monthly", // Will be dynamic with Stripe
-        nextBillingDate: null, // Will be from Stripe subscription
-      },
+      tier: profile?.subscription_tier || "free",
       limits: {
-        campaigns: campaignLimit,
-        aiTools: profile?.ai_tools_limit || 1,
-        platforms: platformLimits[currentTier] || 3,
-        storageMB: storageLimits[currentTier] || 100,
+        daily_generations: limits.daily_generations_limit,
+        daily_tokens: limits.daily_tokens_limit,
+        monthly_campaigns: limits.monthly_campaigns_limit,
+        ai_tools: limits.ai_tools_limit,
+        can_schedule: limits.can_schedule,
+        can_publish: limits.can_publish,
+        can_use_ai_studio: limits.can_use_ai_studio,
+        features: limits.features,
       },
+      usage: {
+        generations: usage.generations_count,
+        tokens: usage.tokens_used,
+        campaigns: usage.campaigns_created,
+        date: usage.usage_date,
+      },
+      remaining: {
+        generations: remainingGenerations,
+        percentage_used: Math.round(percentageUsed),
+      },
+      can_generate: canGenerate || false,
     });
   } catch (error: any) {
-    console.error("Usage stats error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Usage API error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
