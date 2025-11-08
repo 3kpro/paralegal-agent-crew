@@ -16,6 +16,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  CreditCard,
 } from "lucide-react"
 
 export function FloatingNav() {
@@ -90,6 +91,11 @@ export function FloatingNav() {
           icon={<Settings size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => setIsSettingsOpen(true)}
           label="Settings"
+        />
+        <MenuItem
+          icon={<CreditCard size={22} strokeWidth={1.5} className="text-coral-400" />}
+          onClick={() => router.push('/pricing')}
+          label="Upgrade"
         />
         <MenuItem
           icon={<LogOut size={22} strokeWidth={1.5} className="text-red-400" />}
