@@ -126,14 +126,14 @@ export default function TestimonialsSection() {
                     <Quote className="w-12 h-12 text-tron-cyan" />
                   </div>
 
-                  {/* Beta Badge */}
+                  {/* Feature Badge */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
                     className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-full text-xs font-bold shadow-lg"
                   >
-                    BETA TESTER
+                    COMING SOON
                   </motion.div>
 
                   {/* Rating */}

@@ -11,5 +11,5 @@ export { default as ModernFeatures } from "./ModernFeatures";
 export { default as ModernPricing } from "./ModernPricing";
 export { default as WaitlistSection } from "./WaitlistSection";
 export { default as DemoVideoSection } from "./DemoVideoSection";
-export { default as TestimonialsSection } from "./TestimonialsSection";
+export { default as FeatureShowcase } from "./FeatureShowcase";
 export { default as FAQSection } from "./FAQSection";
