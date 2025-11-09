@@ -4,6 +4,20 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Fireworks from "@/components/Fireworks";
+import { GenerationResponse, ValidationError, RateLimitError, SetupRequiredError } from "@/lib/types/api";
+
+// Type guards for API responses
+function isSetupRequiredError(data: GenerationResponse): data is SetupRequiredError {
+  return !data.success && data.requiresSetup === true;
+}
+
+function isRateLimitError(data: GenerationResponse): data is RateLimitError {
+  return !data.success && data.limit_reached === true;
+}
+
+function isValidationError(data: GenerationResponse): data is ValidationError {
+  return !data.success && Array.isArray(data.details) && data.details.length > 0;
+}
 import {
   Twitter,
   Linkedin,
@@ -812,38 +826,46 @@ export default function NewCampaignPage() {
         // Pass content controls to API (map values to API format)
         temperature: controls.temperature,
         tone: controls.tone,
-        length: lengthMapping[controls.length] || 'standard', // Map: short→concise, long→detailed
-        audience: selectedAudiences[0] || 'professionals', // Use first selected audience
+        length: lengthMapping[controls.length] || 'standard',
+        audience: selectedAudiences[0] || 'professionals',
         contentFocus: controls.contentFocus,
         callToAction: controls.callToAction,
       };
-      
-      console.log('[Generate Content] Request:', requestBody);
 
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
-
-      console.log('[Generate Content] Response status:', response.status, response.statusText);
-
-      const responseText = await response.text();
-      console.log('[Generate Content] Response text:', responseText);
-
-      let data;
+      let response: Response;
       try {
-        data = responseText ? JSON.parse(responseText) : {};
-      } catch (parseError) {
-        console.error('[Generate Content] Failed to parse response:', parseError);
+        response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        });
+      } catch (fetchError) {
+        console.error('[Generate Content] Network error:', fetchError);
+        showToast("Network error. Please check your connection and try again.", "error");
+        return;
+      }
+
+      if (!response.ok && response.status !== 400) { // 400 means validation error, which we handle below
+        console.error('[Generate Content] HTTP error:', response.status, response.statusText);
         showToast(`Server error: ${response.status} ${response.statusText}`, "error");
         return;
       }
 
-      console.log('[Generate Content] Parsed data:', data);
+      let responseData: GenerationResponse;
+      try {
+        const responseText = await response.text();
+        console.log('[Generate Content] Raw response:', responseText);
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error('[Generate Content] Failed to parse response:', parseError);
+        showToast("Invalid server response. Please try again.", "error");
+        return;
+      }
 
-      if (data.success) {
-        setGeneratedContent(data.content);
+      console.log('[Generate Content] Parsed response:', responseData);
+
+      if (responseData.success && responseData.content) {
+        setGeneratedContent(responseData.content);
         showToast("Content generated successfully!", "success");
         
         // Trigger fireworks celebration after a delay so content shows first
@@ -851,19 +873,33 @@ export default function NewCampaignPage() {
           setShowFireworks(true);
           setTimeout(() => setShowFireworks(false), 5000);
         }, 1000);
-      } else if (data.requiresSetup) {
-        showToast("No AI tools configured. Redirecting to Settings...", "error");
-        setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
       } else {
-        // Show detailed validation errors if available
-        interface ValidationDetail {
-          field: string;
-          message: string;
+        // Safe error logging
+        console.error('Generation error details:', responseData);
+        
+        // Type guards for specific error types
+        if (isSetupRequiredError(responseData)) {
+          showToast("No AI tools configured. Redirecting to Settings...", "error");
+          setTimeout(() => router.push("/settings?tab=api-keys"), 2000);
+          return;
         }
-        const errorMessage = data.details 
-          ? `Validation Error: ${data.details.map((d: ValidationDetail) => `${d.field}: ${d.message}`).join(', ')}`
-          : `Generation failed: ${data.error}`;
-        console.error('Generation error details:', data);
+
+        if (isRateLimitError(responseData)) {
+          const message = responseData.message || `Daily limit reached (${responseData.current_usage}/${responseData.daily_limit}). Please upgrade your plan.`;
+          showToast(message, "error");
+          return;
+        }
+
+        if (isValidationError(responseData)) {
+          const message = `Validation Error: ${responseData.details
+            .map(d => `${d.field}: ${d.message}`)
+            .join(', ')}`;
+          showToast(message, "error");
+          return;
+        }
+
+        // Generic error handling
+        const errorMessage = responseData.message || responseData.error || "Content generation failed. Please try again.";
         showToast(errorMessage, "error");
       }
     } catch (error) {

@@ -7,24 +7,17 @@ import { Users, Zap, Clock, Star } from "lucide-react";
 interface StatItem {
   value: string;
   label: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
   animatedValue?: number;
 }
 
 const stats: StatItem[] = [
   {
-    value: "100+",
-    label: "Early Access Users",
-    icon: Users,
-    color: "text-coral-500",
-    animatedValue: 100,
-  },
-  {
     value: "6",
     label: "Platform Integrations",
     icon: Zap,
-    color: "text-coral-600",
+    color: "text-coral-500",
     animatedValue: 6,
   },
   {
@@ -35,11 +28,18 @@ const stats: StatItem[] = [
     animatedValue: 24,
   },
   {
-    value: "48h",
-    label: "Average Response Time",
+    value: "100%",
+    label: "Automated Publishing",
     icon: Clock,
+    color: "text-coral-600",
+    animatedValue: 100,
+  },
+  {
+    value: "3+",
+    label: "AI Model Options",
+    icon: Users,
     color: "text-amber-500",
-    animatedValue: 48,
+    animatedValue: 3,
   },
 ];
 
