@@ -72,7 +72,7 @@ const platformIcons = {
   email: MessageSquare,
 };
 
-export default function TestimonialsSection() {
+export default function FeatureShowcase() {
   return (
     <section id="testimonials" className="py-24 bg-tron-dark">
       <div className="container mx-auto px-4">
