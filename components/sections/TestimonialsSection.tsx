@@ -3,72 +3,66 @@
 import { motion } from "framer-motion";
 import { Star, Quote, Twitter, Linkedin, MessageSquare } from "lucide-react";
 
-const testimonials = [
+const features = [
   {
-    name: "Sarah Chen",
-    role: "Beta Creator & Coach",
-    company: "@SarahBuildsThings",
-    image: "SC", // Using initials as placeholder
+    name: "TrendPulse™",
+    role: "Real-Time Trend Detection",
+    image: "TP",
     content:
-      "TrendPulse™ Beta found 3 viral trends before anyone else. The AI Studio gives me GPT-4 and Claude together—I create 7 days of content in 30 minutes. Game-changing!",
+      "Discover emerging trends across social platforms before they peak. Advanced AI algorithms analyze millions of data points to identify viral opportunities.",
     rating: 5,
     platform: "twitter",
-    metrics: "10K → 68K followers during beta",
+    feature: "3-7 days early trend detection",
   },
   {
-    name: "Marcus Rodriguez",
-    role: "Beta Agency Partner",
-    company: "GrowthLab Agency",
-    image: "MR",
+    name: "AI Studio™",
+    role: "Multi-Model Content Creation",
+    image: "AS",
     content:
-      "ContentFlow™ automation publishes to 6 platforms instantly. Our clients' reach increased 400% since joining the beta. The Brand Voice AI maintains perfect consistency.",
+      "Harness the power of multiple AI models working together. Create high-quality content faster with our hybrid AI approach combining multiple leading models.",
     rating: 5,
     platform: "linkedin",
-    metrics: "$180K additional revenue in beta",
+    feature: "6+ AI models integrated",
   },
   {
-    name: "Emily Watson",
-    role: "Beta SaaS Founder",
-    company: "TechFlow Solutions",
-    image: "EW",
+    name: "Media Generator™",
+    role: "AI-Powered Visuals",
+    image: "MG",
     content:
-      "Beta features are incredible. Media Generator™ creates perfect visuals, Analytics Hub™ predicts viral content. My product launches now reach 10x more people.",
+      "Transform text into engaging visuals instantly. Our AI creates platform-optimized images, graphics, and video thumbnails that capture attention.",
     rating: 5,
     platform: "twitter",
-    metrics: "1,200% increase in signups",
+    feature: "1-click visual creation",
   },
   {
-    name: "David Kim",
-    role: "Beta Newsletter Creator",
-    company: "The Marketing Mind",
-    image: "DK",
+    name: "Analytics Hub™",
+    role: "Predictive Analytics",
+    image: "AH",
     content:
-      "Beta trend detection is unreal—I'm breaking stories 3 days early. Went from 25K to 85K subscribers using beta features. The competitive advantage is massive.",
+      "Predict content performance before publishing. Our ML models analyze engagement patterns to optimize your content strategy for maximum impact.",
     rating: 5,
     platform: "email",
-    metrics: "85K subscribers, $28K MRR",
+    feature: "90% prediction accuracy",
   },
   {
-    name: "Rachel Green",
-    role: "Beta Business Consultant",
-    company: "Strategy & Growth Co",
-    image: "RG",
+    name: "ContentFlow™",
+    role: "Smart Automation",
+    image: "CF",
     content:
-      "The beta taught me content marketing mastery. 6-platform publishing, viral predictions, automated workflows—I'm booked solid with premium clients now.",
+      "Streamline your content workflow with intelligent automation. Schedule, adapt, and publish content across multiple platforms with perfect consistency.",
     rating: 5,
     platform: "linkedin",
-    metrics: "8x client inquiries per month",
+    feature: "6 platforms supported",
   },
   {
-    name: "Alex Johnson",
-    role: "Beta Course Creator",
-    company: "LearnBuild Academy",
-    image: "AJ",
+    name: "Brand Voice™",
+    role: "AI Style Adaptation",
+    image: "BV",
     content:
-      "Beta access gave me first-mover advantage. The automation workflows turn one idea into 20+ pieces of content across platforms. Course sales up 800% since beta launch.",
+      "Maintain consistent brand voice across all channels. Our AI learns your unique style and ensures every piece of content sounds authentically you.",
     rating: 5,
     platform: "email",
-    metrics: "$450K revenue increase",
+    feature: "Custom AI fine-tuning",
   },
 ];
 
@@ -90,33 +84,33 @@ export default function TestimonialsSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full mb-6 shadow-lg">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-full mb-6 shadow-lg">
               <Star className="w-4 h-4 text-white" fill="currentColor" />
               <span className="text-sm font-bold text-white">
-                4.9/5 stars from 2,500+ beta creators
+                Powered by Advanced AI Technology
               </span>
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
-              Loved by Beta Creators
+              Next-Generation
               <br />
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Getting Extraordinary Results
+                Content Creation Platform
               </span>
             </h2>
 
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              Join 2,500+ beta creators, agencies, and founders who've unlocked
-              next-generation content creation with TrendPulse™ Beta features.
+              Experience the power of multi-model AI, real-time trend detection, and
+              intelligent automation working together seamlessly.
             </p>
           </motion.div>
 
-          {/* Testimonials Grid */}
+          {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => {
+            {features.map((feature, index) => {
               const PlatformIcon =
                 platformIcons[
-                  testimonial.platform as keyof typeof platformIcons
+                  feature.platform as keyof typeof platformIcons
                 ];
 
               return (
@@ -144,7 +138,7 @@ export default function TestimonialsSection() {
 
                   {/* Rating */}
                   <div className="flex items-center gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(feature.rating)].map((_, i) => (
                       <Star
                         key={i}
                         className="w-5 h-5 text-tron-magenta"
@@ -155,31 +149,31 @@ export default function TestimonialsSection() {
 
                   {/* Content */}
                   <p className="text-tron-text-muted mb-6 leading-relaxed">
-                    "{testimonial.content}"
+                    {feature.content}
                   </p>
 
-                  {/* Metrics */}
+                  {/* Key Feature */}
                   <div className="bg-tron-grid rounded-lg p-3 mb-6 border border-tron-cyan">
                     <div className="text-sm font-semibold text-tron-cyan">
-                      📈 Result: {testimonial.metrics}
+                      ⚡ Capability: {feature.feature}
                     </div>
                   </div>
 
-                  {/* Author */}
+                  {/* Feature Title */}
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                      {testimonial.image}
+                      {feature.image}
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-tron-text">
-                        {testimonial.name}
+                        {feature.name}
                       </div>
                       <div className="text-sm text-tron-text-muted">
-                        {testimonial.role}
+                        {feature.role}
                       </div>
                       <div className="flex items-center gap-1 text-sm text-tron-text-muted">
                         <PlatformIcon className="w-4 h-4" />
-                        {testimonial.company}
+                        Coming Soon
                       </div>
                     </div>
                   </div>
@@ -197,12 +191,11 @@ export default function TestimonialsSection() {
           >
             <div className="bg-tron-grid rounded-2xl p-12 border border-tron-cyan">
               <h3 className="text-2xl font-bold text-tron-text mb-4">
-                Ready to Join Our Beta Success Stories?
+                Ready to Transform Your Content Strategy?
               </h3>
               <p className="text-tron-text-muted mb-8 max-w-2xl mx-auto">
-                Get exclusive Beta access to TrendPulse™, AI Studio™, and
-                ContentFlow™ automation. Be among the first to experience
-                next-generation content creation.
+                Be the first to experience our next-generation AI content platform.
+                Early access coming soon to selected partners.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <motion.button
@@ -216,7 +209,7 @@ export default function TestimonialsSection() {
                   }}
                   className="px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-200"
                 >
-                  Join Beta Program
+                  Request Early Access
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -229,7 +222,7 @@ export default function TestimonialsSection() {
                   }}
                   className="px-8 py-4 bg-tron-grid border-2 border-tron-cyan text-tron-cyan rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-tron-cyan/10 transform transition-all duration-200"
                 >
-                  View Beta Access
+                  View Plans
                 </motion.button>
               </div>
             </div>
