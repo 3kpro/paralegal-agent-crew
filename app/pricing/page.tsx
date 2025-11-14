@@ -1,11 +1,26 @@
 import React from 'react';
 import { TIER_LIMITS } from '@/lib/stripe';
 import { CheckoutButton } from '@/components/CheckoutButton';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export default async function PricingPage() {
-  // Temporarily bypass auth to fix production error
-  const currentTier = 'free';
-  const isActive = false;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login?redirect=/pricing');
+  }
+
+  // Get current subscription tier
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('subscription_tier')
+    .eq('id', user.id)
+    .single();
+
+  const currentTier = profile?.subscription_tier || 'free';
+  const isActive = true;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
