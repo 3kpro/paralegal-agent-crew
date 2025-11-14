@@ -43,6 +43,16 @@ Users can configure their own API keys for:
 
 All API keys encrypted with AES-256-GCM and stored securely in Supabase.
 
+### ✅ Campaign Management
+- **Archive/Restore:** Soft delete pattern for campaigns (non-destructive)
+- **Database:** Migration 011 with indexed archived column
+- **UI:** Toggle between active and archived campaigns with count badges
+
+### ✅ Authentication & Security
+- **Remember Me:** Persistent (localStorage) vs temporary sessions (sessionStorage)
+- **Enhanced Logout:** Cleans session data across all navigation components
+- **Stripe Checkout:** Production-ready, tier detection working
+
 ### ✅ Subscription Tier System
 - **Free Tier:** 3 daily generations, 10K tokens/day, 1 AI tool
 - **Pro Tier:** 25 daily generations, 100K tokens/day, 3 AI tools ($29/mo - coming soon)
