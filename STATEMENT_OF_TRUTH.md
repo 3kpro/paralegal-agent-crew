@@ -13,7 +13,7 @@ TrendPulse solves the creator's #1 problem: **"What should I post about today?"*
 
 We help content creators, marketers, and influencers discover trending topics in their niche and generate optimized content across multiple social platforms using AI.
 
-**Our competitive advantage:** Real-time trend discovery from multiple sources + local AI for unlimited free content generation + flexible multi-provider AI architecture.
+**Our competitive advantage:** Real-time trend discovery from multiple sources + flexible multi-provider AI architecture allowing users to bring their own API keys.
 
 ---
 
@@ -24,12 +24,6 @@ We help content creators, marketers, and influencers discover trending topics in
 - **Google Gemini Fallback** - AI-generated trends when microservice unavailable
 - **Mock Data Fallback** - Ensures UI never breaks (production safety)
 - **Real-time Twitter trend integration** via Twitter API v1.1
-
-### ✅ Local AI via LM Studio
-- **Free, unlimited content generation** using Mistral-7B model
-- Runs on IBM P51 server @ 10.10.10.105:1234
-- Zero API costs, full privacy, no rate limits
-- Primary AI option for beta users
 
 ### ✅ Multi-Provider AI Architecture
 Users can configure their own API keys for:
@@ -101,10 +95,11 @@ Tier limits enforced via Supabase RPC functions with daily usage tracking.
 - **GitHub Repo:** 3kpro/content-cascade-ai-landing
 
 ### AI Services
-- **LM Studio** (local, free) - Primary option
-- **Google Gemini API** - Trends fallback
-- **Multi-provider support** via encrypted user API keys
-- **NO OpenRouter** - Each provider integrated directly
+- **Google Gemini API** - Primary provider ($1200 credits for launch)
+- **Vertex AI** - Planned for custom model training with real user data (Phase 2)
+- **Multi-provider support** via encrypted user API keys (OpenAI, Anthropic, Google, etc.)
+- **NO OpenRouter** - Each provider is integrated directly.
+- **NO LM Studio** - Not production-ready (home network dependency)
 
 ### Microservices
 - **PowerShell Trends Service** (v2.3) - Localhost:5003, keyword-aware search
@@ -233,11 +228,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=[anon key]
 
 **AI Services:**
 ```
-LM_STUDIO_URL=http://10.10.10.105:1234
-LM_STUDIO_MODEL=mistral-7b-instruct-v0.3
-USE_LOCAL_AI=true
-AI_PROVIDER=local
-GOOGLE_API_KEY=[fallback for trends]
+GOOGLE_API_KEY=[primary AI provider with $1200 credits]
 ```
 
 **PowerShell Microservice:**
