@@ -15,12 +15,12 @@ export default async function PricingPage() {
   // Get current subscription info
   const { data: profile } = await supabase
     .from('profiles')
-    .select('subscription_tier, subscription_status')
+    .select('subscription_tier')
     .eq('id', user.id)
     .single();
 
   const currentTier = profile?.subscription_tier || 'free';
-  const isActive = profile?.subscription_status === 'active';
+  const isActive = true; // TODO: Check Stripe subscription status when implemented
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
