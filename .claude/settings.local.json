@@ -83,7 +83,11 @@
       "Bash(tasklist /FI \"IMAGENAME eq powershell.exe\")",
       "Bash(rm:*)",
       "Bash(wc:*)",
-      "Bash(diff:*)"
+      "Bash(diff:*)",
+      "Bash(supabase --version:*)",
+      "Bash(supabase link:*)",
+      "Bash(supabase login:*)",
+      "Bash(supabase db push:*)"
     ],
     "deny": [],
     "ask": []
