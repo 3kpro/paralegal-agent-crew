@@ -40,9 +40,10 @@ export function CheckoutButton({
 
       // Redirect to Stripe Checkout
       window.location.href = data.url;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
+      // Show the actual error message from the API
+      alert(error.message || 'Failed to start checkout. Please try again.');
     } finally {
       setIsLoading(false);
     }
