@@ -19,8 +19,16 @@ We help content creators, marketers, and influencers discover trending topics in
 
 ## 2. What Actually Works Right Now
 
-### ✅ TrendPulse™ Trend Discovery
-- **PowerShell Microservice** (v2.3) - Keyword-aware trend search running on localhost:5003
+### ✅ TrendPulse™ Trend Discovery with Viral Score™
+- **Viral Score™ Algorithm** ([lib/viral-score.ts](lib/viral-score.ts)) - Predicts viral potential (0-100 score)
+  - **4-Factor Scoring:** Volume (40pts) + Multi-source (30pts) + Specificity (20pts) + Freshness (10pts)
+  - **Classification:** High (70+), Medium (50-69), Low (<50)
+  - **UI Integration:** Color-coded badges (🔥 High, ⚡ Medium, 📊 Low) in campaign creation flow
+  - **Educational Banner:** Explains scoring factors and viral potential to users
+  - **Automatic Sorting:** Trends ranked by viral score (best opportunities first)
+  - **Two-Phase Strategy:**
+    - Phase 1 (Current): Heuristic algorithm collecting real engagement data
+    - Phase 2 (Future): ML model trained with Vertex AI on actual user outcomes
 - **Google Gemini Fallback** - AI-generated trends when microservice unavailable
 - **Mock Data Fallback** - Ensures UI never breaks (production safety)
 - **Real-time Twitter trend integration** via Twitter API v1.1
@@ -100,10 +108,6 @@ Tier limits enforced via Supabase RPC functions with daily usage tracking.
 - **Multi-provider support** via encrypted user API keys (OpenAI, Anthropic, Google, etc.)
 - **NO OpenRouter** - Each provider is integrated directly.
 - **NO LM Studio** - Not production-ready (home network dependency)
-
-### Microservices
-- **PowerShell Trends Service** (v2.3) - Localhost:5003, keyword-aware search
-- **API Gateway via ngrok** (optional) - Exposes local services to production
 
 ### Caching & Rate Limiting
 - **Redis:** Disabled (`REDIS_ENABLED=false`)
@@ -204,10 +208,9 @@ Tracks per-user daily consumption for rate limiting
 - ⚠️ ESLint config broken - Missing `@eslint/js` package
 
 ### Feature Gaps
-- No viral score prediction (mentioned in old docs but never implemented)
-- No feedback tracking system
-- No ML model training
-- Stripe checkout shows "Coming Soon" instead of real checkout
+- Viral Score™ ML training (Phase 2 - needs real user engagement data first)
+- Feedback tracking UI (backend exists in [lib/feedback-tracking.ts](lib/feedback-tracking.ts))
+- Social media auto-publishing (Twitter OAuth configured, not connected to UI)
 
 ### Technical Debt
 - Multiple TODO comments in codebase
@@ -277,9 +280,9 @@ TWITTER_BEARER_TOKEN=...
 ## 12. What This Project Is NOT
 
 - ❌ Not using OpenRouter
-- ❌ Not using Vertex AI (yet)
-- ❌ Not using Redis caching (disabled)
-- ❌ Not using machine learning for viral scores
+- ❌ Not using Vertex AI (yet - Phase 2 roadmap for Viral Score™ ML)
+- ❌ Not using Redis caching (disabled in current deployment)
+- ❌ Not using ML for Viral Score™ yet (heuristic MVP first, then ML with real data)
 - ❌ Not a white-label platform
 - ❌ Not built for agencies (solo creators first)
 

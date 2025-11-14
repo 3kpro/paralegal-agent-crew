@@ -188,6 +188,15 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 - **Free Tier** - 5 campaigns/month, 1 AI tool
 - **Pro Tier** ($29/mo) - Unlimited campaigns, 3 AI tools
 - **Premium Tier** ($99/mo) - Unlimited everything
+- **Stripe Integration** - Test mode enabled, production-ready checkout flow
+
+### Authentication & Security
+
+- **Remember Me** - Optional persistent login (localStorage) vs temporary sessions (sessionStorage)
+  - Checked (default): Users stay logged in across browser restarts
+  - Unchecked: Auto-logout when browser closes (secure for shared computers)
+- **Enhanced Logout** - Cleans up session data across all navigation components
+- **API Key Encryption** - AES-256-GCM for user-configured AI provider keys
 
 ---
 

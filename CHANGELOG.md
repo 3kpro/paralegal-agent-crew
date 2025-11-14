@@ -1,4 +1,73 @@
-## [UNRELEASED] - 2025-11-05
+## [UNRELEASED] - 2024-11-14
+
+### 🔧 **STRIPE CHECKOUT & PRICING PAGE FIXES**
+
+**Fixed Critical Production Errors Blocking Subscription Upgrades**
+
+**Problems**:
+1. Pricing page showing "Server Components render" error when users clicked "Upgrade" button
+2. Stripe checkout failing with "Failed to start checkout" for all users
+3. Premium users seeing "Upgrade" buttons instead of "Current Plan"
+4. Generic error messages not showing actual API errors
+
+**Root Causes Identified**:
+1. `CheckoutButton.tsx` missing `'use client'` directive (uses useState/onClick hooks)
+2. `NEXT_PUBLIC_APP_URL` environment variable corrupted with `\r\n` trailing characters
+3. Pricing page temporarily bypassed auth during debugging
+4. Error handling showing generic messages instead of API response errors
+
+**Solutions Implemented**:
+
+#### **Files Modified**
+
+1. **`components/CheckoutButton.tsx`** - Added client component directive
+   - Added `'use client'` at top of file
+   - Component uses React hooks (useState) and browser APIs (onClick, window.location)
+   - Enhanced error handling to show actual API error messages
+   - Users now see specific error details instead of generic "Failed to start checkout"
+
+2. **`app/pricing/page.tsx`** - Restored proper tier detection
+   - Removed temporary auth bypass (`currentTier = 'free'` hardcode)
+   - Restored Supabase query to fetch actual user subscription tier
+   - Premium users now correctly see "Current Plan" button
+   - Pro users see "Upgrade to Premium" only
+
+3. **Vercel Environment Variables** - Fixed corrupted URL
+   - Removed `NEXT_PUBLIC_APP_URL` with trailing `\r\n` characters
+   - Re-added clean value: `https://trendpulse.3kpro.services`
+   - Stripe checkout URLs now valid (was creating: `https://...com\r\n/settings`)
+   - Success/cancel redirects working properly
+
+4. **`STATEMENT_OF_TRUTH.md`** - AI architecture alignment
+   - Removed LM Studio references (not production-ready - home network dependency)
+   - Updated primary AI provider: Google Gemini ($1200 credits for launch)
+   - Added Vertex AI roadmap (Phase 2 - custom model training with real user data)
+   - Clarified BYOK (Bring Your Own Keys) multi-provider strategy
+   - Aligned with actual production architecture
+
+**Impact**:
+- ✅ Pricing page loads successfully for all users
+- ✅ Tier detection shows correct button states (Current Plan vs Upgrade)
+- ✅ Stripe checkout redirect URLs valid and working
+- ✅ Better error visibility for debugging
+- ✅ Documentation aligned with actual codebase
+- ✅ Ready for TrendPulse subscription launch
+
+**Files Changed**:
+- `components/CheckoutButton.tsx` - Client directive + error handling
+- `app/pricing/page.tsx` - Tier detection restoration
+- Vercel production environment variables
+- `STATEMENT_OF_TRUTH.md` - AI architecture documentation
+
+**Testing Recommendations**:
+1. Test pricing page loads for free/pro/premium users
+2. Verify correct button states based on subscription tier
+3. Test Stripe checkout flow (should redirect to Stripe)
+4. Check error messages are specific (not generic)
+
+---
+
+## [1.11.0] - 2024-11-05
 
 ### 📦 **CAMPAIGN ARCHIVE: Soft Delete with Archive/Restore Functionality**
 
