@@ -131,7 +131,23 @@ export default function SettingsPage() {
       const data = await response.json();
 
       if (data.success) {
-        setUsageData(data.usage);
+        // Transform API response to match UI expectations
+        setUsageData({
+          currentTier: data.tier,
+          campaignsUsed: data.usage.campaigns || 0,
+          campaignsLimit: data.limits.monthly_campaigns,
+          campaignsPercentage: data.limits.monthly_campaigns === -1 ? 0 :
+            Math.round((data.usage.campaigns / data.limits.monthly_campaigns) * 100),
+          aiToolsUsed: 0, // TODO: Get from AI tools API
+          aiToolsLimit: data.limits.ai_tools,
+          aiToolsPercentage: 0,
+          apiCallsThisMonth: data.usage.generations,
+          tokensUsed: data.usage.tokens,
+          estimatedCost: 0,
+          storageUsedMB: 0,
+          storageLimitMB: 100,
+          storagePercentage: 0,
+        });
       }
     } catch (error: any) {
       console.error("Error loading usage data:", error);

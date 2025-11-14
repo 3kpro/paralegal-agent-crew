@@ -62,9 +62,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       // Load usage data for subscription tier
       const usageResponse = await fetch("/api/usage");
       const usageData = await usageResponse.json();
-      
+
       if (usageData.success) {
-        setSubscription(usageData.usage.currentTier || "free");
+        setSubscription(usageData.tier || "free");
       }
     } catch (error) {
       console.error("Error loading user data:", error);
