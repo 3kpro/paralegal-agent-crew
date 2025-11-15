@@ -336,7 +336,11 @@ export default function NewCampaignPage() {
   const goToNextCard = useCallback(() => {
     setCardDirection(1);
     setCurrentCard((prev) => {
-      const nextCard = Math.min(prev + 1, 7);
+      // TrendPulse Launch: Skip card 2 (platform selection) - coming soon feature
+      let nextCard = Math.min(prev + 1, 7);
+      if (nextCard === 2) {
+        nextCard = 3; // Skip platform selection
+      }
       // Set first platform as active when entering Card 7
       if (nextCard === 7 && targetPlatforms.length > 0) {
         setActivePlatformView(targetPlatforms[0]);
@@ -360,7 +364,14 @@ export default function NewCampaignPage() {
     } else {
       // For other cards, normal navigation
       setCardDirection(-1);
-      setCurrentCard((prev) => Math.max(prev - 1, 1));
+      setCurrentCard((prev) => {
+        // TrendPulse Launch: Skip card 2 (platform selection) - coming soon feature
+        let prevCard = Math.max(prev - 1, 1);
+        if (prevCard === 2) {
+          prevCard = 1; // Skip platform selection
+        }
+        return prevCard;
+      });
     }
   }, [currentCard, generatedContent, campaignSaved, isEditMode, router]);
 
@@ -1323,116 +1334,9 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* CARD 2: Platform Selection */}
-          {currentCard === 2 && (
-            <motion.div
-              key="card-2"
-              custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
-            >
-              <div className="text-center mb-12">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
-                >
-                  <Zap className="w-10 h-10 text-tron-cyan" />
-                </motion.div>
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
-                  Choose target accounts
-                </h2>
-                <p className="text-tron-text-muted text-lg">
-                  Select one or more platforms
-                  {targetPlatforms.length > 0 && (
-                    <span className="text-tron-cyan"> · {targetPlatforms.length} selected</span>
-                  )}
-                </p>
-              </div>
-
-              <div className="max-w-3xl mx-auto">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-                  {platforms.map((platform) => {
-                    const Icon = platform.icon;
-                    const isSelected = targetPlatforms.includes(platform.id);
-                    const isConnected = connectedPlatforms.includes(platform.id);
-
-                    return (
-                      <motion.button
-                        key={platform.id}
-                        onClick={() => togglePlatform(platform.id)}
-                        whileHover={{ scale: 1.05, y: -5 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`relative p-8 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 group ${
-                          isSelected
-                            ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl shadow-tron-cyan/30"
-                            : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50"
-                        }`}
-                      >
-                        {/* Selection Checkmark */}
-                        {isSelected && (
-                          <motion.div
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            className="absolute top-3 right-3 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center shadow-lg"
-                          >
-                            <Check className="w-4 h-4 text-white" />
-                          </motion.div>
-                        )}
-
-                        {/* Connection Status */}
-                        {isConnected && (
-                          <div className="absolute top-3 left-3">
-                            <div className="w-3 h-3 rounded-full bg-tron-cyan shadow-lg shadow-tron-cyan/50 animate-pulse" />
-                          </div>
-                        )}
-
-                        <Icon
-                          className={`w-12 h-12 mb-3 mx-auto transition-all duration-300 ${
-                            isSelected
-                              ? "text-tron-cyan"
-                              : "text-tron-text-muted group-hover:text-tron-cyan"
-                          }`}
-                        />
-                        <p
-                          className={`text-sm font-semibold transition-colors ${
-                            isSelected ? "text-tron-text" : "text-tron-text-muted group-hover:text-tron-text"
-                          }`}
-                        >
-                          {platform.name}
-                        </p>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-
-                <div className="flex gap-4">
-                  <motion.button
-                    onClick={goToPrevCard}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
-                  >
-                    ← Back
-                  </motion.button>
-                  <motion.button
-                    onClick={goToNextCard}
-                    disabled={targetPlatforms.length === 0}
-                    whileHover={{ scale: targetPlatforms.length === 0 ? 1 : 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
-                  >
-                    Continue
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {/* CARD 2: Platform Selection - DISABLED FOR TRENDPULSE LAUNCH (Coming Soon) */}
+          {/* Social platform integration will be available in future releases */}
+          {/* Navigation now skips from Card 1 to Card 3 automatically */}
 
           {/* CARD 3: Heavy Hitters vs Custom Trend */}
           {currentCard === 3 && (
