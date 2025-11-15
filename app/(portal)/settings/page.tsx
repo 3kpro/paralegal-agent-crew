@@ -120,10 +120,43 @@ export default function SettingsPage() {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([loadUserData(), loadUsageData()]).finally(() => {
+    Promise.all([loadUserData(), loadUsageData(), handleStripeSuccess()]).finally(() => {
       setInitialLoading(false);
     });
   }, []);
+
+  async function handleStripeSuccess() {
+    // Check if redirected from Stripe checkout
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const sessionId = urlParams.get('session_id');
+
+    if (success === 'true' && sessionId) {
+      try {
+        // Retrieve session from Stripe to sync subscription
+        const response = await fetch('/api/stripe/sync-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setMessage('🎉 Subscription activated successfully! Tier upgraded.');
+          // Reload usage data to show new tier
+          await loadUsageData();
+        } else {
+          setMessage('⚠️ Subscription created but tier update pending. Refresh page in a moment.');
+        }
+      } catch (error) {
+        console.error('Error syncing session:', error);
+      }
+
+      // Clean URL
+      window.history.replaceState({}, '', '/settings');
+    }
+  }
 
   async function loadUsageData() {
     try {

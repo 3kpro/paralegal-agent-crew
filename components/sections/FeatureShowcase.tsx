@@ -10,7 +10,7 @@ const features = [
     image: "TP",
     content:
       "Discover emerging trends across social platforms before they peak. Advanced AI algorithms analyze millions of data points to identify viral opportunities.",
-    rating: 5,
+    status: "available" as const,
     platform: "twitter",
     feature: "3-7 days early trend detection",
   },
@@ -19,10 +19,10 @@ const features = [
     role: "Multi-Model Content Creation",
     image: "AS",
     content:
-      "Harness the power of multiple AI models working together. Create high-quality content faster with our hybrid AI approach combining multiple leading models.",
-    rating: 5,
+      "Discover trending topics with AI-powered analysis. Full multi-model content generation with 8+ AI providers coming soon.",
+    status: "beta" as const,
     platform: "linkedin",
-    feature: "6+ AI models integrated",
+    feature: "Trend discovery available",
   },
   {
     name: "Media Generator™",
@@ -30,9 +30,9 @@ const features = [
     image: "MG",
     content:
       "Transform text into engaging visuals instantly. Our AI creates platform-optimized images, graphics, and video thumbnails that capture attention.",
-    rating: 5,
+    status: "coming-soon" as const,
     platform: "twitter",
-    feature: "1-click visual creation",
+    feature: "Visual AI in development",
   },
   {
     name: "Analytics Hub™",
@@ -40,9 +40,9 @@ const features = [
     image: "AH",
     content:
       "Predict content performance before publishing. Our ML models analyze engagement patterns to optimize your content strategy for maximum impact.",
-    rating: 5,
+    status: "coming-soon" as const,
     platform: "email",
-    feature: "90% prediction accuracy",
+    feature: "ML models in training",
   },
   {
     name: "ContentFlow™",
@@ -50,9 +50,9 @@ const features = [
     image: "CF",
     content:
       "Streamline your content workflow with intelligent automation. Schedule, adapt, and publish content across multiple platforms with perfect consistency.",
-    rating: 5,
+    status: "coming-soon" as const,
     platform: "linkedin",
-    feature: "6 platforms supported",
+    feature: "Platform integration pending",
   },
   {
     name: "Brand Voice™",
@@ -60,9 +60,9 @@ const features = [
     image: "BV",
     content:
       "Maintain consistent brand voice across all channels. Our AI learns your unique style and ensures every piece of content sounds authentically you.",
-    rating: 5,
+    status: "coming-soon" as const,
     platform: "email",
-    feature: "Custom AI fine-tuning",
+    feature: "AI training pipeline ready",
   },
 ];
 
@@ -113,68 +113,74 @@ export default function FeatureShowcase() {
                   feature.platform as keyof typeof platformIcons
                 ];
 
+              const statusConfig = {
+                available: {
+                  label: "✓ Available Now",
+                  bgColor: "bg-green-500/10",
+                  borderColor: "border-green-500/30",
+                  textColor: "text-green-400",
+                  dotColor: "bg-green-500"
+                },
+                beta: {
+                  label: "Beta Access",
+                  bgColor: "bg-blue-500/10",
+                  borderColor: "border-blue-500/30",
+                  textColor: "text-blue-400",
+                  dotColor: "bg-blue-500"
+                },
+                "coming-soon": {
+                  label: "Coming Soon",
+                  bgColor: "bg-gray-700/30",
+                  borderColor: "border-gray-600/40",
+                  textColor: "text-gray-400",
+                  dotColor: "bg-gray-500"
+                },
+              };
+              const status = statusConfig[feature.status];
+
               return (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="bg-tron-grid rounded-2xl p-8 shadow-lg border border-tron-cyan hover:shadow-xl transition-shadow duration-300 relative"
+                  className="bg-[#343a40] rounded-2xl p-6 shadow-xl border-2 border-gray-700/50 hover:border-coral-500/50 hover:shadow-coral-500/10 transition-all duration-300 relative flex flex-col"
                 >
-                  {/* Quote Icon */}
-                  <div className="absolute top-6 right-6 opacity-10">
-                    <Quote className="w-12 h-12 text-tron-cyan" />
+                  {/* Header Row: Avatar and Status */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-coral-500 to-coral-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                      {feature.image}
+                    </div>
+
+                    {/* Status Badge - Cleaner Design */}
+                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${status.bgColor} ${status.borderColor}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${status.dotColor} animate-pulse`}></div>
+                      <span className={`text-xs font-semibold ${status.textColor}`}>
+                        {status.label}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Feature Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
-                    className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-r from-tron-cyan to-tron-magenta text-tron-dark rounded-full text-xs font-bold shadow-lg"
-                  >
-                    COMING SOON
-                  </motion.div>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(feature.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5 text-tron-magenta"
-                        fill="currentColor"
-                      />
-                    ))}
+                  {/* Feature Name & Role */}
+                  <div className="mb-4">
+                    <h3 className="text-xl font-bold text-white mb-1">
+                      {feature.name}
+                    </h3>
+                    <p className="text-xs font-semibold text-coral-400 uppercase tracking-wide">
+                      {feature.role}
+                    </p>
                   </div>
 
                   {/* Content */}
-                  <p className="text-tron-text-muted mb-6 leading-relaxed">
+                  <p className="text-sm text-gray-300 leading-relaxed mb-4 flex-grow">
                     {feature.content}
                   </p>
 
                   {/* Key Feature */}
-                  <div className="bg-tron-grid rounded-lg p-3 mb-6 border border-tron-cyan">
-                    <div className="text-sm font-semibold text-tron-cyan">
-                      ⚡ Capability: {feature.feature}
-                    </div>
-                  </div>
-
-                  {/* Feature Title */}
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                      {feature.image}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-tron-text">
-                        {feature.name}
-                      </div>
-                      <div className="text-sm text-tron-text-muted">
-                        {feature.role}
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-tron-text-muted">
-                        <PlatformIcon className="w-4 h-4" />
-                        Coming Soon
-                      </div>
+                  <div className="bg-[#2b2b2b] rounded-lg p-3 border border-coral-500/30">
+                    <div className="text-sm font-semibold text-coral-400 flex items-center gap-2">
+                      <span>⚡</span>
+                      <span>{feature.feature}</span>
                     </div>
                   </div>
                 </motion.div>

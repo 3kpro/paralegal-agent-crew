@@ -47,10 +47,7 @@ export const Navigation: React.FC<NavigationProps> = () => {
             <NavItem id="pricing" label="Pricing" />
             <NavItem id="contact" label="Contact" />
             <Link href="/login">
-              <Button variant="outline">Sign In</Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="primary">Sign Up</Button>
+              <Button variant="primary">Sign In / Sign Up</Button>
             </Link>
           </div>
 
@@ -104,21 +101,13 @@ export const Navigation: React.FC<NavigationProps> = () => {
               >
                 Contact
               </button>
-              <div className="flex flex-col space-y-2 px-4">
+              <div className="px-4">
                 <Link href="/login">
                   <Button
-                    variant="outline"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign in
-                  </Button>
-                </Link>
-                <Link href="/trend-gen">
-                  <Button
-                    onClick={() => setMobileMenuOpen(false)}
                     variant="primary"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    Get Started
+                    Sign In / Sign Up
                   </Button>
                 </Link>
               </div>

@@ -5,67 +5,59 @@ import { Check, Sparkles, Zap, Crown, ArrowRight } from "lucide-react";
 
 const plans = [
   {
-    name: "Beta Free",
+    name: "Free",
     price: "Free",
-    period: "during beta",
-    description: "Full access to TrendPulse™ Beta features",
+    period: "forever",
+    description: "Perfect for content creators getting started",
     icon: Sparkles,
     gradient: "from-green-400 to-blue-500",
     features: [
-      "10 campaigns per month",
-      "2 connected platforms",
-      "TrendPulse™ Discovery (beta)",
+      "5 trend campaigns per month",
+      "10 trend searches per day",
       "Viral Score™ predictions",
-      "AI Content Studio™",
-      "ContentFlow™ Publishing",
-      "Analytics Hub™ Basic",
-      "Community beta support",
+      "TrendPulse™ Discovery",
+      "Basic analytics",
+      "Community support",
     ],
-    cta: "Join Beta Free",
+    cta: "Get Started Free",
     popular: false,
   },
   {
-    name: "Pro Beta",
-    price: "$19",
-    period: "per month (50% off)",
-    description: "Beta early adopter pricing - lock in now!",
+    name: "Pro",
+    price: "$29",
+    period: "per month",
+    description: "For professionals and creators",
     icon: Zap,
     gradient: "from-indigo-500 to-purple-600",
     features: [
-      "Unlimited campaigns",
-      "6 connected platforms",
+      "Unlimited trend campaigns",
+      "Unlimited trend searches",
       "Advanced Viral Score™ analytics",
-      "AI Content Studio™ with Brand Voice",
-      "Media Generator™ access",
-      "Advanced Analytics Hub™",
-      "Performance tracking & ML insights",
-      "Priority beta support",
-      "Custom automation workflows",
-      "Export & backup tools",
+      "Export campaign data",
+      "10GB storage",
+      "Priority support",
+      "Early access to new features",
     ],
-    cta: "Start Beta Trial",
+    cta: "Upgrade to Pro",
     popular: true,
   },
   {
-    name: "Agency Beta",
-    price: "$49",
-    period: "per month (50% off)",
-    description: "Multi-client agency management",
+    name: "Premium",
+    price: "$99",
+    period: "per month",
+    description: "For agencies and power users",
     icon: Crown,
     gradient: "from-purple-500 to-pink-600",
     features: [
-      "Everything in Pro Beta",
-      "Unlimited platforms",
-      "White-label dashboard",
-      "Team collaboration (10 seats)",
-      "Client management tools",
+      "Everything in Pro",
+      "White-label TrendPulse™",
       "Custom Viral Score™ models",
-      "Dedicated beta success manager",
+      "100GB storage",
+      "24/7 priority support",
       "API access & webhooks",
-      "Priority feature requests",
       "Custom integrations",
     ],
-    cta: "Contact Beta Sales",
+    cta: "Contact Sales",
     popular: false,
   },
 ];
@@ -86,11 +78,11 @@ export default function ModernPricing() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-            Beta Launch Pricing
+            TrendPulse™ Launch Pricing
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Early adopter pricing available now. Lock in 50% savings for life.
-            Beta features included.
+            Start for free. Upgrade anytime for unlimited access.
+            More CCAI features coming soon.
           </p>
         </motion.div>
 
@@ -167,7 +159,7 @@ export default function ModernPricing() {
                           contactElement.scrollIntoView({ behavior: "smooth" });
                         }
                       } else {
-                        window.open("/trend-gen", "_blank");
+                        window.location.href = "/signup";
                       }
                     }}
                     className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
