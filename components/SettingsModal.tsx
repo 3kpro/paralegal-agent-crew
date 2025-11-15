@@ -280,15 +280,38 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         <div className="text-sm font-medium text-gray-700">Subscription</div>
                         <div className="flex items-center gap-2">
                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            subscription === "premium" 
+                            subscription === "premium"
                               ? "bg-purple-100 text-purple-800"
                               : subscription === "pro"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-green-100 text-green-800"
                           }`}>
-                            {subscription === "premium" ? "Premium" : subscription === "pro" ? "Pro" : "Active"}
+                            {subscription === "premium" ? "Premium" : subscription === "pro" ? "Pro" : "Free"}
                           </span>
                         </div>
+                      </div>
+                      <div>
+                        {subscription === "premium" ? (
+                          <a
+                            href="/api/stripe/portal"
+                            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium flex items-center gap-2"
+                          >
+                            Manage Subscription
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        ) : (
+                          <a
+                            href="/pricing"
+                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium flex items-center gap-2"
+                          >
+                            {subscription === "pro" ? "Upgrade to Premium" : "Upgrade"}
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
