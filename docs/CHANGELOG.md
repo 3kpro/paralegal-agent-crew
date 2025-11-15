@@ -1,5 +1,50 @@
 ## [UNRELEASED] - 2025-11-15
 
+### 🚀 **LAUNCH READY: Remove Social Platform Selection from Campaign Flow**
+
+**BREAKING CHANGE**: Social platform integration removed from campaign creation for TrendPulse-only launch.
+
+**Problem**: Campaign creation showed "Choose target accounts" with Twitter, LinkedIn, Facebook, Instagram, TikTok, Reddit options - but none of these integrations are implemented yet. This was misleading and confusing for beta users.
+
+**Solution**: Completely removed Card 2 (Platform Selection) from the campaign creation flow. Navigation now skips directly from Campaign Name (Card 1) to Trend Discovery (Card 3).
+
+**Changes Made**:
+
+1. **Modified `goToNextCard()` navigation** - Skips from card 1 → card 3 (bypasses card 2)
+   - Added conditional: `if (nextCard === 2) { nextCard = 3; }`
+   - Comment explains TrendPulse Launch strategy
+
+2. **Modified `goToPrevCard()` navigation** - Skips from card 3 → card 1 (bypasses card 2)
+   - Added conditional: `if (prevCard === 2) { prevCard = 1; }`
+   - Maintains consistent navigation flow
+
+3. **Removed Card 2 UI rendering** - Entire Platform Selection component commented out
+   - Replaced with clear comment: "DISABLED FOR TRENDPULSE LAUNCH (Coming Soon)"
+   - Easy to re-enable when social platforms implemented
+   - Removed ~110 lines of misleading UI code
+
+**New Campaign Flow**:
+1. **Card 1**: Campaign Name input
+2. ~~Card 2: Platform Selection~~ (REMOVED)
+3. **Card 3**: Trend Discovery (Heavy Hitters vs Custom Trend)
+4. **Card 4-7**: Content generation and customization
+
+**Why This Matters**:
+- ✅ **Launch Ready**: No confusing non-functional features shown to users
+- ✅ **Honest Product**: TrendPulse focuses on trend discovery + content generation
+- ✅ **Clear Roadmap**: Social platforms marked "Coming Soon" throughout app
+- ✅ **Easy Future**: Card 2 can be re-enabled by removing skip logic when platforms ready
+
+**Files Changed**:
+- `app/(portal)/campaigns/new/page.tsx` - Navigation logic + Card 2 UI removed
+
+**Testing**:
+- Campaign creation flow: Card 1 → Card 3 (no platform selection shown)
+- Back button from Card 3 returns to Card 1 (no Card 2 visited)
+- Dev server compiles successfully with changes
+
+---
+
 ### 🔧 **STRIPE CHECKOUT FIX: Client-Side Session Sync**
 
 **Problem**: After completing Stripe checkout (Pro/Premium tier upgrade), user was redirected to `/settings?success=true&session_id=...` but tier still showed "Free" in settings.
