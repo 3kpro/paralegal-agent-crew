@@ -101,7 +101,19 @@ export async function PUT(request: Request) {
       );
     }
 
-    const updates = validation.data;
+    // Transform flat preference fields into JSONB structure
+    const { target_audience, call_to_action, tone, ...otherUpdates } = validation.data;
+
+    const updates: any = { ...otherUpdates };
+
+    // If any preference fields are provided, update the preferences JSONB column
+    if (target_audience !== undefined || call_to_action !== undefined || tone !== undefined) {
+      updates.preferences = {
+        ...(target_audience !== undefined && { target_audience }),
+        ...(call_to_action !== undefined && { call_to_action }),
+        ...(tone !== undefined && { tone }),
+      };
+    }
 
     const { data, error } = await supabase
       .from("profiles")
