@@ -45,6 +45,62 @@
 
 ---
 
+### 🐛 **CRITICAL BUG FIX: Campaign Generation Crash**
+
+**Problem**: After removing platform selection (above), users experienced a crash when trying to generate content:
+- Error: `Generation error details: {}` at line 889
+- Clicking "Generate Campaign" after selecting trends resulted in page crash
+- No content generated, poor user experience
+
+**Root Cause Analysis**:
+1. Removed Card 2 (Platform Selection) to hide non-functional social platforms
+2. Left `targetPlatforms` state initialized as empty array `[]`
+3. Content generation API requires `formats` array with minimum 1 platform (validation: `lib/validations.ts:37`)
+4. API request sent with `formats: []` (empty array)
+5. Zod validation failed: "Select at least one format"
+6. API returned empty error object `{}`
+7. Frontend error handler logged empty object and crashed
+
+**Solution**:
+- Set `targetPlatforms` default to `["twitter"]` instead of `[]`
+- Ensures valid format even when platform selection UI is skipped
+- Twitter chosen as sensible default for TrendPulse content generation
+
+**Code Changes**:
+```typescript
+// Before (caused crash):
+const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
+
+// After (fixed):
+const [targetPlatforms, setTargetPlatforms] = useState<string[]>(["twitter"]);
+```
+
+**Why Twitter as Default**:
+- Universal format (280 characters)
+- TrendPulse targets viral content discovery
+- Easy to adapt Twitter content to other platforms later
+- Most constrained format (forces concise, impactful content)
+
+**Files Changed**:
+- `app/(portal)/campaigns/new/page.tsx` - Default targetPlatforms to ["twitter"]
+
+**Testing**:
+1. Create new campaign (Card 1: Campaign Name)
+2. Select trending topic (Card 3: Trend Discovery)
+3. Click "Generate Campaign" (Card 6)
+4. ✅ Content generates successfully (no crash)
+5. ✅ API receives `formats: ["twitter"]`
+6. ✅ Validation passes
+7. ✅ Generated content displays in Card 7
+
+**Impact**:
+- ✅ **Critical Fix**: Campaign generation now works end-to-end
+- ✅ **Launch Ready**: Core TrendPulse flow functional
+- ✅ **Better UX**: No confusing errors, smooth generation experience
+- ✅ **Scalable**: Easy to add multi-platform support later
+
+---
+
 ### 🔧 **STRIPE CHECKOUT FIX: Client-Side Session Sync**
 
 **Problem**: After completing Stripe checkout (Pro/Premium tier upgrade), user was redirected to `/settings?success=true&session_id=...` but tier still showed "Free" in settings.
