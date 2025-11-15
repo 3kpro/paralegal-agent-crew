@@ -96,7 +96,8 @@ export default function NewCampaignPage() {
 
   // Step 1: Basic Info
   const [campaignName, setCampaignName] = useState("");
-  const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
+  // TrendPulse Launch: Default to "twitter" format since platform selection is skipped
+  const [targetPlatforms, setTargetPlatforms] = useState<string[]>(["twitter"]);
   const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
 
   // Step 2: Trend Discovery
