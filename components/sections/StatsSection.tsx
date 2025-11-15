@@ -211,7 +211,7 @@ export const StatsSection: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
-              window.location.href = "/trend-gen";
+              window.location.href = "/signup";
             }}
             className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform transition-all duration-200"
           >

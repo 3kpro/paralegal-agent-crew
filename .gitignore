@@ -89,3 +89,11 @@ nul
 # MCP servers (external projects)
 DEVapimatic-validator-mcp/
 .env.vercel
+
+# Playwright test results and reports
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Claude Code local settings
+.claude/settings.local.json

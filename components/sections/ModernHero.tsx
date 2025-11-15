@@ -98,7 +98,7 @@ export default function ModernHero() {
           >
             <div className="relative">
               <Link
-                href="/trend-gen"
+                href="/signup"
                 className="group relative px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
               >
                 <Zap className="w-5 h-5" />

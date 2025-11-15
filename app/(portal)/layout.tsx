@@ -53,16 +53,26 @@ export default function PortalLayout({
   }, [router, supabase]);
 
   const handleLogout = async () => {
-    // Clean up remember me preferences and session storage
-    localStorage.removeItem("rememberMe");
-    sessionStorage.removeItem("tempSession");
+    try {
+      // Clean up remember me preferences and session storage
+      localStorage.removeItem("rememberMe");
+      sessionStorage.removeItem("tempSession");
 
-    // Sign out via API
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = "/api/auth/signout";
-    document.body.appendChild(form);
-    form.submit();
+      // Sign out via API
+      await fetch("/api/auth/signout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Redirect to login
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Force redirect even if API call fails
+      window.location.href = "/login";
+    }
   };
 
   if (loading) {

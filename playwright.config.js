@@ -1,11 +1,12 @@
 // @ts-check
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { defineConfig, devices } = require('@playwright/test');
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
-  testDir: './__tests__/e2e',
+  testDir: './tests/e2e',
   /* Maximum time one test can run for */
   timeout: 60 * 1000, // Increased from 30s to 60s for auth flows
   expect: {
