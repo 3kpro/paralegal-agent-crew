@@ -29,8 +29,12 @@ const profileUpdateSchema = z
     timezone: z.string().optional(),
     language: z.string().optional(),
     theme: z.enum(["light", "dark", "system"]).optional(),
+    // Content generation preferences (UI sends these but they're not in profiles table yet)
+    target_audience: z.string().optional(),
+    call_to_action: z.string().optional(),
+    tone: z.string().optional(),
   })
-  .strict(); // Reject unknown fields
+  .passthrough(); // Allow unknown fields (they'll be ignored by DB)
 
 export async function GET(request: Request) {
   try {
