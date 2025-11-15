@@ -47,10 +47,10 @@ export const Navigation: React.FC<NavigationProps> = () => {
             <NavItem id="pricing" label="Pricing" />
             <NavItem id="contact" label="Contact" />
             <Link href="/login">
-              <Button variant="outline">Sign in</Button>
+              <Button variant="outline">Sign In</Button>
             </Link>
-            <Link href="/trend-gen">
-              <Button variant="primary">Get Started</Button>
+            <Link href="/signup">
+              <Button variant="primary">Sign Up</Button>
             </Link>
           </div>
 
