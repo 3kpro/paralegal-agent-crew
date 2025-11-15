@@ -54,9 +54,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         setFullName(data.profile.full_name || "");
         setLanguage(data.profile.language || "en-US");
         setTheme(data.profile.theme || "light");
-        setTone(data.profile.tone || "professional");
-        setTargetAudience(data.profile.target_audience || "general");
-        setCallToAction(data.profile.call_to_action || "visit");
+        // Extract from preferences JSONB column
+        const prefs = data.profile.preferences || {};
+        setTone(prefs.tone || "professional");
+        setTargetAudience(prefs.target_audience || "general");
+        setCallToAction(prefs.call_to_action || "visit");
       }
 
       // Load usage data for subscription tier
