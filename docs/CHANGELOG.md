@@ -1,5 +1,28 @@
 ## [UNRELEASED] - 2025-11-15
 
+### 🔧 **HOTFIX: OpenAI Test Status - Campaign Generation Production Issue**
+
+**Status**: ✅ RESOLVED
+
+**Issue**: OpenAI AI tool was inserted with `test_status = 'pending'`, but `/api/generate/route.ts` line 121 filters for `test_status = 'success'`. This caused campaign generation to fail with "No AI tools configured" error even though OpenAI was properly configured in the database.
+
+**Root Cause**: Database workaround from previous session didn't set proper test_status. The API layer was treating pending tools as inactive.
+
+**Fix Applied**: Updated user_ai_tools record:
+```sql
+UPDATE user_ai_tools
+SET test_status = 'success',
+    last_tested_at = NOW()
+WHERE user_id = (SELECT id FROM auth.users WHERE email = 'info@3kpro.services')
+AND provider_id = (SELECT id FROM ai_providers WHERE provider_key = 'openai');
+```
+
+**Result**: User `info@3kpro.services` can now generate campaigns with OpenAI integration.
+
+**Files Updated**: None (database-only fix via Supabase SQL Editor)
+
+---
+
 ### 🤖 **ML VIRAL SCORE UPGRADE (In Progress)**
 
 **Decision:** Upgrade Viral Score™ from heuristic to ML model trained on Vertex AI.

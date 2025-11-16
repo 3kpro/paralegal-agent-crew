@@ -350,7 +350,7 @@ async function generateWithOpenAI(
   tone: string,
   length: string,
 ) {
-  const model = config.model || "gpt-4-turbo";
+  const model = config.model || "gpt-4o-mini"; // 50x cheaper than gpt-4-turbo, still great quality
   const maxTokens = config.maxTokens || 2000;
 
   const content: any = {};
