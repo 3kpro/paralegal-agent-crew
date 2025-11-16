@@ -248,12 +248,12 @@ export default function NewCampaignPage() {
       reason: "Twitter thrives on quick, conversational content that sparks discussion. Short threads with debate-worthy takes get the most engagement.",
     },
     tiktok: {
-      tone: "friendly",
+      tone: "casual",
       length: "short",
       contentFocus: "tips",
       audiences: ["creators", "students"],
       callToAction: "share",
-      reason: "TikTok's algorithm loves bite-sized tips and tutorials that viewers save and share. Friendly, approachable tone performs best.",
+      reason: "TikTok's algorithm loves bite-sized tips and tutorials that viewers save and share. Casual, approachable tone performs best.",
     },
     linkedin: {
       tone: "professional",
@@ -287,7 +287,7 @@ export default function NewCampaignPage() {
     },
     {
       name: "TikTok Viral",
-      tone: "friendly",
+      tone: "casual",
       contentFocus: "story",
       audiences: ["students", "hobbyists"],
       callToAction: "share",

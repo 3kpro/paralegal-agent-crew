@@ -211,14 +211,14 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 
     // Calculate viral scores for all trends
     if (trendsData.trending && Array.isArray(trendsData.trending)) {
-      trendsData.trending = trendsData.trending.map((trend: any) =>
-        calculateViralScore({
+      trendsData.trending = await Promise.all(trendsData.trending.map(async (trend: any) =>
+        await calculateViralScore({
           title: trend.title,
           formattedTraffic: trend.formattedTraffic || '0K searches',
           sources: [source], // Single source for now
           firstSeenAt: new Date() // Current time as first seen
         })
-      );
+      ));
 
       // Sort by viral score (highest first)
       trendsData.trending = sortByViralScore(trendsData.trending);
@@ -303,14 +303,14 @@ Return ONLY the JSON array, no markdown formatting or explanations.`;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
     // Calculate viral scores for Gemini-generated trends
-    const trendsWithScores = trends.map((trend: any) =>
-      calculateViralScore({
+    const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
+      await calculateViralScore({
         title: trend.title,
         formattedTraffic: trend.formattedTraffic || '0K searches',
         sources: ['gemini-ai'], // Mark as AI-generated
         firstSeenAt: new Date()
       })
-    );
+    ));
 
     // Sort by viral score
     const sortedTrends = sortByViralScore(trendsWithScores);

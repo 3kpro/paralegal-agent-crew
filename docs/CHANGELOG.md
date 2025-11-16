@@ -1,5 +1,27 @@
 ## [UNRELEASED] - 2025-11-15
 
+### 🤖 **ML VIRAL SCORE UPGRADE (In Progress)**
+
+**Decision:** Upgrade Viral Score™ from heuristic to ML model trained on Vertex AI.
+
+**Implementation Plan:**
+- Phase 1: Gemini trains AutoML model on synthetic data (1000+ samples)
+- Phase 2: Grok scaffolds Flask API + Dockerfile for Cloud Run
+- Phase 3: Claude integrates with Next.js via feature flag
+- Phase 4: Deploy to Cloud Run ($0 idle cost)
+
+**Timeline:** 3-4 days
+
+**Gumroad Strategy:**
+- Standard edition: $49 (heuristic)
+- ML Pro edition: $149 (bundled ONNX model)
+
+**Files:**
+- `docs/handoffs/GEMINI_HANDOFF_VIRALSCORE_ML_TRAINING.md` - Training handoff
+- `docs/viral-score-ml-migration-plan.md` - Architecture plan
+
+---
+
 ### 🚀 **LAUNCH READY: Remove Social Platform Selection from Campaign Flow**
 
 **BREAKING CHANGE**: Social platform integration removed from campaign creation for TrendPulse-only launch.

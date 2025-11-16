@@ -30,13 +30,25 @@ export interface TrendWithViralScore {
 
 /**
  * Calculate viral score for a trending topic
+ * Uses ML prediction if enabled, falls back to heuristic
  */
-export function calculateViralScore(trend: {
+export async function calculateViralScore(trend: {
   title: string;
   formattedTraffic: string;
   sources?: string[];
   firstSeenAt?: Date;
-}): TrendWithViralScore {
+}): Promise<TrendWithViralScore> {
+  // Feature flag check
+  if (process.env.USE_ML_VIRAL_SCORE === 'true') {
+    try {
+      return await predictViralScoreML(trend);
+    } catch (error) {
+      console.error('ML prediction failed, falling back to heuristic:', error);
+      // Fall through to heuristic calculation
+    }
+  }
+
+  // Heuristic calculation (existing logic)
   // Parse volume from formatted traffic
   const volume = parseVolume(trend.formattedTraffic);
 
@@ -261,11 +273,8 @@ export function getViralPotentialLabel(viralPotential: 'high' | 'medium' | 'low'
 // When you have training data, replace calculateViralScore with this:
 
 /**
- * FUTURE: ML-powered viral prediction
- * Requires training data from actual viral posts
- *
- * @example
- * const mlScore = await predictViralScoreML(trend);
+ * ML-powered viral prediction
+ * Calls external API for predictions, falls back to heuristic on error
  */
 export async function predictViralScoreML(trend: {
   title: string;
@@ -273,10 +282,54 @@ export async function predictViralScoreML(trend: {
   sources?: string[];
   firstSeenAt?: Date;
 }): Promise<TrendWithViralScore> {
-  // TODO: Implement when ML model is trained
-  // 1. Call Python Flask API with trend features
-  // 2. Get prediction from trained RandomForest model
-  // 3. Return score + confidence interval
+  const volume = parseVolume(trend.formattedTraffic);
+  const sourcesString = trend.sources?.join(',') || '';
+  const freshnessHours = trend.firstSeenAt
+    ? (Date.now() - trend.firstSeenAt.getTime()) / (1000 * 60 * 60)
+    : 0;
 
-  throw new Error('ML model not yet trained. Use calculateViralScore() for now.');
+  const apiUrl = process.env.VIRAL_SCORE_API_URL;
+  if (!apiUrl) {
+    throw new Error('VIRAL_SCORE_API_URL environment variable not set');
+  }
+
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: trend.title,
+      traffic: volume,
+      sources: sourcesString,
+      freshnessHours,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`ML API error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const viralScore = Math.round(data.viralScore);
+
+  // Calculate heuristic factors for consistency (ML doesn't provide breakdown)
+  const volumeScore = calculateVolumeScore(volume);
+  const multiSourceScore = calculateMultiSourceScore(trend.sources || []);
+  const specificityScore = calculateSpecificityScore(trend.title);
+  const freshnessScore = calculateFreshnessScore(trend.firstSeenAt);
+
+  const viralPotential = classifyViralPotential(viralScore);
+
+  return {
+    ...trend,
+    viralScore,
+    viralPotential,
+    viralFactors: {
+      volume: volumeScore,
+      multiSource: multiSourceScore,
+      specificity: specificityScore,
+      freshness: freshnessScore,
+    },
+  };
 }
