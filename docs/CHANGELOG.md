@@ -1,5 +1,47 @@
 ## [UNRELEASED] - 2025-11-15
 
+### 🚨 **CRITICAL FIX: Campaign Generation 500 Error - Default AI Provider**
+
+**Status**: ✅ DEPLOYED (commit 255b899)
+
+**Issue**: Campaign generation failing with 500 errors on production despite OpenAI being properly configured
+
+**Root Cause Analysis**:
+1. Frontend defaulted to `aiProvider: "lmstudio"` (campaigns/new/page.tsx:126)
+2. User has OpenAI configured and tested (120 successful uses)
+3. LM Studio endpoint is `http://10.10.10.105:1234` (local IP address)
+4. Local IP not accessible from Vercel production environment
+5. No `API_GATEWAY_URL` configured to proxy LM Studio requests
+6. Network timeout → 500 error
+
+**Debugging Steps Taken**:
+- Created `/api/test-generate` diagnostic endpoint
+- Verified OpenAI configuration: ✅ (120 uses, key present, test_status: success)
+- Added comprehensive error logging to `/api/generate`
+- Analyzed request flow from frontend to backend
+- Identified LM Studio as unreachable from production
+
+**Solution**: Changed default AI provider from "lmstudio" to "openai"
+```typescript
+// BEFORE
+const [aiProvider, setAiProvider] = useState("lmstudio");
+
+// AFTER
+const [aiProvider, setAiProvider] = useState("openai");
+```
+
+**Impact**:
+- ✅ Campaign generation now works on production
+- ✅ Uses user's configured OpenAI API key (gpt-4o-mini)
+- ✅ No infrastructure changes needed
+- ✅ Compatible with existing 120 usage records
+
+**Files Changed**: `app/(portal)/campaigns/new/page.tsx`
+
+**Deployment**: https://trendpulse.3kpro.services/campaigns/new
+
+---
+
 ### 💰 **COST OPTIMIZATION: Switched to gpt-4o-mini (50x cheaper)**
 
 **Status**: ✅ DEPLOYED
