@@ -1355,52 +1355,62 @@ export default function NewCampaignPage() {
                 </p>
               </div>
 
-              <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                  { id: "twitter", name: "Twitter/X", icon: "𝕏", limit: "280 chars" },
-                  { id: "linkedin", name: "LinkedIn", icon: "in", limit: "3,000 chars" },
-                  { id: "facebook", name: "Facebook", icon: "f", limit: "63,206 chars" },
-                  { id: "instagram", name: "Instagram", icon: "📷", limit: "2,200 chars" },
-                  { id: "tiktok", name: "TikTok", icon: "🎵", limit: "2,200 chars" },
-                  { id: "reddit", name: "Reddit", icon: "🤖", limit: "40,000 chars" },
-                ].map((platform) => (
-                  <motion.button
-                    key={platform.id}
-                    onClick={() => {
-                      setTargetPlatforms((prev) =>
-                        prev.includes(platform.id)
-                          ? prev.filter((p) => p !== platform.id)
-                          : [...prev, platform.id]
-                      );
-                    }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`relative p-6 rounded-2xl border-2 transition-all ${
-                      targetPlatforms.includes(platform.id)
-                        ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg shadow-tron-cyan/30"
-                        : "bg-tron-dark/30 border-tron-cyan/20 hover:border-tron-cyan/40"
-                    }`}
-                  >
-                    {targetPlatforms.includes(platform.id) && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-2 right-2 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
-                      >
-                        <Check className="w-4 h-4 text-tron-dark" />
-                      </motion.div>
-                    )}
-                    <div className={`text-4xl mb-3 ${targetPlatforms.includes(platform.id) ? "opacity-100" : "opacity-50"}`}>
-                      {platform.icon}
-                    </div>
-                    <h3 className="font-semibold mb-1 text-tron-text">
-                      {platform.name}
-                    </h3>
-                    <p className="text-xs text-tron-text-muted">
-                      {platform.limit}
-                    </p>
-                  </motion.button>
-                ))}
+                  { id: "twitter", name: "Twitter/X", IconComponent: Twitter, limit: "280 chars" },
+                  { id: "linkedin", name: "LinkedIn", IconComponent: Linkedin, limit: "3,000 chars" },
+                  { id: "facebook", name: "Facebook", IconComponent: Facebook, limit: "63,206 chars" },
+                  { id: "instagram", name: "Instagram", IconComponent: Instagram, limit: "2,200 chars" },
+                  { id: "tiktok", name: "TikTok", IconComponent: Music, limit: "2,200 chars" },
+                  { id: "reddit", name: "Reddit", IconComponent: MessageSquare, limit: "40,000 chars" },
+                ].map((platform) => {
+                  const Icon = platform.IconComponent;
+                  return (
+                    <motion.button
+                      key={platform.id}
+                      onClick={() => {
+                        setTargetPlatforms((prev) =>
+                          prev.includes(platform.id)
+                            ? prev.filter((p) => p !== platform.id)
+                            : [...prev, platform.id]
+                        );
+                      }}
+                      whileHover={{ scale: 1.05, y: -5 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative p-4 rounded-2xl border-2 transition-all ${
+                        targetPlatforms.includes(platform.id)
+                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg shadow-tron-cyan/30"
+                          : "bg-tron-dark/30 border-tron-cyan/20 hover:border-tron-cyan/40"
+                      }`}
+                    >
+                      {targetPlatforms.includes(platform.id) && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute top-2 right-2 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                        >
+                          <Check className="w-4 h-4 text-tron-dark" />
+                        </motion.div>
+                      )}
+                      <div className="flex items-center justify-center mb-2">
+                        <Icon
+                          className={`w-8 h-8 ${
+                            targetPlatforms.includes(platform.id)
+                              ? "text-tron-cyan"
+                              : "text-tron-text-muted/50"
+                          }`}
+                          strokeWidth={1.5}
+                        />
+                      </div>
+                      <h3 className="font-semibold mb-1 text-tron-text text-sm">
+                        {platform.name}
+                      </h3>
+                      <p className="text-xs text-tron-text-muted">
+                        {platform.limit}
+                      </p>
+                    </motion.button>
+                  );
+                })}
               </div>
 
               {targetPlatforms.length === 0 && (
