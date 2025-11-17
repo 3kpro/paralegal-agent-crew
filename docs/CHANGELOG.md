@@ -42,6 +42,36 @@ const [aiProvider, setAiProvider] = useState("openai");
 
 ---
 
+### 🔑 **FIX: OpenAI API Key Authentication**
+
+**Status**: ✅ RESOLVED
+
+**Issue**: After changing default provider to OpenAI, authentication failed with "Incorrect API key provided" error
+
+**Root Cause**: Existing OpenAI API key in database had been revoked/expired
+
+**Solution**: Updated database with fresh OpenAI service account API key
+- Encrypted new key using AES-256-GCM
+- Updated `user_ai_tools` table with active service account credentials
+- Set `test_status = 'success'` for immediate availability
+
+**Impact**: Campaign generation now works end-to-end on production
+
+---
+
+### 🐛 **DEBUG: Enhanced Error Response Logging**
+
+**Status**: ✅ DEPLOYED (commit 2bba1ca)
+
+**Change**: Frontend now parses error response bodies to show detailed error information
+
+**Before**: 500 errors showed generic "Internal Server Error" message
+**After**: Console logs show detailed error type, message, and stack trace
+
+**Files Changed**: `app/(portal)/campaigns/new/page.tsx`
+
+---
+
 ### 💰 **COST OPTIMIZATION: Switched to gpt-4o-mini (50x cheaper)**
 
 **Status**: ✅ DEPLOYED
