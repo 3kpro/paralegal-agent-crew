@@ -7,6 +7,7 @@ import InstructionCard from "@/components/InstructionCard";
 import LoadingButton from "@/components/LoadingButton";
 import { SettingsSkeleton } from "@/components/SkeletonLoader";
 import ComingSoonModal from "@/components/ComingSoonModal";
+import ConnectionsTab from "@/components/settings/ConnectionsTab";
 
 // Provider Instructions Data
 const PROVIDER_INSTRUCTIONS = {
@@ -454,6 +455,16 @@ export default function SettingsPage() {
               }`}
             >
               API Keys
+            </button>
+            <button
+              onClick={() => setActiveTab("connections")}
+              className={`pb-4 px-2 font-semibold ${
+                activeTab === "connections"
+                  ? "border-b-2 border-tron-cyan text-tron-cyan"
+                  : "text-tron-text-muted hover:text-tron-text"
+              }`}
+            >
+              Connections
             </button>
             <button
               onClick={() => setActiveTab("membership")}
@@ -1071,6 +1082,9 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
+
+        {/* Connections Tab */}
+        {activeTab === "connections" && <ConnectionsTab />}
 
         {/* Membership Tab */}
         {activeTab === "membership" && (
