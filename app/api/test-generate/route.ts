@@ -44,7 +44,7 @@ export async function GET() {
 
     try {
       decryptedKey = selectedTool.api_key_encrypted
-        ? decryptAPIKey(selected Tool.api_key_encrypted).substring(0, 20) + "..."
+        ? decryptAPIKey(selectedTool.api_key_encrypted).substring(0, 20) + "..."
         : "NO KEY";
     } catch (err) {
       decryptedKey = "DECRYPTION FAILED: " + String(err);
