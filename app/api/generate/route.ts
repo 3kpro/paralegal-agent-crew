@@ -322,9 +322,13 @@ export async function POST(request: Request) {
       },
     });
   } catch (error: any) {
-    console.error("Generate API error:", error);
+    console.error("[Generate API] Fatal error:", error);
+    console.error("[Generate API] Error message:", error?.message);
+    console.error("[Generate API] Error stack:", error?.stack);
+    console.error("[Generate API] Error cause:", error?.cause);
+
     // Handle known error conditions with appropriate status codes
-    if (error.message.includes("No AI tools configured")) {
+    if (error.message?.includes("No AI tools configured")) {
       return NextResponse.json(
         {
           error: error.message,
@@ -333,7 +337,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({
+      error: error.message || "Unknown error",
+      errorType: error.name || typeof error,
+      details: String(error),
+    }, { status: 500 });
   }
 }
 
