@@ -123,7 +123,7 @@ export default function NewCampaignPage() {
   });
 
   // Step 3: Content Generation + Controls
-  const [aiProvider, setAiProvider] = useState("lmstudio");
+  const [aiProvider, setAiProvider] = useState("openai");
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent | null>(null);
   const [generatingContent, setGeneratingContent] = useState(false);
   const [toast, setToast] = useState<ToastState>({
