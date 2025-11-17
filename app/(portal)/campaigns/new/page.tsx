@@ -846,12 +846,7 @@ export default function NewCampaignPage() {
         return;
       }
 
-      if (!response.ok && response.status !== 400) { // 400 means validation error, which we handle below
-        console.error('[Generate Content] HTTP error:', response.status, response.statusText);
-        showToast(`Server error: ${response.status} ${response.statusText}`, "error");
-        return;
-      }
-
+      // Parse response regardless of status to get detailed error info
       let responseData: GenerationResponse;
       try {
         const responseText = await response.text();
@@ -864,6 +859,12 @@ export default function NewCampaignPage() {
       }
 
       console.log('[Generate Content] Parsed response:', responseData);
+
+      // Log detailed error info if response not ok
+      if (!response.ok) {
+        console.error('[Generate Content] HTTP error:', response.status, response.statusText);
+        console.error('[Generate Content] Error details:', responseData);
+      }
 
       if (responseData.success && responseData.content) {
         setGeneratedContent(responseData.content);
@@ -899,8 +900,16 @@ export default function NewCampaignPage() {
           return;
         }
 
-        // Generic error handling
-        const errorMessage = responseData.message || responseData.error || "Content generation failed. Please try again.";
+        // Generic error handling with detailed error info
+        let errorMessage = responseData.message || responseData.error || "Content generation failed. Please try again.";
+
+        // Add error type and details for debugging (500 errors)
+        if (responseData.errorType || responseData.details) {
+          console.error('[Generate Content] Error Type:', responseData.errorType);
+          console.error('[Generate Content] Error Details:', responseData.details);
+          errorMessage += ` (${responseData.errorType || 'Error'})`;
+        }
+
         showToast(errorMessage, "error");
       }
     } catch (error) {
