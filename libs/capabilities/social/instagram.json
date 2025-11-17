@@ -1,0 +1,169 @@
+{
+  "platform": "instagram",
+  "display_name": "Instagram",
+  "description": "Share photos, videos, and reels to your Instagram Business or Creator account",
+  "auth_type": "oauth",
+  "tier_required": "free",
+
+  "docs": {
+    "setup_guide": "https://developers.facebook.com/docs/instagram-api/getting-started",
+    "api_reference": "https://developers.facebook.com/docs/instagram-api/reference",
+    "permissions": "https://developers.facebook.com/docs/permissions/reference"
+  },
+
+  "setup_instructions": [
+    "You'll be redirected to Facebook to authorize 3K Pro Services",
+    "Sign in with your Facebook account that manages your Instagram",
+    "Select the Instagram Business or Creator account you want to connect",
+    "Grant the requested permissions to enable posting",
+    "You'll be redirected back to complete the setup"
+  ],
+
+  "requirements": {
+    "account_type": "Must be Instagram Business or Creator account",
+    "facebook_page": "Instagram account must be connected to a Facebook Page",
+    "note": "Make sure your Instagram account is connected to a Facebook Page before connecting"
+  },
+
+  "oauth": {
+    "auth_url": "https://www.facebook.com/v21.0/dialog/oauth",
+    "token_url": "https://graph.facebook.com/v21.0/oauth/access_token",
+    "user_info_url": "https://graph.instagram.com/me?fields=id,username,account_type",
+    "required_scopes": [
+      "instagram_basic",
+      "instagram_content_publish",
+      "pages_read_engagement",
+      "pages_show_list"
+    ],
+    "optional_scopes": [
+      "instagram_manage_insights",
+      "instagram_manage_comments"
+    ]
+  },
+
+  "capabilities": {
+    "publish_photo": {
+      "name": "Publish Photo",
+      "description": "Upload a single photo to Instagram feed",
+      "endpoint": "https://graph.facebook.com/v21.0/{ig-user-id}/media",
+      "method": "POST",
+      "required_fields": ["image_url", "caption"],
+      "optional_fields": ["location_id", "user_tags"],
+      "permissions": ["instagram_content_publish"],
+      "limitations": {
+        "image_formats": ["JPEG", "PNG"],
+        "max_file_size": "8MB",
+        "min_resolution": "320x320",
+        "max_resolution": "1440x1440",
+        "aspect_ratio": "4:5 to 1.91:1",
+        "caption_max_length": 2200,
+        "max_hashtags": 30
+      }
+    },
+
+    "publish_carousel": {
+      "name": "Publish Carousel",
+      "description": "Upload multiple photos/videos in a single carousel post",
+      "endpoint": "https://graph.facebook.com/v21.0/{ig-user-id}/media",
+      "method": "POST",
+      "required_fields": ["children", "caption"],
+      "optional_fields": ["location_id"],
+      "permissions": ["instagram_content_publish"],
+      "limitations": {
+        "min_items": 2,
+        "max_items": 10,
+        "caption_max_length": 2200
+      }
+    },
+
+    "publish_reel": {
+      "name": "Publish Reel",
+      "description": "Upload a video reel to Instagram",
+      "endpoint": "https://graph.facebook.com/v21.0/{ig-user-id}/media",
+      "method": "POST",
+      "required_fields": ["video_url", "caption"],
+      "optional_fields": ["cover_url", "share_to_feed"],
+      "permissions": ["instagram_content_publish"],
+      "limitations": {
+        "video_formats": ["MP4", "MOV"],
+        "max_file_size": "1GB",
+        "min_duration_seconds": 3,
+        "max_duration_seconds": 90,
+        "aspect_ratio": "9:16 (vertical)",
+        "min_resolution": "500x888",
+        "caption_max_length": 2200
+      }
+    },
+
+    "publish_story": {
+      "name": "Publish Story",
+      "description": "Upload a photo or video to Instagram Stories",
+      "endpoint": "https://graph.facebook.com/v21.0/{ig-user-id}/media",
+      "method": "POST",
+      "required_fields": ["media_url"],
+      "optional_fields": ["caption"],
+      "permissions": ["instagram_content_publish"],
+      "limitations": {
+        "media_types": ["PHOTO", "VIDEO"],
+        "video_max_duration_seconds": 60,
+        "aspect_ratio": "9:16 (vertical)",
+        "expires_after": "24 hours"
+      }
+    }
+  },
+
+  "publishing_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Create Media Container",
+        "description": "Upload media and get container ID"
+      },
+      {
+        "step": 2,
+        "action": "Publish Container",
+        "description": "Publish the media container to make post live"
+      }
+    ],
+    "notes": [
+      "Photos/videos must be publicly accessible URLs",
+      "Media is first uploaded to create a container",
+      "Container ID is then published to make content live",
+      "Publishing can take up to 30 seconds"
+    ]
+  },
+
+  "error_codes": {
+    "100": "Invalid parameter",
+    "190": "Access token expired or invalid",
+    "200": "Permission denied",
+    "368": "Temporarily blocked from publishing",
+    "9007": "Media already published"
+  },
+
+  "rate_limits": {
+    "posts_per_day": 25,
+    "posts_per_hour": 5,
+    "api_calls_per_hour": 200
+  },
+
+  "testing": {
+    "test_endpoint": "https://graph.instagram.com/me",
+    "test_method": "GET",
+    "test_params": {
+      "fields": "id,username,account_type"
+    },
+    "expected_response": {
+      "id": "17841400000000000",
+      "username": "test_account",
+      "account_type": "BUSINESS"
+    }
+  },
+
+  "ui_config": {
+    "color": "#E4405F",
+    "icon_url": "/images/platforms/instagram.svg",
+    "connection_label_placeholder": "My Instagram",
+    "username_display_prefix": "@"
+  }
+}
