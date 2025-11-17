@@ -1,5 +1,40 @@
 ## [UNRELEASED] - 2025-11-15
 
+### 💰 **COST OPTIMIZATION: Switched to gpt-4o-mini (50x cheaper)**
+
+**Status**: ✅ DEPLOYED
+
+**Change**: Changed default OpenAI model from `gpt-4-turbo` to `gpt-4o-mini`
+
+**Cost Impact**:
+- Per generation: $0.06 → $0.0013 (0.13 cents)
+- $10 credit: 125 generations → 7,692 generations
+- Same quality, 50x lower cost
+
+**Files Changed**: `app/api/generate/route.ts` line 353
+
+---
+
+### 🎨 **FEATURE: Restored Platform Selection (Card 2)**
+
+**Status**: ✅ COMPLETED
+
+**What Changed**: Restored content format selection in campaign creation flow
+
+**Features**:
+- Card 2 now shows platform selection (Twitter, LinkedIn, Facebook, Instagram, TikTok, Reddit)
+- Tron-themed UI: dark backgrounds with cyan/magenta accents
+- Clear messaging: "This is for content generation only. Social publishing features coming soon!"
+- Shows character limits for each platform
+- Requires minimum 1 platform selected
+- Checkmark indicator for selected platforms
+
+**Why**: Users need ability to generate content in multiple formats optimized for different social platforms, even though publishing integration isn't ready yet.
+
+**Files Changed**: `app/(portal)/campaigns/new/page.tsx`
+
+---
+
 ### 🔧 **HOTFIX: OpenAI Test Status - Campaign Generation Production Issue**
 
 **Status**: ✅ RESOLVED

@@ -35,6 +35,7 @@ import {
   BarChart3,
   Flame,
   Copy,
+  Layout,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedLoader } from "@/components/ui";
@@ -96,8 +97,7 @@ export default function NewCampaignPage() {
 
   // Step 1: Basic Info
   const [campaignName, setCampaignName] = useState("");
-  // TrendPulse Launch: Default to "twitter" format since platform selection is skipped
-  const [targetPlatforms, setTargetPlatforms] = useState<string[]>(["twitter"]);
+  const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
   const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
 
   // Step 2: Trend Discovery
@@ -337,11 +337,7 @@ export default function NewCampaignPage() {
   const goToNextCard = useCallback(() => {
     setCardDirection(1);
     setCurrentCard((prev) => {
-      // TrendPulse Launch: Skip card 2 (platform selection) - coming soon feature
-      let nextCard = Math.min(prev + 1, 7);
-      if (nextCard === 2) {
-        nextCard = 3; // Skip platform selection
-      }
+      const nextCard = Math.min(prev + 1, 7);
       // Set first platform as active when entering Card 7
       if (nextCard === 7 && targetPlatforms.length > 0) {
         setActivePlatformView(targetPlatforms[0]);
@@ -365,14 +361,7 @@ export default function NewCampaignPage() {
     } else {
       // For other cards, normal navigation
       setCardDirection(-1);
-      setCurrentCard((prev) => {
-        // TrendPulse Launch: Skip card 2 (platform selection) - coming soon feature
-        let prevCard = Math.max(prev - 1, 1);
-        if (prevCard === 2) {
-          prevCard = 1; // Skip platform selection
-        }
-        return prevCard;
-      });
+      setCurrentCard((prev) => Math.max(prev - 1, 1));
     }
   }, [currentCard, generatedContent, campaignSaved, isEditMode, router]);
 
@@ -1335,9 +1324,117 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* CARD 2: Platform Selection - DISABLED FOR TRENDPULSE LAUNCH (Coming Soon) */}
-          {/* Social platform integration will be available in future releases */}
-          {/* Navigation now skips from Card 1 to Card 3 automatically */}
+          {/* CARD 2: Content Format Selection */}
+          {currentCard === 2 && (
+            <motion.div
+              key="card-2"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+            >
+              <div className="text-center mb-12">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                >
+                  <Layout className="w-10 h-10 text-tron-cyan" />
+                </motion.div>
+                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                  Choose Content Formats
+                </h2>
+                <p className="text-tron-text-muted text-lg max-w-2xl mx-auto">
+                  Select which social media formats you want to create content for. Each format will be optimized for its platform's style and character limits.
+                </p>
+                <p className="text-tron-cyan/60 text-sm mt-2">
+                  💡 Note: This is for content generation only. Social publishing features coming soon!
+                </p>
+              </div>
+
+              <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-6">
+                {[
+                  { id: "twitter", name: "Twitter/X", icon: "𝕏", limit: "280 chars" },
+                  { id: "linkedin", name: "LinkedIn", icon: "in", limit: "3,000 chars" },
+                  { id: "facebook", name: "Facebook", icon: "f", limit: "63,206 chars" },
+                  { id: "instagram", name: "Instagram", icon: "📷", limit: "2,200 chars" },
+                  { id: "tiktok", name: "TikTok", icon: "🎵", limit: "2,200 chars" },
+                  { id: "reddit", name: "Reddit", icon: "🤖", limit: "40,000 chars" },
+                ].map((platform) => (
+                  <motion.button
+                    key={platform.id}
+                    onClick={() => {
+                      setTargetPlatforms((prev) =>
+                        prev.includes(platform.id)
+                          ? prev.filter((p) => p !== platform.id)
+                          : [...prev, platform.id]
+                      );
+                    }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`relative p-6 rounded-2xl border-2 transition-all ${
+                      targetPlatforms.includes(platform.id)
+                        ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg shadow-tron-cyan/30"
+                        : "bg-tron-dark/30 border-tron-cyan/20 hover:border-tron-cyan/40"
+                    }`}
+                  >
+                    {targetPlatforms.includes(platform.id) && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-2 right-2 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                      >
+                        <Check className="w-4 h-4 text-tron-dark" />
+                      </motion.div>
+                    )}
+                    <div className={`text-4xl mb-3 ${targetPlatforms.includes(platform.id) ? "opacity-100" : "opacity-50"}`}>
+                      {platform.icon}
+                    </div>
+                    <h3 className="font-semibold mb-1 text-tron-text">
+                      {platform.name}
+                    </h3>
+                    <p className="text-xs text-tron-text-muted">
+                      {platform.limit}
+                    </p>
+                  </motion.button>
+                ))}
+              </div>
+
+              {targetPlatforms.length === 0 && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-sm text-yellow-400/80 text-center mt-8"
+                >
+                  ⚠️ Please select at least one content format to continue.
+                </motion.p>
+              )}
+
+              <div className="mt-12 flex gap-4">
+                <motion.button
+                  onClick={goToPrevCard}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                >
+                  ← Back
+                </motion.button>
+                <motion.button
+                  onClick={goToNextCard}
+                  disabled={targetPlatforms.length === 0}
+                  whileHover={{ scale: targetPlatforms.length === 0 ? 1 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                >
+                  Continue
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
 
           {/* CARD 3: Heavy Hitters vs Custom Trend */}
           {currentCard === 3 && (
