@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { validateConnection, incrementUsage } from "@/lib/social/token-manager";
 import { publishToInstagram } from "@/lib/publishers/instagram.publisher";
+import { publishToTikTok } from "@/lib/publishers/tiktok.publisher";
+import { publishToYouTube } from "@/lib/publishers/youtube.publisher";
+import { publishToFacebook } from "@/lib/publishers/facebook.publisher";
+import { publishToLinkedIn } from "@/lib/publishers/linkedin.publisher";
+import { publishToTwitter } from "@/lib/publishers/twitter.publisher";
 
 /**
  * Publishing API - Handles both immediate and scheduled publishing
@@ -274,11 +279,19 @@ async function publishContentToPlatform(
       return await publishToInstagram(connectionId, content);
 
     case "tiktok":
+      return await publishToTikTok(connectionId, content);
+
     case "youtube":
+      return await publishToYouTube(connectionId, content);
+
     case "facebook":
+      return await publishToFacebook(connectionId, content);
+
     case "linkedin":
+      return await publishToLinkedIn(connectionId, content);
+
     case "twitter":
-      throw new Error(`${platform} publishing not yet implemented`);
+      return await publishToTwitter(connectionId, content);
 
     default:
       throw new Error(`Unsupported platform: ${platform}`);

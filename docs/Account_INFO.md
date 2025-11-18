@@ -1,8 +1,7 @@
 ##################
 OpenAI:
-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
-2nd N8N API key Secret:
-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
+ViralScore API Key
+sk-svcacct-r2rKyCpGafgiRMNipNRkkO7xdujX5h136oOravFhiU874kIFu_uKtAUl_6GNl3iqzUhQwv-AxyT3BlbkFJlz4jx5b7FQWMyvubaO_QoIbWdLfL5oa-peAnfo7Rf9CEA2hebPuxiDBgpFM3OKTE
 
 ##################
 Google Gemini
@@ -69,3 +68,6 @@ WPL_AP1.vbAD7Yo3S20D7FwQ.w6mv8w==
 Access Token:
 
 #################
+GumRoad Postings
+AI Engineer Course
+https://3kpro.gumroad.com/l/ai-engineer-masterclass

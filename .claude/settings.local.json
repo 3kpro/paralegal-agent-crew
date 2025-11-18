@@ -87,7 +87,11 @@
       "Bash(supabase --version:*)",
       "Bash(supabase link:*)",
       "Bash(supabase login:*)",
-      "Bash(supabase db push:*)"
+      "Bash(supabase db push:*)",
+      "Bash(npx tsx:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://hvcmidkylzrhmrwyigqr.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2Y21pZGt5bHpyaG1yd3lpZ3FyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTU1MjY1MSwiZXhwIjoyMDc1MTI4NjUxfQ.tyicm3JoZ2pYVkDO2JO113ZBZvVmXTDWrFXW37QE7vQ\" npx tsx scripts/update-openai-key.ts)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://hvcmidkylzrhmrwyigqr.supabase.co\" SUPABASE_SERVICE_ROLE_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2Y21pZGt5bHpyaG1yd3lpZ3FyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1OTU1MjY1MSwiZXhwIjoyMDc1MTI4NjUxfQ.tyicm3JoZ2pYVkDO2JO113ZBZvVmXTDWrFXW37QE7vQ\" npx tsx scripts/update-key.ts)",
+      "Bash(supabase migration:*)"
     ],
     "deny": [],
     "ask": []

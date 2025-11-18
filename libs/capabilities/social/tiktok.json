@@ -1,0 +1,154 @@
+{
+  "platform": "tiktok",
+  "display_name": "TikTok",
+  "description": "Upload videos to your TikTok account",
+  "auth_type": "oauth",
+  "tier_required": "free",
+
+  "docs": {
+    "setup_guide": "https://developers.tiktok.com/doc/content-posting-api-get-started",
+    "api_reference": "https://developers.tiktok.com/doc/content-posting-api-reference-upload-video",
+    "permissions": "https://developers.tiktok.com/doc/content-posting-api-overview"
+  },
+
+  "setup_instructions": [
+    "You'll be redirected to TikTok to authorize 3K Pro Services",
+    "Sign in with your TikTok account",
+    "Grant the requested permissions to enable video posting",
+    "You'll be redirected back to complete the setup"
+  ],
+
+  "requirements": {
+    "account_type": "Personal or Business TikTok account",
+    "note": "Make sure you have a verified TikTok account for best results"
+  },
+
+  "oauth": {
+    "auth_url": "https://www.tiktok.com/v2/auth/authorize",
+    "token_url": "https://open.tiktokapis.com/v2/oauth/token/",
+    "user_info_url": "https://open.tiktokapis.com/v2/user/info/",
+    "required_scopes": [
+      "user.info.basic",
+      "video.upload",
+      "video.publish"
+    ],
+    "optional_scopes": [
+      "video.list"
+    ]
+  },
+
+  "capabilities": {
+    "publish_video": {
+      "name": "Publish Video",
+      "description": "Upload a video to TikTok",
+      "endpoint": "https://open.tiktokapis.com/v2/post/publish/video/init/",
+      "method": "POST",
+      "required_fields": ["video_url", "title"],
+      "optional_fields": ["privacy_level", "disable_duet", "disable_comment", "disable_stitch", "brand_content_toggle", "brand_organic_toggle"],
+      "permissions": ["video.upload", "video.publish"],
+      "limitations": {
+        "video_formats": ["MP4", "MOV", "WEBM"],
+        "max_file_size": "4GB",
+        "min_duration_seconds": 3,
+        "max_duration_seconds": 600,
+        "min_resolution": "720x1280",
+        "max_resolution": "1080x1920",
+        "aspect_ratio": "9:16 (vertical) or 16:9 (horizontal)",
+        "title_max_length": 150,
+        "fps_min": 23,
+        "fps_max": 60
+      }
+    },
+
+    "publish_photo": {
+      "name": "Publish Photo Post",
+      "description": "Upload a photo slideshow to TikTok",
+      "endpoint": "https://open.tiktokapis.com/v2/post/publish/content/init/",
+      "method": "POST",
+      "required_fields": ["photo_urls", "title"],
+      "optional_fields": ["privacy_level", "disable_duet", "disable_comment", "disable_stitch"],
+      "permissions": ["video.upload", "video.publish"],
+      "limitations": {
+        "photo_formats": ["JPEG", "PNG", "WEBP"],
+        "min_photos": 2,
+        "max_photos": 35,
+        "max_file_size_per_photo": "10MB",
+        "min_resolution": "720x720",
+        "max_resolution": "2048x2048",
+        "title_max_length": 150
+      }
+    }
+  },
+
+  "publishing_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Initialize Upload",
+        "description": "Create an upload session and get upload URL"
+      },
+      {
+        "step": 2,
+        "action": "Upload Media",
+        "description": "Upload video/photos to the provided upload URL"
+      },
+      {
+        "step": 3,
+        "action": "Publish Content",
+        "description": "Finalize and publish the content"
+      }
+    ],
+    "notes": [
+      "Videos/photos must be publicly accessible URLs OR uploaded as binary data",
+      "TikTok processes videos asynchronously - may take a few minutes to appear",
+      "Check publish_id status for completion",
+      "Maximum upload time: 10 minutes per video"
+    ]
+  },
+
+  "privacy_levels": {
+    "SELF_ONLY": "Private (only visible to you)",
+    "MUTUAL_FOLLOW_FRIENDS": "Friends (mutual follows)",
+    "FOLLOWER_OF_CREATOR": "Followers",
+    "PUBLIC_TO_EVERYONE": "Public (everyone)"
+  },
+
+  "error_codes": {
+    "invalid_param": "Invalid parameter provided",
+    "access_token_invalid": "Access token expired or invalid",
+    "permission_denied": "Insufficient permissions",
+    "spam_risk_user": "Account flagged for spam behavior",
+    "video_format_error": "Video format not supported",
+    "video_too_large": "Video exceeds size limit",
+    "video_too_long": "Video exceeds duration limit"
+  },
+
+  "rate_limits": {
+    "posts_per_day": 100,
+    "api_calls_per_day": 1000,
+    "note": "Rate limits may vary based on account status"
+  },
+
+  "testing": {
+    "test_endpoint": "https://open.tiktokapis.com/v2/user/info/",
+    "test_method": "GET",
+    "test_params": {
+      "fields": "open_id,union_id,avatar_url,display_name"
+    },
+    "expected_response": {
+      "data": {
+        "user": {
+          "open_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "display_name": "Test User"
+        }
+      }
+    }
+  },
+
+  "ui_config": {
+    "color": "#000000",
+    "icon_url": "/images/platforms/tiktok.svg",
+    "connection_label_placeholder": "My TikTok",
+    "username_display_prefix": "@"
+  }
+}
