@@ -86,7 +86,18 @@ export async function GET(
     // Get redirect URI
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/social-connections/oauth/${platform}/callback`
 
-    authUrl.searchParams.append("client_id", process.env[`${platform.toUpperCase()}_CLIENT_ID`] || "")
+    // Get client ID and trim whitespace
+    const clientId = (process.env[`${platform.toUpperCase()}_CLIENT_ID`] || "").trim()
+
+    if (!clientId) {
+      console.error(`[OAuth Start] Missing ${platform.toUpperCase()}_CLIENT_ID environment variable`)
+      return NextResponse.json(
+        { error: `OAuth not configured for ${platform}` },
+        { status: 500 }
+      )
+    }
+
+    authUrl.searchParams.append("client_id", clientId)
     authUrl.searchParams.append("redirect_uri", redirectUri)
     authUrl.searchParams.append("state", state)
     authUrl.searchParams.append("response_type", "code")
