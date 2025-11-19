@@ -97,6 +97,13 @@ export async function GET(
       )
     }
 
+    // Log OAuth configuration for debugging
+    console.log(`[OAuth Start] Platform: ${platform}`)
+    console.log(`[OAuth Start] Client ID length: ${clientId.length}`)
+    console.log(`[OAuth Start] Client ID first 10 chars: ${clientId.substring(0, 10)}...`)
+    console.log(`[OAuth Start] Redirect URI: ${redirectUri}`)
+    console.log(`[OAuth Start] Auth URL: ${oauthConfig.auth_url}`)
+
     authUrl.searchParams.append("client_id", clientId)
     authUrl.searchParams.append("redirect_uri", redirectUri)
     authUrl.searchParams.append("state", state)
@@ -120,8 +127,13 @@ export async function GET(
       authUrl.searchParams.append("prompt", "consent")
     }
 
+    // Log final OAuth URL
+    const finalOAuthUrl = authUrl.toString()
+    console.log(`[OAuth Start] Final OAuth URL: ${finalOAuthUrl}`)
+    console.log(`[OAuth Start] OAuth URL length: ${finalOAuthUrl.length}`)
+
     // Redirect to platform's OAuth page
-    return NextResponse.redirect(authUrl.toString())
+    return NextResponse.redirect(finalOAuthUrl)
   } catch (error: any) {
     console.error("[OAuth Start] Error:", error)
     return NextResponse.json(

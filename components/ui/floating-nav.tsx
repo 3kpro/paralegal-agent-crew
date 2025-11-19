@@ -1,9 +1,7 @@
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { MenuItem, MenuContainer } from "./fluid-menu"
-import SettingsModal from "../SettingsModal"
 import {
   Menu as MenuIcon,
   X,
@@ -21,7 +19,6 @@ import {
 
 export function FloatingNav() {
   const router = useRouter()
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   const handleLogout = async () => {
     // Clean up remember me preferences and session storage
@@ -89,7 +86,7 @@ export function FloatingNav() {
         />
         <MenuItem
           icon={<Settings size={22} strokeWidth={1.5} className="text-coral-400" />}
-          onClick={() => setIsSettingsOpen(true)}
+          onClick={() => router.push('/settings')}
           label="Settings"
         />
         <MenuItem
@@ -103,12 +100,6 @@ export function FloatingNav() {
           label="Logout"
         />
       </MenuContainer>
-
-      {/* Settings Modal */}
-      <SettingsModal 
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
     </div>
   )
 }
