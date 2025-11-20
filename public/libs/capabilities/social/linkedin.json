@@ -1,0 +1,170 @@
+{
+  "platform": "linkedin",
+  "display_name": "LinkedIn",
+  "description": "Share posts on your LinkedIn profile or company page",
+  "auth_type": "oauth",
+  "tier_required": "free",
+
+  "docs": {
+    "setup_guide": "https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin",
+    "api_reference": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/posts-api",
+    "permissions": "https://learn.microsoft.com/en-us/linkedin/shared/references/v2/profile"
+  },
+
+  "setup_instructions": [
+    "You'll be redirected to LinkedIn to authorize 3K Pro Services",
+    "Sign in with your LinkedIn account",
+    "Grant the requested permissions to enable posting",
+    "You'll be redirected back to complete the setup"
+  ],
+
+  "requirements": {
+    "account_type": "LinkedIn member account",
+    "note": "For company page posting, additional permissions may be required"
+  },
+
+  "oauth": {
+    "auth_url": "https://www.linkedin.com/oauth/v2/authorization",
+    "token_url": "https://www.linkedin.com/oauth/v2/accessToken",
+    "user_info_url": "https://api.linkedin.com/v2/userinfo",
+    "required_scopes": [
+      "profile",
+      "email",
+      "w_member_social"
+    ],
+    "optional_scopes": [
+      "openid",
+      "w_organization_social"
+    ]
+  },
+
+  "capabilities": {
+    "publish_text": {
+      "name": "Share Text Post",
+      "description": "Post text content to LinkedIn",
+      "endpoint": "https://api.linkedin.com/v2/ugcPosts",
+      "method": "POST",
+      "required_fields": ["text"],
+      "optional_fields": ["visibility"],
+      "permissions": ["w_member_social"],
+      "limitations": {
+        "text_max_length": 3000,
+        "max_hashtags": 3
+      }
+    },
+
+    "publish_image": {
+      "name": "Share Image Post",
+      "description": "Post an image with text to LinkedIn",
+      "endpoint": "https://api.linkedin.com/v2/ugcPosts",
+      "method": "POST",
+      "required_fields": ["image_url", "text"],
+      "optional_fields": ["visibility"],
+      "permissions": ["w_member_social"],
+      "limitations": {
+        "image_formats": ["JPEG", "PNG", "GIF"],
+        "max_file_size": "10MB",
+        "max_images_per_post": 9,
+        "text_max_length": 3000
+      }
+    },
+
+    "publish_article": {
+      "name": "Share Article Link",
+      "description": "Share an article with preview on LinkedIn",
+      "endpoint": "https://api.linkedin.com/v2/ugcPosts",
+      "method": "POST",
+      "required_fields": ["article_url"],
+      "optional_fields": ["text", "visibility"],
+      "permissions": ["w_member_social"],
+      "limitations": {
+        "text_max_length": 3000
+      }
+    },
+
+    "publish_video": {
+      "name": "Share Video Post",
+      "description": "Upload and share a video on LinkedIn",
+      "endpoint": "https://api.linkedin.com/v2/ugcPosts",
+      "method": "POST",
+      "required_fields": ["video_url", "text"],
+      "optional_fields": ["visibility", "thumbnail"],
+      "permissions": ["w_member_social"],
+      "limitations": {
+        "video_formats": ["MP4"],
+        "max_file_size": "5GB",
+        "min_duration_seconds": 3,
+        "max_duration_seconds": 600,
+        "text_max_length": 3000
+      }
+    }
+  },
+
+  "visibility_options": {
+    "PUBLIC": "Anyone can see the post",
+    "CONNECTIONS": "Only connections can see",
+    "LOGGED_IN": "Only logged-in LinkedIn members"
+  },
+
+  "publishing_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Get Member URN",
+        "description": "Retrieve user's LinkedIn URN identifier"
+      },
+      {
+        "step": 2,
+        "action": "Register Upload (for media)",
+        "description": "For images/videos, register upload and get upload URL"
+      },
+      {
+        "step": 3,
+        "action": "Upload Media (if applicable)",
+        "description": "Upload image/video to LinkedIn servers"
+      },
+      {
+        "step": 4,
+        "action": "Create UGC Post",
+        "description": "Publish the post with text and/or media"
+      }
+    ],
+    "notes": [
+      "LinkedIn uses URN (Uniform Resource Name) for identifying users/orgs",
+      "Images and videos must be uploaded to LinkedIn before posting",
+      "Article shares don't require media upload - just provide the URL",
+      "Posts can target specific audiences using visibility settings"
+    ]
+  },
+
+  "error_codes": {
+    "401": "Unauthorized - invalid or expired token",
+    "403": "Forbidden - insufficient permissions",
+    "422": "Validation error - check required fields",
+    "429": "Rate limit exceeded"
+  },
+
+  "rate_limits": {
+    "posts_per_day": 100,
+    "api_calls_per_day": 500,
+    "note": "Rate limits are per application, not per user"
+  },
+
+  "testing": {
+    "test_endpoint": "https://api.linkedin.com/v2/userinfo",
+    "test_method": "GET",
+    "test_params": {},
+    "expected_response": {
+      "sub": "urn:li:person:xxx",
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  },
+
+  "ui_config": {
+    "color": "#0A66C2",
+    "icon_url": "/images/platforms/linkedin.svg",
+    "connection_label_placeholder": "My LinkedIn",
+    "username_display_prefix": ""
+  }
+}

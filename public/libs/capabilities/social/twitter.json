@@ -1,0 +1,172 @@
+{
+  "platform": "twitter",
+  "display_name": "Twitter / X",
+  "description": "Post tweets and media to your Twitter/X account",
+  "auth_type": "oauth",
+  "tier_required": "free",
+
+  "docs": {
+    "setup_guide": "https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/introduction",
+    "api_reference": "https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets",
+    "permissions": "https://developer.twitter.com/en/docs/authentication/oauth-2-0/authorization-code"
+  },
+
+  "setup_instructions": [
+    "You'll be redirected to Twitter/X to authorize 3K Pro Services",
+    "Sign in with your Twitter/X account",
+    "Grant the requested permissions to enable posting",
+    "You'll be redirected back to complete the setup"
+  ],
+
+  "requirements": {
+    "account_type": "Twitter/X account",
+    "note": "Media uploads require elevated API access"
+  },
+
+  "oauth": {
+    "auth_url": "https://twitter.com/i/oauth2/authorize",
+    "token_url": "https://api.twitter.com/2/oauth2/token",
+    "user_info_url": "https://api.twitter.com/2/users/me",
+    "required_scopes": [
+      "tweet.read",
+      "tweet.write",
+      "users.read"
+    ],
+    "optional_scopes": [
+      "offline.access"
+    ]
+  },
+
+  "capabilities": {
+    "publish_text": {
+      "name": "Post Tweet",
+      "description": "Post a text tweet",
+      "endpoint": "https://api.twitter.com/2/tweets",
+      "method": "POST",
+      "required_fields": ["text"],
+      "optional_fields": ["reply_settings"],
+      "permissions": ["tweet.write"],
+      "limitations": {
+        "text_max_length": 280,
+        "text_max_length_premium": 4000,
+        "max_hashtags": 280,
+        "max_mentions": 50
+      }
+    },
+
+    "publish_thread": {
+      "name": "Post Tweet Thread",
+      "description": "Post a series of connected tweets",
+      "endpoint": "https://api.twitter.com/2/tweets",
+      "method": "POST",
+      "required_fields": ["tweets"],
+      "optional_fields": ["reply_settings"],
+      "permissions": ["tweet.write"],
+      "limitations": {
+        "max_tweets_per_thread": 25,
+        "text_max_length_per_tweet": 280
+      }
+    },
+
+    "publish_media": {
+      "name": "Post Tweet with Media",
+      "description": "Post a tweet with images or video",
+      "endpoint": "https://api.twitter.com/2/tweets",
+      "method": "POST",
+      "required_fields": ["text", "media_ids"],
+      "optional_fields": ["reply_settings"],
+      "permissions": ["tweet.write"],
+      "limitations": {
+        "max_images": 4,
+        "image_formats": ["JPEG", "PNG", "GIF", "WEBP"],
+        "max_image_size": "5MB",
+        "max_gif_size": "15MB",
+        "video_formats": ["MP4", "MOV"],
+        "max_video_size": "512MB",
+        "max_video_duration_seconds": 140,
+        "text_max_length": 280
+      }
+    },
+
+    "publish_poll": {
+      "name": "Post Tweet with Poll",
+      "description": "Post a tweet with a poll",
+      "endpoint": "https://api.twitter.com/2/tweets",
+      "method": "POST",
+      "required_fields": ["text", "poll_options", "poll_duration_minutes"],
+      "optional_fields": ["reply_settings"],
+      "permissions": ["tweet.write"],
+      "limitations": {
+        "min_options": 2,
+        "max_options": 4,
+        "option_max_length": 25,
+        "min_duration_minutes": 5,
+        "max_duration_minutes": 10080
+      }
+    }
+  },
+
+  "reply_settings": {
+    "everyone": "Anyone can reply",
+    "mentionedUsers": "Only mentioned users can reply",
+    "following": "Only followers can reply"
+  },
+
+  "publishing_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Upload Media (if applicable)",
+        "description": "Upload images/videos to Twitter and get media IDs"
+      },
+      {
+        "step": 2,
+        "action": "Create Tweet",
+        "description": "Post tweet with text and optional media IDs"
+      }
+    ],
+    "notes": [
+      "Media must be uploaded before creating tweet",
+      "Use v1.1 API for media uploads, v2 for tweet creation",
+      "Videos are processed asynchronously",
+      "Poll tweets cannot include media",
+      "Threads are created by posting tweets with reply_to parameter"
+    ]
+  },
+
+  "error_codes": {
+    "400": "Bad request - check parameters",
+    "401": "Unauthorized - invalid or expired token",
+    "403": "Forbidden - rate limit or permission issue",
+    "404": "Resource not found",
+    "429": "Too many requests - rate limited"
+  },
+
+  "rate_limits": {
+    "tweets_per_day_free": 50,
+    "tweets_per_day_basic": 3000,
+    "tweets_per_day_pro": 10000,
+    "api_requests_per_15min": 50,
+    "note": "Rate limits vary based on API access tier"
+  },
+
+  "testing": {
+    "test_endpoint": "https://api.twitter.com/2/users/me",
+    "test_method": "GET",
+    "test_params": {},
+    "expected_response": {
+      "data": {
+        "id": "123456789",
+        "name": "John Doe",
+        "username": "johndoe"
+      }
+    }
+  },
+
+  "ui_config": {
+    "color": "#000000",
+    "icon_url": "/images/platforms/twitter.svg",
+    "connection_label_placeholder": "My Twitter/X",
+    "username_display_prefix": "@"
+  }
+}

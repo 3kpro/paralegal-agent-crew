@@ -1,0 +1,191 @@
+{
+  "platform": "youtube",
+  "display_name": "YouTube",
+  "description": "Upload videos to your YouTube channel",
+  "auth_type": "oauth",
+  "tier_required": "free",
+
+  "docs": {
+    "setup_guide": "https://developers.google.com/youtube/v3/getting-started",
+    "api_reference": "https://developers.google.com/youtube/v3/docs/videos/insert",
+    "permissions": "https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps"
+  },
+
+  "setup_instructions": [
+    "You'll be redirected to Google to authorize 3K Pro Services",
+    "Select the Google account that manages your YouTube channel",
+    "Grant the requested permissions to upload videos",
+    "You'll be redirected back to complete the setup"
+  ],
+
+  "requirements": {
+    "account_type": "YouTube channel with upload permissions",
+    "note": "Make sure you have an active YouTube channel"
+  },
+
+  "oauth": {
+    "auth_url": "https://accounts.google.com/o/oauth2/v2/auth",
+    "token_url": "https://oauth2.googleapis.com/token",
+    "user_info_url": "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+    "required_scopes": [
+      "https://www.googleapis.com/auth/youtube.upload",
+      "https://www.googleapis.com/auth/youtube"
+    ],
+    "optional_scopes": [
+      "https://www.googleapis.com/auth/youtube.readonly"
+    ]
+  },
+
+  "capabilities": {
+    "publish_video": {
+      "name": "Upload Video",
+      "description": "Upload a video to YouTube",
+      "endpoint": "https://www.googleapis.com/upload/youtube/v3/videos",
+      "method": "POST",
+      "required_fields": ["video_url", "title"],
+      "optional_fields": [
+        "description",
+        "tags",
+        "category_id",
+        "privacy_status",
+        "playlist_id",
+        "thumbnail",
+        "made_for_kids",
+        "age_restriction",
+        "license",
+        "recording_date",
+        "location"
+      ],
+      "permissions": ["https://www.googleapis.com/auth/youtube.upload"],
+      "limitations": {
+        "video_formats": ["MP4", "MOV", "AVI", "WMV", "FLV", "3GP", "WEBM"],
+        "max_file_size": "256GB",
+        "max_file_size_unverified": "128GB",
+        "min_duration_seconds": 1,
+        "max_duration_seconds": 43200,
+        "max_duration_unverified_seconds": 900,
+        "max_resolution": "8K (7680x4320)",
+        "title_max_length": 100,
+        "description_max_length": 5000,
+        "max_tags": 500,
+        "tag_max_length": 30
+      }
+    },
+
+    "publish_short": {
+      "name": "Upload YouTube Short",
+      "description": "Upload a short-form vertical video (YouTube Shorts)",
+      "endpoint": "https://www.googleapis.com/upload/youtube/v3/videos",
+      "method": "POST",
+      "required_fields": ["video_url", "title"],
+      "optional_fields": ["description", "tags", "privacy_status"],
+      "permissions": ["https://www.googleapis.com/auth/youtube.upload"],
+      "limitations": {
+        "video_formats": ["MP4", "MOV", "WEBM"],
+        "max_file_size": "256GB",
+        "min_duration_seconds": 1,
+        "max_duration_seconds": 60,
+        "aspect_ratio": "9:16 (vertical)",
+        "min_resolution": "720x1280",
+        "max_resolution": "1080x1920",
+        "title_max_length": 100,
+        "title_must_not_contain": "#Shorts (auto-detected by duration and aspect ratio)"
+      }
+    }
+  },
+
+  "privacy_status": {
+    "public": "Anyone can view the video",
+    "private": "Only you and people you choose can watch",
+    "unlisted": "Anyone with the link can watch"
+  },
+
+  "categories": {
+    "1": "Film & Animation",
+    "2": "Autos & Vehicles",
+    "10": "Music",
+    "15": "Pets & Animals",
+    "17": "Sports",
+    "19": "Travel & Events",
+    "20": "Gaming",
+    "22": "People & Blogs",
+    "23": "Comedy",
+    "24": "Entertainment",
+    "25": "News & Politics",
+    "26": "Howto & Style",
+    "27": "Education",
+    "28": "Science & Technology",
+    "29": "Nonprofits & Activism"
+  },
+
+  "publishing_flow": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Prepare Metadata",
+        "description": "Format video title, description, tags, and settings"
+      },
+      {
+        "step": 2,
+        "action": "Upload Video",
+        "description": "Upload video file using resumable upload protocol"
+      },
+      {
+        "step": 3,
+        "action": "Process & Publish",
+        "description": "YouTube processes video and makes it live based on privacy setting"
+      }
+    ],
+    "notes": [
+      "Videos can be uploaded from URL or as binary data",
+      "Use resumable upload for files > 5MB",
+      "Processing time varies: 720p ~1-2 min, 1080p ~3-5 min, 4K ~10-30 min",
+      "Video is immediately available but higher quality versions appear later",
+      "Thumbnails can be customized after upload (requires verification)",
+      "YouTube Shorts are auto-detected by duration (<60s) and aspect ratio (vertical)"
+    ]
+  },
+
+  "error_codes": {
+    "400": "Invalid request - check required fields",
+    "401": "Authentication required or token expired",
+    "403": "Forbidden - insufficient permissions or quota exceeded",
+    "404": "Video not found",
+    "500": "Internal server error - retry after delay"
+  },
+
+  "rate_limits": {
+    "daily_upload_limit_default": 15,
+    "daily_upload_limit_verified": "Unlimited (subject to quota)",
+    "api_quota_per_day": 10000,
+    "upload_cost_quota": 1600,
+    "note": "Each video upload costs 1,600 quota units. Verify phone number to increase limits."
+  },
+
+  "testing": {
+    "test_endpoint": "https://www.googleapis.com/youtube/v3/channels",
+    "test_method": "GET",
+    "test_params": {
+      "part": "snippet",
+      "mine": "true"
+    },
+    "expected_response": {
+      "items": [
+        {
+          "id": "UCxxxxxxxxxx",
+          "snippet": {
+            "title": "Channel Name",
+            "description": "Channel description"
+          }
+        }
+      ]
+    }
+  },
+
+  "ui_config": {
+    "color": "#FF0000",
+    "icon_url": "/images/platforms/youtube.svg",
+    "connection_label_placeholder": "My YouTube Channel",
+    "username_display_prefix": ""
+  }
+}
