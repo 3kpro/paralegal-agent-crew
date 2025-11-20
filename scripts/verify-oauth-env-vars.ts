@@ -113,15 +113,11 @@ function main() {
   console.log('║  OAuth Environment Variable Verification          ║')
   console.log('╚════════════════════════════════════════════════════╝')
 
-  // Check if NEXT_PUBLIC_APP_URL is set
+  // Check if NEXT_PUBLIC_APP_URL is set and validate for whitespace
   console.log('\n🌐 Application Configuration')
   console.log('─'.repeat(50))
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-  if (!appUrl) {
-    console.warn('  ⚠️  NEXT_PUBLIC_APP_URL: MISSING')
-  } else {
-    console.log(`  ✅ NEXT_PUBLIC_APP_URL: ${appUrl}`)
-  }
+  const appUrlResult = validateEnvVar(process.env.NEXT_PUBLIC_APP_URL, 'NEXT_PUBLIC_APP_URL')
+  const hasAppUrlIssue = appUrlResult.status !== 'ok'
 
   // Validate each platform
   const results = PLATFORMS.map(validatePlatformOAuth)
@@ -150,7 +146,7 @@ function main() {
   generateFixScript(results)
 
   // Exit code
-  const hasIssues = whitespaceVars > 0 || missingVars > 0
+  const hasIssues = whitespaceVars > 0 || missingVars > 0 || hasAppUrlIssue
   if (hasIssues) {
     console.log('\n❌ VALIDATION FAILED: Please fix the issues above before deploying.')
     process.exit(1)
