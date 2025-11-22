@@ -254,12 +254,12 @@ async function generateTrendsWithGemini(keyword: string, _userId: string) {
       throw new Error("No Google API key configured");
     }
     const genAI = new GoogleGenerativeAI(apiKey);
-    
-    // Use gemini-2.5-flash (stable, fast model)
-    // Available models: gemini-2.5-flash, gemini-2.5-pro, gemini-flash-latest, gemini-pro-latest
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    
-    console.log('[Gemini] Using model: gemini-2.5-flash');
+
+    // Use gemini-1.5-flash (stable, fast model)
+    // Available models: gemini-1.5-flash, gemini-1.5-pro, gemini-flash-latest, gemini-pro-latest
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    console.log('[Gemini] Using model: gemini-1.5-flash');
 
     const prompt = `You are a content marketing expert. Generate 6 highly engaging, specific content ideas related to "${keyword}".
 
