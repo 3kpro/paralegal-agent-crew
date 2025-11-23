@@ -1,10 +1,11 @@
+import { GeneratedContent } from "@/app/(portal)/campaigns/new/types";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { decryptAPIKey } from "@/lib/encryption";
 import { redis, withCache, cacheKeys } from "@/lib/redis";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 import { generateContentSchema } from "@/lib/validations";
-import { ZodError } from "zod";
+import { ZodError, ZodIssue } from "zod";
 
 const CACHE_TTL = 900; // 15 minutes in seconds
 
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error: "Validation failed",
-            details: error.issues.map((e: any) => ({
+            details: error.issues.map((e: ZodIssue) => ({
               field: e.path.join('.'),
               message: e.message
             }))
@@ -141,7 +142,7 @@ export async function POST(request: Request) {
       const config = selectedTool.configuration || {};
 
       // Generate content based on provider
-      let content: any;
+      let content: GeneratedContent;
       let tokensUsed = 0;
       let estimatedCost = 0;
 
@@ -256,8 +257,9 @@ export async function POST(request: Request) {
             cached: false,
           },
         };
-      } catch (genError: any) {
-        throw new Error(`Content generation failed: ${genError.message}`);
+      } catch (genError: unknown) {
+        const message = genError instanceof Error ? genError.message : String(genError);
+        throw new Error(`Content generation failed: ${message}`);
       }
     });
 
@@ -321,25 +323,30 @@ export async function POST(request: Request) {
         cached: true,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Generate API] Fatal error:", error);
-    console.error("[Generate API] Error message:", error?.message);
-    console.error("[Generate API] Error stack:", error?.stack);
-    console.error("[Generate API] Error cause:", error?.cause);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : undefined;
+    const cause = error instanceof Error ? (error as any).cause : undefined;
+    const name = error instanceof Error ? error.name : typeof error;
+
+    console.error("[Generate API] Error message:", message);
+    console.error("[Generate API] Error stack:", stack);
+    console.error("[Generate API] Error cause:", cause);
 
     // Handle known error conditions with appropriate status codes
-    if (error.message?.includes("No AI tools configured")) {
+    if (message?.includes("No AI tools configured")) {
       return NextResponse.json(
         {
-          error: error.message,
+          error: message,
           requiresSetup: true,
         },
         { status: 400 },
       );
     }
     return NextResponse.json({
-      error: error.message || "Unknown error",
-      errorType: error.name || typeof error,
+      error: message,
+      errorType: name,
       details: String(error),
     }, { status: 500 });
   }
@@ -349,19 +356,23 @@ export async function POST(request: Request) {
 // GENERATION FUNCTIONS
 // ============================================================================
 
+interface OpenAIConfig {
+  model?: string;
+  maxTokens?: number;
+}
 async function generateWithOpenAI(
   apiKey: string,
   topic: string,
   formats: string[],
-  config: any,
+  config: OpenAIConfig,
   temperature: number,
   tone: string,
   length: string,
 ) {
-  const model = config.model || "gpt-4o-mini"; // 50x cheaper than gpt-4-turbo, still great quality
+  const model = config.model || "gpt-4o-mini";
   const maxTokens = config.maxTokens || 2000;
 
-  const content: any = {};
+  const content: GeneratedContent = {};
   let totalTokens = 0;
 
   // 🚀 OPTIMIZATION: Parallelize all format requests
@@ -408,11 +419,15 @@ async function generateWithOpenAI(
   const estimatedCost = (totalTokens / 1000) * 0.02;
   return { content, tokensUsed: totalTokens, estimatedCost };
 }
+interface ClaudeConfig {
+  model?: string;
+  maxTokens?: number;
+}
 async function generateWithClaude(
   apiKey: string,
   topic: string,
   formats: string[],
-  config: any,
+  config: ClaudeConfig,
   temperature: number,
   tone: string,
   length: string,
@@ -420,7 +435,7 @@ async function generateWithClaude(
   const model = config.model || "claude-3-sonnet-20240229";
   const maxTokens = config.maxTokens || 2000;
 
-  const content: any = {};
+  const content: GeneratedContent = {};
   let totalTokens = 0;
 
   // 🚀 OPTIMIZATION: Parallelize all format requests
@@ -469,11 +484,14 @@ async function generateWithClaude(
   const estimatedCost = (totalTokens / 1000000) * 9;
   return { content, tokensUsed: totalTokens, estimatedCost };
 }
+interface GeminiConfig {
+  model?: string;
+}
 async function generateWithGemini(
   apiKey: string,
   topic: string,
   formats: string[],
-  config: any,
+  config: GeminiConfig,
   temperature: number,
   tone: string,
   length: string,
@@ -483,7 +501,7 @@ async function generateWithGemini(
 ) {
   const model = config.model || "gemini-pro";
 
-  const content: any = {};
+  const content: GeneratedContent = {};
   let totalTokens = 0;
 
   // 🚀 OPTIMIZATION: Parallelize all format requests
@@ -547,7 +565,7 @@ async function generateWithLMStudio(
     ? `${process.env.API_GATEWAY_URL}/generate`
     : "http://10.10.10.105:1234/v1/chat/completions";
 
-  const content: any = {};
+  const content: GeneratedContent = {};
   let totalTokens = 0;
 
   // 🚀 OPTIMIZATION: Parallelize all format requests
@@ -755,11 +773,63 @@ Return only the TikTok caption text that can be posted directly, nothing else.`,
   return prompts[format] || prompts.twitter;
 }
 
+interface TwitterContent {
+  content: string;
+  characterCount: number;
+  hashtags: string[];
+  platform: "twitter";
+}
+interface LinkedInContent {
+  content: string;
+  hashtags: string[];
+  platform: "linkedin";
+}
+interface EmailContent {
+  subject: string;
+  content: string;
+  platform: "email";
+}
+interface FacebookContent {
+  content: string;
+  hashtags: string[];
+  platform: "facebook";
+}
+interface InstagramContent {
+  content: string;
+  hashtags: string[];
+  platform: "instagram";
+}
+interface TikTokContent {
+  content: string;
+  hashtags: string[];
+  characterCount: number;
+  platform: "tiktok";
+}
+interface RedditContent {
+  content: string;
+  platform: "reddit";
+}
+interface DefaultContent {
+  content: string;
+  hashtags: string[];
+  platform: string;
+}
+
+type FormattedContent =
+  | TwitterContent
+  | LinkedInContent
+  | EmailContent
+  | FacebookContent
+  | InstagramContent
+  | TikTokContent
+  | RedditContent
+  | DefaultContent;
+
 function formatContent(
   format: string,
   generatedText: string,
   topic: string,
-): any {
+): FormattedContent {
   const cleaned = generatedText.trim();
 
   switch (format) {

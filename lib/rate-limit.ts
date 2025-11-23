@@ -1,213 +1,267 @@
+/**
+ * Rate Limiting Utilities
+ *
+ * Provides rate limiting for API routes using Upstash Redis (production)
+ * or in-memory fallback (development)
+ */
+
 import { NextRequest, NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { kv } from "@vercel/kv";
 
-interface RateLimitStore {
-  count: number;
-  resetTime: number;
-}
-
-// In-memory store for rate limiting (use Redis in production)
-const rateLimitStore = new Map<string, RateLimitStore>();
-
-export interface RateLimitOptions {
-  /**
-   * Maximum number of requests allowed within the window
-   */
-  maxRequests: number;
-  /**
-   * Time window in milliseconds
-   */
-  windowMs: number;
-  /**
-   * Message to return when rate limit is exceeded
-   */
-  message?: string;
-  /**
-   * Function to generate rate limit key (defaults to IP address)
-   */
-  keyGenerator?: (req: NextRequest) => string;
-}
+// In-memory fallback for development
+const inMemoryLimits = new Map<string, { count: number; resetTime: number }>();
 
 /**
- * Rate limiting middleware for API routes
- * 
- * @example
- * ```ts
- * export async function POST(request: NextRequest) {
- *   const rateLimitResult = await rateLimit(request, {
- *     maxRequests: 10,
- *     windowMs: 60 * 1000, // 1 minute
- *   });
- *   
- *   if (rateLimitResult) {
- *     return rateLimitResult; // Returns 429 response
- *   }
- *   
- *   // Continue with normal request handling
- * }
- * ```
+ * Rate limit presets for different API endpoints
+ */
+export const RateLimitPresets = {
+  STANDARD: {
+    limit: 60,
+    window: "1m" as const,
+  },
+  GENERATION: {
+    limit: 10,
+    window: "1m" as const,
+  },
+  PUBLISHING: {
+    limit: 10,
+    window: "1h" as const,
+  },
+  TRENDS: {
+    limit: 30,
+    window: "1m" as const,
+  },
+} as const;
+
+export type RateLimitPreset = typeof RateLimitPresets[keyof typeof RateLimitPresets];
+
+/**
+ * Legacy rate limit function for backward compatibility
+ * Returns NextResponse with 429 if rate limit exceeded, undefined otherwise
  */
 export async function rateLimit(
-  request: NextRequest,
-  options: RateLimitOptions
-): Promise<NextResponse | null> {
-  const {
-    maxRequests,
-    windowMs,
-    message = "Too many requests. Please try again later.",
-    keyGenerator = (req) => getClientIdentifier(req),
-  } = options;
+  request: NextRequest | Request,
+  preset: RateLimitPreset
+): Promise<NextResponse | undefined> {
+  const result = await applyRateLimit(request, {
+    limit: preset.limit,
+    window: preset.window,
+  });
 
-  const key = keyGenerator(request);
-  const now = Date.now();
-
-  // Get or create rate limit entry
-  let limitData = rateLimitStore.get(key);
-
-  if (!limitData || now > limitData.resetTime) {
-    // Initialize or reset the limit
-    limitData = {
-      count: 1,
-      resetTime: now + windowMs,
-    };
-    rateLimitStore.set(key, limitData);
-    
-    // Clean up old entries periodically
-    if (Math.random() < 0.01) { // 1% chance
-      cleanupOldEntries();
-    }
-    
-    return null;
-  }
-
-  // Increment request count
-  limitData.count++;
-
-  // Check if limit exceeded
-  if (limitData.count > maxRequests) {
-    const retryAfter = Math.ceil((limitData.resetTime - now) / 1000);
-    
+  if (!result.success) {
     return NextResponse.json(
       {
-        success: false,
-        error: message,
-        retryAfter,
+        error: "Rate limit exceeded",
+        retryAfter: result.reset,
       },
       {
         status: 429,
         headers: {
-          "Retry-After": retryAfter.toString(),
-          "X-RateLimit-Limit": maxRequests.toString(),
-          "X-RateLimit-Remaining": "0",
-          "X-RateLimit-Reset": limitData.resetTime.toString(),
+          "X-RateLimit-Limit": result.limit.toString(),
+          "X-RateLimit-Remaining": result.remaining.toString(),
+          "X-RateLimit-Reset": result.reset.toString(),
         },
       }
     );
   }
 
-  return null;
+  return undefined;
 }
 
 /**
- * Get client identifier for rate limiting
+ * Modern rate limit function with detailed result
  */
-function getClientIdentifier(request: NextRequest): string {
-  // Try to get IP address
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : 
-             request.headers.get("x-real-ip") ||
-             "unknown";
-  
-  // Combine with user agent for better uniqueness
-  const userAgent = request.headers.get("user-agent") || "unknown";
-  
-  return `${ip}:${userAgent}`;
+export async function applyRateLimit(
+  request: NextRequest | Request,
+  options: {
+    limit: number;
+    window: string;
+    identifier?: string;
+  }
+): Promise<{
+  success: boolean;
+  limit: number;
+  remaining: number;
+  reset: number;
+}> {
+  const { limit, window, identifier } = options;
+
+  // Get identifier (IP address or custom identifier)
+  const id = identifier || getClientIdentifier(request);
+
+  // Check if we're in production with Redis available
+  const isProduction = process.env.NODE_ENV === "production";
+  const hasRedis = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+
+  if (isProduction && hasRedis) {
+    return applyUpstashRateLimit(id, limit, window);
+  } else {
+    return applyInMemoryRateLimit(id, limit, window);
+  }
 }
 
 /**
- * Clean up expired rate limit entries
+ * Apply rate limiting using Upstash Redis (production)
  */
-function cleanupOldEntries() {
+async function applyUpstashRateLimit(
+  identifier: string,
+  limit: number,
+  window: string
+): Promise<{
+  success: boolean;
+  limit: number;
+  remaining: number;
+  reset: number;
+}> {
+  try {
+    const ratelimit = new Ratelimit({
+      redis: kv,
+      limiter: Ratelimit.slidingWindow(limit, window),
+      analytics: true,
+    });
+
+    const result = await ratelimit.limit(identifier);
+
+    return {
+      success: result.success,
+      limit: result.limit,
+      remaining: result.remaining,
+      reset: result.reset,
+    };
+  } catch (error) {
+    console.error("[Rate Limit] Upstash error, allowing request:", error);
+    // On error, allow the request (fail open)
+    return {
+      success: true,
+      limit,
+      remaining: limit - 1,
+      reset: Date.now() + parseWindow(window),
+    };
+  }
+}
+
+/**
+ * Apply rate limiting using in-memory storage (development)
+ */
+function applyInMemoryRateLimit(
+  identifier: string,
+  limit: number,
+  window: string
+): {
+  success: boolean;
+  limit: number;
+  remaining: number;
+  reset: number;
+} {
   const now = Date.now();
-  for (const [key, data] of rateLimitStore.entries()) {
-    if (now > data.resetTime) {
-      rateLimitStore.delete(key);
+  const windowMs = parseWindow(window);
+  const key = `${identifier}:${window}`;
+
+  // Clean up expired entries
+  cleanupExpiredLimits(now);
+
+  // Get or create limit entry
+  let entry = inMemoryLimits.get(key);
+
+  if (!entry || entry.resetTime <= now) {
+    // Create new entry (first request or expired window)
+    entry = {
+      count: 1,
+      resetTime: now + windowMs,
+    };
+    inMemoryLimits.set(key, entry);
+
+    return {
+      success: true,
+      limit,
+      remaining: limit - 1,
+      reset: entry.resetTime,
+    };
+  }
+
+  // Increment count
+  entry.count++;
+
+  if (entry.count > limit) {
+    // Rate limit exceeded
+    return {
+      success: false,
+      limit,
+      remaining: 0,
+      reset: entry.resetTime,
+    };
+  }
+
+  // Within limit
+  return {
+    success: true,
+    limit,
+    remaining: limit - entry.count,
+    reset: entry.resetTime,
+  };
+}
+
+/**
+ * Parse window string (e.g., "1m", "10m", "1h") to milliseconds
+ */
+function parseWindow(window: string): number {
+  const match = window.match(/^(\d+)([smhd])$/);
+  if (!match) {
+    console.warn(`[Rate Limit] Invalid window format: ${window}, defaulting to 1 minute`);
+    return 60 * 1000;
+  }
+
+  const [, num, unit] = match;
+  const value = parseInt(num, 10);
+
+  switch (unit) {
+    case 's':
+      return value * 1000;
+    case 'm':
+      return value * 60 * 1000;
+    case 'h':
+      return value * 60 * 60 * 1000;
+    case 'd':
+      return value * 24 * 60 * 60 * 1000;
+    default:
+      return 60 * 1000;
+  }
+}
+
+/**
+ * Get client identifier from request (IP address or fallback)
+ */
+function getClientIdentifier(request: NextRequest | Request): string {
+  // Try to get IP from various headers
+  const headers = request.headers;
+
+  const forwarded = headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+
+  const realIp = headers.get("x-real-ip");
+  if (realIp) {
+    return realIp;
+  }
+
+  const cfConnectingIp = headers.get("cf-connecting-ip");
+  if (cfConnectingIp) {
+    return cfConnectingIp;
+  }
+
+  // Fallback to a constant for development
+  return "anonymous";
+}
+
+/**
+ * Clean up expired in-memory rate limit entries
+ */
+function cleanupExpiredLimits(now: number): void {
+  for (const [key, entry] of inMemoryLimits.entries()) {
+    if (entry.resetTime <= now) {
+      inMemoryLimits.delete(key);
     }
   }
-}
-
-/**
- * Predefined rate limit configurations
- */
-export const RateLimitPresets = {
-  /**
-   * Strict rate limit for expensive operations
-   * 5 requests per minute
-   */
-  STRICT: {
-    maxRequests: 5,
-    windowMs: 60 * 1000,
-    message: "Rate limit exceeded for this operation. Please wait before trying again.",
-  },
-  
-  /**
-   * Standard rate limit for API endpoints
-   * 30 requests per minute
-   */
-  STANDARD: {
-    maxRequests: 30,
-    windowMs: 60 * 1000,
-    message: "Too many requests. Please slow down.",
-  },
-  
-  /**
-   * Generous rate limit for general endpoints
-   * 100 requests per minute
-   */
-  GENEROUS: {
-    maxRequests: 100,
-    windowMs: 60 * 1000,
-  },
-  
-  /**
-   * Auth endpoints (login, signup)
-   * 5 attempts per 15 minutes
-   */
-  AUTH: {
-    maxRequests: 5,
-    windowMs: 15 * 60 * 1000,
-    message: "Too many authentication attempts. Please try again later.",
-  },
-  
-  /**
-   * Content generation endpoints
-   * 10 requests per minute
-   */
-  GENERATION: {
-    maxRequests: 10,
-    windowMs: 60 * 1000,
-    message: "Content generation rate limit exceeded. Please wait a moment.",
-  },
-};
-
-/**
- * User-specific rate limiting (requires authentication)
- */
-export async function userRateLimit(
-  userId: string,
-  options: RateLimitOptions
-): Promise<boolean> {
-  const now = Date.now();
-  let limitData = rateLimitStore.get(userId);
-
-  if (!limitData || now > limitData.resetTime) {
-    limitData = {
-      count: 1,
-      resetTime: now + options.windowMs,
-    };
-    rateLimitStore.set(userId, limitData);
-    return true;
-  }
-
-  limitData.count++;
-  return limitData.count <= options.maxRequests;
 }
