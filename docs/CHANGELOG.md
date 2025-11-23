@@ -27,6 +27,173 @@
 - **Test Reliability**: Restored the E2E test suite to a reliable "green" state, enabling safer and faster future development.
 
 ---
+
+## [2.4.1] - 2025-11-22 - Campaign Generation Fixed ✅
+
+### 🎯 **MILESTONE: Campaign Creation End-to-End Working**
+
+**Status**: ✅ DEPLOYED TO PRODUCTION
+
+**Summary**: Fixed critical campaign generation bugs. Users can now successfully:
+1. Search trends with Gemini AI
+2. Generate campaign content for all platforms
+3. Complete full campaign creation workflow
+
+---
+
+### 🐛 **CRITICAL FIX: Campaign Generation "model is not defined"**
+
+**Status**: ✅ FIXED (commit 6254f3d)
+
+**Issue**: Campaign generation failing with `ReferenceError: model is not defined` when using OpenAI provider
+
+**Root Cause**:
+- `generateWithOpenAI()` function was missing variable declarations
+- Variables `model` and `maxTokens` used in fetch body but never declared
+- Other providers (Claude, Gemini) had correct declarations
+
+**Fix** ([app/api/generate/route.ts:372-373](app/api/generate/route.ts#L372-L373)):
+```typescript
+const model = config.model || "gpt-4o-mini";
+const maxTokens = config.maxTokens || 2000;
+```
+
+**Testing**: ✅ Tested locally, campaign generation working end-to-end
+
+---
+
+### 🐛 **CRITICAL FIX: Rate Limiting "RateLimitPresets is undefined"**
+
+**Status**: ✅ FIXED (commit 6254f3d)
+
+**Issue**: All API routes with rate limiting failing with `Cannot read properties of undefined (reading 'GENERATION')`
+
+**Root Cause**:
+- `lib/rate-limit.ts` was empty (0 bytes)
+- File existed but had no exports
+- Multiple routes importing from it
+
+**Solution**: Created complete rate limiting implementation (286 lines)
+
+**Features**:
+- Upstash Redis for production (via @vercel/kv)
+- In-memory fallback for development
+- 4 presets: STANDARD (60/min), GENERATION (10/min), PUBLISHING (10/hr), TRENDS (30/min)
+- Automatic cleanup of expired entries
+- Fail-open strategy (allows request if Redis errors)
+
+**File**: [lib/rate-limit.ts](lib/rate-limit.ts)
+
+---
+
+### 🐛 **FIX: Duplicate Import Statement**
+
+**Status**: ✅ FIXED (commit 6254f3d)
+
+**Issue**: Syntax error blocking page compilation
+
+**Root Cause**: `import { GeneratedContent }` accidentally placed on line 145 (middle of function)
+
+**Fix**: Removed duplicate import (type already imported at top of file)
+
+**File**: [app/api/generate/route.ts:145](app/api/generate/route.ts#L145)
+
+---
+
+### 🐛 **FIX: ContentFlow Page Missing Imports**
+
+**Status**: ✅ FIXED (commit c9d979f)
+
+**Issue**: Build failing with `ReferenceError: useRouter is not defined` during prerendering
+
+**Root Cause**: ContentFlow page missing React/Next.js imports
+
+**Fix**: Added missing imports:
+```typescript
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+```
+
+**File**: [app/(portal)/contentflow/page.tsx:1-5](app/(portal)/contentflow/page.tsx#L1-L5)
+
+---
+
+### 🚀 **NEW FEATURE: ML Viral Score API Integration**
+
+**Status**: ✅ COMPLETE (Feature flag disabled, ready for ML service)
+
+**Overview**: Secure proxy API for ML-powered viral score predictions with graceful fallback
+
+**Implementation**:
+1. **Proxy API Route** ([app/api/viral-score-ml/route.ts](app/api/viral-score-ml/route.ts))
+   - Secure ML API key handling (server-side only)
+   - Rate limiting: 100 requests per 10 minutes per user
+   - Authentication required
+   - Health check endpoint
+
+2. **Feature Flag Integration** ([lib/viral-score.ts:42-43](lib/viral-score.ts#L42-L43))
+   - Environment variable: `NEXT_PUBLIC_VIRAL_SCORE_ML_ENABLED`
+   - Currently disabled: `if (false && ...)`
+   - Graceful fallback to heuristic algorithm
+
+3. **Documentation** ([docs/ML_VIRAL_SCORE.md](docs/ML_VIRAL_SCORE.md))
+   - Complete setup guide
+   - ML API requirements
+   - Testing protocol
+   - Troubleshooting guide
+
+**Configuration** (when ready):
+```bash
+NEXT_PUBLIC_VIRAL_SCORE_ML_ENABLED=true
+VIRAL_SCORE_ML_API_URL=https://your-ml-api.example.com/predict
+VIRAL_SCORE_ML_API_KEY=your-secure-key
+```
+
+**Security**:
+- ML API key never exposed to client
+- All requests proxied through authenticated endpoint
+- Rate limiting prevents abuse
+
+---
+
+### 🔒 **SECURITY FIX: Removed Sensitive Documentation**
+
+**Status**: ✅ COMPLETE (commit 6254f3d)
+
+**Issue**: `docs/Account_INFO.md` contained production secrets in plain text
+
+**Action**: Deleted file from repository
+
+**Impact**: Prevents accidental credential exposure
+
+**⚠️ Action Required**: If file was previously committed to git history, rotate exposed credentials
+
+---
+
+### 📊 **Deployment Summary**
+
+**Commits**:
+- `6254f3d` - Critical fixes + ML Viral Score integration
+- `c9d979f` - ContentFlow page import fix
+
+**Production URL**: https://landing-page-8eebxrszg-3kpros-projects.vercel.app
+
+**Deployment Time**: 2025-11-22
+
+**Build Status**: ✅ SUCCESS
+
+**Test Results**:
+- ✅ Local dev tested
+- ✅ Campaign generation working
+- ✅ Trends API working with Gemini
+- ✅ Rate limiting functional
+- ✅ Production build successful
+- ✅ Production deployment successful
+
+---
+
 ## [UNRELEASED] - 2025-11-22
 
 ### 🧹 Code Quality & Type Safety
