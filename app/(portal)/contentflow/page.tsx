@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import { SchedulePostDialog } from "@/components/SchedulePostDialog";
 import { Send, RotateCcw, Check } from "lucide-react";
+import { ScheduledPost, ContentTemplate } from "../campaigns/new/types";
 
 export default function ContentFlowPage() {
   const router = useRouter();
@@ -14,8 +13,8 @@ export default function ContentFlowPage() {
   const [view, setView] = useState<"calendar" | "queue" | "templates">(
     "calendar",
   );
-  const [scheduledPosts, setScheduledPosts] = useState<any[]>([]);
-  const [templates, setTemplates] = useState<any[]>([]);
+  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
+  const [templates, setTemplates] = useState<ContentTemplate[]>([]);
   const [loading, setLoading] = useState(true);
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [publishingPostId, setPublishingPostId] = useState<string | null>(null);
@@ -90,8 +89,9 @@ export default function ContentFlowPage() {
       } else {
         showToast(data.error || "Failed to publish post", "error");
       }
-    } catch (error: any) {
-      showToast(`Error: ${error.message}`, "error");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      showToast(`Error: ${message}`, "error");
     } finally {
       setPublishingPostId(null);
     }
@@ -230,7 +230,7 @@ function CalendarView({
   posts,
   onScheduleClick,
 }: {
-  posts: any[];
+  posts: ScheduledPost[];
   onScheduleClick: () => void;
 }) {
   const today = new Date();
@@ -357,7 +357,7 @@ function QueueView({
   onPublish,
   publishingPostId,
 }: {
-  posts: any[];
+  posts: ScheduledPost[];
   onPublish: (postId: string) => void;
   publishingPostId: string | null;
 }) {
@@ -482,7 +482,7 @@ function TemplatesView({
   templates,
   onTemplateUpdate,
 }: {
-  templates: any[];
+  templates: ContentTemplate[];
   onTemplateUpdate: () => void;
 }) {
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
