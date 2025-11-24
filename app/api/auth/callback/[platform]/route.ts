@@ -71,45 +71,64 @@ export async function GET(
     const profile = await fetchUserProfile(platform, tokens.access_token);
     console.log(`[${platform}] Profile fetched:`, profile.username);
 
-    // Store account in Supabase - tokens stored directly (Supabase handles security)
-    console.log(`[${platform}] Saving to database...`);
-    const accountData = {
+    // Get provider_id from social_providers table
+    console.log(`[${platform}] Getting provider ID...`);
+    const { data: provider, error: providerError } = await supabase
+      .from("social_providers")
+      .select("id")
+      .eq("provider_key", platform)
+      .single();
+
+    if (providerError || !provider) {
+      console.error(`[${platform}] Provider not found:`, providerError);
+      return NextResponse.redirect(
+        `${origin}${redirect}?error=provider_not_found`,
+      );
+    }
+
+    // Encrypt tokens
+    console.log(`[${platform}] Encrypting tokens...`);
+    const { encryptAPIKey } = await import('@/lib/encryption');
+    const encryptedAccessToken = encryptAPIKey(tokens.access_token);
+    const encryptedRefreshToken = tokens.refresh_token ? encryptAPIKey(tokens.refresh_token) : null;
+
+    // Store in user_social_connections with encrypted tokens
+    console.log(`[${platform}] Saving to user_social_connections...`);
+    const connectionData = {
       user_id: user.id,
-      platform: platform,
-      platform_user_id: profile.id,
-      platform_username: profile.username,
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token || null,
+      provider_id: provider.id,
+      connection_name: `${profile.name} (@${profile.username})`,
+      account_username: profile.username,
+      account_id: profile.id,
+      access_token_encrypted: encryptedAccessToken,
+      refresh_token_encrypted: encryptedRefreshToken,
       token_expires_at: tokens.expires_in
         ? new Date(Date.now() + tokens.expires_in * 1000).toISOString()
         : null,
       is_active: true,
+      test_status: 'pending',
       metadata: {
         name: profile.name,
-        followers: profile.followers_count,
-        profile_image: profile.profile_image_url,
-        setup_date: new Date().toISOString(),
+        followers_count: profile.followers_count,
+        profile_image_url: profile.profile_image_url,
+        connected_at: new Date().toISOString(),
       },
     };
-    console.log(
-      `[${platform}] Account data:`,
-      JSON.stringify({ ...accountData, access_token: '[HIDDEN]', refresh_token: accountData.refresh_token ? '[HIDDEN]' : null }, null, 2),
-    );
 
     const { error: insertError } = await supabase
-      .from("social_accounts")
-      .upsert(accountData, {
-        onConflict: 'user_id,platform,platform_user_id',
+      .from("user_social_connections")
+      .upsert(connectionData, {
+        onConflict: 'user_id,provider_id,connection_name',
       });
 
     if (insertError) {
-      console.error(`[${platform}] Failed to save account:`, insertError);
+      console.error(`[${platform}] Failed to save connection:`, insertError);
       return NextResponse.redirect(
         `${origin}${redirect}?error=save_failed&details=${encodeURIComponent(insertError.message)}`,
       );
     }
 
-    console.log(`[${platform}] ✅ Account saved successfully with encrypted tokens!`);
+    console.log(`[${platform}] ✅ Connection saved successfully with encrypted tokens!`);
 
     // Track platform connection event
     await supabase.from("analytics_events").insert({
