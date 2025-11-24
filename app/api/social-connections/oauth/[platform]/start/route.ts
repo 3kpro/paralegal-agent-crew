@@ -70,6 +70,29 @@ export async function GET(
     // Generate state parameter for CSRF protection
     const state = crypto.randomUUID()
 
+    // Generate PKCE parameters for Twitter (required for OAuth 2.0)
+    let codeVerifier: string | null = null
+    let codeChallenge: string | null = null
+
+    if (platform === "twitter") {
+      // Generate code verifier (random string)
+      const array = new Uint8Array(32)
+      crypto.getRandomValues(array)
+      codeVerifier = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
+
+      // Generate code challenge (SHA-256 hash of verifier, base64url encoded)
+      const encoder = new TextEncoder()
+      const data = encoder.encode(codeVerifier)
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      codeChallenge = btoa(String.fromCharCode(...hashArray))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '')
+
+      console.log('[OAuth Start] PKCE generated for Twitter')
+    }
+
     // Store state in cookie for validation on callback
     const cookieStore = await cookies()
     cookieStore.set(`oauth_state_${platform}`, state, {
@@ -79,6 +102,18 @@ export async function GET(
       maxAge: 600, // 10 minutes
       path: "/",
     })
+
+    // Store code verifier for Twitter PKCE
+    if (codeVerifier) {
+      cookieStore.set(`oauth_verifier_${platform}`, codeVerifier, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 600, // 10 minutes
+        path: "/",
+      })
+      console.log('[OAuth Start] Code verifier stored in cookie')
+    }
 
     // Build OAuth authorization URL
     const authUrl = new URL(oauthConfig.auth_url)
@@ -108,6 +143,13 @@ export async function GET(
     authUrl.searchParams.append("redirect_uri", redirectUri)
     authUrl.searchParams.append("state", state)
     authUrl.searchParams.append("response_type", "code")
+
+    // Add PKCE challenge for Twitter
+    if (codeChallenge) {
+      authUrl.searchParams.append("code_challenge", codeChallenge)
+      authUrl.searchParams.append("code_challenge_method", "S256")
+      console.log('[OAuth Start] Added PKCE challenge to auth URL')
+    }
 
     // Add scopes
     if (oauthConfig.required_scopes && oauthConfig.required_scopes.length > 0) {

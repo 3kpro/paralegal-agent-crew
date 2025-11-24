@@ -55,6 +55,20 @@ export async function GET(
     // Clear state cookie
     cookieStore.delete(`oauth_state_${platform}`)
 
+    // Get code verifier for Twitter PKCE
+    const codeVerifier = cookieStore.get(`oauth_verifier_${platform}`)?.value
+    if (platform === "twitter" && !codeVerifier) {
+      console.error("[OAuth Callback] Missing code verifier for Twitter PKCE")
+      return NextResponse.redirect(
+        new URL("/settings?tab=connections&error=missing_code_verifier", request.url)
+      )
+    }
+
+    // Clear verifier cookie
+    if (codeVerifier) {
+      cookieStore.delete(`oauth_verifier_${platform}`)
+    }
+
     // Load platform configuration
     const { data: provider, error: providerError } = await supabase
       .from("social_providers")
@@ -102,13 +116,21 @@ export async function GET(
       )
     }
 
+    // Build token request - use PKCE for Twitter, client_secret for others
     const tokenRequestBody = new URLSearchParams({
       grant_type: "authorization_code",
       code: code,
       redirect_uri: redirectUri,
       client_id: clientId,
-      client_secret: clientSecret,
     })
+
+    // Twitter uses PKCE (code_verifier), other platforms use client_secret
+    if (platform === "twitter" && codeVerifier) {
+      tokenRequestBody.append("code_verifier", codeVerifier)
+      console.log("[OAuth Callback] Using PKCE for Twitter token exchange")
+    } else {
+      tokenRequestBody.append("client_secret", clientSecret)
+    }
 
     const tokenResponse = await fetch(oauthConfig.token_url, {
       method: "POST",
