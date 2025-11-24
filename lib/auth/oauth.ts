@@ -208,70 +208,84 @@ export async function getValidToken(
 ): Promise<string> {
   const supabase = createClient();
 
-  const { data: account, error } = await supabase
-    .from('social_accounts')
-    .select('*')
+  // Query user_social_connections with provider join
+  const { data: connection, error } = await supabase
+    .from('user_social_connections')
+    .select(`
+      id,
+      access_token_encrypted,
+      refresh_token_encrypted,
+      token_expires_at,
+      is_active,
+      social_providers!inner(provider_key)
+    `)
     .eq('user_id', userId)
-    .eq('platform', platform)
+    .eq('social_providers.provider_key', platform)
     .eq('is_active', true)
     .single();
 
-  if (error || !account) {
+  if (error || !connection) {
     throw new Error('Social account not found');
   }
 
+  // Import decrypt function
+  const { decryptAPIKey } = await import('@/lib/encryption');
+
+  // Decrypt the access token
+  let accessToken = decryptAPIKey(connection.access_token_encrypted);
+
   // Check if token is expired
-  if (account.token_expires_at) {
-    const expiresAt = new Date(account.token_expires_at);
+  if (connection.token_expires_at) {
+    const expiresAt = new Date(connection.token_expires_at);
     const now = new Date();
     const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
 
     if (now.getTime() >= expiresAt.getTime() - bufferTime) {
       // Token is expired or about to expire, refresh it
-      if (account.refresh_token) {
+      if (connection.refresh_token_encrypted) {
         try {
-          const newTokens = await refreshAccessToken(platform, account.refresh_token);
-          
-          // Update with new tokens - store directly
+          const refreshToken = decryptAPIKey(connection.refresh_token_encrypted);
+          const newTokens = await refreshAccessToken(platform, refreshToken);
+
+          // Import encrypt function
+          const { encryptAPIKey } = await import('@/lib/encryption');
+
+          // Update with new tokens - encrypted
           const newExpiresAt = newTokens.expires_in
             ? new Date(Date.now() + newTokens.expires_in * 1000).toISOString()
             : null;
 
           await supabase
-            .from('social_accounts')
+            .from('user_social_connections')
             .update({
-              access_token: newTokens.access_token,
+              access_token_encrypted: encryptAPIKey(newTokens.access_token),
+              refresh_token_encrypted: newTokens.refresh_token ? encryptAPIKey(newTokens.refresh_token) : null,
               token_expires_at: newExpiresAt,
-              metadata: {
-                ...account.metadata,
-                last_token_refresh: new Date().toISOString(),
-              },
               updated_at: new Date().toISOString(),
             })
-            .eq('id', account.id);
+            .eq('id', connection.id);
 
-          return newTokens.access_token;
+          accessToken = newTokens.access_token;
         } catch (refreshError) {
           // Refresh failed, mark account as inactive
           await supabase
-            .from('social_accounts')
+            .from('user_social_connections')
             .update({ is_active: false })
-            .eq('id', account.id);
-          
+            .eq('id', connection.id);
+
           throw new Error('Token expired and refresh failed. Please reconnect your account.');
         }
       } else {
         // No refresh token available
         await supabase
-          .from('social_accounts')
+          .from('user_social_connections')
           .update({ is_active: false })
-          .eq('id', account.id);
-        
+          .eq('id', connection.id);
+
         throw new Error('Token expired. Please reconnect your account.');
       }
     }
   }
 
-  // Return current token directly - no decryption needed
-  return account.access_token;
+  return accessToken;
 }

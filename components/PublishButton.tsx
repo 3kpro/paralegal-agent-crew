@@ -128,10 +128,16 @@ export default function PublishButton({
 
       console.log("[PublishButton] Publishing with data:", publishData);
 
-      const response = await fetch("/api/social-publishing", {
+      // Call /api/social/post which directly posts to Twitter
+      // Format: { platform, content, campaignId }
+      const response = await fetch("/api/social/post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(publishData),
+        body: JSON.stringify({
+          platform: "twitter", // TODO: Get from selected account
+          content: content.trim(),
+          campaignId: campaignId,
+        }),
       });
 
       console.log("[PublishButton] API response status:", response.status);
@@ -139,7 +145,8 @@ export default function PublishButton({
       console.log("[PublishButton] API response:", result);
 
       if (result.success) {
-        console.log("[PublishButton] ✅ Publishing initiated successfully");
+        console.log("[PublishButton] ✅ Tweet posted successfully!");
+        console.log("[PublishButton] Tweet URL:", result.url);
         onPublishSuccess?.(result);
         setShowModal(false);
 
@@ -149,8 +156,8 @@ export default function PublishButton({
         setScheduledDate("");
         setScheduledTime("");
       } else {
-        console.error("[PublishButton] ❌ Publishing failed:", result.error);
-        onPublishError?.(result.error || "Publishing failed");
+        console.error("[PublishButton] ❌ Publishing failed:", result.error || result.message);
+        onPublishError?.(result.error || result.message || "Publishing failed");
       }
     } catch (error) {
       console.error("[PublishButton] ❌ Publishing error:", error);
