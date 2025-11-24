@@ -2940,7 +2940,28 @@ export default function NewCampaignPage() {
                         })()}
                         campaignId={editId || undefined}
                         onPublishSuccess={(results) => {
-                          showToast(`Published successfully to ${results.tasks?.length || 0} social accounts!`, "success");
+                          console.log("✅ Tweet posted!", results);
+
+                          // Show success message with tweet URL
+                          if (results.url) {
+                            showToast(
+                              <div>
+                                <p>✅ Tweet posted successfully!</p>
+                                <a
+                                  href={results.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="underline hover:text-tron-cyan"
+                                >
+                                  View on Twitter →
+                                </a>
+                              </div>,
+                              "success"
+                            );
+                          } else {
+                            showToast(`Published successfully!`, "success");
+                          }
+
                           // Optionally save campaign too
                           saveCampaign(false);
                         }}
