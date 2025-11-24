@@ -2939,21 +2939,69 @@ export default function NewCampaignPage() {
                           return platformContent?.content || "";
                         })()}
                         campaignId={editId || undefined}
-                        onPublishSuccess={(results) => {
-                          console.log("✅ Tweet posted!", results);
+                        onPublishSuccess={(data) => {
+                          console.log("✅ Content posted!", data);
 
-                          // Show success message with tweet URL
-                          if (results.url) {
+                          // Handle new multi-platform response format
+                          if (data.results && Array.isArray(data.results)) {
+                            const successfulPosts = data.results;
+
+                            if (successfulPosts.length === 1) {
+                              // Single post - show simple success with link
+                              const post = successfulPosts[0];
+                              showToast(
+                                <div>
+                                  <p>✅ Posted to {post.platform} successfully!</p>
+                                  <a
+                                    href={post.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:text-tron-cyan"
+                                  >
+                                    View on {post.platform} →
+                                  </a>
+                                </div>,
+                                "success"
+                              );
+                            } else {
+                              // Multiple posts - show count and links
+                              showToast(
+                                <div>
+                                  <p>✅ Posted to {successfulPosts.length} platforms!</p>
+                                  <div className="mt-2 space-y-1">
+                                    {successfulPosts.map((post, idx) => (
+                                      <a
+                                        key={idx}
+                                        href={post.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block underline hover:text-tron-cyan text-sm"
+                                      >
+                                        View on {post.platform} →
+                                      </a>
+                                    ))}
+                                  </div>
+                                  {data.errors && data.errors.length > 0 && (
+                                    <p className="mt-2 text-xs text-red-400">
+                                      {data.errors.length} platform(s) failed
+                                    </p>
+                                  )}
+                                </div>,
+                                "success"
+                              );
+                            }
+                          } else if (data.url) {
+                            // Legacy format fallback
                             showToast(
                               <div>
-                                <p>✅ Tweet posted successfully!</p>
+                                <p>✅ Posted successfully!</p>
                                 <a
-                                  href={results.url}
+                                  href={data.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="underline hover:text-tron-cyan"
                                 >
-                                  View on Twitter →
+                                  View post →
                                 </a>
                               </div>,
                               "success"

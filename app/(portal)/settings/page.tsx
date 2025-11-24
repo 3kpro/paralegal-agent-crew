@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import InstructionCard from "@/components/InstructionCard";
 import LoadingButton from "@/components/LoadingButton";
 import { SettingsSkeleton } from "@/components/SkeletonLoader";
@@ -79,8 +79,12 @@ const PROVIDER_INSTRUCTIONS = {
 
 export default function SettingsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(() => {
+    // Read tab from URL params, default to "profile"
+    return searchParams.get("tab") || "profile";
+  });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);

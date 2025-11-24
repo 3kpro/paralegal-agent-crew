@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { SchedulePostDialog } from "@/components/SchedulePostDialog";
 import { Send, RotateCcw, Check } from "lucide-react";

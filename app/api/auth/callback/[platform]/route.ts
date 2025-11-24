@@ -123,8 +123,8 @@ export async function GET(
       },
     });
 
-    // Redirect back with success
-    return NextResponse.redirect(`${origin}${redirect}?connected=${platform}`);
+    // Redirect back with success - always go to Settings > Connections tab
+    return NextResponse.redirect(`${origin}/settings?tab=connections&connected=${platform}`);
   } catch (error: any) {
     console.error("========================================");
     console.error("OAuth callback error:", error);
