@@ -61,6 +61,12 @@ export async function GET(
     // Platform-specific OAuth URLs - NO query params in redirect_uri
     const callbackUrl = `${origin}/api/auth/callback/${platform}`;
 
+    console.log(`[${platform}] OAuth Configuration:`);
+    console.log(`  Origin: ${origin}`);
+    console.log(`  Callback URL: ${callbackUrl}`);
+    console.log(`  Client ID: ${platform === 'twitter' ? process.env.TWITTER_CLIENT_ID?.substring(0, 10) + '...' : 'N/A'}`);
+    console.log(`  Code Challenge: ${codeChallenge.substring(0, 20)}...`);
+
     const oauthURLs: Record<string, string> = {
       tiktok:
         `https://open-api.tiktok.com/platform/oauth/connect?` +
@@ -123,6 +129,9 @@ export async function GET(
         { status: 500 },
       );
     }
+
+    console.log(`[${platform}] Redirecting to OAuth URL (first 150 chars):`, oauthUrl.substring(0, 150));
+    console.log(`[${platform}] Full OAuth URL:`, oauthUrl);
 
     // Redirect to platform's OAuth page
     return NextResponse.redirect(oauthUrl);

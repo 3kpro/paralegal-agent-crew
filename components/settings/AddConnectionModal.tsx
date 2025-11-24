@@ -112,8 +112,8 @@ export default function AddConnectionModal({
   async function handleOAuthStart() {
     setLoading(true)
     try {
-      // Redirect to OAuth start endpoint
-      window.location.href = `/api/social-connections/oauth/${provider.provider_key}/start`
+      // Redirect to OAuth connect endpoint
+      window.location.href = `/api/auth/connect/${provider.provider_key}`
     } catch (error) {
       console.error("OAuth start error:", error)
       setLoading(false)

@@ -23,7 +23,18 @@ export default function TestTwitterPage() {
 
   const handlePublishSuccess = (results: any) => {
     console.log("✅ Publish success:", results);
-    setLastResult({ success: true, ...results });
+    // Handle both single result and multi-platform results
+    if (results.results && Array.isArray(results.results)) {
+      // Multi-platform publish
+      setLastResult({
+        success: true,
+        platforms: results.results,
+        errors: results.errors,
+      });
+    } else {
+      // Single platform publish (legacy format)
+      setLastResult({ success: true, ...results });
+    }
   };
 
   const handlePublishError = (error: string) => {
@@ -200,21 +211,63 @@ export default function TestTwitterPage() {
             >
               {lastResult.success ? "✅ Success!" : "❌ Error"}
             </h2>
-            <div className="bg-tron-dark/50 border border-tron-cyan/20 rounded-lg p-4">
-              <pre className="text-sm text-tron-text overflow-x-auto">
-                {JSON.stringify(lastResult, null, 2)}
-              </pre>
-            </div>
-            {lastResult.success && lastResult.url && (
-              <a
-                href={lastResult.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark font-semibold rounded-lg transition-colors"
-              >
-                <Sparkles className="w-4 h-4" />
-                View Tweet on Twitter
-              </a>
+            {lastResult.success && lastResult.platforms ? (
+              // Multi-platform results
+              <div className="space-y-4">
+                {lastResult.platforms.map((post: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="bg-tron-dark/50 border border-green-500/30 rounded-lg p-4"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold text-tron-text">
+                        {post.platform} - @{post.account}
+                      </h3>
+                      <span className="text-xs text-green-400">✓ Posted</span>
+                    </div>
+                    <a
+                      href={post.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-tron-cyan hover:underline"
+                    >
+                      View Post →
+                    </a>
+                  </div>
+                ))}
+                {lastResult.errors && lastResult.errors.length > 0 && (
+                  <div className="bg-tron-dark/50 border border-yellow-500/30 rounded-lg p-4">
+                    <h3 className="font-semibold text-yellow-400 mb-2">
+                      Partial Failures:
+                    </h3>
+                    {lastResult.errors.map((error: string, idx: number) => (
+                      <p key={idx} className="text-sm text-tron-text-muted">
+                        • {error}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Single platform or error
+              <>
+                <div className="bg-tron-dark/50 border border-tron-cyan/20 rounded-lg p-4">
+                  <pre className="text-sm text-tron-text overflow-x-auto">
+                    {JSON.stringify(lastResult, null, 2)}
+                  </pre>
+                </div>
+                {lastResult.success && lastResult.url && (
+                  <a
+                    href={lastResult.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark font-semibold rounded-lg transition-colors"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    View Post
+                  </a>
+                )}
+              </>
             )}
           </motion.div>
         )}
