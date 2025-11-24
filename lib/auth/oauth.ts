@@ -206,7 +206,9 @@ export async function getValidToken(
   userId: string,
   platform: string
 ): Promise<string> {
-  const supabase = createClient();
+  // Use server client for API routes
+  const { createClient: createServerClient } = await import('@/lib/supabase/server');
+  const supabase = await createServerClient();
 
   // Query user_social_connections with provider join
   const { data: connection, error } = await supabase
