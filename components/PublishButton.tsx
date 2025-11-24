@@ -108,46 +108,78 @@ export default function PublishButton({
 
     setPublishing(true);
     try {
-      const publishData: any = {
-        social_account_ids: selectedAccounts,
-        content: content.trim(),
-        campaign_id: campaignId,
-      };
-
-      // Add scheduling if set
+      // Check if scheduling is requested
       if (isScheduled && scheduledDate && scheduledTime) {
         const scheduledDateTime = new Date(`${scheduledDate}T${scheduledTime}`);
-        if (scheduledDateTime > new Date()) {
-          publishData.scheduled_for = scheduledDateTime.toISOString();
-        } else {
+        if (scheduledDateTime <= new Date()) {
           onPublishError?.("Scheduled time must be in the future");
           setPublishing(false);
           return;
         }
+
+        // TODO: Implement scheduled posting
+        onPublishError?.("Scheduled posting coming soon! Use 'Publish Now' for immediate posting.");
+        setPublishing(false);
+        return;
       }
 
-      console.log("[PublishButton] Publishing with data:", publishData);
+      // Post to each selected platform using /api/social/post
+      const results = [];
+      const errors = [];
 
-      // Call /api/social/post which directly posts to Twitter
-      // Format: { platform, content, campaignId }
-      const response = await fetch("/api/social/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          platform: "twitter", // TODO: Get from selected account
-          content: content.trim(),
-          campaignId: campaignId,
-        }),
-      });
+      for (const accountId of selectedAccounts) {
+        const account = socialAccounts.find((acc) => acc.id === accountId);
+        if (!account) {
+          console.error(`[PublishButton] Account not found: ${accountId}`);
+          errors.push(`Account ${accountId} not found`);
+          continue;
+        }
 
-      console.log("[PublishButton] API response status:", response.status);
-      const result = await response.json();
-      console.log("[PublishButton] API response:", result);
+        console.log(`[PublishButton] Publishing to ${account.platform} (${account.account_handle})...`);
 
-      if (result.success) {
-        console.log("[PublishButton] ✅ Tweet posted successfully!");
-        console.log("[PublishButton] Tweet URL:", result.url);
-        onPublishSuccess?.(result);
+        try {
+          const response = await fetch("/api/social/post", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              platform: account.platform,
+              content: content.trim(),
+              campaignId: campaignId,
+            }),
+          });
+
+          console.log(`[PublishButton] ${account.platform} response status:`, response.status);
+          const result = await response.json();
+          console.log(`[PublishButton] ${account.platform} response:`, result);
+
+          if (result.success) {
+            console.log(`[PublishButton] ✅ Posted to ${account.platform} successfully!`);
+            console.log(`[PublishButton] Post URL: ${result.url}`);
+            results.push({
+              platform: account.platform,
+              account: account.account_handle,
+              url: result.url,
+              postId: result.postId,
+            });
+          } else {
+            console.error(`[PublishButton] ❌ ${account.platform} failed:`, result.error || result.message);
+            errors.push(`${account.platform}: ${result.error || result.message || "Failed"}`);
+          }
+        } catch (error) {
+          console.error(`[PublishButton] ❌ ${account.platform} error:`, error);
+          errors.push(`${account.platform}: Network error`);
+        }
+      }
+
+      // Report results
+      if (results.length > 0) {
+        console.log("[PublishButton] ✅ Publishing completed!");
+        console.log("[PublishButton] Successful posts:", results);
+        onPublishSuccess?.({
+          success: true,
+          results,
+          errors: errors.length > 0 ? errors : undefined,
+        });
         setShowModal(false);
 
         // Reset form
@@ -156,8 +188,8 @@ export default function PublishButton({
         setScheduledDate("");
         setScheduledTime("");
       } else {
-        console.error("[PublishButton] ❌ Publishing failed:", result.error || result.message);
-        onPublishError?.(result.error || result.message || "Publishing failed");
+        console.error("[PublishButton] ❌ All posts failed:", errors);
+        onPublishError?.(errors.join("; ") || "All posts failed");
       }
     } catch (error) {
       console.error("[PublishButton] ❌ Publishing error:", error);
