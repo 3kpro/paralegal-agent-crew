@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { decryptAPIKey } from "@/lib/encryption";
 
 // Helper function to publish to social media platforms
 async function publishToSocialMedia(
@@ -12,26 +13,50 @@ async function publishToSocialMedia(
   const supabase = await createClient();
 
   try {
-    // Get account details and access token
-    const { data: account, error: accountError } = await supabase
-      .from("social_accounts")
-      .select("access_token, platform_user_id, platform_username, user_id")
+    console.log(`[Publishing] Starting publish for connection ${accountId} (${platform})`);
+
+    // Get connection details and encrypted access token from user_social_connections
+    const { data: connection, error: connectionError } = await supabase
+      .from("user_social_connections")
+      .select(`
+        id,
+        user_id,
+        account_username,
+        access_token_encrypted,
+        refresh_token_encrypted,
+        token_expires_at,
+        social_providers!inner(provider_key)
+      `)
       .eq("id", accountId)
       .single();
 
-    if (accountError || !account) {
-      throw new Error(`Account not found: ${accountError?.message}`);
+    if (connectionError || !connection) {
+      console.error(`[Publishing] Connection not found:`, connectionError);
+      throw new Error(`Connection not found: ${connectionError?.message}`);
     }
+
+    console.log(`[Publishing] Found connection for @${connection.account_username}`);
+
+    // Decrypt access token
+    if (!connection.access_token_encrypted) {
+      throw new Error("No access token found for this connection");
+    }
+
+    const accessToken = await decryptAPIKey(connection.access_token_encrypted);
+    console.log(`[Publishing] Decrypted access token (length: ${accessToken.length})`);
 
     let platformPostId: string | null = null;
 
     // Platform-specific posting
     if (platform === "twitter") {
+      console.log(`[Publishing] Posting to Twitter API v2...`);
+      console.log(`[Publishing] Content: "${content.substring(0, 50)}..."`);
+
       // Post to Twitter API v2
       const response = await fetch("https://api.twitter.com/2/tweets", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${account.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -40,8 +65,11 @@ async function publishToSocialMedia(
         }),
       });
 
+      console.log(`[Publishing] Twitter API response status: ${response.status}`);
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error(`[Publishing] Twitter API error:`, errorData);
         throw new Error(`Twitter API error: ${JSON.stringify(errorData)}`);
       }
 
@@ -49,7 +77,7 @@ async function publishToSocialMedia(
       platformPostId = data.data?.id;
 
       console.log(
-        `✅ Successfully posted to Twitter (${account.platform_username}):`,
+        `✅ Successfully posted to Twitter (${connection.account_username}):`,
         platformPostId,
       );
     } else {
@@ -68,7 +96,7 @@ async function publishToSocialMedia(
 
     // Track successful publishing event
     await supabase.from("analytics_events").insert({
-      user_id: account.user_id,
+      user_id: connection.user_id,
       event_type: "content_published",
       event_category: "content",
       event_data: {
@@ -80,33 +108,57 @@ async function publishToSocialMedia(
 
     // Increment daily usage metric
     await supabase.rpc("increment_usage_metric", {
-      p_user_id: account.user_id,
+      p_user_id: connection.user_id,
       p_metric_type: "content_published",
       p_increment: 1,
     });
-  } catch (error: any) {
-    console.error(`❌ Failed to publish to ${platform}:`, error.message);
+
+    // Update connection usage stats
+    const { data: currentConnection } = await supabase
+      .from("user_social_connections")
+      .select("usage_count")
+      .eq("id", accountId)
+      .single();
+
+    await supabase
+      .from("user_social_connections")
+      .update({
+        usage_count: (currentConnection?.usage_count || 0) + 1,
+        last_used_at: new Date().toISOString(),
+      })
+      .eq("id", accountId);
+
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`❌ Failed to publish to ${platform}:`, message);
 
     // Update queue status to failed
     await supabase
       .from("social_publishing_queue")
       .update({
         status: "failed",
-        error_message: error.message,
+        error_message: message,
         retry_count: 1,
       })
       .eq("id", queueId);
 
     // Track failed publishing event
-    if (account) {
+    // Get connection for user_id (connection might not be defined if error was early)
+    const { data: errorConnection } = await supabase
+      .from("user_social_connections")
+      .select("user_id")
+      .eq("id", accountId)
+      .single();
+
+    if (errorConnection) {
       await supabase.from("analytics_events").insert({
-        user_id: account.user_id,
+        user_id: errorConnection.user_id,
         event_type: "content_published",
         event_category: "content",
         event_data: {
           platform,
           success: false,
-          error: error.message,
+          error: message,
         },
       });
     }
@@ -153,35 +205,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify user owns all specified social accounts
-    const { data: accounts, error: accountsError } = await supabase
-      .from("social_accounts")
-      .select("id, platform, is_active")
+    // Verify user owns all specified social connections
+    const { data: connections, error: connectionsError } = await supabase
+      .from("user_social_connections")
+      .select(`
+        id,
+        is_active,
+        social_providers!inner(provider_key)
+      `)
       .eq("user_id", user.id)
       .in("id", social_account_ids);
 
-    if (accountsError) {
-      console.error("Failed to verify social accounts:", accountsError);
+    if (connectionsError) {
+      console.error("Failed to verify social connections:", connectionsError);
       return NextResponse.json(
-        { error: "Failed to verify social accounts" },
+        { error: "Failed to verify social connections" },
         { status: 500 },
       );
     }
 
-    if (accounts.length !== social_account_ids.length) {
+    if (connections.length !== social_account_ids.length) {
       return NextResponse.json(
-        { error: "Some social accounts not found or not owned by user" },
+        { error: "Some social connections not found or not owned by user" },
         { status: 403 },
       );
     }
 
-    // Check if all accounts are active
-    const inactiveAccounts = accounts.filter((acc) => !acc.is_active);
-    if (inactiveAccounts.length > 0) {
+    // Check if all connections are active
+    const inactiveConnections = connections.filter((conn) => !conn.is_active);
+    if (inactiveConnections.length > 0) {
       return NextResponse.json(
         {
-          error: "Some social accounts are inactive",
-          inactive_accounts: inactiveAccounts,
+          error: "Some social connections are inactive",
+          inactive_connections: inactiveConnections,
         },
         { status: 400 },
       );
@@ -189,22 +245,25 @@ export async function POST(request: NextRequest) {
 
     const publishingTasks = [];
 
-    // Create publishing queue entries for each account
-    for (const account of accounts) {
+    // Create publishing queue entries for each connection
+    for (const connection of connections) {
       const isScheduled = scheduled_for && new Date(scheduled_for) > new Date();
+      const platform = connection.social_providers.provider_key;
+
+      console.log(`[API] Creating queue entry for connection ${connection.id} (${platform})`);
 
       const { data: queueEntry, error: queueError } = await supabase
         .from("social_publishing_queue")
         .insert({
           user_id: user.id,
           campaign_id: campaign_id || null, // Explicitly set null if undefined
-          social_account_id: account.id,
+          social_account_id: connection.id,
           content,
           media_urls,
           scheduled_for: scheduled_for || null,
           status: isScheduled ? "scheduled" : "publishing",
           metadata: {
-            platform: account.platform,
+            platform: platform,
             content_length: content.length,
             has_media: media_urls.length > 0,
           },
@@ -218,23 +277,24 @@ export async function POST(request: NextRequest) {
       }
 
       publishingTasks.push({
-        account_id: account.id,
-        platform: account.platform,
+        account_id: connection.id,
+        platform: platform,
         queue_id: queueEntry.id,
         status: isScheduled ? "scheduled" : "publishing",
       });
 
       // If not scheduled, publish immediately
       if (!isScheduled) {
+        console.log(`[API] Publishing immediately to ${platform}...`);
         // Publish asynchronously (don't block response)
         publishToSocialMedia(
-          account.id,
-          account.platform,
+          connection.id,
+          platform,
           queueEntry.id,
           content,
           media_urls,
         ).catch((error) =>
-          console.error(`Failed to publish to ${account.platform}:`, error),
+          console.error(`Failed to publish to ${platform}:`, error),
         );
       }
     }
