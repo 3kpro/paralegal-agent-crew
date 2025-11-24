@@ -2387,8 +2387,13 @@ export default function NewCampaignPage() {
                             showToast(`Published successfully!`, "success");
                           }
 
-                          // Optionally save campaign too
+                          // Save campaign and redirect to campaigns list
                           saveCampaign(false);
+
+                          // Redirect to campaigns page after 2 seconds
+                          setTimeout(() => {
+                            router.push('/campaigns');
+                          }, 2000);
                         }}
                         onPublishError={(error) => {
                           showToast(error, "error");
@@ -3092,8 +3097,13 @@ export default function NewCampaignPage() {
                             showToast(`Published successfully!`, "success");
                           }
 
-                          // Optionally save campaign too
+                          // Save campaign and redirect to campaigns list
                           saveCampaign(false);
+
+                          // Redirect to campaigns page after 2 seconds
+                          setTimeout(() => {
+                            router.push('/campaigns');
+                          }, 2000);
                         }}
                         onPublishError={(error) => {
                           showToast(error, "error");
