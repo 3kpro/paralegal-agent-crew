@@ -114,6 +114,9 @@ test-lint.txt
 test.js
 view_changelog.js
 
+# Temporary issue documents
+TWITTER_POSTING_ISSUE.md
+
 # MCP validator
 apimatic-validator-mcp/
 
