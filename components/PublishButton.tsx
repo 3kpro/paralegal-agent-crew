@@ -65,31 +65,43 @@ export default function PublishButton({
   async function loadSocialAccounts() {
     setLoading(true);
     try {
+      console.log("[PublishButton] Loading social accounts...");
       const response = await fetch("/api/social-accounts");
       const result = await response.json();
+      console.log("[PublishButton] Social accounts response:", result);
 
       if (result.success) {
         const activeAccounts = result.accounts.filter(
           (acc: SocialAccount) => acc.is_active,
         );
+        console.log("[PublishButton] Active accounts found:", activeAccounts.length);
+        console.log("[PublishButton] Active accounts:", activeAccounts);
         setSocialAccounts(activeAccounts);
         // Pre-select all active accounts
         setSelectedAccounts(activeAccounts.map((acc: SocialAccount) => acc.id));
+      } else {
+        console.error("[PublishButton] Failed to load accounts:", result);
       }
     } catch (error) {
-      console.error("Failed to load social accounts:", error);
+      console.error("[PublishButton] Failed to load social accounts:", error);
     } finally {
       setLoading(false);
     }
   }
 
   async function handlePublish() {
+    console.log("[PublishButton] handlePublish called");
+    console.log("[PublishButton] Selected accounts:", selectedAccounts);
+    console.log("[PublishButton] Content length:", content?.length);
+
     if (selectedAccounts.length === 0) {
+      console.error("[PublishButton] No accounts selected");
       onPublishError?.("Please select at least one social account");
       return;
     }
 
     if (!content || content.trim().length === 0) {
+      console.error("[PublishButton] No content");
       onPublishError?.("Content cannot be empty");
       return;
     }
@@ -114,15 +126,20 @@ export default function PublishButton({
         }
       }
 
+      console.log("[PublishButton] Publishing with data:", publishData);
+
       const response = await fetch("/api/social-publishing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(publishData),
       });
 
+      console.log("[PublishButton] API response status:", response.status);
       const result = await response.json();
+      console.log("[PublishButton] API response:", result);
 
       if (result.success) {
+        console.log("[PublishButton] ✅ Publishing initiated successfully");
         onPublishSuccess?.(result);
         setShowModal(false);
 
@@ -132,10 +149,11 @@ export default function PublishButton({
         setScheduledDate("");
         setScheduledTime("");
       } else {
+        console.error("[PublishButton] ❌ Publishing failed:", result.error);
         onPublishError?.(result.error || "Publishing failed");
       }
     } catch (error) {
-      console.error("Publishing error:", error);
+      console.error("[PublishButton] ❌ Publishing error:", error);
       onPublishError?.("Network error occurred");
     } finally {
       setPublishing(false);
