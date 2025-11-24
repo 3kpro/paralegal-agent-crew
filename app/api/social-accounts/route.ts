@@ -14,20 +14,47 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user's social accounts
-    const { data: accounts, error } = await supabase
-      .from("social_accounts")
-      .select("*")
+    console.log(`[social-accounts] Fetching connections for user ${user.id}`);
+
+    // Get user's social connections from the new user_social_connections table
+    const { data: connections, error } = await supabase
+      .from("user_social_connections")
+      .select(`
+        id,
+        connection_name,
+        account_username,
+        account_id,
+        is_active,
+        test_status,
+        created_at,
+        social_providers!inner(
+          provider_key,
+          name
+        )
+      `)
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Failed to fetch social accounts:", error);
+      console.error("Failed to fetch social connections:", error);
       return NextResponse.json(
-        { error: "Failed to fetch social accounts" },
+        { error: "Failed to fetch social connections" },
         { status: 500 },
       );
     }
+
+    console.log(`[social-accounts] Found ${connections?.length || 0} connections`);
+
+    // Transform to match the expected SocialAccount interface
+    const accounts = connections?.map((conn) => ({
+      id: conn.id,
+      platform: conn.social_providers.provider_key,
+      account_name: conn.connection_name,
+      account_handle: conn.account_username,
+      is_active: conn.is_active,
+      is_verified: conn.test_status === "success",
+      created_at: conn.created_at,
+    })) || [];
 
     return NextResponse.json({ success: true, accounts });
   } catch (error) {
