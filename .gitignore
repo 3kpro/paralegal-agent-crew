@@ -97,3 +97,36 @@ DEVapimatic-validator-mcp/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Temporary analysis scripts (added 2025-11-24)
+apply_final.js
+changelog_content.txt
+dump_changelog.js
+final.js
+main.js
+read_changelog.js
+read_files.js
+read_full_changelog.js
+read_onboarding_full.js
+read_test.js
+script.js
+test-lint.txt
+test.js
+view_changelog.js
+
+# MCP validator
+apimatic-validator-mcp/
+
+# Temp docs
+docs/TikTokShop/
+docs/notes.md
+
+# Unused rate limiter
+lib/rate-limit-upstash.ts
+
+# ESLint configs (using .eslintrc.json)
+eslint.config.js
+.eslintignore
+
+# Social connections types (should be in main types file)
+app/api/social-connections/types.ts
