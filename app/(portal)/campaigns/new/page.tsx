@@ -43,6 +43,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
+import PublishButton from "@/components/PublishButton";
 import {
   Platform,
   StepConfig,
@@ -2925,17 +2926,32 @@ export default function NewCampaignPage() {
                       <Check className="w-5 h-5" />
                       {loading ? "Saving..." : "Save for Later"}
                     </motion.button>
-                    <motion.button
-                      onClick={() => saveCampaign(true)}
-                      disabled={loading}
-                      whileHover={{ scale: loading ? 1 : 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-                      aria-label="Publish campaign now"
-                    >
-                      <Sparkles className="w-5 h-5" />
-                      {loading ? "Publishing..." : "Publish Now"}
-                    </motion.button>
+                    <div className="flex items-center justify-center">
+                      <PublishButton
+                        content={(() => {
+                          // Get content from the first available platform
+                          if (!generatedContent) return "";
+                          const platforms = Object.keys(generatedContent).filter(k => k !== 'hashtags');
+                          if (platforms.length === 0) return "";
+                          const firstPlatform = platforms[0];
+                          const platformContent = generatedContent[firstPlatform];
+                          if (typeof platformContent === 'string') return platformContent;
+                          return platformContent?.content || "";
+                        })()}
+                        campaignId={editId || undefined}
+                        onPublishSuccess={(results) => {
+                          showToast(`Published successfully to ${results.tasks?.length || 0} social accounts!`, "success");
+                          // Optionally save campaign too
+                          saveCampaign(false);
+                        }}
+                        onPublishError={(error) => {
+                          showToast(error, "error");
+                        }}
+                        disabled={loading || !generatedContent}
+                        variant="primary"
+                        size="lg"
+                      />
+                    </div>
                   </div>
                 </motion.div>
               )}
