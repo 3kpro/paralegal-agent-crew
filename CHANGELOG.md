@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2024-11-24] - Multi-Platform Social Integration
+
+### Added
+- **Instagram Integration**: Complete OAuth and posting implementation
+  - OAuth via Facebook Graph API
+  - 2-step posting (create container → publish)
+  - Business account support
+  - Comprehensive setup guide: INSTAGRAM_QUICK_START.md
+- **LinkedIn Integration**: Complete OAuth and posting implementation
+  - OAuth 2.0 with OpenID Connect
+  - UGC Post API with multi-image support
+  - Professional profile integration
+  - Setup guide: LINKEDIN_QUICK_START.md
+- **TikTok Integration**: Complete OAuth and posting implementation
+  - Content Posting API v2
+  - Video publishing support
+  - Auto token refresh
+  - Setup guide: TIKTOK_QUICK_START.md
+- **Master Setup Guide**: SOCIAL_PLATFORMS_SETUP.md
+  - All platforms overview
+  - Setup order recommendations
+  - Feature comparison matrix
+  - Common troubleshooting
+- **README.md**: Comprehensive project documentation
+  - Architecture overview
+  - Setup instructions
+  - Platform integration links
+
+### Changed
+- Fixed Instagram token exchange URL (now uses Facebook Graph API)
+- Updated .env.local with Instagram credentials template
+
+### Technical
+- Instagram OAuth uses Facebook Graph API endpoint
+- All platforms use same OAuth flow pattern
+- Encrypted token storage with AES-256
+- Automatic token refresh for all platforms
+
+## [2024-11-24] - Twitter Integration Complete
+
 ### Added
 - Twitter/X OAuth 2.0 integration with PKCE support
 - Encrypted token storage in `user_social_connections` table

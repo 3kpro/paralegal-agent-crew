@@ -186,7 +186,7 @@ async function exchangeToken(
     instagram: {
       clientId: process.env.INSTAGRAM_CLIENT_ID,
       clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
-      tokenUrl: "https://api.instagram.com/oauth/access_token",
+      tokenUrl: "https://graph.facebook.com/v18.0/oauth/access_token",
     },
   };
 
