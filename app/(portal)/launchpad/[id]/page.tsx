@@ -339,8 +339,24 @@ export default function CampaignDetailPage() {
                         <div className="text-sm font-medium text-white mb-1">{target.community_name}</div>
                         <div className="text-xs text-gray-500 capitalize">{target.platform}</div>
                         {target.content && (
-                          <div className="mt-2 text-xs text-gray-400 bg-gray-900/50 p-2 rounded border border-gray-700/50 line-clamp-3">
-                            {target.content.title || target.content.text || (target.content.thread && target.content.thread[0])}
+                          <div className="mt-2 text-xs text-gray-400 bg-gray-900/50 p-2 rounded border border-gray-700/50 relative group">
+                            <div className="line-clamp-3">
+                              {target.content.title || target.content.text || (target.content.thread && target.content.thread[0])}
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const text = target.content.title 
+                                  ? `${target.content.title}\n\n${target.content.body}`
+                                  : target.content.text || target.content.thread?.join('\n\n');
+                                navigator.clipboard.writeText(text);
+                                alert("Copied to clipboard!");
+                              }}
+                              className="absolute top-2 right-2 p-1.5 bg-gray-800 rounded-md text-gray-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Copy to clipboard"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
                           </div>
                         )}
                       </div>

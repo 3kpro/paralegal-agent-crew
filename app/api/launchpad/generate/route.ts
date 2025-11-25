@@ -103,6 +103,17 @@ export async function POST(request: Request) {
         
         Format: Return ONLY a JSON object with a "text" field. Do not include markdown formatting like \`\`\`json.`;
         responseFormat = "json";
+      } else if (target.platform === 'product_hunt') {
+        prompt = `You are a Product Hunt launch expert. Write the assets for a Product Hunt launch.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Tone: Punchy, exciting, clear value prop.
+        
+        Format: Return ONLY a JSON object with "tagline" (max 60 chars), "description" (max 260 chars), and "first_comment" (intro from maker) fields. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
       } else {
         prompt = `Write a social media post for ${target.platform} to launch this product.
         
