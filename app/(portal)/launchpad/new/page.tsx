@@ -13,9 +13,9 @@ export default function NewCampaignPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    product_name: "",
-    product_url: "",
-    product_description: "",
+    product_name: "Content Cascade AI",
+    product_url: "https://contentcascade.ai",
+    product_description: "The first AI-powered content repurposing engine that turns one video into a month of viral social posts. It analyzes your content, extracts the best clips, writes viral hooks, and schedules them across Twitter, LinkedIn, and TikTok automatically.",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,65 +73,61 @@ export default function NewCampaignPage() {
       >
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-300">
-            Campaign Name
+            Campaign Focus / Name
           </label>
           <input
             type="text"
             required
-            placeholder="e.g. TrendPulse V1 Launch"
+            placeholder="e.g. Product Hunt Launch, Viral Twitter Thread, LinkedIn Thought Leadership"
             className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-coral-500 focus:border-transparent outline-none transition-all"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">
-              Product Name
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. TrendPulse"
-              className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-coral-500 focus:border-transparent outline-none transition-all"
-              value={formData.product_name}
-              onChange={(e) =>
-                setFormData({ ...formData, product_name: e.target.value })
-              }
-            />
+        <div className="p-4 bg-gray-900/30 rounded-xl border border-gray-700/50 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Target Product</h3>
+            <span className="text-xs text-coral-400">Content Cascade AI</span>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-75">
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-gray-500">
+                Product Name
+              </label>
+              <input
+                type="text"
+                readOnly
+                className="w-full bg-gray-900/50 border border-gray-800 rounded-lg px-4 py-2 text-gray-400 cursor-not-allowed"
+                value={formData.product_name}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-gray-500">
+                Product URL
+              </label>
+              <input
+                type="url"
+                readOnly
+                className="w-full bg-gray-900/50 border border-gray-800 rounded-lg px-4 py-2 text-gray-400 cursor-not-allowed"
+                value={formData.product_url}
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">
-              Product URL
+          <div className="space-y-2 opacity-75">
+            <label className="text-xs font-medium text-gray-500">
+              Core Value Proposition
             </label>
-            <input
-              type="url"
-              placeholder="https://..."
-              className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-coral-500 focus:border-transparent outline-none transition-all"
-              value={formData.product_url}
-              onChange={(e) =>
-                setFormData({ ...formData, product_url: e.target.value })
-              }
+            <textarea
+              readOnly
+              rows={3}
+              className="w-full bg-gray-900/50 border border-gray-800 rounded-lg px-4 py-2 text-gray-400 cursor-not-allowed resize-none"
+              value={formData.product_description}
             />
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">
-            The Story (Problem/Solution)
-          </label>
-          <textarea
-            required
-            rows={6}
-            placeholder="Describe your product, the problem it solves, and why people should care. This will be used by the AI to generate content."
-            className="w-full bg-gray-900/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-coral-500 focus:border-transparent outline-none transition-all resize-none"
-            value={formData.product_description}
-            onChange={(e) =>
-              setFormData({ ...formData, product_description: e.target.value })
-            }
-          />
         </div>
 
         <div className="pt-4">
