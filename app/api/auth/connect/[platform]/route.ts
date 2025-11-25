@@ -71,7 +71,7 @@ export async function GET(
       tiktok:
         `https://open-api.tiktok.com/platform/oauth/connect?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
-        `&scope=user.info.basic,video.list,video.upload` +
+        `&scope=user.info.basic,video.publish` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,

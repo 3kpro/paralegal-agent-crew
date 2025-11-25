@@ -329,21 +329,60 @@ async function fetchUserProfile(platform: string, accessToken: string) {
       followers_count: 0, // Basic profile doesn't include follower count
     };
   } else if (platform === "instagram") {
-    const response = await fetch(
-      `https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`,
+    // Instagram uses Facebook OAuth, so we need to get Facebook Pages first
+    const pagesResponse = await fetch(
+      `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`,
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch Instagram profile");
+    if (!pagesResponse.ok) {
+      throw new Error("Failed to fetch Facebook pages");
     }
 
-    const data = await response.json();
+    const pagesData = await pagesResponse.json();
+
+    if (!pagesData.data || pagesData.data.length === 0) {
+      throw new Error("No Facebook pages found. Instagram Business accounts must be linked to a Facebook Page.");
+    }
+
+    // Try to find Instagram Business Account from the first page
+    const pageId = pagesData.data[0].id;
+    const pageAccessToken = pagesData.data[0].access_token;
+
+    const igResponse = await fetch(
+      `https://graph.facebook.com/v18.0/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`,
+    );
+
+    const igData = await igResponse.json();
+    const igAccountId = igData.instagram_business_account?.id;
+
+    if (!igAccountId) {
+      // No Instagram account linked, but we can still save the Facebook connection
+      // Use Facebook Page info as fallback
+      return {
+        id: pageId,
+        name: pagesData.data[0].name,
+        username: pagesData.data[0].name.toLowerCase().replace(/\s+/g, '_'),
+        profile_image_url: '',
+        followers_count: 0,
+      };
+    }
+
+    // Fetch Instagram Business Account details
+    const igProfileResponse = await fetch(
+      `https://graph.facebook.com/v18.0/${igAccountId}?fields=id,username,name&access_token=${pageAccessToken}`,
+    );
+
+    if (!igProfileResponse.ok) {
+      throw new Error("Failed to fetch Instagram Business Account profile");
+    }
+
+    const igProfile = await igProfileResponse.json();
     return {
-      id: data.id,
-      name: data.username,
-      username: data.username,
+      id: igProfile.id,
+      name: igProfile.name || igProfile.username,
+      username: igProfile.username,
       profile_image_url: '',
-      followers_count: 0, // Basic Display API doesn't include follower count
+      followers_count: 0,
     };
   }
 
