@@ -1,0 +1,108 @@
+Hi Meta Support Team,
+
+I'm building TrendPulse, a B2B SaaS social media management platform. I need help configuring my Meta app for Instagram and Facebook posting.
+
+=== MY APP INFO ===
+App Name: TrendPulse (or CCAI-IG based on screenshots)
+App ID: 846908931167911
+Company: 3K Pro Services
+Website: https://trendpulse.3kpro.services
+Privacy Policy: https://trendpulse.3kpro.services/privacy
+
+=== WHAT I'M BUILDING ===
+A platform where multiple businesses can:
+1. Connect their Instagram Business Accounts
+2. Connect their Facebook Pages
+3. Post content through my centralized TrendPulse app
+4. Each business authorizes MY app via OAuth to post on their behalf
+
+This is a MULTI-TENANT platform - one app, many customers.
+
+=== WHAT I NEED EXACT STEPS FOR ===
+
+1. INSTAGRAM OAUTH REDIRECT URI
+   - I'm on: Instagram API > API setup with Instagram login
+   - Modal asks for "Redirect URL"
+   - I need to add: https://trendpulse.3kpro.services/api/auth/callback/instagram
+   - QUESTION: Is this the correct place? What EXACTLY do I click/fill in?
+
+2. INSTAGRAM TEST ROLE ERROR
+   - Step says "assign the Instagram Tester role to the account in the Roles tab"
+   - When I try to add my Instagram account, I get "does not have permissions" error
+   - QUESTIONS:
+     * What permissions does my Instagram account need FIRST?
+     * Does it need to be an Instagram Business Account?
+     * Does it need to be linked to a Facebook Page first?
+     * Please give me EXACT step-by-step to add a test account
+
+3. FACEBOOK PAGES OAUTH SETUP
+   - I need users to authorize my app to post to their Facebook Pages
+   - Required permissions: pages_show_list, pages_read_engagement, pages_manage_posts, business_management
+   - QUESTIONS:
+     * Where EXACTLY do I add Facebook OAuth redirect URI? (https://trendpulse.3kpro.services/api/auth/callback/facebook)
+     * Which Use Case do I use for Facebook Login?
+     * How do I configure it for Pages posting (not personal profile)?
+
+4. APP ID CONFUSION
+   - My .env.local has: INSTAGRAM_CLIENT_ID=846908931167911
+   - But dashboard shows different App ID: 4229064840746963
+   - QUESTION: Which App ID do I use for OAuth? Are these the same app?
+
+5. FACEBOOK VS INSTAGRAM - SAME APP?
+   - QUESTION: Should I use ONE app with different Use Cases for both platforms, OR create separate apps?
+   - If ONE app: Do I use the same Client ID/Secret for both OAuth flows?
+
+=== WHAT I NEED FROM YOU ===
+
+Please provide EXACT step-by-step instructions for:
+
+A) Configure Instagram OAuth redirect URI
+   - Which page to go to
+   - Which button to click
+   - Which field to fill
+   - What to enter in each field
+
+B) Add Instagram test account
+   - Prerequisites for the Instagram account
+   - Exact steps to add it to Roles
+   - How to assign Instagram Tester role
+
+C) Configure Facebook OAuth redirect URI
+   - Which Use Case to select
+   - Where to find OAuth redirect URI settings
+   - Exact steps to add the URL
+
+D) Get App ID and App Secret
+   - Where to find the correct IDs for Instagram OAuth
+   - Where to find the correct IDs for Facebook OAuth
+   - Confirm if I use same credentials for both
+
+E) Move from Development to Live
+   - What permissions need App Review
+   - How to submit for review
+   - What to include in review submission
+
+=== MY TECHNICAL SETUP ===
+Backend: Next.js 15, TypeScript
+OAuth: Standard OAuth 2.0 flow
+Token Exchange: Facebook Graph API v18.0
+Redirect URIs:
+  - Instagram: https://trendpulse.3kpro.services/api/auth/callback/instagram
+  - Facebook: https://trendpulse.3kpro.services/api/auth/callback/facebook
+  - Dev: http://localhost:3000/api/auth/callback/[platform]
+
+=== DESIRED END RESULT ===
+1. Business user clicks "Connect Instagram" in my app
+2. Redirected to Meta OAuth page
+3. Authorizes my app
+4. Redirected back with auth code
+5. My app exchanges code for access token
+6. My app can post to their Instagram Business Account
+7. Same flow for Facebook Pages
+
+=== MY QUESTION ===
+Can you provide the EXACT step-by-step configuration instructions for the new Meta Developer "Use Cases" interface to achieve this setup?
+
+Please include screenshots or specific menu paths (e.g., "Go to Use Cases > Instagram API > Settings > OAuth Settings").
+
+Thank you!

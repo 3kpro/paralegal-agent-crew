@@ -15,6 +15,7 @@ import {
   Settings,
   LogOut,
   CreditCard,
+  Rocket,
 } from "lucide-react"
 
 export function FloatingNav() {
@@ -53,6 +54,11 @@ export function FloatingNav() {
           icon={<LayoutDashboard size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/dashboard')}
           label="Dashboard"
+        />
+        <MenuItem 
+          icon={<Rocket size={22} strokeWidth={1.5} className="text-coral-400" />}
+          onClick={() => router.push('/launchpad')}
+          label="Launchpad"
         />
         <MenuItem 
           icon={<Zap size={22} strokeWidth={1.5} className="text-coral-400" />}

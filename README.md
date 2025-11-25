@@ -54,13 +54,15 @@ Copy `.env.local.example` to `.env.local` and configure:
 - [✅ Twitter](CHANGELOG.md#twitter-integration-complete) - Already working!
 - [📸 Instagram](INSTAGRAM_QUICK_START.md) - 30 min setup
 - [💼 LinkedIn](LINKEDIN_QUICK_START.md) - 15 min setup
+- [📘 Facebook](FACEBOOK_QUICK_START.md) - 20 min setup + App Review
 - [🎵 TikTok](TIKTOK_QUICK_START.md) - 20 min + API approval
 
 **Recommended Order:**
 1. Twitter ✅ (Already done!)
-2. LinkedIn (instant approval)
+2. LinkedIn ✅ (Approved - App ID: 228330330)
 3. Instagram (test in dev mode)
-4. TikTok (requires API approval)
+4. Facebook (requires Business app + App Review)
+5. TikTok (requires API approval)
 
 See [SOCIAL_PLATFORMS_SETUP.md](SOCIAL_PLATFORMS_SETUP.md) for complete setup instructions.
 
