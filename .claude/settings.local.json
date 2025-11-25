@@ -16,7 +16,9 @@
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
       "Bash(findstr:*)",
-      "Bash(timeout 30 bash:*)"
+      "Bash(timeout 30 bash:*)",
+      "Bash(curl:*)",
+      "SlashCommand(/deploy)"
     ],
     "deny": [],
     "ask": []
