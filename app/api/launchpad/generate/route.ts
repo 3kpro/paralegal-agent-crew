@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Rate Limiter
 const redis = new Redis({
@@ -15,9 +16,12 @@ const ratelimit = new Ratelimit({
   limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute
 });
 
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
+
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -27,7 +31,8 @@ export async function POST(request: Request) {
     }
 
     // Rate Limiting
-    const ip = headers().get("x-forwarded-for") || "127.0.0.1";
+    const headerStore = await headers();
+    const ip = headerStore.get("x-forwarded-for") || "127.0.0.1";
     const { success } = await ratelimit.limit(ip);
     if (!success) {
       return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
@@ -56,46 +61,93 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No targets found" }, { status: 404 });
     }
 
-    // Generate Content for each target (Mocking AI for now)
-    // TODO: Integrate with actual AI provider (Gemini/OpenAI)
-    const generatedResults = targets.map((target) => {
-      let content = {};
-      
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Generate Content for each target using Gemini
+    const generatedResults = await Promise.all(targets.map(async (target) => {
+      let prompt = "";
+      let responseFormat = "";
+
       if (target.platform === 'twitter') {
-        content = {
-          thread: [
-            `🚀 Just launched ${campaign.product_name}!`,
-            `${campaign.product_description.substring(0, 100)}...`,
-            `Check it out: ${campaign.product_url}`
-          ]
-        };
+        prompt = `You are a viral social media expert. Write a Twitter thread (3-5 tweets) to launch this product.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Target Audience: Tech early adopters, indie hackers, creators.
+        Tone: Exciting, authentic, "building in public".
+        
+        Format: Return ONLY a JSON object with a "thread" array of strings. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
       } else if (target.platform === 'reddit') {
-        content = {
-          title: `I built ${campaign.product_name} - ${campaign.product_description.substring(0, 50)}...`,
-          body: `Hey ${target.community_name},\n\nI wanted to share what I've been working on...\n\n${campaign.product_description}\n\nWould love your feedback!`
-        };
+        prompt = `You are a helpful community member. Write a Reddit post for the ${target.community_name} subreddit.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Context: I am the founder launching this.
+        Tone: Humble, transparent, asking for feedback. NOT salesy.
+        
+        Format: Return ONLY a JSON object with "title" and "body" fields. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
+      } else if (target.platform === 'linkedin') {
+        prompt = `You are a thought leader. Write a LinkedIn post to announce this launch.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Tone: Professional, insightful, focusing on the "why" and the problem solved.
+        
+        Format: Return ONLY a JSON object with a "text" field. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
       } else {
-        content = {
-          text: `Excited to announce ${campaign.product_name}! ${campaign.product_description} #launch`
-        };
+        prompt = `Write a social media post for ${target.platform} to launch this product.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Format: Return ONLY a JSON object with a "text" field. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
       }
 
-      return {
-        id: target.id,
-        content,
-        status: 'review'
-      };
-    });
+      try {
+        const result = await model.generateContent(prompt);
+        const responseText = result.response.text();
+        
+        // Clean up markdown code blocks if present
+        const cleanJson = responseText.replace(/```json\n?|\n?```/g, "").trim();
+        const content = JSON.parse(cleanJson);
+
+        return {
+          id: target.id,
+          content,
+          status: 'review'
+        };
+      } catch (err) {
+        console.error(`Error generating for target ${target.id}:`, err);
+        return {
+          id: target.id,
+          content: { error: "Failed to generate content" },
+          status: 'draft' // Keep as draft if failed
+        };
+      }
+    }));
 
     // Update Targets in DB
     for (const result of generatedResults) {
-      await supabase
-        .from("launch_targets")
-        .update({
-          content: result.content,
-          status: result.status
-        })
-        .eq("id", result.id);
+      if (result.status === 'review') {
+        await supabase
+          .from("launch_targets")
+          .update({
+            content: result.content,
+            status: result.status
+          })
+          .eq("id", result.id);
+      }
     }
 
     return NextResponse.json({ success: true, results: generatedResults });
