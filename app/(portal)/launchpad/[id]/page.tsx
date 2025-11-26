@@ -16,6 +16,7 @@ import {
   Eye
 } from "lucide-react";
 import Link from "next/link";
+import { CCAI_TARGETS } from "@/lib/data/ccai-targets";
 
 interface Campaign {
   id: string;
@@ -272,42 +273,36 @@ export default function CampaignDetailPage() {
                           )}
                         </div>
                         
-                        {target.content ? (
-                          <div className={`rounded-lg p-4 border text-sm whitespace-pre-wrap font-mono ${
-                            target.content.error 
-                              ? "bg-red-900/20 border-red-500/50 text-red-200" 
-                              : "bg-gray-900 border-gray-700/50 text-gray-300"
-                          }`}>
-                            {target.content.error ? (
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold">Error:</span> {target.content.error}
-                              </div>
-                            ) : (
-                              <>
-                                {target.content.title && <div className="font-bold mb-2">{target.content.title}</div>}
-                                {target.content.text || target.content.body || target.content.caption || (target.content.thread && target.content.thread.join('\n\n---\n\n'))}
-                                {target.content.image_prompt && (
+                        {(() => {
+                          // Use DB content if valid, otherwise fallback to static content
+                          const content = (target.content && !target.content.error) 
+                            ? target.content 
+                            : CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+
+                          if (content) {
+                            return (
+                              <div className="bg-gray-900 rounded-lg p-4 border border-gray-700/50 text-gray-300 text-sm whitespace-pre-wrap font-mono">
+                                {content.title && <div className="font-bold mb-2">{content.title}</div>}
+                                {content.text || content.body || content.caption || (content.thread && content.thread.join('\n\n---\n\n'))}
+                                {content.image_prompt && (
                                   <div className="mt-4 pt-4 border-t border-gray-800 flex items-start justify-between gap-4">
                                     <div>
                                       <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
-                                      <span className="text-purple-200">{target.content.image_prompt}</span>
+                                      <span className="text-purple-200">{content.image_prompt}</span>
                                     </div>
                                     <CopyButton 
-                                      text={target.content.image_prompt} 
+                                      text={content.image_prompt} 
                                       label="Copy Prompt" 
                                       className="shrink-0 !px-3 !py-1 !text-xs" 
                                     />
                                   </div>
                                 )}
-                              </>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="text-gray-500 italic text-sm flex items-center gap-2">
-                            <Sparkles className="w-3 h-3 animate-pulse" />
-                            Generating content...
-                          </div>
-                        )}
+                              </div>
+                            );
+                          } else {
+                            return <div className="text-gray-500 italic text-sm">No content available.</div>;
+                          }
+                        })()}
                       </div>
 
                       <div className="flex flex-col gap-2 min-w-[140px]">
