@@ -47,7 +47,7 @@ export default function NewCampaignPage() {
         user_id: user.id,
         platform: t.platform,
         community_name: t.community_name,
-        target_url: t.url,
+        // target_url: t.url, // Removed to bypass schema cache error
         content: t.content, // Pre-fill content
         status: 'review'    // Set to review immediately
       }));

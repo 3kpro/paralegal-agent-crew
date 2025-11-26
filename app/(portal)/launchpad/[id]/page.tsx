@@ -306,17 +306,24 @@ export default function CampaignDetailPage() {
                       </div>
 
                       <div className="flex flex-col gap-2 min-w-[140px]">
-                        {target.target_url && (
-                          <a
-                            href={target.target_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-600/30"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            Open Link
-                          </a>
-                        )}
+                        {(() => {
+                          const targetUrl = target.target_url || CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.url;
+                          
+                          if (targetUrl) {
+                            return (
+                              <a
+                                href={targetUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-600/30"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                                Open Link
+                              </a>
+                            );
+                          }
+                          return null;
+                        })()}
 
                         {target.content && !target.content.error && (
                           <CopyButton 
