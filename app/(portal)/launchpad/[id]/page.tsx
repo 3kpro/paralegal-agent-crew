@@ -82,6 +82,16 @@ export default function CampaignDetailPage() {
     fetchCampaignData();
   }, [params.id]);
 
+  useEffect(() => {
+    if (targets.length > 0 && !generating) {
+      const pendingTargets = targets.filter(t => !t.content || t.status === 'draft');
+      if (pendingTargets.length > 0) {
+        console.log("Auto-generating content for", pendingTargets.length, "targets...");
+        handleGenerateAll();
+      }
+    }
+  }, [targets.length]); // Check when targets are loaded
+
   async function fetchCampaignData() {
     if (!params.id) return;
     try {
@@ -110,13 +120,13 @@ export default function CampaignDetailPage() {
   }
 
   const handleGenerateAll = async () => {
+    if (generating) return;
     setGenerating(true);
     try {
       // Only generate for targets that don't have content yet or are in draft
       const targetsToGenerate = targets.filter(t => !t.content || t.status === 'draft');
       
       if (targetsToGenerate.length === 0) {
-        alert("All targets already have content!");
         setGenerating(false);
         return;
       }
@@ -144,11 +154,11 @@ export default function CampaignDetailPage() {
       });
 
       setTargets(updatedTargets as LaunchTarget[]);
-      alert("Content generated successfully!");
 
     } catch (error: any) {
       console.error("Generation error:", error);
-      alert(`Failed to generate content: ${error.message}`);
+      // Don't alert on auto-generation to avoid spamming the user, just log it.
+      // alert(`Failed to generate content: ${error.message}`);
     } finally {
       setGenerating(false);
     }
@@ -215,14 +225,15 @@ export default function CampaignDetailPage() {
               {showPosted ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               {showPosted ? "Hide Completed" : "Show Completed"}
             </button>
-            <button 
+            {/* Hidden Generate Button (Auto-generates now) */}
+            {/* <button 
               onClick={handleGenerateAll}
               disabled={generating}
               className="px-6 py-2 bg-gradient-to-r from-coral-500 to-purple-600 text-white rounded-lg font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
             >
               <Sparkles className="w-4 h-4" />
               {generating ? "Generating..." : "Generate All Content"}
-            </button>
+            </button> */}
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className={`p-2 rounded-lg transition-colors ${isSidebarOpen ? 'bg-coral-500 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
@@ -260,25 +271,40 @@ export default function CampaignDetailPage() {
                         </div>
                         
                         {target.content ? (
-                          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700/50 text-gray-300 text-sm whitespace-pre-wrap font-mono">
-                            {target.content.title && <div className="font-bold mb-2">{target.content.title}</div>}
-                            {target.content.text || target.content.body || target.content.caption || (target.content.thread && target.content.thread.join('\n\n---\n\n'))}
-                            {target.content.image_prompt && (
-                              <div className="mt-4 pt-4 border-t border-gray-800 flex items-start justify-between gap-4">
-                                <div>
-                                  <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
-                                  <span className="text-purple-200">{target.content.image_prompt}</span>
-                                </div>
-                                <CopyButton 
-                                  text={target.content.image_prompt} 
-                                  label="Copy Prompt" 
-                                  className="shrink-0 !px-3 !py-1 !text-xs" 
-                                />
+                          <div className={`rounded-lg p-4 border text-sm whitespace-pre-wrap font-mono ${
+                            target.content.error 
+                              ? "bg-red-900/20 border-red-500/50 text-red-200" 
+                              : "bg-gray-900 border-gray-700/50 text-gray-300"
+                          }`}>
+                            {target.content.error ? (
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold">Error:</span> {target.content.error}
                               </div>
+                            ) : (
+                              <>
+                                {target.content.title && <div className="font-bold mb-2">{target.content.title}</div>}
+                                {target.content.text || target.content.body || target.content.caption || (target.content.thread && target.content.thread.join('\n\n---\n\n'))}
+                                {target.content.image_prompt && (
+                                  <div className="mt-4 pt-4 border-t border-gray-800 flex items-start justify-between gap-4">
+                                    <div>
+                                      <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
+                                      <span className="text-purple-200">{target.content.image_prompt}</span>
+                                    </div>
+                                    <CopyButton 
+                                      text={target.content.image_prompt} 
+                                      label="Copy Prompt" 
+                                      className="shrink-0 !px-3 !py-1 !text-xs" 
+                                    />
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                         ) : (
-                          <div className="text-gray-500 italic text-sm">Content pending generation...</div>
+                          <div className="text-gray-500 italic text-sm flex items-center gap-2">
+                            <Sparkles className="w-3 h-3 animate-pulse" />
+                            Generating content...
+                          </div>
                         )}
                       </div>
 
@@ -295,7 +321,7 @@ export default function CampaignDetailPage() {
                           </a>
                         )}
 
-                        {target.content && (
+                        {target.content && !target.content.error && (
                           <CopyButton 
                             text={target.content.title 
                               ? `${target.content.title}\n\n${target.content.body}`
