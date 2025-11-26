@@ -8,6 +8,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { FloatingNav } from "@/components/ui/floating-nav";
 import SettingsModal from "@/components/SettingsModal";
 import { Settings, Sparkles, ChevronDown } from "lucide-react";
+import HelixWidget from "@/components/helix/HelixWidget";
 
 interface Profile {
   email?: string;
@@ -402,6 +403,7 @@ export default function PortalLayout({
 
         {/* Mobile Bottom Navigation */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#343a40] border-t border-gray-700/50 px-2 py-2">
+          {/* ... existing mobile nav ... */}
           <div className="grid grid-cols-5 gap-1">
             <Link
               href="/dashboard"
@@ -447,6 +449,9 @@ export default function PortalLayout({
             </button>
           </div>
         </div>
+        
+        {/* Helix AI Global Widget */}
+        <HelixWidget />
       </div>
     </ErrorBoundary>
   );

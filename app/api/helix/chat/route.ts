@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { message, sessionId: providedSessionId } = await req.json();
+    const { message, sessionId: providedSessionId, context } = await req.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     // or cache it, but for serverless functions, instantiating per request is standard 
     // unless we use a separate backend service.
     
-    const responseText = await agent.processMessage(user.id, sessionId, message);
+    const responseText = await agent.processMessage(user.id, sessionId, message, context);
 
     return NextResponse.json({ 
       response: responseText,

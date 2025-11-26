@@ -13,6 +13,11 @@ Apply the new database schema for the **Helix AI Assistant**. This schema suppor
     *   Creates HNSW index for fast cosine similarity search.
     *   Adds `match_knowledge_base` function for RAG.
 
+## Architecture Update (Global Widget)
+Helix has been refactored from a standalone page to a **Global Floating Widget** (`HelixWidget.tsx`) located in `app/(portal)/layout.tsx`.
+*   It is accessible on every page within the portal.
+*   It passes the `currentPath` to the AI agent for context-aware assistance.
+
 ## Action Required
 Please run the following command to apply the migrations to the remote Supabase instance:
 

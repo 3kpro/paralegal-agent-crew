@@ -97,7 +97,7 @@ export class HelixAgentManager {
   }
 
   // The main entry point for processing a user message
-  public async processMessage(userId: string, sessionId: string, message: string) {
+  public async processMessage(userId: string, sessionId: string, message: string, context?: any) {
     const supabase = await createClient();
     
     // 1. Load Context (History + Brand DNA)
@@ -113,6 +113,10 @@ export class HelixAgentManager {
       
       Your Goal: Help the user build their brand, plan strategy, and generate content.
       
+      User Context:
+      - Current Page: ${context?.currentPath || 'Unknown'}
+      ${context?.pageContent ? `- Page Content Summary: ${context.pageContent}` : ''}
+      
       Brand Context:
       ${brandDna ? JSON.stringify(brandDna.dna_attributes) : "No brand DNA established yet. Ask the user to define their voice."}
       
@@ -123,6 +127,7 @@ export class HelixAgentManager {
       - If you need to perform an action, output a JSON object with "tool" and "args".
       - If you can answer directly, just speak naturally.
       - Always stay in character: Professional, insightful, and proactive.
+      - Use the "Current Page" context to tailor your advice.
     `;
 
     // 3. Call Gemini
