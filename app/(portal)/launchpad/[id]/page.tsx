@@ -12,7 +12,6 @@ import {
   MessageSquare, 
   Sparkles, 
   ChevronRight, 
-  ChevronDown,
   EyeOff,
   Eye
 } from "lucide-react";
@@ -30,6 +29,7 @@ interface LaunchTarget {
   id: string;
   platform: string;
   community_name: string;
+  target_url?: string;
   status: 'draft' | 'review' | 'ready' | 'posted';
   content: any;
   posted_url?: string;
@@ -248,6 +248,18 @@ export default function CampaignDetailPage() {
                       </div>
 
                       <div className="flex flex-col gap-2 min-w-[140px]">
+                        {target.target_url && (
+                          <a
+                            href={target.target_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-600/30"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Open Link
+                          </a>
+                        )}
+
                         {target.content && (
                           <button
                             onClick={() => {

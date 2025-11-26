@@ -47,6 +47,7 @@ export default function NewCampaignPage() {
         user_id: user.id,
         platform: t.platform,
         community_name: t.community_name,
+        target_url: t.url,
         status: 'draft'
       }));
 
