@@ -35,6 +35,34 @@ interface LaunchTarget {
   posted_url?: string;
 }
 
+function CopyButton({ text, label = "Copy", className = "" }: { text: string, label?: string, className?: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`flex items-center justify-center gap-2 px-4 py-2 transition-all ${
+        copied 
+          ? 'bg-green-500/20 text-green-400 border-green-500/30' 
+          : 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700'
+      } border rounded-lg text-sm font-medium ${className}`}
+    >
+      {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+      {copied ? "Copied!" : label}
+    </button>
+  );
+}
+
 export default function CampaignDetailPage() {
   const params = useParams();
   const supabase = createClient();
@@ -236,9 +264,16 @@ export default function CampaignDetailPage() {
                             {target.content.title && <div className="font-bold mb-2">{target.content.title}</div>}
                             {target.content.text || target.content.body || target.content.caption || (target.content.thread && target.content.thread.join('\n\n---\n\n'))}
                             {target.content.image_prompt && (
-                              <div className="mt-4 pt-4 border-t border-gray-800">
-                                <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
-                                <span className="text-purple-200">{target.content.image_prompt}</span>
+                              <div className="mt-4 pt-4 border-t border-gray-800 flex items-start justify-between gap-4">
+                                <div>
+                                  <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
+                                  <span className="text-purple-200">{target.content.image_prompt}</span>
+                                </div>
+                                <CopyButton 
+                                  text={target.content.image_prompt} 
+                                  label="Copy Prompt" 
+                                  className="shrink-0 !px-3 !py-1 !text-xs" 
+                                />
                               </div>
                             )}
                           </div>
@@ -261,19 +296,11 @@ export default function CampaignDetailPage() {
                         )}
 
                         {target.content && (
-                          <button
-                            onClick={() => {
-                              const text = target.content.title 
-                                ? `${target.content.title}\n\n${target.content.body}`
-                                : target.content.text || target.content.caption || target.content.thread?.join('\n\n');
-                              navigator.clipboard.writeText(text);
-                              alert("Copied to clipboard!");
-                            }}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700"
-                          >
-                            <Copy className="w-4 h-4" />
-                            Copy
-                          </button>
+                          <CopyButton 
+                            text={target.content.title 
+                              ? `${target.content.title}\n\n${target.content.body}`
+                              : target.content.text || target.content.caption || target.content.thread?.join('\n\n')}
+                          />
                         )}
                         
                         {target.status !== 'posted' && (
