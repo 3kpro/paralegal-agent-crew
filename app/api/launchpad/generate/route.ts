@@ -114,6 +114,15 @@ export async function POST(request: Request) {
         
         Format: Return ONLY a JSON object with "tagline" (max 60 chars), "description" (max 260 chars), and "first_comment" (intro from maker) fields. Do not include markdown formatting like \`\`\`json.`;
         responseFormat = "json";
+      } else if (target.platform === 'instagram' || target.platform === 'tiktok') {
+        prompt = `You are a visual content strategist. Create a concept for a viral ${target.platform} post.
+        
+        Product: ${campaign.product_name}
+        URL: ${campaign.product_url}
+        Description: ${campaign.product_description}
+        
+        Format: Return ONLY a JSON object with "caption" (text), "hashtags" (array of strings), and "image_prompt" (description of the image/video to generate) fields. Do not include markdown formatting like \`\`\`json.`;
+        responseFormat = "json";
       } else {
         prompt = `Write a social media post for ${target.platform} to launch this product.
         
@@ -132,6 +141,12 @@ export async function POST(request: Request) {
         // Clean up markdown code blocks if present
         const cleanJson = responseText.replace(/```json\n?|\n?```/g, "").trim();
         const content = JSON.parse(cleanJson);
+
+        // TODO: If content.image_prompt exists, call an image generation API (e.g., DALL-E 3 or Stable Diffusion)
+        // For now, we will just store the prompt so the user can see what image was suggested.
+        if (content.image_prompt) {
+           content.image_status = "prompt_ready"; 
+        }
 
         return {
           id: target.id,

@@ -340,9 +340,15 @@ export default function CampaignDetailPage() {
                         <div className="text-xs text-gray-500 capitalize">{target.platform}</div>
                         {target.content && (
                           <div className="mt-2 text-xs text-gray-400 bg-gray-900/50 p-2 rounded border border-gray-700/50 relative group">
-                            <div className="line-clamp-3">
-                              {target.content.title || target.content.text || (target.content.thread && target.content.thread[0])}
+                            <div className="line-clamp-3 mb-2">
+                              {target.content.title || target.content.text || target.content.caption || (target.content.thread && target.content.thread[0])}
                             </div>
+                            {target.content.image_prompt && (
+                              <div className="text-xs bg-purple-900/30 border border-purple-500/30 p-2 rounded text-purple-200 mb-1">
+                                <span className="font-bold text-purple-400 block text-[10px] uppercase mb-1">AI Image Prompt:</span>
+                                {target.content.image_prompt}
+                              </div>
+                            )}
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
