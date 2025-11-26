@@ -112,48 +112,47 @@ TrendPulse is a **unified social media command center** that:
 #### 1. Subscription Tiers (SaaS)
 
 **Free Tier** - $0/month
-- 5 posts/month
-- 2 social accounts
-- Basic AI content generation
+- 5 posts/month total
+- 1 social account per platform
+- 5 AI content generations/month
 - Viral score predictions
-- Community support
+- Community support (Discord)
+- **Target: Hobbyists, testing the platform**
 
-**Professional** - $29/month
-- 100 posts/month
-- 5 social accounts per platform
-- Advanced AI features
-- Priority support
+**Starter** - $9/month
+- 30 posts/month
+- 3 social accounts per platform
+- 20 AI content generations/month
+- Unlimited viral score predictions
+- Email support
 - Campaign analytics
-- **Target: Small businesses, solopreneurs**
+- **Target: Individual creators, micro-influencers, side hustles**
 
-**Business** - $99/month
+**Pro** - $29/month
+- 100 posts/month
+- 10 social accounts per platform
+- 100 AI content generations/month
+- Gemini AI assistant (100 queries/month)
+- Advanced analytics
+- Priority email support
+- Scheduling automation
+- **Target: Small businesses, freelancers, consultants**
+
+**Business** - $79/month
 - 500 posts/month
-- 20 social accounts per platform
-- White-label reports
+- 25 social accounts per platform
+- 500 AI content generations/month
+- Gemini AI assistant (unlimited)
 - Team collaboration (5 users)
+- White-label reports
 - API access
-- Dedicated support
-- **Target: Marketing agencies, growing businesses**
+- Priority support
+- **Target: Marketing teams, small agencies, growing businesses**
 
-**Enterprise** - Custom pricing
-- Unlimited posts
-- Unlimited accounts
-- Custom AI model training
-- SLA guarantees
-- Dedicated account manager
-- Custom integrations
-- **Target: Large corporations, agencies**
-
-#### 2. Usage-Based Revenue
-- AI content generation: $0.10 per request (above plan limits)
-- Viral score analysis: $0.05 per prediction
-- Advanced analytics reports: $5 per report
-
-#### 3. Add-Ons
-- Additional team members: $10/user/month
-- White-label branding: $50/month
-- Priority support: $30/month
-- Custom AI training: $500 one-time
+#### 2. Future Revenue Streams (Post-Launch)
+- Usage-based overages: Pay-as-you-go above plan limits
+- Add-ons: Additional team members, white-label branding
+- Enterprise tier: Custom pricing for large organizations
 
 ---
 
@@ -187,56 +186,93 @@ TrendPulse is a **unified social media command center** that:
 
 ---
 
-## 💵 Financial Projections (5 Years)
+## 💵 Financial Projections (Bootstrap Model)
 
-### Year 1 (2025)
-- **Customers**: 1,000 (250 Free, 600 Pro, 140 Business, 10 Enterprise)
-- **MRR**: $25,000
-- **ARR**: $300,000
-- **Costs**: $150,000 (development, hosting, marketing)
-- **Net**: $150,000
+### Year 1 (2025) - Solo Founder + AI Workforce
+**Customer Mix:**
+- Free: 500 users (viral growth, conversion funnel)
+- Starter ($9): 300 users → $2,700/month
+- Pro ($29): 150 users → $4,350/month
+- Business ($79): 50 users → $3,950/month
 
-### Year 2 (2026)
-- **Customers**: 5,000 (1,000 Free, 3,200 Pro, 750 Business, 50 Enterprise)
-- **MRR**: $140,000
-- **ARR**: $1,680,000
-- **Costs**: $600,000 (team expansion, marketing)
-- **Net**: $1,080,000
+**Revenue:**
+- **MRR**: $11,000
+- **ARR**: $132,000
 
-### Year 3 (2027)
-- **Customers**: 10,000 (2,000 Free, 6,500 Pro, 1,350 Business, 150 Enterprise)
-- **MRR**: $295,000
-- **ARR**: $3,540,000
-- **Costs**: $1,200,000 (team, infrastructure, sales)
-- **Net**: $2,340,000
+**Costs:**
+- Infrastructure: $0 (Vercel + Supabase free tiers)
+- Domain/Email: $84/year
+- OpenAI (content generation): $7,728/year
+- Vertex AI (Gemini): $0 ($1,300 Google Cloud credits)
+- Stripe fees (2.9% + $0.30): $3,960/year
+- Legal (LLC, compliance): $1,500/year
+- Insurance: $1,500/year
+- **Total Costs**: $14,772
 
-### Year 4 (2028)
-- **Customers**: 25,000 (5,000 Free, 16,000 Pro, 3,600 Business, 400 Enterprise)
-- **MRR**: $755,000
-- **ARR**: $9,060,000
-- **Costs**: $2,700,000
-- **Net**: $6,360,000
+**Net Profit**: **$117,228** (89% margin)
+**Founder Take-Home**: $117,228 (before taxes)
 
-### Year 5 (2029)
-- **Customers**: 50,000 (10,000 Free, 32,000 Pro, 7,200 Business, 800 Enterprise)
-- **MRR**: $1,515,000
-- **ARR**: $18,180,000
-- **Costs**: $5,400,000
-- **Net**: $12,780,000
+### Year 2 (2026) - Scale on Free Tier
+**Customer Mix:**
+- Free: 2,000 users
+- Starter: 1,500 → $13,500/month
+- Pro: 750 → $21,750/month
+- Business: 250 → $19,750/month
 
-### 5-Year Cumulative
-- **Total Revenue**: $32.76M
-- **Total Costs**: $10.05M
-- **Total Profit**: $22.71M
+**Revenue:**
+- **MRR**: $55,000
+- **ARR**: $660,000
 
-**Assumptions**:
-- 20% monthly churn for free tier
-- 5% monthly churn for paid tiers
-- 15% month-over-month growth Year 1-2
-- 10% month-over-month growth Year 3-5
-- Customer acquisition cost (CAC): $100
-- Lifetime value (LTV): $1,200 (Pro), $4,800 (Business)
-- LTV:CAC ratio: 12:1 (excellent)
+**Costs:**
+- Infrastructure: $540/year (still mostly free tier)
+- OpenAI: $38,640/year (5X usage)
+- Other: $5,000/year
+- **Total Costs**: $44,180
+
+**Net Profit**: **$615,820** (93% margin)
+**Decision Point**: Hire first employee OR stay solo and bank it
+
+### Year 3 (2027) - Upgrade Infrastructure
+**Customer Mix:**
+- Free: 5,000 users
+- Starter: 3,000 → $27,000/month
+- Pro: 1,500 → $43,500/month
+- Business: 500 → $39,500/month
+
+**Revenue:**
+- **MRR**: $110,000
+- **ARR**: $1,320,000
+
+**Costs:**
+- Infrastructure: $5,400/year (upgraded Vercel + Supabase)
+- OpenAI: $77,280/year
+- Team (1-2 hires): $120,000/year
+- Other: $10,000/year
+- **Total Costs**: $212,680
+
+**Net Profit**: **$1,107,320** (84% margin)
+
+### Key Metrics
+
+**Unit Economics:**
+- **Starter**: $9 revenue - $0.28 AI cost - $0.29 Stripe = **$8.43 profit (94% margin)**
+- **Pro**: $29 revenue - $1.40 AI cost - $0.89 Stripe = **$26.71 profit (92% margin)**
+- **Business**: $79 revenue - $7.00 AI cost - $2.39 Stripe = **$69.61 profit (88% margin)**
+
+**Customer Metrics:**
+- **CAC (Customer Acquisition Cost)**: $0-$20 (organic, product-led growth)
+- **LTV (Lifetime Value)**: $216 (Starter), $696 (Pro), $1,896 (Business)
+- **LTV:CAC ratio**: 35:1 (exceptional)
+- **Churn**: 8% monthly (Starter), 4% monthly (Pro), 2% monthly (Business)
+- **Break-even**: 20 paying customers (~$400 MRR)
+
+### Bootstrap Advantages
+- ✅ Profitable from Month 3-6
+- ✅ No dilution, 100% equity retained
+- ✅ Low burn rate ($132/month fixed costs)
+- ✅ Free tier infrastructure until $100K+ MRR
+- ✅ 90%+ profit margins Year 1-2
+- ✅ Optionality to hire or stay lean
 
 ---
 
@@ -308,6 +344,75 @@ TrendPulse is a **unified social media command center** that:
 - 📈 Expand to Pinterest, YouTube, Snapchat
 - 📈 White-label solution for agencies
 - 📈 Acquisition target for Salesforce/HubSpot ($50M+)
+
+---
+
+## 🚀 Bootstrap Strategy: AI as Your Workforce
+
+### The New Way to Build SaaS
+
+TrendPulse is being built using a revolutionary approach: **Solo Founder + AI Workforce**
+
+**Traditional SaaS Launch:**
+- Hire 3-5 engineers: $500K-$750K/year
+- Hire designer: $100K/year
+- Hire PM: $120K/year
+- Total: $720K-$970K Year 1 burn
+- Need VC funding to survive
+
+**TrendPulse Approach:**
+- 1 technical founder
+- Claude AI for development acceleration
+- ChatGPT for content and strategy
+- Gemini AI for analytics and predictions
+- **Total Year 1 cost: $14,772**
+- **Profitable by Month 6**
+
+### How It Works
+
+**Development:**
+- Claude Code assists with full-stack development
+- 10X faster iteration than traditional dev
+- Built MVP in 90 days (vs 12-18 months traditional)
+
+**Content & Marketing:**
+- GPT-4 generates marketing copy, blog posts, docs
+- AI-powered SEO optimization
+- Social media content creation
+
+**Customer Support:**
+- Gemini AI assistant handles 80% of support queries
+- Founder handles complex issues only
+- Scales without headcount
+
+**Analytics & Strategy:**
+- Vertex AI for viral prediction
+- Automated insight generation
+- Data-driven decision making without analysts
+
+### The Math
+
+**What AI replaces:**
+- Senior Engineer: $180K/year → $0 (Claude Code)
+- Content Writer: $70K/year → $0 (GPT-4)
+- Support Agent: $50K/year → $0 (Gemini Assistant)
+- Data Analyst: $90K/year → $0 (Vertex AI)
+- **Total savings: $390K/year**
+
+**Actual AI costs:**
+- OpenAI: $7,728/year
+- Vertex AI: $0 (Google credits)
+- **Total: $7,728/year**
+
+**ROI: 50X cost savings while moving faster**
+
+### When to Hire Humans
+
+**$10K MRR ($120K ARR)**: Still solo, bank the profit
+**$30K MRR ($360K ARR)**: Consider 1 salesperson for CCAI
+**$100K MRR ($1.2M ARR)**: Hire 2-3 people (engineer, support, sales)
+
+**Key insight**: With 90% margins, you can afford to stay lean and profitable indefinitely OR hire aggressively when revenue supports it.
 
 ---
 

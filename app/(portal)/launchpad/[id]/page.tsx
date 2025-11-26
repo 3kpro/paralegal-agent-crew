@@ -325,13 +325,28 @@ export default function CampaignDetailPage() {
                           return null;
                         })()}
 
-                        {target.content && !target.content.error && (
-                          <CopyButton 
-                            text={target.content.title 
-                              ? `${target.content.title}\n\n${target.content.body}`
-                              : target.content.text || target.content.caption || target.content.thread?.join('\n\n')}
-                          />
-                        )}
+                        {(() => {
+                          const content = (target.content && !target.content.error) 
+                            ? target.content 
+                            : CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+
+                          if (!content) return null;
+
+                          if (content.title) {
+                            return (
+                              <>
+                                <CopyButton text={content.title} label="Copy Title" />
+                                <CopyButton text={content.body} label="Copy Body" />
+                              </>
+                            );
+                          }
+
+                          return (
+                            <CopyButton 
+                              text={content.text || content.caption || content.thread?.join('\n\n')}
+                            />
+                          );
+                        })()}
                         
                         {target.status !== 'posted' && (
                           <button
