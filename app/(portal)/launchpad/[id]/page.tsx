@@ -82,6 +82,7 @@ export default function CampaignDetailPage() {
     fetchCampaignData();
   }, [params.id]);
 
+  /* Auto-generation removed per user request for static content
   useEffect(() => {
     if (targets.length > 0 && !generating) {
       const pendingTargets = targets.filter(t => !t.content || t.status === 'draft');
@@ -90,7 +91,8 @@ export default function CampaignDetailPage() {
         handleGenerateAll();
       }
     }
-  }, [targets.length]); // Check when targets are loaded
+  }, [targets.length]); 
+  */
 
   async function fetchCampaignData() {
     if (!params.id) return;

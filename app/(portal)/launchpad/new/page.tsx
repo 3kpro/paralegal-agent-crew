@@ -48,7 +48,8 @@ export default function NewCampaignPage() {
         platform: t.platform,
         community_name: t.community_name,
         target_url: t.url,
-        status: 'draft'
+        content: t.content, // Pre-fill content
+        status: 'review'    // Set to review immediately
       }));
 
       const { error: seedError } = await supabase
