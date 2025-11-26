@@ -72,6 +72,8 @@ export default function CampaignDetailPage() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [showPosted, setShowPosted] = useState(false);
+  const [currentDay, setCurrentDay] = useState(1);
+  const TOTAL_DAYS = 4;
   
   // AI Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -82,18 +84,6 @@ export default function CampaignDetailPage() {
   useEffect(() => {
     fetchCampaignData();
   }, [params.id]);
-
-  /* Auto-generation removed per user request for static content
-  useEffect(() => {
-    if (targets.length > 0 && !generating) {
-      const pendingTargets = targets.filter(t => !t.content || t.status === 'draft');
-      if (pendingTargets.length > 0) {
-        console.log("Auto-generating content for", pendingTargets.length, "targets...");
-        handleGenerateAll();
-      }
-    }
-  }, [targets.length]); 
-  */
 
   async function fetchCampaignData() {
     if (!params.id) return;
@@ -122,51 +112,6 @@ export default function CampaignDetailPage() {
     }
   }
 
-  const handleGenerateAll = async () => {
-    if (generating) return;
-    setGenerating(true);
-    try {
-      // Only generate for targets that don't have content yet or are in draft
-      const targetsToGenerate = targets.filter(t => !t.content || t.status === 'draft');
-      
-      if (targetsToGenerate.length === 0) {
-        setGenerating(false);
-        return;
-      }
-
-      const response = await fetch('/api/launchpad/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          campaignId: params.id,
-          targetIds: targetsToGenerate.map(t => t.id)
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Generation failed");
-      }
-
-      const { results } = await response.json();
-
-      // Update local state
-      const updatedTargets = targets.map(t => {
-        const result = results.find((r: any) => r.id === t.id);
-        return result ? { ...t, content: result.content, status: result.status } : t;
-      });
-
-      setTargets(updatedTargets as LaunchTarget[]);
-
-    } catch (error: any) {
-      console.error("Generation error:", error);
-      // Don't alert on auto-generation to avoid spamming the user, just log it.
-      // alert(`Failed to generate content: ${error.message}`);
-    } finally {
-      setGenerating(false);
-    }
-  };
-
   const handleMarkPosted = async (targetId: string) => {
     try {
       const { error } = await supabase
@@ -182,6 +127,15 @@ export default function CampaignDetailPage() {
     }
   };
 
+  const handleCompleteDay = () => {
+    if (currentDay < TOTAL_DAYS) {
+      setCurrentDay(currentDay + 1);
+      window.scrollTo(0, 0);
+    } else {
+      alert("Mission Complete! Great job.");
+    }
+  };
+
   const handleAskAI = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!aiQuery.trim()) return;
@@ -194,8 +148,14 @@ export default function CampaignDetailPage() {
     }, 1000);
   };
 
-  // Group targets by platform
+  // Group targets by platform for the CURRENT DAY
   const groupedTargets = targets.reduce((acc, target) => {
+    // Find the day for this target from the static config
+    const configTarget = CCAI_TARGETS.find(t => t.platform === target.platform && t.community_name === target.community_name);
+    const targetDay = configTarget?.day || 1; // Default to day 1 if not found
+
+    if (targetDay !== currentDay) return acc;
+
     if (!showPosted && target.status === 'posted') return acc;
     if (!acc[target.platform]) acc[target.platform] = [];
     acc[target.platform].push(target);
@@ -217,7 +177,11 @@ export default function CampaignDetailPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-white">{campaign.name}</h1>
-              <p className="text-gray-400 text-sm">Protocol: Content Cascade AI Launch</p>
+              <div className="flex items-center gap-2 text-gray-400 text-sm">
+                <span>Protocol: Content Cascade AI Launch</span>
+                <span className="w-1 h-1 bg-gray-600 rounded-full" />
+                <span className="text-coral-400 font-bold">Day {currentDay} of {TOTAL_DAYS}</span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -228,15 +192,15 @@ export default function CampaignDetailPage() {
               {showPosted ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               {showPosted ? "Hide Completed" : "Show Completed"}
             </button>
-            {/* Hidden Generate Button (Auto-generates now) */}
-            {/* <button 
-              onClick={handleGenerateAll}
-              disabled={generating}
-              className="px-6 py-2 bg-gradient-to-r from-coral-500 to-purple-600 text-white rounded-lg font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+            
+            <button
+              onClick={handleCompleteDay}
+              className="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
-              {generating ? "Generating..." : "Generate All Content"}
-            </button> */}
+              <CheckCircle className="w-4 h-4" />
+              {currentDay < TOTAL_DAYS ? `Complete Day ${currentDay}` : "Finish Mission"}
+            </button>
+
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className={`p-2 rounded-lg transition-colors ${isSidebarOpen ? 'bg-coral-500 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
@@ -367,7 +331,8 @@ export default function CampaignDetailPage() {
           
           {Object.keys(groupedTargets).length === 0 && (
             <div className="text-center py-20 text-gray-500">
-              {showPosted ? "No targets found." : "All targets posted! Great job."}
+              <h3 className="text-xl font-bold text-white mb-2">Day {currentDay} Complete!</h3>
+              <p className="text-gray-400">You've finished all tasks for today. Click "Complete Day" to advance.</p>
             </div>
           )}
         </div>
