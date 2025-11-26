@@ -1,0 +1,33 @@
+# Supabase AI Assistant Handoff - Helix Implementation
+
+## Objective
+Apply the new database schema for the **Helix AI Assistant**. This schema supports the chat history, brand DNA profiling, and knowledge base (RAG) features.
+
+## Migration File
+**File Path**: `supabase/migrations/20251126000000_init_helix_ai.sql`
+
+## Tables to Create
+1.  **`helix_brand_dna`**
+    *   Stores the "learned" user personality (JSONB).
+    *   One row per user (unique constraint).
+2.  **`helix_knowledge_base`**
+    *   Stores text chunks for RAG (Retrieval Augmented Generation).
+    *   Columns: `content_text`, `content_type`, `token_count`.
+3.  **`helix_sessions`**
+    *   Groups chat messages.
+4.  **`helix_messages`**
+    *   Stores the actual chat history (User/Assistant roles).
+
+## Security (RLS)
+*   All tables must have RLS enabled.
+*   Policies are already defined in the migration file to restrict access to `auth.uid()`.
+
+## Action Required
+Please run the following command to apply the migration to the remote Supabase instance:
+
+```bash
+npx supabase db push
+```
+
+## Verification
+After pushing, verify that the `helix_brand_dna` table exists and has RLS enabled.

@@ -23,6 +23,7 @@
   "dependencies": {
     "@21st-extension/react": "^0.5.14",
     "@21st-extension/toolbar-next": "^0.5.14",
+    "@google-cloud/vertexai": "^1.10.0",
     "@google/generative-ai": "^0.24.1",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.78.0",

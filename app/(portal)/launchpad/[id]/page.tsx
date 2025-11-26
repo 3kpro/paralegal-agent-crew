@@ -70,7 +70,6 @@ export default function CampaignDetailPage() {
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [targets, setTargets] = useState<LaunchTarget[]>([]);
   const [loading, setLoading] = useState(true);
-  const [generating, setGenerating] = useState(false);
   const [showPosted, setShowPosted] = useState(false);
   const [currentDay, setCurrentDay] = useState(1);
   const TOTAL_DAYS = 4;
@@ -78,7 +77,10 @@ export default function CampaignDetailPage() {
   // AI Sidebar State
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [aiQuery, setAiQuery] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
+  const [messages, setMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([
+    { role: 'assistant', content: "I'm Helix, your AI Marketing Assistant. I can help you refine your strategy, write hooks, or troubleshoot your campaign. How can I help?" }
+  ]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
@@ -140,12 +142,36 @@ export default function CampaignDetailPage() {
     e.preventDefault();
     if (!aiQuery.trim()) return;
     
+    const userMessage = aiQuery;
+    setAiQuery(""); // Clear input immediately
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setAiLoading(true);
-    // TODO: Connect to a real chat endpoint. For now, mock it.
-    setTimeout(() => {
-      setAiResponse(`Here is a suggestion for "${aiQuery}": \n\nTry focusing on the unique value proposition of Content Cascade AI. Mention how it saves 20+ hours a week.`);
+
+    try {
+      const response = await fetch('/api/helix/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          sessionId: sessionId
+        })
+      });
+
+      if (!response.ok) throw new Error("Failed to get response");
+
+      const data = await response.json();
+      
+      if (data.sessionId && !sessionId) {
+        setSessionId(data.sessionId);
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+    } catch (error) {
+      console.error("AI Error:", error);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I encountered an error connecting to Helix. Please try again." }]);
+    } finally {
       setAiLoading(false);
-    }, 1000);
+    }
   };
 
   // Group targets by platform for the CURRENT DAY
@@ -345,12 +371,12 @@ export default function CampaignDetailPage() {
             initial={{ x: 320 }}
             animate={{ x: 0 }}
             exit={{ x: 320 }}
-            className="w-80 bg-gray-900 border-l border-gray-800 flex flex-col shadow-2xl z-20"
+            className="w-96 bg-gray-900 border-l border-gray-800 flex flex-col shadow-2xl z-20"
           >
-            <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+            <div className="p-4 border-b border-gray-800 flex items-center justify-between bg-gray-900/95 backdrop-blur">
               <h3 className="font-bold text-white flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-coral-500" />
-                AI Assistant
+                Helix Assistant
               </h3>
               <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 hover:text-white">
                 <ChevronRight className="w-5 h-5" />
@@ -358,30 +384,51 @@ export default function CampaignDetailPage() {
             </div>
             
             <div className="flex-1 p-4 overflow-y-auto space-y-4">
-              <div className="bg-gray-800/50 p-3 rounded-lg text-sm text-gray-300">
-                I'm here to help! Ask me for extra hooks, reply suggestions, or strategy advice.
-              </div>
-              {aiResponse && (
-                <div className="bg-coral-500/10 border border-coral-500/20 p-3 rounded-lg text-sm text-coral-200 whitespace-pre-wrap">
-                  {aiResponse}
+              {messages.map((msg, idx) => (
+                <div 
+                  key={idx} 
+                  className={`p-3 rounded-lg text-sm whitespace-pre-wrap ${
+                    msg.role === 'assistant' 
+                      ? 'bg-gray-800/50 text-gray-300 border border-gray-700/50' 
+                      : 'bg-coral-500/10 text-coral-200 border border-coral-500/20 ml-8'
+                  }`}
+                >
+                  {msg.role === 'assistant' && (
+                    <div className="text-xs font-bold text-coral-500 mb-1 uppercase tracking-wider">Helix</div>
+                  )}
+                  {msg.content}
+                </div>
+              ))}
+              
+              {aiLoading && (
+                <div className="bg-gray-800/50 p-3 rounded-lg text-sm text-gray-400 flex items-center gap-2">
+                  <Sparkles className="w-3 h-3 animate-pulse" />
+                  Helix is thinking...
                 </div>
               )}
             </div>
 
-            <div className="p-4 border-t border-gray-800">
+            <div className="p-4 border-t border-gray-800 bg-gray-900">
               <form onSubmit={handleAskAI}>
                 <textarea
                   value={aiQuery}
                   onChange={(e) => setAiQuery(e.target.value)}
-                  placeholder="Ask for help..."
+                  placeholder="Ask Helix for help..."
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleAskAI(e);
+                    }
+                  }}
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-sm text-white outline-none focus:border-coral-500 resize-none h-24 mb-2"
                 />
                 <button
                   type="submit"
                   disabled={aiLoading || !aiQuery.trim()}
-                  className="w-full bg-coral-500 text-white py-2 rounded-lg text-sm font-bold hover:bg-coral-600 disabled:opacity-50"
+                  className="w-full bg-coral-500 text-white py-2 rounded-lg text-sm font-bold hover:bg-coral-600 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {aiLoading ? "Thinking..." : "Ask AI"}
+                  {aiLoading ? <Sparkles className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />}
+                  {aiLoading ? "Thinking..." : "Send to Helix"}
                 </button>
               </form>
             </div>
