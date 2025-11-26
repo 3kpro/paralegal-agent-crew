@@ -178,10 +178,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, results: generatedResults });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Generation error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: error.message || "Internal Server Error" },
       { status: 500 }
     );
   }

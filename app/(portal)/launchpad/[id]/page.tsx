@@ -3,17 +3,18 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, 
-  Target, 
-  PenTool, 
   CheckCircle, 
-  Share2, 
-  Plus, 
-  RefreshCw,
-  ExternalLink,
-  Copy
+  Copy, 
+  ExternalLink, 
+  MessageSquare, 
+  Sparkles, 
+  ChevronRight, 
+  ChevronDown,
+  EyeOff,
+  Eye
 } from "lucide-react";
 import Link from "next/link";
 
@@ -40,396 +41,304 @@ export default function CampaignDetailPage() {
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [targets, setTargets] = useState<LaunchTarget[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'matrix' | 'content' | 'tracking'>('matrix');
-  
-  // Add Target Modal State
-  const [isAddTargetOpen, setIsAddTargetOpen] = useState(false);
-  const [newTarget, setNewTarget] = useState({
-    platform: 'reddit',
-    community_name: ''
-  });
-  const [addingTarget, setAddingTarget] = useState(false);
-
-  // Generation State
   const [generating, setGenerating] = useState(false);
+  const [showPosted, setShowPosted] = useState(false);
+  
+  // AI Sidebar State
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
-    async function fetchCampaignData() {
-      if (!params.id) return;
-
-      try {
-        // Fetch campaign details
-        const { data: campaignData, error: campaignError } = await supabase
-          .from("launch_campaigns")
-          .select("*")
-          .eq("id", params.id)
-          .single();
-
-        if (campaignError) throw campaignError;
-        setCampaign(campaignData);
-
-        // Fetch targets
-        const { data: targetsData, error: targetsError } = await supabase
-          .from("launch_targets")
-          .select("*")
-          .eq("campaign_id", params.id)
-          .order("created_at", { ascending: true });
-
-        if (targetsError) throw targetsError;
-        setTargets(targetsData || []);
-
-      } catch (error) {
-        console.error("Error fetching campaign:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchCampaignData();
-  }, [params.id, supabase]);
+  }, [params.id]);
 
-  const handleAddTarget = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAddingTarget(true);
-
+  async function fetchCampaignData() {
+    if (!params.id) return;
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data, error } = await supabase
-        .from("launch_targets")
-        .insert({
-          campaign_id: params.id,
-          user_id: user.id,
-          platform: newTarget.platform,
-          community_name: newTarget.community_name,
-          status: 'draft'
-        })
-        .select()
+      const { data: campaignData, error: campaignError } = await supabase
+        .from("launch_campaigns")
+        .select("*")
+        .eq("id", params.id)
         .single();
 
-      if (error) throw error;
+      if (campaignError) throw campaignError;
+      setCampaign(campaignData);
 
-      setTargets([...targets, data]);
-      setIsAddTargetOpen(false);
-      setNewTarget({ platform: 'reddit', community_name: '' });
+      const { data: targetsData, error: targetsError } = await supabase
+        .from("launch_targets")
+        .select("*")
+        .eq("campaign_id", params.id)
+        .order("created_at", { ascending: true });
+
+      if (targetsError) throw targetsError;
+      setTargets(targetsData || []);
     } catch (error) {
-      console.error("Error adding target:", error);
-      alert("Failed to add target");
+      console.error("Error fetching data:", error);
     } finally {
-      setAddingTarget(false);
+      setLoading(false);
     }
-  };
+  }
 
-  const handleGenerateContent = async () => {
+  const handleGenerateAll = async () => {
     setGenerating(true);
     try {
-      const targetIds = targets.map(t => t.id);
+      // Only generate for targets that don't have content yet or are in draft
+      const targetsToGenerate = targets.filter(t => !t.content || t.status === 'draft');
       
+      if (targetsToGenerate.length === 0) {
+        alert("All targets already have content!");
+        setGenerating(false);
+        return;
+      }
+
       const response = await fetch('/api/launchpad/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           campaignId: params.id,
-          targetIds
+          targetIds: targetsToGenerate.map(t => t.id)
         })
       });
 
-      if (!response.ok) throw new Error("Generation failed");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Generation failed");
+      }
 
       const { results } = await response.json();
 
-      // Update local state with generated content
+      // Update local state
       const updatedTargets = targets.map(t => {
         const result = results.find((r: any) => r.id === t.id);
         return result ? { ...t, content: result.content, status: result.status } : t;
       });
 
       setTargets(updatedTargets as LaunchTarget[]);
-      setActiveTab('tracking'); // Switch to tracking tab to see results
       alert("Content generated successfully!");
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Generation error:", error);
-      alert("Failed to generate content");
+      alert(`Failed to generate content: ${error.message}`);
     } finally {
       setGenerating(false);
     }
   };
 
-  if (loading) {
-    return <div className="text-white p-8">Loading mission data...</div>;
-  }
+  const handleMarkPosted = async (targetId: string) => {
+    try {
+      const { error } = await supabase
+        .from("launch_targets")
+        .update({ status: 'posted' })
+        .eq("id", targetId);
 
-  if (!campaign) {
-    return <div className="text-white p-8">Campaign not found.</div>;
-  }
+      if (error) throw error;
+
+      setTargets(targets.map(t => t.id === targetId ? { ...t, status: 'posted' } : t));
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const handleAskAI = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiQuery.trim()) return;
+    
+    setAiLoading(true);
+    // TODO: Connect to a real chat endpoint. For now, mock it.
+    setTimeout(() => {
+      setAiResponse(`Here is a suggestion for "${aiQuery}": \n\nTry focusing on the unique value proposition of Content Cascade AI. Mention how it saves 20+ hours a week.`);
+      setAiLoading(false);
+    }, 1000);
+  };
+
+  // Group targets by platform
+  const groupedTargets = targets.reduce((acc, target) => {
+    if (!showPosted && target.status === 'posted') return acc;
+    if (!acc[target.platform]) acc[target.platform] = [];
+    acc[target.platform].push(target);
+    return acc;
+  }, {} as Record<string, LaunchTarget[]>);
+
+  if (loading) return <div className="text-white p-8">Loading mission data...</div>;
+  if (!campaign) return <div className="text-white p-8">Campaign not found.</div>;
 
   return (
-    <div className="space-y-6 relative">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/launchpad"
-            className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-              {campaign.name}
-              <span className="text-xs px-2 py-1 bg-coral-500/20 text-coral-300 rounded-full border border-coral-500/30">
-                {campaign.status}
-              </span>
-            </h1>
-            <p className="text-gray-400 text-sm mt-1">
-              Product: {campaign.product_name}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={() => setIsAddTargetOpen(true)}
-            className="px-4 py-2 bg-coral-500 hover:bg-coral-600 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Target
-          </button>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="border-b border-gray-800">
-        <nav className="flex gap-6">
-          <button
-            onClick={() => setActiveTab('matrix')}
-            className={`pb-4 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'matrix'
-                ? 'border-coral-500 text-white'
-                : 'border-transparent text-gray-400 hover:text-gray-300'
-            }`}
-          >
-            Target Matrix
-          </button>
-          <button
-            onClick={() => setActiveTab('content')}
-            className={`pb-4 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'content'
-                ? 'border-coral-500 text-white'
-                : 'border-transparent text-gray-400 hover:text-gray-300'
-            }`}
-          >
-            Content Factory
-          </button>
-          <button
-            onClick={() => setActiveTab('tracking')}
-            className={`pb-4 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'tracking'
-                ? 'border-coral-500 text-white'
-                : 'border-transparent text-gray-400 hover:text-gray-300'
-            }`}
-          >
-            Command Center
-          </button>
-        </nav>
-      </div>
-
-      {/* Content Area */}
-      <div className="min-h-[500px]">
-        {activeTab === 'matrix' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Target Cards */}
-            {targets.length === 0 ? (
-              <div className="col-span-full text-center py-12 text-gray-500">
-                No targets defined yet. Add a subreddit or platform to start.
-              </div>
-            ) : (
-              targets.map((target) => (
-                <div
-                  key={target.id}
-                  className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 hover:border-coral-500/50 transition-colors"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      {/* Platform Icon Placeholder */}
-                      <div className="w-8 h-8 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-bold text-gray-300">
-                        {target.platform.substring(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-white">{target.community_name}</h3>
-                        <p className="text-xs text-gray-400 capitalize">{target.platform}</p>
-                      </div>
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${
-                      target.status === 'posted' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
-                      target.status === 'ready' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
-                      'bg-gray-700 text-gray-400 border-gray-600'
-                    }`}>
-                      {target.status}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/50">
-                    <button className="text-xs text-coral-400 hover:text-coral-300 flex items-center gap-1">
-                      <PenTool className="w-3 h-3" />
-                      Generate Content
-                    </button>
-                    {target.posted_url && (
-                      <a 
-                        href={target.posted_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-xs text-gray-400 hover:text-white flex items-center gap-1"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        View Live
-                      </a>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-            
-            {/* Add Target Card */}
-            <button 
-              onClick={() => setIsAddTargetOpen(true)}
-              className="border-2 border-dashed border-gray-700 rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-gray-500 hover:text-white hover:border-gray-500 transition-colors min-h-[140px]"
-            >
-              <Plus className="w-8 h-8" />
-              <span className="text-sm font-medium">Add Target</span>
-            </button>
-          </div>
-        )}
-
-        {activeTab === 'content' && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <PenTool className="w-8 h-8 text-gray-600" />
+    <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/launchpad" className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-white">{campaign.name}</h1>
+              <p className="text-gray-400 text-sm">Protocol: Content Cascade AI Launch</p>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Content Factory</h3>
-            <p className="text-gray-400 max-w-md mx-auto mb-6">
-              Select targets to generate tailored content using AI.
-            </p>
-            <button 
-              onClick={handleGenerateContent}
-              disabled={generating || targets.length === 0}
-              className="px-6 py-3 bg-coral-500 text-white rounded-lg font-bold hover:bg-coral-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          </div>
+          <div className="flex items-center gap-3">
+             <button
+              onClick={() => setShowPosted(!showPosted)}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
             >
-              {generating ? "Generating..." : "Start Generation"}
+              {showPosted ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPosted ? "Hide Completed" : "Show Completed"}
+            </button>
+            <button 
+              onClick={handleGenerateAll}
+              disabled={generating}
+              className="px-6 py-2 bg-gradient-to-r from-coral-500 to-purple-600 text-white rounded-lg font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              {generating ? "Generating..." : "Generate All Content"}
+            </button>
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className={`p-2 rounded-lg transition-colors ${isSidebarOpen ? 'bg-coral-500 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            >
+              <MessageSquare className="w-5 h-5" />
             </button>
           </div>
-        )}
+        </div>
 
-        {activeTab === 'tracking' && (
-          <div className="grid grid-cols-4 gap-4 h-[600px]">
-            {['Draft', 'Review', 'Ready', 'Posted'].map((status) => (
-              <div key={status} className="bg-gray-800/30 rounded-xl p-4 flex flex-col">
-                <h3 className="font-bold text-gray-400 mb-4 flex items-center justify-between">
-                  {status}
-                  <span className="text-xs bg-gray-800 px-2 py-1 rounded-full">
-                    {targets.filter(t => t.status === status.toLowerCase()).length}
+        {/* Platform Sections */}
+        <div className="space-y-8">
+          {Object.entries(groupedTargets).map(([platform, platformTargets]) => (
+            <div key={platform} className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
+              <div className="bg-gray-800/50 px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-white capitalize flex items-center gap-2">
+                  {platform.replace('_', ' ')}
+                  <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
+                    {platformTargets.length}
                   </span>
-                </h3>
-                <div className="flex-1 space-y-3 overflow-y-auto">
-                  {targets
-                    .filter(t => t.status === status.toLowerCase())
-                    .map(target => (
-                      <div key={target.id} className="bg-gray-800 p-3 rounded-lg border border-gray-700 shadow-sm">
-                        <div className="text-sm font-medium text-white mb-1">{target.community_name}</div>
-                        <div className="text-xs text-gray-500 capitalize">{target.platform}</div>
-                        {target.content && (
-                          <div className="mt-2 text-xs text-gray-400 bg-gray-900/50 p-2 rounded border border-gray-700/50 relative group">
-                            <div className="line-clamp-3 mb-2">
-                              {target.content.title || target.content.text || target.content.caption || (target.content.thread && target.content.thread[0])}
-                            </div>
+                </h2>
+              </div>
+              
+              <div className="divide-y divide-gray-800">
+                {platformTargets.map(target => (
+                  <div key={target.id} className="p-6 hover:bg-gray-800/30 transition-colors group">
+                    <div className="flex items-start justify-between gap-6">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h3 className="font-medium text-coral-400">{target.community_name}</h3>
+                          {target.status === 'posted' && (
+                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" /> Posted
+                            </span>
+                          )}
+                        </div>
+                        
+                        {target.content ? (
+                          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700/50 text-gray-300 text-sm whitespace-pre-wrap font-mono">
+                            {target.content.title && <div className="font-bold mb-2">{target.content.title}</div>}
+                            {target.content.text || target.content.body || target.content.caption || (target.content.thread && target.content.thread.join('\n\n---\n\n'))}
                             {target.content.image_prompt && (
-                              <div className="text-xs bg-purple-900/30 border border-purple-500/30 p-2 rounded text-purple-200 mb-1">
-                                <span className="font-bold text-purple-400 block text-[10px] uppercase mb-1">AI Image Prompt:</span>
-                                {target.content.image_prompt}
+                              <div className="mt-4 pt-4 border-t border-gray-800">
+                                <span className="text-xs text-purple-400 uppercase font-bold block mb-1">Image Prompt</span>
+                                <span className="text-purple-200">{target.content.image_prompt}</span>
                               </div>
                             )}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const text = target.content.title 
-                                  ? `${target.content.title}\n\n${target.content.body}`
-                                  : target.content.text || target.content.thread?.join('\n\n');
-                                navigator.clipboard.writeText(text);
-                                alert("Copied to clipboard!");
-                              }}
-                              className="absolute top-2 right-2 p-1.5 bg-gray-800 rounded-md text-gray-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                              title="Copy to clipboard"
-                            >
-                              <Copy className="w-3 h-3" />
-                            </button>
                           </div>
+                        ) : (
+                          <div className="text-gray-500 italic text-sm">Content pending generation...</div>
                         )}
                       </div>
-                    ))
-                  }
-                </div>
+
+                      <div className="flex flex-col gap-2 min-w-[140px]">
+                        {target.content && (
+                          <button
+                            onClick={() => {
+                              const text = target.content.title 
+                                ? `${target.content.title}\n\n${target.content.body}`
+                                : target.content.text || target.content.caption || target.content.thread?.join('\n\n');
+                              navigator.clipboard.writeText(text);
+                              alert("Copied to clipboard!");
+                            }}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors border border-gray-700"
+                          >
+                            <Copy className="w-4 h-4" />
+                            Copy
+                          </button>
+                        )}
+                        
+                        {target.status !== 'posted' && (
+                          <button
+                            onClick={() => handleMarkPosted(target.id)}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 rounded-lg text-sm font-medium transition-colors border border-green-600/30"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                            Mark Done
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+          
+          {Object.keys(groupedTargets).length === 0 && (
+            <div className="text-center py-20 text-gray-500">
+              {showPosted ? "No targets found." : "All targets posted! Great job."}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Add Target Modal */}
-      {isAddTargetOpen && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 border border-gray-700 rounded-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-white mb-4">Add New Target</h3>
-            <form onSubmit={handleAddTarget} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Platform</label>
-                <select
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-coral-500"
-                  value={newTarget.platform}
-                  onChange={(e) => setNewTarget({...newTarget, platform: e.target.value})}
-                >
-                  <option value="reddit">Reddit</option>
-                  <option value="twitter">Twitter / X</option>
-                  <option value="linkedin">LinkedIn</option>
-                  <option value="product_hunt">Product Hunt</option>
-                  <option value="indie_hackers">Indie Hackers</option>
-                  <option value="facebook">Facebook</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="tiktok">TikTok</option>
-                  <option value="other">Other</option>
-                </select>
+      {/* AI Assistant Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ x: 320 }}
+            animate={{ x: 0 }}
+            exit={{ x: 320 }}
+            className="w-80 bg-gray-900 border-l border-gray-800 flex flex-col shadow-2xl z-20"
+          >
+            <div className="p-4 border-b border-gray-800 flex items-center justify-between">
+              <h3 className="font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-coral-500" />
+                AI Assistant
+              </h3>
+              <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 hover:text-white">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+              <div className="bg-gray-800/50 p-3 rounded-lg text-sm text-gray-300">
+                I'm here to help! Ask me for extra hooks, reply suggestions, or strategy advice.
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Community / Profile Name</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. r/SideProject or @trendpulse"
-                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white outline-none focus:border-coral-500"
-                  value={newTarget.community_name}
-                  onChange={(e) => setNewTarget({...newTarget, community_name: e.target.value})}
+              {aiResponse && (
+                <div className="bg-coral-500/10 border border-coral-500/20 p-3 rounded-lg text-sm text-coral-200 whitespace-pre-wrap">
+                  {aiResponse}
+                </div>
+              )}
+            </div>
+
+            <div className="p-4 border-t border-gray-800">
+              <form onSubmit={handleAskAI}>
+                <textarea
+                  value={aiQuery}
+                  onChange={(e) => setAiQuery(e.target.value)}
+                  placeholder="Ask for help..."
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-sm text-white outline-none focus:border-coral-500 resize-none h-24 mb-2"
                 />
-              </div>
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddTargetOpen(false)}
-                  className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
-                >
-                  Cancel
-                </button>
                 <button
                   type="submit"
-                  disabled={addingTarget}
-                  className="flex-1 px-4 py-2 bg-coral-500 hover:bg-coral-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                  disabled={aiLoading || !aiQuery.trim()}
+                  className="w-full bg-coral-500 text-white py-2 rounded-lg text-sm font-bold hover:bg-coral-600 disabled:opacity-50"
                 >
-                  {addingTarget ? "Adding..." : "Add Target"}
+                  {aiLoading ? "Thinking..." : "Ask AI"}
                 </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              </form>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

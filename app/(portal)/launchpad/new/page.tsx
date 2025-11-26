@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { ArrowLeft, Rocket } from "lucide-react";
 import Link from "next/link";
+import { CCAI_TARGETS } from "@/lib/data/ccai-targets";
 
 export default function NewCampaignPage() {
   const router = useRouter();
@@ -29,18 +30,33 @@ export default function NewCampaignPage() {
 
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("launch_campaigns").insert({
+      const { data: campaign, error } = await supabase.from("launch_campaigns").insert({
         user_id: user.id,
         name: formData.name,
         product_name: formData.product_name,
         product_url: formData.product_url,
         product_description: formData.product_description,
         status: "active",
-      });
+      }).select().single();
 
       if (error) throw error;
 
-      router.push("/launchpad");
+      // Auto-seed Targets
+      const targetsToInsert = CCAI_TARGETS.map((t: any) => ({
+        campaign_id: campaign.id,
+        user_id: user.id,
+        platform: t.platform,
+        community_name: t.community_name,
+        status: 'draft'
+      }));
+
+      const { error: seedError } = await supabase
+        .from("launch_targets")
+        .insert(targetsToInsert);
+
+      if (seedError) console.error("Error seeding targets:", seedError);
+
+      router.push(`/launchpad/${campaign.id}`);
     } catch (error) {
       console.error("Error creating campaign:", error);
       alert("Failed to create campaign");
