@@ -6,15 +6,22 @@ import { headers } from "next/headers";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Rate Limiter
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
-});
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-const ratelimit = new Ratelimit({
-  redis: redis,
-  limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute
-});
+let ratelimit: Ratelimit | null = null;
+
+if (redisUrl && redisToken) {
+  const redis = new Redis({
+    url: redisUrl,
+    token: redisToken,
+  });
+
+  ratelimit = new Ratelimit({
+    redis: redis,
+    limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute
+  });
+}
 
 // Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
@@ -30,12 +37,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Rate Limiting
-    const headerStore = await headers();
-    const ip = headerStore.get("x-forwarded-for") || "127.0.0.1";
-    const { success } = await ratelimit.limit(ip);
-    if (!success) {
-      return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
+    // Rate Limiting (Skip if Redis is not configured)
+    if (ratelimit) {
+      const headerStore = await headers();
+      const ip = headerStore.get("x-forwarded-for") || "127.0.0.1";
+      const { success } = await ratelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
+      }
     }
 
     const { campaignId, targetIds } = await request.json();
