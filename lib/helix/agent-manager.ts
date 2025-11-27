@@ -1,4 +1,4 @@
-import { VertexAI } from '@google-cloud/vertexai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@/lib/supabase/server';
 
 // Define the shape of a Tool
@@ -17,20 +17,22 @@ interface AgentState {
 }
 
 export class HelixAgentManager {
-  private vertexAI: VertexAI;
+  private genAI: GoogleGenerativeAI;
   private model: any;
   private tools: Map<string, HelixTool>;
 
   constructor() {
-    // Initialize Vertex AI
-    this.vertexAI = new VertexAI({
-      project: process.env.GOOGLE_CLOUD_PROJECT,
-      location: 'us-central1'
-    });
+    // Initialize Gemini AI with API Key
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not set in environment variables.");
+    }
 
-    // Use Gemini 1.5 Pro for the "Brain"
-    this.model = this.vertexAI.getGenerativeModel({
-      model: 'gemini-1.5-pro-preview-0409', // Latest preview with 1M context
+    this.genAI = new GoogleGenerativeAI(apiKey);
+
+    // Use Gemini 2.0 Flash Lite for speed and reliability
+    this.model = this.genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-lite-preview-02-05',
       generationConfig: {
         maxOutputTokens: 8192,
         temperature: 0.7,
@@ -97,8 +99,8 @@ export class HelixAgentManager {
   }
 
   // The main entry point for processing a user message
-  public async processMessage(userId: string, sessionId: string, message: string, context?: any) {
-    const supabase = await createClient();
+  public async processMessage(userId: string, sessionId: string, message: string, context?: any, injectedSupabase?: any) {
+    const supabase = injectedSupabase || await createClient();
     
     // 1. Load Context (History + Brand DNA)
     const { data: brandDna } = await supabase
