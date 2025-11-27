@@ -1,12 +1,33 @@
 /**
- * Viral Score™ Algorithm
+ * Viral Score™ Algorithm (Hybrid AI + Heuristic)
  *
  * Predicts viral potential of trending topics (0-100 score)
- * Based on 4 key factors: Volume, Multi-source validation, Specificity, Freshness
- *
- * MVP Version: Heuristic algorithm (not ML)
- * Future: Replace with ML model trained on actual viral posts
+ * Combines:
+ * 1. Data Score: Volume, Multi-source validation, Freshness (Heuristic)
+ * 2. Content Score: Hook quality, Emotional resonance, Value prop (Gemini AI)
  */
+
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// Initialize Gemini AI (Server-side only)
+// Uses API Key for simplicity and reliability
+let model: any = null;
+
+function getModel() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!model && apiKey) {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-lite-preview-02-05',
+      generationConfig: {
+        maxOutputTokens: 500,
+        temperature: 0.4,
+      }
+    });
+  }
+  return model;
+}
 
 export interface TrendWithViralScore {
   title: string;
@@ -17,20 +38,20 @@ export interface TrendWithViralScore {
   viralScore: number; // 0-100
   viralPotential: 'high' | 'medium' | 'low';
   viralFactors: {
-    volume: number; // 0-40 points
-    multiSource: number; // 0-30 points
-    specificity: number; // 0-20 points
+    volume: number; // 0-30 points
+    multiSource: number; // 0-20 points
     freshness: number; // 0-10 points
+    aiAnalysis: number; // 0-40 points (The "Content Score")
   };
 
   // Metadata
   sources?: string[]; // ['google', 'twitter', 'reddit']
   firstSeenAt?: Date;
+  aiReasoning?: string; // Why the AI gave this score
 }
 
 /**
  * Calculate viral score for a trending topic
- * Uses ML prediction if enabled, falls back to heuristic
  */
 export async function calculateViralScore(trend: {
   title: string;
@@ -38,60 +59,79 @@ export async function calculateViralScore(trend: {
   sources?: string[];
   firstSeenAt?: Date;
 }): Promise<TrendWithViralScore> {
-  // Feature flag check (server-side only)
-  // CRITICAL FIX: Force disable ML path to stabilize tests and production.
-  if (false && typeof process !== 'undefined' && process.env.NEXT_PUBLIC_VIRAL_SCORE_ML_ENABLED === 'true') {
-    try {
-      return await predictViralScoreML(trend);
-    } catch (error) {
-      console.error('[Viral Score] ML prediction failed, falling back to heuristic:', error);
-      // Fall through to heuristic calculation
+  
+  // 1. Calculate Data Score (Heuristic) - Max 60 points
+  const volume = parseVolume(trend.formattedTraffic);
+  const volumeScore = calculateVolumeScore(volume); // Max 30
+  const multiSourceScore = calculateMultiSourceScore(trend.sources || []); // Max 20
+  const freshnessScore = calculateFreshnessScore(trend.firstSeenAt); // Max 10
+  
+  const dataScore = volumeScore + multiSourceScore + freshnessScore;
+
+  // 2. Calculate Content Score (AI) - Max 40 points
+  let aiScore = 0;
+  let aiReasoning = "AI analysis skipped (No API Key).";
+
+  try {
+    const aiModel = getModel();
+    if (aiModel) {
+      const prompt = `
+        Analyze the viral potential of this topic for a tech/business audience.
+        Topic: "${trend.title}"
+        
+        Rate on scale 0-40 based on:
+        1. Hook/Curiosity (Is it clicky?)
+        2. Broad Appeal (Do people care?)
+        3. Emotional Trigger (Fear, Greed, Awe?)
+        
+        Output JSON only: { "score": number, "reason": "short explanation" }
+      `;
+
+      const result = await aiModel.generateContent(prompt);
+      const response = result.response.text();
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const data = JSON.parse(jsonMatch[0]);
+        aiScore = Math.min(data.score, 40);
+        aiReasoning = data.reason;
+      }
+    } else {
+      // Fallback: Boost score if it looks like a "How-to" or "Listicle" (simple heuristic)
+      if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {
+        aiScore = 25;
+        aiReasoning = "Heuristic boost for high-performing format.";
+      } else {
+        aiScore = 15;
+        aiReasoning = "Baseline content score.";
+      }
     }
+  } catch (error) {
+    console.error("Viral Score AI Error:", error);
+    aiScore = 15; // Safe fallback
+    aiReasoning = "AI analysis failed, used baseline.";
   }
 
-  // Heuristic calculation (existing logic)
-  // Parse volume from formatted traffic
-  const volume = parseVolume(trend.formattedTraffic);
-
-  // Factor 1: Volume (0-40 points)
-  // Higher search volume = higher viral potential
-  const volumeScore = calculateVolumeScore(volume);
-
-  // Factor 2: Multi-source validation (0-30 points)
-  // Found in multiple sources = more likely to be real trend
-  const multiSourceScore = calculateMultiSourceScore(trend.sources || []);
-
-  // Factor 3: Keyword specificity (0-20 points)
-  // Specific topics perform better than generic ones
-  const specificityScore = calculateSpecificityScore(trend.title);
-
-  // Factor 4: Freshness (0-10 points)
-  // Newer trends have more viral potential
-  const freshnessScore = calculateFreshnessScore(trend.firstSeenAt);
-
-  // Total score (0-100)
-  const totalScore = volumeScore + multiSourceScore + specificityScore + freshnessScore;
-  const viralScore = Math.min(Math.round(totalScore), 100);
-
-  // Classify viral potential
-  const viralPotential = classifyViralPotential(viralScore);
+  // 3. Total Score
+  const totalScore = Math.min(Math.round(dataScore + aiScore), 100);
+  const viralPotential = classifyViralPotential(totalScore);
 
   return {
     ...trend,
-    viralScore,
+    viralScore: totalScore,
     viralPotential,
+    aiReasoning,
     viralFactors: {
       volume: volumeScore,
       multiSource: multiSourceScore,
-      specificity: specificityScore,
-      freshness: freshnessScore
+      freshness: freshnessScore,
+      aiAnalysis: aiScore
     }
   };
 }
 
 /**
  * Parse volume from formatted traffic string
- * Examples: "150K searches" -> 150000, "1.2M searches" -> 1200000
  */
 function parseVolume(formattedTraffic: string): number {
   const match = formattedTraffic.match(/([\d.]+)([KM]?)/i);
@@ -106,86 +146,35 @@ function parseVolume(formattedTraffic: string): number {
 }
 
 /**
- * Factor 1: Volume Score (0-40 points)
- *
- * Logic:
- * - 0-50K searches: 0-10 points
- * - 50K-150K searches: 10-25 points
- * - 150K-300K searches: 25-35 points
- * - 300K+ searches: 35-40 points
+ * Factor 1: Volume Score (0-30 points)
+ * Adjusted for Hybrid Model
  */
 function calculateVolumeScore(volume: number): number {
-  if (volume >= 300000) return 40;
-  if (volume >= 150000) return 25 + ((volume - 150000) / 150000) * 10;
-  if (volume >= 50000) return 10 + ((volume - 50000) / 100000) * 15;
-  return (volume / 50000) * 10;
+  if (volume >= 300000) return 30;
+  if (volume >= 100000) return 20;
+  if (volume >= 10000) return 10;
+  return 5;
 }
 
 /**
- * Factor 2: Multi-Source Score (0-30 points)
- *
- * Logic:
- * - 1 source: 0 points (not validated)
- * - 2 sources: 10 points (some validation)
- * - 3 sources: 20 points (good validation)
- * - 4+ sources: 30 points (strong validation)
+ * Factor 2: Multi-Source Score (0-20 points)
+ * Adjusted for Hybrid Model
  */
 function calculateMultiSourceScore(sources: string[]): number {
   const numSources = sources.length;
-
-  // If the only source is Gemini AI, it's a high-quality generated idea.
-  // Give it a baseline score instead of 0.
-  if (numSources === 1 && sources[0] === 'gemini-ai') {
-    return 15; // Baseline score for AI-generated ideas (out of 30)
-  }
-  if (numSources >= 4) return 30;
-  if (numSources === 3) return 20;
+  if (numSources >= 3) return 20;
   if (numSources === 2) return 10;
-  return 0; // Single source or Gemini-only
+  return 5;
 }
 
 /**
- * Factor 3: Specificity Score (0-20 points)
- *
- * Logic:
- * - Generic (1-2 words): 5 points
- * - Somewhat specific (3 words): 12 points
- * - Specific (4-6 words): 20 points
- * - Too specific (7+ words): 15 points
- *
- * Examples:
- * - "AI Tools" (2 words) -> 5 points
- * - "AI Content Creation" (3 words) -> 12 points
- * - "Morning Routines for Busy Parents" (5 words) -> 20 points
- * - "How to Create AI-Powered Content for Social Media Marketing" (9 words) -> 15 points
- */
-function calculateSpecificityScore(title: string): number {
-  const words = title.split(/\s+/).filter(w => w.length > 0);
-  const wordCount = words.length;
-
-  if (wordCount >= 4 && wordCount <= 6) return 20; // Sweet spot
-  if (wordCount === 3) return 12; // Somewhat specific
-  if (wordCount >= 7) return 15; // Too wordy
-  return 5; // Too generic
-}
-
-/**
- * Factor 4: Freshness Score (0-10 points)
- *
- * Logic:
- * - <2 hours old: 10 points (very fresh)
- * - 2-12 hours old: 5 points (still fresh)
- * - 12-24 hours old: 2 points (getting old)
- * - 24+ hours old: 0 points (stale)
+ * Factor 3: Freshness Score (0-10 points)
  */
 function calculateFreshnessScore(firstSeenAt?: Date): number {
-  if (!firstSeenAt) return 5; // Unknown, assume moderately fresh
-
+  if (!firstSeenAt) return 5;
   const hoursSinceFirstSeen = (Date.now() - firstSeenAt.getTime()) / (1000 * 60 * 60);
-
-  if (hoursSinceFirstSeen < 2) return 10;
-  if (hoursSinceFirstSeen < 12) return 5;
-  if (hoursSinceFirstSeen < 24) return 2;
+  if (hoursSinceFirstSeen < 4) return 10;
+  if (hoursSinceFirstSeen < 24) return 5;
   return 0;
 }
 
@@ -193,152 +182,40 @@ function calculateFreshnessScore(firstSeenAt?: Date): number {
  * Classify viral potential based on score
  */
 function classifyViralPotential(score: number): 'high' | 'medium' | 'low' {
-  if (score >= 70) return 'high';
+  if (score >= 75) return 'high';
   if (score >= 50) return 'medium';
   return 'low';
 }
 
-/**
- * Get badge color based on viral potential
- */
-export function getViralScoreBadgeColor(viralPotential: 'high' | 'medium' | 'low'): {
-  bg: string;
-  text: string;
-  border: string;
-} {
+// ... (Keep existing helpers for badges/colors)
+export function getViralScoreBadgeColor(viralPotential: 'high' | 'medium' | 'low') {
   switch (viralPotential) {
-    case 'high':
-      return {
-        bg: 'bg-green-50',
-        text: 'text-green-700',
-        border: 'border-green-300'
-      };
-    case 'medium':
-      return {
-        bg: 'bg-yellow-50',
-        text: 'text-yellow-700',
-        border: 'border-yellow-300'
-      };
-    case 'low':
-      return {
-        bg: 'bg-gray-50',
-        text: 'text-gray-600',
-        border: 'border-gray-300'
-      };
+    case 'high': return { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-300' };
+    case 'medium': return { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-300' };
+    case 'low': return { bg: 'bg-gray-50', text: 'text-gray-600', border: 'border-gray-300' };
   }
 }
 
-/**
- * Get emoji for viral potential
- */
 export function getViralScoreEmoji(viralPotential: 'high' | 'medium' | 'low'): string {
   switch (viralPotential) {
-    case 'high':
-      return '🔥';
-    case 'medium':
-      return '⚡';
-    case 'low':
-      return '📊';
+    case 'high': return '🔥';
+    case 'medium': return '⚡';
+    case 'low': return '📊';
   }
 }
 
-/**
- * Sort trends by viral score (highest first)
- */
 export function sortByViralScore<T extends { viralScore: number }>(trends: T[]): T[] {
   return [...trends].sort((a, b) => b.viralScore - a.viralScore);
 }
 
-/**
- * Format viral score for display
- */
 export function formatViralScore(score: number): string {
   return `${score}/100`;
 }
 
-/**
- * Get viral potential label
- */
 export function getViralPotentialLabel(viralPotential: 'high' | 'medium' | 'low'): string {
   switch (viralPotential) {
-    case 'high':
-      return 'High Viral Potential';
-    case 'medium':
-      return 'Medium Viral Potential';
-    case 'low':
-      return 'Low Viral Potential';
+    case 'high': return 'High Viral Potential';
+    case 'medium': return 'Medium Viral Potential';
+    case 'low': return 'Low Viral Potential';
   }
-}
-
-// ML Model Integration (Future - Phase 3)
-// When you have training data, replace calculateViralScore with this:
-
-/**
- * ML-powered viral prediction
- * Calls internal proxy API for predictions, falls back to heuristic on error
- */
-export async function predictViralScoreML(trend: {
-  title: string;
-  formattedTraffic: string;
-  sources?: string[];
-  firstSeenAt?: Date;
-}): Promise<TrendWithViralScore> {
-  const volume = parseVolume(trend.formattedTraffic);
-  const sourcesString = trend.sources?.join(',') || '';
-  const freshnessHours = trend.firstSeenAt
-    ? (Date.now() - trend.firstSeenAt.getTime()) / (1000 * 60 * 60)
-    : 0;
-
-  // Call internal proxy API (keeps ML API key secure)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  const apiUrl = `${baseUrl}/api/viral-score-ml`;
-
-  console.log('[Viral Score] Calling ML API proxy:', apiUrl);
-
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title: trend.title,
-      traffic: volume,
-      sources: sourcesString,
-      freshnessHours,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`ML API error: ${response.status} ${response.statusText} - ${errorText}`);
-  }
-
-  const data = await response.json();
-  const viralScore = Math.round(data.viralScore);
-
-  console.log('[Viral Score] ML prediction received:', {
-    viralScore,
-    confidence: data.confidence,
-    model: data.model,
-  });
-
-  // Calculate heuristic factors for consistency (ML doesn't provide breakdown)
-  const volumeScore = calculateVolumeScore(volume);
-  const multiSourceScore = calculateMultiSourceScore(trend.sources || []);
-  const specificityScore = calculateSpecificityScore(trend.title);
-  const freshnessScore = calculateFreshnessScore(trend.firstSeenAt);
-
-  const viralPotential = classifyViralPotential(viralScore);
-
-  return {
-    ...trend,
-    viralScore,
-    viralPotential,
-    viralFactors: {
-      volume: volumeScore,
-      multiSource: multiSourceScore,
-      specificity: specificityScore,
-      freshness: freshnessScore,
-    },
-  };
 }

@@ -201,7 +201,7 @@ Tracks per-user daily consumption for rate limiting
 ### Feature Gaps
 - No feedback tracking system
 - No ML model training
-- **Viral Score™ ML Model:** The current Viral Score™ is a heuristic algorithm. The machine learning model to replace it is not yet built (Phase 2).
+- **Viral Score™ Hybrid AI:** We use a hybrid approach. Heuristics handle the "Data Score" (Volume, Freshness), while Gemini 2.0 Flash Lite handles the "Content Score" (Psychological analysis of the hook and topic).
 - Stripe checkout shows "Coming Soon" instead of real checkout
 
 ### Technical Debt
@@ -274,7 +274,7 @@ TWITTER_BEARER_TOKEN=...
 - ❌ Not using OpenRouter
 - ❌ Not using Vertex AI (yet)
 - ❌ Not using Redis caching (disabled)
-- ❌ Not using machine learning for viral scores (yet - heuristic model is active)
+- ✅ **Viral Score™ Hybrid AI:** Now active using Gemini 2.0 Flash Lite. Combines heuristic data (Volume/Freshness) with AI content analysis (Hook/Emotion).
 - ❌ Not a white-label platform
 - ❌ Not built for agencies (solo creators first)
 

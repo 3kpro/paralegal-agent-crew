@@ -19,7 +19,8 @@
       "Bash(timeout 30 bash:*)",
       "Bash(curl:*)",
       "SlashCommand(/deploy)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": [],
     "ask": []
