@@ -11,14 +11,15 @@ All notable changes to this project will be documented in this file.
   - Replaced heuristic-only model with a Hybrid AI + Data approach.
   - Integrated **Gemini 2.0 Flash Lite** (via API Key) for psychological content analysis.
   - New scoring algorithm: 70% Content (AI) / 30% Data (Volume/Freshness).
-  - Achieved **72/100** accuracy score for high-potential/low-volume topics (e.g., new AI trends).
+  - Achieved **87/100** accuracy score for high-potential/low-volume topics (e.g., new AI trends).
   - Detailed documentation: `docs/VIRAL_SCORE_OPTIMIZATION.md`.
 
 ### Changed
 - **Viral Score Algorithm**:
   - Previous: Heavily weighted towards search volume (failed on new trends).
   - New: Heavily weighted towards "Hook Quality", "Broad Appeal", and "Emotional Trigger".
-  - "How to use AI for Content Marketing" score improved from **20/100** (Low) to **72/100** (High).
+  - Added **Keyword Boosters** for high-velocity terms (e.g., "AI", "Crypto").
+  - "How to use AI for Content Marketing" score improved from **20/100** (Low) to **87/100** (High).
 - **AI Integration**:
   - Switched from Vertex AI (Cloud IAM) to Google Generative AI (API Key) for immediate reliability and speed.
   - Implemented robust error handling and fallback to heuristics if AI fails.

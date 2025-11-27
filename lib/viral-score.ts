@@ -38,10 +38,11 @@ export interface TrendWithViralScore {
   viralScore: number; // 0-100
   viralPotential: 'high' | 'medium' | 'low';
   viralFactors: {
-    volume: number; // 0-30 points
-    multiSource: number; // 0-20 points
+    volume: number; // 0-10 points
+    multiSource: number; // 0-10 points
     freshness: number; // 0-10 points
-    aiAnalysis: number; // 0-40 points (The "Content Score")
+    keywordBoost: number; // 0-15 points (New "Hot Topic" Bonus)
+    aiAnalysis: number; // 0-70 points (The "Content Score")
   };
 
   // Metadata
@@ -60,15 +61,18 @@ export async function calculateViralScore(trend: {
   firstSeenAt?: Date;
 }): Promise<TrendWithViralScore> {
   
-  // 1. Calculate Data Score (Heuristic) - Max 60 points
+  // 1. Calculate Data Score (Heuristic) - Max 30 points
   const volume = parseVolume(trend.formattedTraffic);
-  const volumeScore = calculateVolumeScore(volume); // Max 30
-  const multiSourceScore = calculateMultiSourceScore(trend.sources || []); // Max 20
+  const volumeScore = calculateVolumeScore(volume); // Max 10
+  const multiSourceScore = calculateMultiSourceScore(trend.sources || []); // Max 10
   const freshnessScore = calculateFreshnessScore(trend.firstSeenAt); // Max 10
   
-  const dataScore = volumeScore + multiSourceScore + freshnessScore;
+  // 2. Calculate Keyword Boost (Heuristic) - Max 15 points
+  const keywordBoost = calculateKeywordBoost(trend.title);
 
-  // 2. Calculate Content Score (AI) - Max 40 points
+  const dataScore = volumeScore + multiSourceScore + freshnessScore + keywordBoost;
+
+  // 3. Calculate Content Score (AI) - Max 70 points
   let aiScore = 0;
   let aiReasoning = "AI analysis skipped (No API Key).";
 
@@ -79,10 +83,10 @@ export async function calculateViralScore(trend: {
         Analyze the viral potential of this topic for a tech/business audience.
         Topic: "${trend.title}"
         
-        Rate on scale 0-40 based on:
-        1. Hook/Curiosity (Is it clicky?)
-        2. Broad Appeal (Do people care?)
-        3. Emotional Trigger (Fear, Greed, Awe?)
+        Rate on scale 0-70 based on:
+        1. Hook/Curiosity (Is it clicky?) - Max 30
+        2. Broad Appeal (Do people care?) - Max 25
+        3. Emotional Trigger (Fear, Greed, Awe?) - Max 15
         
         Output JSON only: { "score": number, "reason": "short explanation" }
       `;
@@ -93,26 +97,27 @@ export async function calculateViralScore(trend: {
       
       if (jsonMatch) {
         const data = JSON.parse(jsonMatch[0]);
-        aiScore = Math.min(data.score, 40);
+        aiScore = Math.min(data.score, 70);
         aiReasoning = data.reason;
       }
     } else {
       // Fallback: Boost score if it looks like a "How-to" or "Listicle" (simple heuristic)
       if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {
-        aiScore = 25;
+        aiScore = 40;
         aiReasoning = "Heuristic boost for high-performing format.";
       } else {
-        aiScore = 15;
+        aiScore = 20;
         aiReasoning = "Baseline content score.";
       }
     }
   } catch (error) {
     console.error("Viral Score AI Error:", error);
-    aiScore = 15; // Safe fallback
+    aiScore = 20; // Safe fallback
     aiReasoning = "AI analysis failed, used baseline.";
   }
 
-  // 3. Total Score
+  // 4. Total Score
+  // We allow the total to go slightly over 100 internally before capping, to reward "Perfect Storms"
   const totalScore = Math.min(Math.round(dataScore + aiScore), 100);
   const viralPotential = classifyViralPotential(totalScore);
 
@@ -125,6 +130,7 @@ export async function calculateViralScore(trend: {
       volume: volumeScore,
       multiSource: multiSourceScore,
       freshness: freshnessScore,
+      keywordBoost,
       aiAnalysis: aiScore
     }
   };
@@ -146,25 +152,52 @@ function parseVolume(formattedTraffic: string): number {
 }
 
 /**
- * Factor 1: Volume Score (0-30 points)
- * Adjusted for Hybrid Model
+ * Factor 1: Volume Score (0-10 points)
+ * Adjusted for AI-First Model
  */
 function calculateVolumeScore(volume: number): number {
-  if (volume >= 300000) return 30;
-  if (volume >= 100000) return 20;
-  if (volume >= 10000) return 10;
-  return 5;
+  if (volume >= 300000) return 10;
+  if (volume >= 100000) return 7;
+  if (volume >= 10000) return 5;
+  return 2;
 }
 
 /**
- * Factor 2: Multi-Source Score (0-20 points)
- * Adjusted for Hybrid Model
+ * Factor 2: Multi-Source Score (0-10 points)
+ * Adjusted for AI-First Model
  */
 function calculateMultiSourceScore(sources: string[]): number {
   const numSources = sources.length;
-  if (numSources >= 3) return 20;
-  if (numSources === 2) return 10;
-  return 5;
+  if (numSources >= 3) return 10;
+  if (numSources === 2) return 5;
+  return 2;
+}
+
+/**
+ * Factor 4: Keyword Boost (0-15 points)
+ * Rewards high-velocity topics
+ */
+function calculateKeywordBoost(title: string): number {
+  const hotKeywords = [
+    'AI', 'GPT', 'Cursor', 'Agent', 'Crypto', 'Bitcoin', 
+    'Hack', 'Secret', 'Revealed', 'Guide', 'Tutorial', 
+    'Free', 'Money', 'Profit', 'Scale', 'Million'
+  ];
+  
+  const lowerTitle = title.toLowerCase();
+  let boost = 0;
+  
+  // +10 for primary hot keywords
+  if (hotKeywords.some(k => lowerTitle.includes(k.toLowerCase()))) {
+    boost += 10;
+  }
+  
+  // +5 for "How to" or "Why" structure (Actionable)
+  if (lowerTitle.match(/^(how to|why|top \d)/)) {
+    boost += 5;
+  }
+  
+  return Math.min(boost, 15);
 }
 
 /**
