@@ -20,7 +20,13 @@
       "Bash(curl:*)",
       "SlashCommand(/deploy)",
       "Bash(vercel:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(if exist ZENCODER_HANDOFF_DESIGN.md del ZENCODER_HANDOFF_DESIGN.md)",
+      "Bash(if exist CHATGPT_HANDOFF_QA.md del CHATGPT_HANDOFF_QA.md)",
+      "Bash(dir:*)",
+      "Bash(test:*)",
+      "Bash(if exist .next rd /s /q .next)",
+      "Bash(timeout 10 bash:*)"
     ],
     "deny": [],
     "ask": []

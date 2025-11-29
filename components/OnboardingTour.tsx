@@ -12,7 +12,7 @@ interface OnboardingStep {
 
 const onboardingSteps: OnboardingStep[] = [
   {
-    title: "🚀 Welcome to Content Cascade AI",
+    title: "🚀 Welcome to TrendPulse",
     description:
       "Let's create your first viral campaign in 4 simple steps. This will only take 2 minutes!",
     position: "center",

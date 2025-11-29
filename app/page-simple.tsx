@@ -2,7 +2,7 @@ export default function SimpleHomePage() {
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-blue-600 text-white p-6">
-        <h1 className="text-3xl font-bold">Content Cascade AI</h1>
+        <h1 className="text-3xl font-bold">TrendPulse</h1>
         <p className="text-xl mt-2">
           Turn Trending Topics Into Published Content
         </p>

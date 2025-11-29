@@ -43,7 +43,7 @@ const plans = [
   },
   {
     name: "Premium",
-    price: "$99",
+    price: "$79",
     period: "per month",
     description: "For agencies and power users",
     icon: Crown,
@@ -82,7 +82,7 @@ export default function ModernPricing() {
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Start for free. Upgrade anytime for unlimited access.
-            More CCAI features coming soon.
+            More TrendPulse features coming soon.
           </p>
         </motion.div>
 

@@ -1,6 +1,7 @@
 import { Button } from "./ui/Button";
 import Link from "next/link";
 import { useState } from "react";
+import TrendPulseLogo from "./TrendPulseLogo";
 
 interface NavigationProps {
   onContactClick?: () => void;
@@ -32,11 +33,9 @@ export const Navigation: React.FC<NavigationProps> = () => {
         <div className="flex justify-between items-center h-16">
           <button
             onClick={() => window.location.reload()}
-            className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
+            className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <div className="w-8 h-8 bg-coral-500 rounded-lg flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-sm">TP</span>
-            </div>
+            <TrendPulseLogo className="w-8 h-8" />
             <span className="text-xl font-semibold text-white">
               TrendPulse
             </span>

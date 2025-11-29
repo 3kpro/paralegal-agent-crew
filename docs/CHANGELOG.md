@@ -1,3 +1,30 @@
+## [2.4.2] - 2025-11-27 - Brand Consistency & UI Polish
+
+### 🎨 **Brand Name Standardization**
+
+**Complete rebrand from "Content Cascade AI" to "TrendPulse" across entire codebase**
+
+**Changes Made**:
+- ✅ **Profile Tab**: Renamed "Profile Information" to "Profile" for simplicity
+- ✅ **Social Connections**: Added "Coming Soon" badges for non-functional platforms (TikTok, Instagram, Facebook)
+- ✅ **API Keys Tab**: Evaluated and kept (actively used for AI provider configuration)
+- ✅ **Pricing Page**: Updated brand name from "Content Cascade AI" to "TrendPulse"
+- ✅ **Brand Consistency**: Replaced all "Content Cascade AI" references with "TrendPulse" in:
+  - App pages (auth, portal, pricing, etc.)
+  - Components (FAQ, modals, sections, etc.)
+  - Settings and connection components
+- ✅ **User-Facing Text**: Updated "CCAI" references to "TrendPulse" in OAuth and other user interfaces
+
+**Files Modified**: 20+ files across app/, components/, and lib/ directories
+
+**Impact**:
+- ✅ Consistent brand identity throughout the application
+- ✅ Clear indication of non-functional social platforms
+- ✅ Professional user experience with accurate feature status
+- ✅ Ready for TrendPulse launch with proper branding
+
+---
+
 ## [2.4.0] - 2025-11-15 - Code Quality & Security Hardening
 ### 🛡️ Security Enhancements
 - **API Rate Limiting**: Implemented request-based rate limiting on critical API endpoints (`/api/generate`, `/api/social/post`) using `@upstash/ratelimit` with Vercel KV to prevent abuse and ensure service stability.

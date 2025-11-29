@@ -1283,8 +1283,8 @@ export default function NewCampaignPage() {
         }
       `}</style>
       
-    <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-4 md:p-8">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Card-based navigation - single focused card at a time */}
         <AnimatePresence mode="wait" custom={cardDirection}>
           
@@ -1822,11 +1822,14 @@ export default function NewCampaignPage() {
                     AI Optimize (A)
                   </motion.button>
 
-                  <div className="flex items-center gap-3 px-4 py-2 bg-tron-dark/70 border border-tron-cyan/30 rounded-xl">
-                    <Flame className={`w-5 h-5 ${predictedViralScore >= 70 ? 'text-green-400' : predictedViralScore >= 50 ? 'text-yellow-400' : 'text-gray-400'}`} />
+                  <div className="flex items-center gap-3 bg-[#2b2b2b] border border-gray-700/50 rounded-lg px-4 py-2">
+                    <Flame className={`w-5 h-5 ${
+                      predictedViralScore > 80 ? "text-green-400" :
+                      predictedViralScore > 60 ? "text-yellow-400" : "text-gray-400"
+                    }`} />
                     <div>
-                      <div className="text-xs text-tron-text-muted">Predicted Viral Score</div>
-                      <div className="text-lg font-bold text-tron-text">{predictedViralScore}/100</div>
+                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Predicted Viral Score</div>
+                      <div className="text-xl font-bold text-white font-mono">{predictedViralScore}%</div>
                     </div>
                   </div>
 
@@ -1842,11 +1845,11 @@ export default function NewCampaignPage() {
                 {/* Platform Presets */}
                 <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
                   <div className="text-sm text-tron-text-muted mb-3 font-semibold">Quick Presets</div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       type="button"
                       onClick={() => applyPlatformPreset("twitter")}
-                      className="px-4 py-2 bg-[#1DA1F2]/20 border border-[#1DA1F2]/30 rounded-lg text-sm text-[#1DA1F2] hover:bg-[#1DA1F2]/30 transition-all flex items-center gap-2"
+                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
                     >
                       <Twitter className="w-4 h-4" />
                       Twitter Best Practices
@@ -1854,7 +1857,7 @@ export default function NewCampaignPage() {
                     <button
                       type="button"
                       onClick={() => applyPlatformPreset("tiktok")}
-                      className="px-4 py-2 bg-black/20 border border-gray-700 rounded-lg text-sm text-white hover:bg-black/40 transition-all flex items-center gap-2"
+                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
                     >
                       <Music className="w-4 h-4" />
                       TikTok Viral
@@ -1862,7 +1865,7 @@ export default function NewCampaignPage() {
                     <button
                       type="button"
                       onClick={() => applyPlatformPreset("linkedin")}
-                      className="px-4 py-2 bg-[#0A66C2]/20 border border-[#0A66C2]/30 rounded-lg text-sm text-[#0A66C2] hover:bg-[#0A66C2]/30 transition-all flex items-center gap-2"
+                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
                     >
                       <Linkedin className="w-4 h-4" />
                       LinkedIn Authority
@@ -1910,7 +1913,7 @@ export default function NewCampaignPage() {
                       <label className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
                         Tone <span className="text-xs text-tron-text-muted">(Press 1-3)</span>
                       </label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {['professional', 'casual', 'friendly'].map((t) => (
                           <div key={t} className="group relative">
                             <button
@@ -1965,7 +1968,7 @@ export default function NewCampaignPage() {
                     {/* Content Focus with Tooltips */}
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['informative', 'discussion', 'opinion', 'news', 'tips', 'story', 'walkthrough'].map((f) => (
                           <div key={f} className="group relative">
                             <button
@@ -1996,7 +1999,7 @@ export default function NewCampaignPage() {
                       <label className="block text-tron-text font-semibold mb-2 text-sm">
                         Target Audience <span className="text-xs text-tron-text-muted">(Select up to 3)</span>
                       </label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists'].map((a) => (
                           <div key={a} className="group relative">
                             <button
@@ -2031,7 +2034,7 @@ export default function NewCampaignPage() {
                     {/* Call to Action with Tooltips (NO "none") */}
                     <div>
                       <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['engage', 'share', 'comment', 'follow', 'learn'].map((c) => (
                           <div key={c} className="group relative">
                             <button
@@ -2062,7 +2065,7 @@ export default function NewCampaignPage() {
                     <TrendingUp className="w-4 h-4 text-tron-cyan" />
                     <div className="text-sm text-tron-text font-semibold">Trending This Week</div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {trendingCombinations.map((combo) => (
                       <button
                         type="button"

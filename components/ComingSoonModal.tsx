@@ -101,7 +101,7 @@ export default function ComingSoonModal({
                     {/* Big Picture Vision */}
                     <div className="space-y-4">
                       <h3 className="text-xl font-bold text-tron-cyan">
-                        The Big Picture: Content Cascade AI
+                        The Big Picture: TrendPulse
                       </h3>
                       <p className="text-tron-text-muted leading-relaxed">
                         TrendPulse is just the beginning. We're building a

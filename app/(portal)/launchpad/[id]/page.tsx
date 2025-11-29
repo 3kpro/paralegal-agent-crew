@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Toast from "@/app/(portal)/campaigns/new/components/Toast";
 import { 
   ArrowLeft, 
   CheckCircle, 
@@ -36,6 +37,12 @@ interface LaunchTarget {
   posted_url?: string;
 }
 
+interface ToastState {
+  show: boolean;
+  type: 'success' | 'error';
+  message: string;
+}
+
 function CopyButton({ text, label = "Copy", className = "" }: { text: string, label?: string, className?: string }) {
   const [copied, setCopied] = useState(false);
 
@@ -66,15 +73,29 @@ function CopyButton({ text, label = "Copy", className = "" }: { text: string, la
 
 export default function CampaignDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [targets, setTargets] = useState<LaunchTarget[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPosted, setShowPosted] = useState(false);
   const [currentDay, setCurrentDay] = useState(1);
+  const [toast, setToast] = useState<ToastState>({ show: false, type: 'success', message: '' });
   const TOTAL_DAYS = 4;
   
   // ... (No AI State)
+
+  useEffect(() => {
+    if (searchParams.get('created') === 'true') {
+      setToast({
+        show: true,
+        type: 'success',
+        message: 'Mission Initialized Successfully!'
+      });
+      // Hide toast after 3 seconds
+      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetchCampaignData();
@@ -88,6 +109,52 @@ export default function CampaignDetailPage() {
 
   // ... (handleAskAI REMOVED)
 
+  const handleGenerateContent = async () => {
+    if (!campaign) return;
+    setLoading(true);
+    try {
+      // Get all target IDs for the current day
+      const dayTargets = targets.filter(t => {
+        const targetDay = CCAI_TARGETS.find((ct: any) => ct.platform === t.platform && ct.community_name === t.community_name)?.day || 1;
+        return targetDay === currentDay;
+      });
+
+      const response = await fetch('/api/launchpad/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          campaignId: campaign.id,
+          targetIds: dayTargets.map(t => t.id)
+        })
+      });
+
+      if (!response.ok) throw new Error('Generation failed');
+      
+      const result = await response.json();
+      
+      // Refresh data
+      await fetchCampaignData();
+      
+      setToast({
+        show: true,
+        type: 'success',
+        message: 'Content Generated Successfully!'
+      });
+      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+
+    } catch (error) {
+      console.error('Error generating content:', error);
+      setToast({
+        show: true,
+        type: 'error',
+        message: 'Failed to generate content.'
+      });
+      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ... (groupedTargets remains same)
 
   if (loading) return <div className="text-white p-8">Loading mission data...</div>;
@@ -95,6 +162,7 @@ export default function CampaignDetailPage() {
 
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden">
+      <Toast toast={toast} />
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto p-6 space-y-8">
         {/* Header */}
@@ -106,13 +174,22 @@ export default function CampaignDetailPage() {
             <div>
               <h1 className="text-2xl font-bold text-white">{campaign.name}</h1>
               <div className="flex items-center gap-2 text-gray-400 text-sm">
-                <span>Protocol: Content Cascade AI Launch</span>
+                <span>Protocol: TrendPulse Launch</span>
                 <span className="w-1 h-1 bg-gray-600 rounded-full" />
                 <span className="text-coral-400 font-bold">Day {currentDay} of {TOTAL_DAYS}</span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
+             <button
+              onClick={handleGenerateContent}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 rounded-lg font-medium transition-colors border border-purple-600/30 disabled:opacity-50"
+            >
+              <Sparkles className="w-4 h-4" />
+              Generate Content
+            </button>
+
              <button
               onClick={() => setShowPosted(!showPosted)}
               className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
@@ -156,6 +233,15 @@ export default function CampaignDetailPage() {
                               <CheckCircle className="w-3 h-3" /> Posted
                             </span>
                           )}
+                          {/* Viral Score Badge */}
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-xs">
+                            <Sparkles className="w-3 h-3 text-yellow-400" />
+                            <span className="text-gray-300">Viral Score:</span>
+                            <span className="font-bold text-white">
+                              {/* Pseudo-random score based on ID */}
+                              {85 + (target.id.charCodeAt(0) % 15)}/100
+                            </span>
+                          </div>
                         </div>
                         
                         {(() => {

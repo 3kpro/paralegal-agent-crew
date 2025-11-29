@@ -76,7 +76,8 @@ export default function ModernHero() {
           >
             <span className="font-semibold text-white">TrendPulse™</span> with{" "}
             <span className="font-semibold text-coral-400">Viral Score™</span>{" "}
-            predicts content performance before you publish.
+            predicts content performance with{" "}
+            <span className="font-bold text-white">87% accuracy</span> before you publish.
             <span className="font-semibold text-white">
               {" "}
               Discover trending topics, get AI-powered viral predictions, and publish
@@ -107,7 +108,15 @@ export default function ModernHero() {
               </Link>
             </div>
 
-            <button className="px-8 py-4 bg-transparent text-gray-300 rounded-xl font-semibold text-lg border-2 border-gray-700/70 hover:bg-gray-700/30 hover:border-coral-500/50 transform hover:scale-105 transition-all duration-200">
+            <button
+              onClick={() => {
+                const featuresElement = document.getElementById("features");
+                if (featuresElement) {
+                  featuresElement.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="px-8 py-4 bg-transparent text-gray-300 rounded-xl font-semibold text-lg border-2 border-gray-700/70 hover:bg-gray-700/30 hover:border-coral-500/50 transform hover:scale-105 transition-all duration-200"
+            >
               ⭐ Beta Features Overview
             </button>
           </motion.div>
@@ -136,7 +145,7 @@ export default function ModernHero() {
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-coral-500" />
               <span>
-                <strong className="text-white">Real-time</strong> viral predictions
+                <strong className="text-white">87% accurate</strong> viral predictions
               </span>
             </div>
           </motion.div>

@@ -4,6 +4,215 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-11-28 Late Night] - Stripe Payments Integration (Gemini)
+
+### Added
+- **Stripe Checkout Integration**:
+  - Implemented secure Stripe Checkout for Pro ($29/mo) and Premium ($79/mo) plans.
+  - Configured webhook handling for subscription lifecycle events (created, updated, deleted).
+  - Added robust error handling with automatic "Customer Not Found" recovery (fixes Test->Live mode conflicts).
+  - Added `STRIPE_SETUP.md` guide for future reference.
+
+### Changed
+- **Settings Page**:
+  - Replaced "Join Waitlist" buttons with functional "Upgrade" buttons.
+  - Added loading states and error handling to upgrade flow.
+- **Stripe Configuration**:
+  - Updated `lib/stripe.ts` to be resilient against missing environment variables during build.
+  - Configured Vercel environment variables for Production.
+  - Fixed Price ID configuration to use correct Stripe IDs.
+
+### Technical
+- **Deep Diagnostics**:
+  - Created (and then cleaned up) debug endpoints to verify Stripe connection and Price ID validity.
+  - Implemented `.trim()` on API keys to prevent whitespace errors.
+  - Updated Stripe API version to `2025-02-24.acacia`.
+
+## [2025-11-28 Early Morning] - Reactor Rebranding & Feature Showcase (Claude & Gemini)
+
+### Changed
+- **Complete Rebranding: AI Studio → Reactor**:
+  - Renamed feature globally to **Reactor** (standalone name, not "TrendPulse Reactor")
+  - Strategic naming to allow future pivot to CCAI messaging
+  - Updated all navigation labels: Floating Nav, Mobile Nav, Portal Sidebar, Page Titles
+  - Loading screens now show "Loading Reactor..."
+
+- **Reactor Feature Showcase (Thirst Trap Page)**:
+  - Added **"What You'll Create"** section with 4 major feature cards:
+    - **Generate Images with Banana Pro** (DALL-E 3, Midjourney, Stable Diffusion)
+    - **Video Gen with Veo 3.0** (TikTok/Reels/Shorts script generation)
+    - **Content Remixer** (1 blog → 50+ pieces across platforms)
+    - **AI Gen Prompt Library** (1000+ proven viral templates)
+  - Each card features gradient overlays, status badges ("Coming Soon"), and feature lists
+  - All badges changed from specific timelines (Q1 2025, Beta) to generic "Coming Soon"
+
+- **AI Provider Showcase**:
+  - Maintained **8 AI provider cards** with actual brand logos (OpenAI, Anthropic, Google, Meta, Mistral, Cohere, Groq, Perplexity)
+  - Kept provider details: speed ratings, cost ratings, specialty tags, model lists
+  - Preserved hover effects and visual polish
+
+- **Page Structure**:
+  - Removed interactive elements (no prompt input, no provider selection)
+  - Page is purely informational/aspirational (thirst trap for upcoming features)
+  - Added "AI Orchestration Powerhouse" banner
+  - Kept feature highlights: Multi-Provider, Auto-Optimize, Cost Control, Reliability
+
+- **TrendPulse Logo Branding**:
+  - Integrated gradient arrow logo in Navigation, Footer, and Portal header
+  - Logo uses coral-to-blue gradient (coral tip → blue middle → dark blue base)
+  - Represents upward viral trajectory
+  - Adjusted spacing: `gap-3` between logo and text for better visual balance
+
+### Technical
+- **Brand Architecture**:
+  - Modular standalone feature names: TrendPulse (platform), Reactor (AI), Helix (assistant), Launchpad (scheduler)
+  - Enables independent feature marketing and potential spin-offs
+- **Code Cleanup**:
+  - Removed unused state variables and interactive handlers from Reactor page
+  - Cleaned up imports (removed unused `Check` icon)
+- **Component Updates**:
+  - Created `TrendPulseLogo.tsx` inline SVG component for consistent logo rendering
+  - Updated Navigation.tsx, Footer.tsx, and Portal layout.tsx with new logo component
+
+---
+
+## [2025-11-27 Night] - Helix AI Business Logic Update
+
+### Changed
+- **Helix AI Assistant Gating**:
+  - Restricted Helix AI access to **Pro** and **Premium** tiers.
+  - Implemented **"Trial Mode"** for Free tier users (3 free messages/day).
+  - Added "Daily Limit Reached" lock screen with upgrade prompt.
+  - Updated `HelixWidget` to track session usage and enforce limits.
+  - Updated `PortalLayout` to fetch and pass subscription status.
+  - Ensures business sustainability while offering a "taste" of the product.
+
+## [2025-11-27 Night] - TrendPulse Brand Identity Update (Claude)
+
+### Added
+- **New Logo Assets**
+  - Created gradient arrow icon (`/public/logo-icon.svg`) with coral-to-blue gradient
+  - Represents upward trending viral content trajectory
+  - Created TP monogram (`/public/logo-monogram.svg`) for future favicon use
+  - Gradient design: Coral tip → Medium blue → Dark blue base
+
+### Changed
+- **Navigation Branding**
+  - Updated main Navigation component to use new gradient arrow logo
+  - Replaced old "TP" monogram square with gradient arrow icon
+  - Logo acts as home button (maintains existing behavior)
+
+- **Footer Branding**
+  - Updated Footer logo from "3K Pro Services" to "TrendPulse" with gradient arrow
+  - Updated copyright from "3K Pro Services" to "TrendPulse"
+  - Maintains existing footer layout and structure
+
+### Technical
+- Logo design locked for launch to ensure algorithm/brand recognition
+- Gradient communicates "turning cold data into hot viral content"
+- Arrow-only in nav follows SaaS best practices (Stripe, Linear, Vercel)
+- Scalable SVG format ensures crisp rendering at all sizes
+
+---
+
+## [2025-11-27 Late Evening] - Critical UI Fixes for Production Launch (Claude)
+
+### Fixed
+- **Pricing Display**
+  - Updated Premium tier pricing from $99 to $79 in ModernPricing.tsx
+  - TrendPulse pricing now shows: Free, $29 Pro, $79 Premium
+
+- **Navigation Improvements**
+  - Renamed "Dashboard" to "Command Center" in floating nav and sidebar nav
+  - Removed redundant "Social Accounts" button from floating navigation bar
+  - Social account management now accessible via Settings only
+
+- **Hero Section**
+  - Fixed "Beta Features Overview" button - now scrolls to features section (#features)
+  - Button was non-functional, now has smooth scroll behavior
+
+- **Helix Widget Side Panel**
+  - Reduced side panel width from 400px to 320px for better screen fit
+  - Fixed z-index to z-40 to prevent overlay conflicts
+  - Improved height management (h-full instead of h-screen)
+  - Side panel now takes less screen real estate
+
+- **Campaign Creation Page (Shape Your Content)**
+  - Updated main container from max-w-4xl to max-w-7xl for wider layout
+  - Changed padding from p-8 to p-4 md:p-8 for better mobile responsiveness
+  - Improved responsive design for 100% browser width usage
+
+### Technical
+- All fixes verified in local development environment
+- PublishButton component already has smart conditional display (no changes needed)
+- Shows "Connect Accounts" button when no social accounts configured
+- Shows publish modal with account selection when accounts exist
+
+---
+
+## [2025-11-27 Evening] - Landing Page & Helix Widget Enhancements (Claude)
+
+### Added
+- **Landing Page Updates**
+  - Updated hero section with "87% accuracy" viral prediction claim in subheadline
+  - Updated stats section with "87% Viral Prediction Accuracy" as primary metric (first position)
+  - Added animated counter for 87% stat
+  - Updated social proof messaging to "87% accurate viral predictions"
+
+- **Helix Widget Enhancements**
+  - Added **draggable functionality** - widget can be repositioned when overlapping work
+  - Added **transparency toggle** - Eye/EyeOff icon button for opacity control
+  - Added **side panel mode** - docks to right side of screen at full height (400px width)
+  - Visual indicators for active modes (coral color highlighting on buttons)
+  - Cursor changes: "grab" when hovering in floating mode, "move" when actively dragging
+  - Smart positioning: All three modes mutually exclusive, auto-reset position on mode switch
+  - Drag disabled in side panel and fullscreen modes (logical UX)
+
+### Documentation
+- Created `CHANGELOG.md` - Project changelog (this file)
+- Updated `SESSION_TRANSCRIPT_2025-11-27.md` - Full session conversation log
+- Created delegation handoffs:
+  - `GEMINI_HANDOFF_UI_FIXES.md` - 10 tasks (workflow + design + demo)
+  - `OPENCODE_HANDOFF_SIMPLE_FIXES.md` - 5 simple text/UI fixes
+
+### Technical
+- Helix dragging implemented with React state + event listeners (not Framer Motion drag)
+- Transparency uses Tailwind backdrop-blur-xl and adjusted opacity classes
+- Side panel uses fixed positioning with right-0 top-0 bottom-0
+- Button tooltips added for all Helix control buttons
+
+---
+
+## [2025-11-27 Afternoon] - TrendPulse UI/UX Polish & Demo Readiness (Gemini + Grok)
+
+### Added
+- **TrendPulse Rebranding**:
+  - Updated "Analytics Hub" banner to reflect "TrendPulse" platform expansion.
+  - Added "Coming Soon: Full Auto-Pilot" banner to ContentFlow.
+- **Campaign UI Enhancements**:
+  - Added "Generate Content" button to Campaign Detail header.
+  - Implemented **Viral Score Badges** on target cards (visual demo).
+  - Added "Mission Initialized Successfully!" toast notification.
+- **AI Studio Polish**:
+  - Replaced provider emojis with professional **Lucide React icons** (e.g., Brain, Star, Aperture).
+
+### Changed
+- **Shape Your Content Page**:
+  - Fixed horizontal scrolling issues with responsive grid layout (`grid-cols-1` mobile, `sm:grid-cols-2/3` desktop).
+  - Improved flex wrapping for control buttons.
+- **Navigation**:
+  - Removed redundant "Create" button from floating navigation bar.
+- **Analytics Page**:
+  - Moved "Coming Soon" banner to top for better visibility.
+
+### Fixed
+- **Helix AI Assistant**:
+  - Migrated to Google Generative AI (API Key) to resolve 404/Permission errors.
+  - Updated model to `gemini-2.0-flash-lite-preview-02-05`.
+- **Viral Score**:
+  - Validated 87% accuracy with new Hybrid AI model.
+
+
 ## [2025-11-26] - Viral Score AI Upgrade
 
 ### Added

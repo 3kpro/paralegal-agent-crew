@@ -50,10 +50,10 @@ export function FloatingNav() {
           }
           label="Menu"
         />
-        <MenuItem 
+        <MenuItem
           icon={<LayoutDashboard size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/dashboard')}
-          label="Dashboard"
+          label="Command Center"
         />
         <MenuItem 
           icon={<Rocket size={22} strokeWidth={1.5} className="text-coral-400" />}
@@ -65,27 +65,18 @@ export function FloatingNav() {
           onClick={() => router.push('/campaigns')}
           label="Campaigns"
         />
-        <MenuItem 
-          icon={<Palette size={22} strokeWidth={1.5} className="text-coral-400" />}
-          onClick={() => router.push('/campaigns/new')}
-          label="Create"
-        />
+
         <MenuItem 
           icon={<FileText size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/contentflow')}
           label="ContentFlow"
         />
-        <MenuItem 
+        <MenuItem
           icon={<Sparkles size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/ai-studio')}
-          label="AI Studio"
+          label="Reactor"
         />
-        <MenuItem 
-          icon={<Users size={22} strokeWidth={1.5} className="text-coral-400" />}
-          onClick={() => router.push('/social-accounts')}
-          label="Social Accounts"
-        />
-        <MenuItem 
+        <MenuItem
           icon={<BarChart3 size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/analytics')}
           label="Analytics"

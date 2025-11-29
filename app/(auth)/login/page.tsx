@@ -83,7 +83,7 @@ export default function LoginPage() {
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              Content Cascade AI
+              TrendPulse
             </span>
           </Link>
           <p className="text-gray-300 mt-2">

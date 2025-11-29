@@ -1,6 +1,6 @@
 "use client";
 
-// Force rebuild - Content Cascade AI Landing Page
+// Force rebuild - TrendPulse Landing Page
 import {
   ModernHero,
   ModernFeatures,

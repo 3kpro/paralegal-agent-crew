@@ -1,0 +1,31 @@
+export default function TrendPulseLogo({ className = "w-8 h-8" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="trendGradient" x1="16" y1="32" x2="16" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#1E3A5F"/>
+          <stop offset="50%" stopColor="#4A90E2"/>
+          <stop offset="100%" stopColor="#FF6B6B"/>
+        </linearGradient>
+      </defs>
+      {/* Upward trending arrow */}
+      <path
+        d="M4 24L16 6L28 14L28 18L16 11L4 28L4 24Z"
+        fill="url(#trendGradient)"
+        stroke="url(#trendGradient)"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M24 6H30V12L28 14V8H24V6Z"
+        fill="url(#trendGradient)"
+        stroke="url(#trendGradient)"
+        strokeWidth="1.5"
+      />
+    </svg>
+  );
+}

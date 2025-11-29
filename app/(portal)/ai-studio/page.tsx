@@ -1,33 +1,39 @@
 "use client";
-
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
   Brain,
-  Wand2,
-  Settings,
-  Play,
   Zap,
   Sparkles,
-  Rocket,
   Target,
   TrendingUp,
   Shield,
   Clock,
   DollarSign,
-  Loader2,
   Star,
-  Check,
-  ArrowRight,
+  Cpu,
+  Wind,
+  Search,
+  Layers,
+  Aperture,
+  Image as ImageIcon,
+  Video,
+  Wand2,
+  Palette,
+  MessageSquare,
+  Rocket,
+  BarChart3 as BarChart
 } from "lucide-react";
 
 interface AIProvider {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon?: any;
+  image?: string;
   models: string[];
   speed: "ultra-fast" | "fast" | "balanced" | "quality";
   costRating: 1 | 2 | 3 | 4 | 5;
@@ -40,7 +46,8 @@ const providers: AIProvider[] = [
     id: "openai",
     name: "OpenAI",
     description: "Industry-leading models for creative and analytical tasks",
-    icon: "⚡",
+    icon: Aperture,
+    image: "/brands/openai.png",
     models: ["GPT-4 Turbo", "GPT-4", "GPT-3.5 Turbo"],
     speed: "balanced",
     costRating: 4,
@@ -51,7 +58,8 @@ const providers: AIProvider[] = [
     id: "anthropic",
     name: "Anthropic Claude",
     description: "Advanced reasoning with extended context windows",
-    icon: "🧠",
+    icon: Brain,
+    image: "/brands/anthropic.png",
     models: ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku"],
     speed: "balanced",
     costRating: 4,
@@ -62,7 +70,8 @@ const providers: AIProvider[] = [
     id: "google",
     name: "Google Gemini",
     description: "Multimodal AI with exceptional reasoning capabilities",
-    icon: "✨",
+    icon: Star,
+    image: "/brands/google.png",
     models: ["Gemini Pro", "Gemini Ultra", "Gemini Flash"],
     speed: "fast",
     costRating: 3,
@@ -73,7 +82,8 @@ const providers: AIProvider[] = [
     id: "meta",
     name: "Meta Llama",
     description: "Open-source powerhouse for custom deployments",
-    icon: "🦙",
+    icon: Layers,
+    image: "/brands/meta.png",
     models: ["Llama 3 70B", "Llama 3 8B", "Llama 2"],
     speed: "fast",
     costRating: 2,
@@ -84,7 +94,8 @@ const providers: AIProvider[] = [
     id: "mistral",
     name: "Mistral AI",
     description: "European excellence in open and proprietary models",
-    icon: "🌊",
+    icon: Wind,
+    image: "/brands/mistral.png",
     models: ["Mistral Large", "Mistral Medium", "Mixtral 8x7B"],
     speed: "fast",
     costRating: 2,
@@ -95,7 +106,8 @@ const providers: AIProvider[] = [
     id: "cohere",
     name: "Cohere",
     description: "Enterprise-grade NLP for business applications",
-    icon: "🎯",
+    icon: Target,
+    image: "/brands/cohere.png",
     models: ["Command R+", "Command R", "Command"],
     speed: "balanced",
     costRating: 3,
@@ -106,7 +118,8 @@ const providers: AIProvider[] = [
     id: "groq",
     name: "Groq",
     description: "Lightning-fast inference with LPU technology",
-    icon: "⚡",
+    icon: Cpu,
+    image: "/brands/groq.png",
     models: ["Llama 3 on Groq", "Mixtral on Groq"],
     speed: "ultra-fast",
     costRating: 2,
@@ -117,7 +130,8 @@ const providers: AIProvider[] = [
     id: "perplexity",
     name: "Perplexity",
     description: "Search-augmented generation with citations",
-    icon: "🔍",
+    icon: Search,
+    image: "/brands/perplexity.png",
     models: ["Perplexity Online", "Perplexity Chat"],
     speed: "balanced",
     costRating: 3,
@@ -126,13 +140,45 @@ const providers: AIProvider[] = [
   },
 ];
 
+const AI_CAPABILITIES = [
+  {
+    title: "Generate Images with Banana Pro",
+    description: "Create stunning visuals with DALL-E 3, Midjourney, and Stable Diffusion - all in one place",
+    icon: ImageIcon,
+    status: "Coming Soon",
+    color: "from-purple-500 to-pink-500",
+    features: ["Text-to-Image", "Image Editing", "Style Transfer", "Upscaling"]
+  },
+  {
+    title: "Video Gen with Veo 3.0",
+    description: "Generate viral TikTok, Reels, and YouTube Shorts scripts with hooks that stop the scroll",
+    icon: Video,
+    status: "Coming Soon",
+    color: "from-blue-500 to-cyan-500",
+    features: ["Hook Generator", "Script Templates", "Trending Sounds", "CTA Optimizer"]
+  },
+  {
+    title: "Content Remixer",
+    description: "Transform one blog post into 50+ pieces: tweets, reels, carousels, and more",
+    icon: Wand2,
+    status: "Coming Soon",
+    color: "from-orange-500 to-red-500",
+    features: ["Multi-Platform", "Auto-Resize", "Voice Matching", "Hashtag AI"]
+  },
+  {
+    title: "AI Gen Prompt Library",
+    description: "Access 1000+ proven prompts for every platform and content type",
+    icon: MessageSquare,
+    status: "Coming Soon",
+    color: "from-green-500 to-emerald-500",
+    features: ["Viral Templates", "Industry-Specific", "A/B Tested", "Custom Builder"]
+  }
+];
+
 export default function AIStudioPage() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
-  const [selectedProviders, setSelectedProviders] = useState<string[]>([]);
-  const [currentPrompt, setCurrentPrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -155,20 +201,12 @@ export default function AIStudioPage() {
     }
   }
 
-  function toggleProvider(providerId: string) {
-    setSelectedProviders((prev) =>
-      prev.includes(providerId)
-        ? prev.filter((id) => id !== providerId)
-        : [...prev, providerId]
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-tron-dark flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-tron-text-muted">Loading AI Studio...</p>
+          <p className="text-tron-text-muted">Loading Reactor...</p>
         </div>
       </div>
     );
@@ -183,47 +221,111 @@ export default function AIStudioPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          {/* Early Access Banner */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-5xl font-bold text-white flex items-center gap-3 mb-3">
+                <Brain className="w-12 h-12 text-coral-400" />
+                Reactor
+                <span className="text-sm px-3 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300 font-normal">
+                  Coming Soon
+                </span>
+              </h1>
+              <p className="text-gray-300 text-xl">
+                50+ AI models. One powerful interface. Unlimited creativity.
+              </p>
+            </div>
+
+            <div className="hidden md:flex items-center gap-6 bg-[#343a40] border border-gray-700/50 rounded-xl p-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-to-r from-coral-400 to-purple-400 bg-clip-text text-transparent">50+</div>
+                <div className="text-xs text-gray-400">AI Models</div>
+              </div>
+              <div className="w-px h-12 bg-gray-700"></div>
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">8</div>
+                <div className="text-xs text-gray-400">Providers</div>
+              </div>
+              <div className="w-px h-12 bg-gray-700"></div>
+              <div className="text-center">
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">∞</div>
+                <div className="text-xs text-gray-400">Possibilities</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Coming Soon Banner */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 via-tron-cyan/10 to-tron-magenta/10 border-2 border-purple-500/30 rounded-xl"
+            className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 via-coral-500/10 to-blue-500/10 border-2 border-coral-500/30 rounded-xl"
           >
             <div className="flex items-center gap-3">
-              <span className="text-3xl">🚀</span>
+              <Rocket className="w-8 h-8 text-coral-400" />
               <div>
-                <h3 className="text-purple-300 font-bold text-lg">Coming Soon: AI Orchestration Powerhouse</h3>
-                <p className="text-purple-200/80 text-sm">
-                  Access 50+ AI models through one powerful interface. Mix and match providers for optimal results, speed, and cost.
+                <h3 className="text-coral-300 font-bold text-lg">AI Orchestration Powerhouse</h3>
+                <p className="text-gray-300 text-sm">
+                  Mix and match AI providers for optimal results, speed, and cost. Full rollout Q1 2025.
                 </p>
               </div>
             </div>
           </motion.div>
+        </motion.div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-tron-text flex items-center gap-3 mb-3">
-                <Brain className="w-10 h-10 text-tron-cyan" />
-                AI Studio
-                <span className="text-base px-3 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300 font-normal">
-                  Beta
-                </span>
-              </h1>
-              <p className="text-tron-text-muted text-lg">
-                Orchestrate multiple AI providers for unmatched performance
-              </p>
-            </div>
+        {/* Feature Showcase - THE HOOK */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-12"
+        >
+          <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+            <Palette className="w-8 h-8 text-coral-400" />
+            What You'll Create
+          </h2>
 
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <div className="text-2xl font-bold text-tron-cyan">{providers.length}</div>
-                <div className="text-xs text-tron-text-muted">AI Providers</div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-tron-cyan">50+</div>
-                <div className="text-xs text-tron-text-muted">Models</div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {AI_CAPABILITIES.map((capability, idx) => (
+              <motion.div
+                key={capability.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+                className="relative group bg-[#2b2b2b] border-2 border-gray-700/50 hover:border-coral-500/50 rounded-xl p-6 transition-all duration-300 overflow-hidden"
+              >
+                {/* Gradient Overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-3 rounded-lg bg-gradient-to-br ${capability.color}`}>
+                        <capability.icon className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-white text-lg">{capability.title}</h3>
+                        <span className="text-xs px-2 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300">
+                          {capability.status}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-300 text-sm mb-4">
+                    {capability.description}
+                  </p>
+
+                  {/* Feature List */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {capability.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-gray-400">
+                        <Sparkles className="w-3 h-3 text-coral-400" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
 
@@ -231,7 +333,7 @@ export default function AIStudioPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.5 }}
           className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
         >
           {[
@@ -244,7 +346,7 @@ export default function AIStudioPage() {
               key={feature.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
+              transition={{ delay: 0.6 + index * 0.1 }}
               className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4"
             >
               <feature.icon className="w-6 h-6 text-tron-cyan mb-2" />
@@ -258,12 +360,12 @@ export default function AIStudioPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.9 }}
           className="mb-8"
         >
           <h2 className="text-2xl font-bold text-tron-text mb-4 flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-tron-cyan" />
-            Available AI Providers
+            Integrated AI Providers
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -272,23 +374,24 @@ export default function AIStudioPage() {
                 key={provider.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + index * 0.05 }}
-                onClick={() => toggleProvider(provider.id)}
-                className={`relative group cursor-pointer bg-tron-grid border-2 rounded-xl p-5 transition-all duration-300 hover:scale-105 ${
-                  selectedProviders.includes(provider.id)
-                    ? "border-tron-cyan shadow-xl shadow-tron-cyan/20"
-                    : "border-tron-cyan/30 hover:border-tron-cyan/50"
-                }`}
+                transition={{ delay: 1.0 + index * 0.05 }}
+                className="relative group bg-tron-grid border-2 border-tron-cyan/30 hover:border-tron-cyan/50 rounded-xl p-5 transition-all duration-300 hover:scale-105"
               >
-                {/* Selection Indicator */}
-                {selectedProviders.includes(provider.id) && (
-                  <div className="absolute top-3 right-3 bg-tron-cyan text-tron-dark rounded-full p-1">
-                    <Check className="w-4 h-4" />
-                  </div>
-                )}
-
                 {/* Provider Icon */}
-                <div className="text-5xl mb-3">{provider.icon}</div>
+                <div className="mb-3 h-12 flex items-center">
+                  {provider.image ? (
+                    <div className="relative w-12 h-12">
+                      <Image
+                        src={provider.image}
+                        alt={provider.name}
+                        fill
+                        className="object-contain rounded-lg"
+                      />
+                    </div>
+                  ) : (
+                    <provider.icon className="w-12 h-12 text-tron-cyan" strokeWidth={1.5} />
+                  )}
+                </div>
 
                 {/* Provider Name */}
                 <h3 className="font-bold text-tron-text text-lg mb-2">
@@ -346,52 +449,12 @@ export default function AIStudioPage() {
           </div>
         </motion.div>
 
-        {/* Prompt Generator Preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="bg-tron-grid border border-tron-cyan/30 rounded-xl p-6"
-        >
-          <h2 className="text-xl font-bold text-tron-text mb-4 flex items-center gap-2">
-            <Wand2 className="w-6 h-6 text-tron-cyan" />
-            Prompt Input
-          </h2>
-
-          <textarea
-            value={currentPrompt}
-            onChange={(e) => setCurrentPrompt(e.target.value)}
-            placeholder="Enter your prompt here... Use templates or write custom prompts for content generation."
-            rows={6}
-            className="w-full p-4 bg-tron-dark border border-tron-cyan/30 rounded-lg text-tron-text placeholder:text-tron-text-muted focus:border-tron-cyan focus:outline-none resize-none mb-4"
-          />
-
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-tron-text-muted">
-              {selectedProviders.length > 0 ? (
-                <span className="text-tron-cyan">
-                  {selectedProviders.length} provider{selectedProviders.length > 1 ? "s" : ""} selected
-                </span>
-              ) : (
-                "Select providers above to get started"
-              )}
-            </div>
-            <button
-              disabled={true}
-              className="bg-gradient-to-r from-tron-cyan to-tron-magenta hover:opacity-90 text-white px-8 py-3 rounded-lg font-bold transition-all flex items-center gap-2 cursor-not-allowed opacity-60"
-            >
-              <Rocket className="w-5 h-5" />
-              Generate (Coming Soon)
-            </button>
-          </div>
-        </motion.div>
-
         {/* Coming Soon Features */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6"
+          transition={{ delay: 1.4 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           {[
             {
@@ -414,7 +477,7 @@ export default function AIStudioPage() {
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.0 + index * 0.1 }}
+              transition={{ delay: 1.5 + index * 0.1 }}
               className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
             >
               <feature.icon className="w-8 h-8 text-tron-cyan mb-3" />
@@ -427,6 +490,3 @@ export default function AIStudioPage() {
     </div>
   );
 }
-
-// Import BarChart separately to avoid the unused import issue
-import { BarChart3 as BarChart } from "lucide-react";

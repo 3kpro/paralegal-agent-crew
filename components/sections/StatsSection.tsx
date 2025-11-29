@@ -14,18 +14,18 @@ interface StatItem {
 
 const stats: StatItem[] = [
   {
+    value: "87%",
+    label: "Viral Prediction Accuracy",
+    icon: Star,
+    color: "text-coral-500",
+    animatedValue: 87,
+  },
+  {
     value: "6",
     label: "Platform Integrations",
     icon: Zap,
-    color: "text-coral-500",
-    animatedValue: 6,
-  },
-  {
-    value: "24/7",
-    label: "AI-Powered Trend Discovery",
-    icon: Star,
     color: "text-green-500",
-    animatedValue: 24,
+    animatedValue: 6,
   },
   {
     value: "100%",

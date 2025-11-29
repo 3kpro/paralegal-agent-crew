@@ -50,6 +50,7 @@ export default function ConnectionCard({
 
   const supabase = createClient()
   const isConnected = !!connection
+  const isComingSoon = ['instagram', 'tiktok', 'facebook'].includes(provider.provider_key)
 
   async function handleTest() {
     if (!connection) return
@@ -205,16 +206,22 @@ export default function ConnectionCard({
         </div>
       )}
 
-      {/* Actions */}
-      <div className="flex items-center gap-2">
-        {!isConnected ? (
-          <button
-            onClick={onConnect}
-            className="flex-1 px-4 py-2 rounded-lg bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan font-medium transition-colors"
-          >
-            Connect
-          </button>
-        ) : (
+       {/* Actions */}
+       <div className="flex items-center gap-2">
+         {!isConnected ? (
+           isComingSoon ? (
+             <div className="flex-1 px-4 py-2 rounded-lg bg-gray-500/20 text-gray-400 font-medium text-center">
+               Coming Soon
+             </div>
+           ) : (
+             <button
+               onClick={onConnect}
+               className="flex-1 px-4 py-2 rounded-lg bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan font-medium transition-colors"
+             >
+               Connect
+             </button>
+           )
+         ) : (
           <>
             <button
               onClick={handleTest}

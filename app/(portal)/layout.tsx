@@ -9,10 +9,12 @@ import { FloatingNav } from "@/components/ui/floating-nav";
 import SettingsModal from "@/components/SettingsModal";
 import { Settings, Sparkles, ChevronDown } from "lucide-react";
 import HelixWidget from "@/components/helix/HelixWidget";
+import TrendPulseLogo from "@/components/TrendPulseLogo";
 
 interface Profile {
   email?: string;
   full_name?: string;
+  subscription_tier?: string;
 }
 
 export default function PortalLayout({
@@ -142,7 +144,7 @@ export default function PortalLayout({
               className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
             >
               <span className="text-xl">🧠</span>
-              <span>AI Studio</span>
+              <span>Reactor</span>
             </Link>
             <Link
               href="/social-accounts"
@@ -190,9 +192,12 @@ export default function PortalLayout({
           {/* Top Bar */}
           <header className="bg-[#343a40] border-b border-gray-700/50 px-4 md:px-8 py-3 md:pl-32">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg md:text-xl font-semibold text-white">
-                Content Cascade AI
-              </h2>
+               <div className="flex items-center gap-3">
+                 <TrendPulseLogo className="w-7 h-7" />
+                 <h2 className="text-lg md:text-xl font-semibold text-white">
+                   TrendPulse
+                 </h2>
+               </div>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}
                 <button
@@ -438,7 +443,7 @@ export default function PortalLayout({
               className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
             >
               <span className="text-lg">🧠</span>
-              <span className="text-xs text-white mt-1">AI Studio</span>
+              <span className="text-xs text-white mt-1">Reactor</span>
             </Link>
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -451,7 +456,7 @@ export default function PortalLayout({
         </div>
         
         {/* Helix AI Global Widget */}
-        <HelixWidget />
+        <HelixWidget subscriptionTier={profile?.subscription_tier || 'free'} />
       </div>
     </ErrorBoundary>
   );

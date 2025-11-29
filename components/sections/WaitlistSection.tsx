@@ -42,7 +42,7 @@ export default function WaitlistSection() {
               🎉 You're on the list!
             </h2>
             <p className="text-xl text-gray-300">
-              We'll notify you when Content Cascade AI launches. Get ready to
+              We'll notify you when TrendPulse launches. Get ready to
               revolutionize your content workflow!
             </p>
           </motion.div>

@@ -281,7 +281,7 @@ export default function AddConnectionModal({
         <div className="p-4 rounded-lg bg-tron-cyan/10 border border-tron-cyan/20">
           <h4 className="font-semibold text-tron-text mb-2">OAuth Authentication</h4>
           <p className="text-sm text-tron-text-muted mb-4">
-            You'll be redirected to {provider.name} to authorize CCAI to post on your behalf.
+            You'll be redirected to {provider.name} to authorize TrendPulse to post on your behalf.
             After authorization, you'll be redirected back to complete the setup.
           </p>
           {capability?.oauth?.required_scopes && (

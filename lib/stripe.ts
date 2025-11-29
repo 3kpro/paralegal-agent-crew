@@ -1,16 +1,18 @@
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-10-28.acacia",
+// Initialize Stripe with a fallback to prevent build-time crashes
+// The API route will check for the key before using it
+export const stripe = new Stripe((process.env.STRIPE_SECRET_KEY || "sk_test_placeholder").trim(), {
+  apiVersion: "2025-02-24.acacia",
   typescript: true,
 });
 
 // Product price IDs from Stripe
 export const STRIPE_PRICES = {
-  PRO_MONTHLY: process.env.STRIPE_PRO_MONTHLY_PRICE_ID!,
-  PRO_YEARLY: process.env.STRIPE_PRO_YEARLY_PRICE_ID!,
-  PREMIUM_MONTHLY: process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID!,
-  PREMIUM_YEARLY: process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID!,
+  PRO_MONTHLY: (process.env.STRIPE_PRO_MONTHLY_PRICE_ID || "").trim(),
+  PRO_YEARLY: (process.env.STRIPE_PRO_YEARLY_PRICE_ID || "").trim(),
+  PREMIUM_MONTHLY: (process.env.STRIPE_PREMIUM_MONTHLY_PRICE_ID || "").trim(),
+  PREMIUM_YEARLY: (process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID || "").trim(),
 };
 
 // Tier limits configuration - TrendPulse Launch (Social platforms coming soon)

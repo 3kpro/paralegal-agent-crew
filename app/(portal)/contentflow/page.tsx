@@ -146,6 +146,23 @@ export default function ContentFlowPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
+          {/* Coming Soon Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-gradient-to-r from-coral-500/10 via-purple-500/10 to-coral-500/10 border-2 border-coral-500/30 rounded-xl"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">🚀</span>
+              <div>
+                <h3 className="text-coral-300 font-bold text-lg">Coming Soon: Full Auto-Pilot</h3>
+                <p className="text-coral-200/80 text-sm">
+                  We're building a fully autonomous content engine. Soon you'll be able to set it and forget it.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-3">

@@ -17,7 +17,7 @@ export default function TrendGenPage() {
                 <span className="text-white font-bold text-sm">3K</span>
               </div>
               <span className="text-xl font-bold text-white">
-                Content Cascade AI
+                TrendPulse
               </span>
             </button>
             <div className="flex items-center space-x-4">

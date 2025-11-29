@@ -75,7 +75,7 @@ function ResetPasswordForm() {
                 <span className="text-white font-bold text-xl">3K</span>
               </div>
               <span className="text-2xl font-bold text-gray-900">
-                Content Cascade AI
+                TrendPulse
               </span>
             </Link>
           </div>
@@ -122,7 +122,7 @@ function ResetPasswordForm() {
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">
-              Content Cascade AI
+              TrendPulse
             </span>
           </Link>
           <p className="text-gray-600 mt-2">Set your new password</p>

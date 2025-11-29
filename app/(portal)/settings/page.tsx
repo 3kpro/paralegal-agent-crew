@@ -364,13 +364,32 @@ export default function SettingsPage() {
     }
   }
 
-  function handleUpgrade(
+  async function handleUpgrade(
     tier: "pro" | "premium",
-    _billingCycle: "monthly" | "yearly" = "monthly",
+    billingCycle: "monthly" | "yearly" = "monthly",
   ) {
-    // Open Coming Soon modal instead of Stripe checkout
-    setSelectedTier(tier);
-    setShowComingSoonModal(true);
+    try {
+      setLoading(true);
+      setMessage("Initiating checkout...");
+      
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier, billingCycle }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setMessage("Error: " + (data.error || "Failed to start checkout"));
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setMessage("Error: " + error.message);
+      setLoading(false);
+    }
   }
 
   async function handleApiKeyUpdate(provider: string, value: string) {
@@ -492,9 +511,9 @@ export default function SettingsPage() {
         {/* Profile Tab */}
         {activeTab === "profile" && (
           <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-8 max-w-4xl">
-            <h2 className="text-xl font-bold text-tron-text mb-6">
-              Profile Information
-            </h2>
+             <h2 className="text-xl font-bold text-tron-text mb-6">
+               Profile
+             </h2>
             <form onSubmit={handleProfileUpdate} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -1265,7 +1284,7 @@ export default function SettingsPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="text-sm text-tron-text-muted mb-4 space-y-1">
+                   <div className="text-sm text-tron-text-muted mb-4 space-y-1">
                     <p>• ✅ Unlimited campaigns</p>
                     <p>• ✅ Up to 3 AI tools</p>
                     <p>• ✅ All social platforms</p>
@@ -1274,12 +1293,12 @@ export default function SettingsPage() {
                   </div>
                   <LoadingButton
                     onClick={() => handleUpgrade("pro", "monthly")}
-                    loading={false}
-                    loadingText=""
-                    disabled={false}
+                    loading={loading}
+                    loadingText="Processing..."
+                    disabled={loading}
                     className="w-full"
                   >
-                    Join Waitlist
+                    Upgrade to Pro
                   </LoadingButton>
                 </div>
 
@@ -1295,7 +1314,7 @@ export default function SettingsPage() {
                       Premium Plan
                     </h3>
                     <div className="text-2xl font-bold text-tron-text">
-                      $99
+                      $79
                       <span className="text-sm font-normal text-tron-text-muted">
                         /mo
                       </span>
@@ -1311,12 +1330,12 @@ export default function SettingsPage() {
                   </div>
                   <LoadingButton
                     onClick={() => handleUpgrade("premium", "monthly")}
-                    loading={false}
-                    loadingText=""
-                    disabled={false}
+                    loading={loading}
+                    loadingText="Processing..."
+                    disabled={loading}
                     className="w-full bg-gradient-to-r from-tron-cyan to-tron-magenta hover:from-tron-cyan/80 hover:to-tron-magenta/80"
                   >
-                    Join Waitlist
+                    Upgrade to Premium
                   </LoadingButton>
                 </div>
               </div>

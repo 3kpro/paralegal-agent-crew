@@ -40,7 +40,7 @@ export default function DemoVideoSection() {
             </h2>
 
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              See how Content Cascade AI transforms trending topics into
+              See how TrendPulse transforms trending topics into
               published content across Twitter, LinkedIn, and
               email—automatically.
             </p>

@@ -14,9 +14,9 @@ export default function NewCampaignPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    product_name: "Content Cascade AI",
-    product_url: "https://contentcascade.ai",
-    product_description: "The first AI-powered content repurposing engine that turns one video into a month of viral social posts. It analyzes your content, extracts the best clips, writes viral hooks, and schedules them across Twitter, LinkedIn, and TikTok automatically.",
+    product_name: "TrendPulse",
+    product_url: "https://trendpulse.ai",
+    product_description: "AI-powered social media management platform that discovers trending topics and generates viral content across Twitter, LinkedIn, and more. Transform trends into engaging posts with Viral Score™ predictions.",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +58,7 @@ export default function NewCampaignPage() {
 
       if (seedError) console.error("Error seeding targets:", seedError);
 
-      router.push(`/launchpad/${campaign.id}`);
+      router.push(`/launchpad/${campaign.id}?created=true`);
     } catch (error) {
       console.error("Error creating campaign:", error);
       alert("Failed to create campaign");
@@ -106,7 +106,7 @@ export default function NewCampaignPage() {
         <div className="p-4 bg-gray-900/30 rounded-xl border border-gray-700/50 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Target Product</h3>
-            <span className="text-xs text-coral-400">Content Cascade AI</span>
+            <span className="text-xs text-coral-400">TrendPulse</span>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 opacity-75">

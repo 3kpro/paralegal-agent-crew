@@ -87,16 +87,6 @@ export default function AnalyticsPage() {
           </div>
         </motion.div>
 
-        {/* Viral Score Analytics (Phase 1 & Phase 2 ML Training) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <ViralScoreAnalytics />
-        </motion.div>
-
         {/* Coming Soon Notice */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -124,11 +114,23 @@ export default function AnalyticsPage() {
           </h2>
           <p className="text-tron-text-muted max-w-2xl mx-auto">
             Advanced analytics and insights are being built as part of the next
-            CCAI platform expansion. You'll soon have access to comprehensive
+            TrendPulse platform expansion. You'll soon have access to comprehensive
             performance tracking, audience insights, and campaign optimization
             tools.
           </p>
         </motion.div>
+
+        {/* Viral Score Analytics (Phase 1 & Phase 2 ML Training) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <ViralScoreAnalytics />
+        </motion.div>
+
+
 
         {/* Preview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

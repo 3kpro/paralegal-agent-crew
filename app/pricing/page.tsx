@@ -35,9 +35,9 @@ export default async function PricingPage() {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">3K</span>
               </div>
-              <span className="text-xl font-bold text-white">
-                Content Cascade AI
-              </span>
+               <span className="text-xl font-bold text-white">
+                 TrendPulse
+               </span>
             </a>
             <div className="flex items-center space-x-4">
               <a
