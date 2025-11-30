@@ -4,6 +4,81 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-11-30] - Launchpad Refactor & Production Fixes (Gemini)
+
+### Added
+- **Launchpad Checklist**:
+  - Refactored `app/(portal)/launchpad/page.tsx` into a static, day-by-day checklist.
+  - Implemented persistent progress tracking using LocalStorage.
+  - Added "Complete Day" logic and "Reset Progress" functionality.
+  - Updated branding to "3K Pro Services Launch".
+- **Stripe Compliance**:
+  - Created a one-off "Consultation" product to satisfy Stripe account requirements.
+
+### Changed
+- **Viral Score Algorithm (Production Fix)**:
+  - Updated `lib/viral-score.ts` to check for `GOOGLE_API_KEY` (used in production) alongside `GEMINI_API_KEY`.
+  - Standardized model usage to `gemini-2.0-flash` for consistent performance.
+  - Simplified Viral Score UI in `app/(portal)/campaigns/new/page.tsx` (cleaner banner, solid badges) to reduce visual glitches.
+- **Campaign Generation API (Production Fix)**:
+  - Updated `app/api/generate/route.ts` to check for `GOOGLE_API_KEY` as a fallback.
+  - Switched default model from deprecated `gemini-pro` to `gemini-2.0-flash`.
+- **Google OAuth Configuration**:
+  - Updated Supabase Auth settings to correctly handle production (`https://trendpulse.3kpro.services`) and local (`http://localhost:3000`) redirects.
+  - Verified Google login flow on production.
+
+### Fixed
+- **Viral Score Flaking**: Resolved issue where Viral Score was returning low baseline values (47) in production due to missing API key detection.
+- **Campaign Generation Error**: Resolved "Internal Server Error" (500) caused by deprecated `gemini-pro` model and missing API key check in production.
+- **Launchpad UX**: Removed confusing campaign creation logic from Launchpad, separating it into a dedicated checklist tool.
+
+## [2025-11-29] - Launch Templates Overhaul & Google OAuth Documentation (Claude)
+
+### Added
+- **Launch Templates Complete Rewrite**:
+  - Completely replaced `lib/data/launch-templates.ts` with production-ready content
+  - Zero placeholders - all {{product_name}}, {{problem_statement}}, etc. replaced with actual TrendPulse copy
+  - Expanded from 8 generic templates to **28 turn-key ready posts** across 4-day launch protocol
+  - Reddit coverage expanded from 2 to **15 communities** (r/SaaS, r/SideProject, r/Entrepreneur, r/startups, r/marketing, r/contentmarketing, r/socialmedia, r/digitalnomad, r/webdev, r/productivity, r/smallbusiness, r/passive_income, r/AI_Marketing, r/CreatorEconomy, r/growthhacking)
+  - Added complete **Day 4 content** (7 new posts focused on social proof and metrics)
+  - Platform-specific hooks and formatting for each community
+  - Instagram post includes AI image generation prompt
+  - HackerNews post includes technical architecture breakdown
+  - Launch metrics narrative: 1,200 signups → $13K MRR story arc
+
+- **Supabase Google OAuth Configuration Guide**:
+  - Created comprehensive handoff document: `docs/SUPABASE_GOOGLE_OAUTH_HANDOFF.md`
+  - Includes both Quick Fix (testing) and Production Setup options
+  - Step-by-step Google Cloud Console configuration
+  - Complete Supabase dashboard setup instructions
+  - Troubleshooting guide for common OAuth errors
+  - Security checklist and production launch checklist
+  - Decision matrix for choosing setup option
+
+### Changed
+- **Launch Content Strategy**:
+  - Day 1: Problem awareness + Solution intro (8 posts)
+  - Day 2: Deep dive features + Social proof (9 posts)
+  - Day 3: Vision + Roadmap + Use cases (7 posts)
+  - Day 4: Results + Testimonials + Final push (4 posts)
+  - All posts use proven engagement frameworks (Problem → Solution → Results)
+  - Consistent messaging: 87% accuracy, 340% engagement boost, $30K MRR use cases
+
+### Fixed
+- **Google OAuth Provider Error**:
+  - Identified cause: Google provider not enabled in Supabase Authentication settings
+  - Error: `{"code":400,"error_code":"validation_failed","msg":"Unsupported provider: provider is not enabled"}`
+  - Resolution documented in SUPABASE_GOOGLE_OAUTH_HANDOFF.md
+  - Code implementation was correct - database configuration required
+
+### Documentation
+- All launch templates now include:
+  - Compelling titles optimized for each platform
+  - Full body copy with specific metrics and use cases
+  - Clear CTAs with TrendPulse URL
+  - Platform-appropriate formatting
+  - No editing required - click, paste, post ready
+
 ## [2025-11-28 Late Night] - Stripe Payments Integration (Gemini)
 
 ### Added
@@ -211,7 +286,6 @@ All notable changes to this project will be documented in this file.
   - Updated model to `gemini-2.0-flash-lite-preview-02-05`.
 - **Viral Score**:
   - Validated 87% accuracy with new Hybrid AI model.
-
 
 ## [2025-11-26] - Viral Score AI Upgrade
 

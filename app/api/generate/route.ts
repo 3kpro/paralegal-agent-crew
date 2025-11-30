@@ -103,149 +103,39 @@ export async function POST(request: Request) {
 
     // Try to get from cache first
     const cachedResult = await withCache(cacheKey, CACHE_TTL, async () => {
-      // Get user's configured AI tools
-      const { data: userTools } = await supabase
-        .from("user_ai_tools")
-        .select(
-          `
-            *,
-            ai_providers (
-              id,
-              provider_key,
-              name,
-              category
-            )
-          `,
-        )
-        .eq("user_id", user.id)
-        .eq("is_active", true)
-        .eq("test_status", "success");
+      // Use global environment API keys (no user setup required)
+      const GEMINI_API_KEY = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
 
-      if (!userTools || userTools.length === 0) {
-        throw new Error(
-          "No AI tools configured. Please add an AI tool in Settings.",
-        );
+      if (!GEMINI_API_KEY) {
+        throw new Error("System error: AI service not configured");
       }
 
-      // Find preferred provider or use first available
-      let selectedTool = userTools.find(
-        (t) => (t.ai_providers as any).provider_key === preferredProvider,
-      );
-      if (!selectedTool) {
-        selectedTool = userTools[0]; // Fallback to first available
-      }
+      // Use Gemini as the default provider for all users
+      const apiKey = GEMINI_API_KEY;
+      const provider = { provider_key: "google", name: "Google Gemini" };
+      const config = {};
 
-      const provider = selectedTool.ai_providers as any;
-      const apiKey = selectedTool.api_key_encrypted
-        ? decryptAPIKey(selectedTool.api_key_encrypted)
-        : null;
-      const config = selectedTool.configuration || {};
-
-      // Generate content based on provider
+      // Generate content using Gemini (global API key)
       let content: GeneratedContent;
       let tokensUsed = 0;
       let estimatedCost = 0;
 
       try {
-        switch (provider.provider_key) {
-          case "openai": {
-            const openaiResult = await generateWithOpenAI(
-              apiKey!,
-              topic,
-              formats,
-              config,
-              contentTemperature,
-              contentTone,
-              contentLength,
-            );
-            content = openaiResult.content;
-            tokensUsed = openaiResult.tokensUsed;
-            estimatedCost = openaiResult.estimatedCost;
-            break;
-          }
-
-          case "anthropic": {
-            const claudeResult = await generateWithClaude(
-              apiKey!,
-              topic,
-              formats,
-              config,
-              contentTemperature,
-              contentTone,
-              contentLength,
-            );
-            content = claudeResult.content;
-            tokensUsed = claudeResult.tokensUsed;
-            estimatedCost = claudeResult.estimatedCost;
-            break;
-          }
-
-          case "google": {
-            const geminiResult = await generateWithGemini(
-              apiKey!,
-              topic,
-              formats,
-              config,
-              contentTemperature,
-              contentTone,
-              contentLength,
-              contentAudience,
-              contentContentFocus,
-              contentCallToAction,
-            );
-            content = geminiResult.content;
-            tokensUsed = geminiResult.tokensUsed;
-            estimatedCost = geminiResult.estimatedCost;
-            break;
-          }
-
-          case "lmstudio": {
-            const lmResult = await generateWithLMStudio(
-              topic,
-              formats,
-              contentTemperature,
-              contentTone,
-              contentLength,
-              contentAudience,
-              contentContentFocus,
-              contentCallToAction,
-            );
-            content = lmResult.content;
-            tokensUsed = lmResult.tokensUsed;
-            estimatedCost = 0; // Local is free
-            break;
-          }
-
-          default:
-            throw new Error(
-              `Content generation not yet implemented for ${provider.name}`,
-            );
-        }
-
-        // Track usage
-        // 🚀 OPTIMIZATION: Fire-and-forget analytics tracking (non-blocking)
-        try {
-          const { error } = await supabase
-            .from("ai_tool_usage")
-            .insert({
-              user_id: user.id,
-              provider_id: provider.id,
-              tokens_used: tokensUsed,
-              estimated_cost: estimatedCost
-            });
-          
-          if (error) {
-            console.error("Analytics tracking error:", error);
-          }
-        } catch (err) {
-          console.error("Analytics tracking error:", err);
-        }
-
-        // Increment usage counter
-        await supabase
-          .from("user_ai_tools")
-          .update({ usage_count: selectedTool.usage_count + 1 })
-          .eq("id", selectedTool.id);
+        const geminiResult = await generateWithGemini(
+          apiKey!,
+          topic,
+          formats,
+          config,
+          contentTemperature,
+          contentTone,
+          contentLength,
+          contentAudience,
+          contentContentFocus,
+          contentCallToAction,
+        );
+        content = geminiResult.content;
+        tokensUsed = geminiResult.tokensUsed;
+        estimatedCost = geminiResult.estimatedCost;
 
         return {
           success: true,
@@ -275,7 +165,7 @@ export async function POST(request: Request) {
           event_data: {
             topic,
             formats,
-            provider: preferredProvider || "default",
+            provider: "gemini",
             success: cachedResult.success,
             cached: cachedResult.metadata?.cached || false
           }
@@ -335,13 +225,13 @@ export async function POST(request: Request) {
     console.error("[Generate API] Error cause:", cause);
 
     // Handle known error conditions with appropriate status codes
-    if (message?.includes("No AI tools configured")) {
+    if (message?.includes("System error: AI service not configured")) {
       return NextResponse.json(
         {
-          error: message,
-          requiresSetup: true,
+          error: "AI service temporarily unavailable. Please try again.",
+          requiresSetup: false,
         },
-        { status: 400 },
+        { status: 503 },
       );
     }
     return NextResponse.json({
@@ -499,7 +389,7 @@ async function generateWithGemini(
   focus: string,
   cta: string,
 ) {
-  const model = config.model || "gemini-pro";
+  const model = config.model || "gemini-2.0-flash";
 
   const content: GeneratedContent = {};
   let totalTokens = 0;

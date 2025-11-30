@@ -1661,25 +1661,18 @@ export default function NewCampaignPage() {
 
                   {/* Viral Score Education Banner */}
                   {trends.length > 0 && (
-                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gradient-to-r from-tron-cyan/10 to-tron-magenta/10 border border-tron-cyan/30 rounded-xl">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-1">
-                          <Sparkles className="w-5 h-5 text-tron-cyan" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-sm font-semibold text-tron-text mb-1 flex items-center gap-2">
-                            Viral Score™ Prediction
-                            <span className="inline-flex gap-1 items-center">
-                              <Flame className="w-3.5 h-3.5 text-green-400" />
-                              <Zap className="w-3.5 h-3.5 text-yellow-400" />
-                              <BarChart3 className="w-3.5 h-3.5 text-gray-400" />
-                            </span>
-                          </h4>
-                          <p className="text-xs text-tron-text-muted leading-relaxed">
-                            Each trend is scored 0-100 based on <span className="text-tron-cyan font-semibold">search volume</span>, <span className="text-tron-cyan font-semibold">multi-platform validation</span>, <span className="text-tron-cyan font-semibold">topic specificity</span>, and <span className="text-tron-cyan font-semibold">freshness</span>.
-                            Higher scores mean <span className="text-green-400 font-semibold">higher viral potential</span> - helping you choose topics that perform best.
-                          </p>
-                        </div>
+                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl flex items-start gap-4">
+                      <div className="p-2 bg-gray-800 rounded-lg">
+                        <Sparkles className="w-5 h-5 text-coral-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-white mb-1">
+                          Viral Score™ Prediction
+                        </h4>
+                        <p className="text-xs text-gray-400 leading-relaxed max-w-2xl">
+                          Trends are scored (0-100) based on search volume, platform validation, and freshness. 
+                          <span className="text-coral-400 ml-1">Higher scores indicate stronger viral potential.</span>
+                        </p>
                       </div>
                     </div>
                   )}
@@ -1715,12 +1708,12 @@ export default function NewCampaignPage() {
                                 </h3>
                                 {trend.viralScore !== undefined && (
                                   <span
-                                    className={`px-2 py-0.5 rounded text-xs font-semibold flex-shrink-0 inline-flex items-center gap-1 ${
+                                    className={`px-2 py-1 rounded-md text-xs font-bold flex-shrink-0 inline-flex items-center gap-1.5 ${
                                       trend.viralPotential === 'high'
-                                        ? 'bg-green-500/20 text-green-300 border border-green-500/40'
+                                        ? 'bg-green-500/10 text-green-400'
                                         : trend.viralPotential === 'medium'
-                                        ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40'
-                                        : 'bg-gray-500/20 text-gray-300 border border-gray-500/40'
+                                        ? 'bg-yellow-500/10 text-yellow-400'
+                                        : 'bg-gray-700 text-gray-400'
                                     }`}
                                   >
                                     {trend.viralPotential === 'high' ? (

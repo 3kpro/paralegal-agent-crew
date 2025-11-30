@@ -14,17 +14,20 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 let model: any = null;
 
 function getModel() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
   
   if (!model && apiKey) {
+    console.log("[Viral Score] Initializing Gemini model with key length:", apiKey.length);
     const genAI = new GoogleGenerativeAI(apiKey);
     model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-lite-preview-02-05',
+      model: 'gemini-2.0-flash', // Use stable flash model
       generationConfig: {
         maxOutputTokens: 500,
         temperature: 0.4,
       }
     });
+  } else if (!apiKey) {
+    console.error("[Viral Score] Missing API Key! Scores will be low.");
   }
   return model;
 }

@@ -56,7 +56,47 @@ export async function updateSession(request: NextRequest) {
   );
 
   // Refresh session if expired
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Redirect to onboarding if not completed (only for authenticated portal routes)
+  if (user && (
+      request.nextUrl.pathname.startsWith('/dashboard') ||
+      request.nextUrl.pathname.startsWith('/campaigns') ||
+      request.nextUrl.pathname.startsWith('/settings') ||
+      request.nextUrl.pathname.startsWith('/analytics') ||
+      request.nextUrl.pathname.startsWith('/ai-studio') ||
+      request.nextUrl.pathname.startsWith('/contentflow') ||
+      request.nextUrl.pathname.startsWith('/launchpad')
+  )) {
+    // Check if onboarding is completed
+    const { data: onboarding } = await supabase
+      .from('onboarding_progress')
+      .select('completed')
+      .eq('user_id', user.id)
+      .single();
+
+    // Redirect to onboarding if not completed
+    if (!onboarding || !onboarding.completed) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/onboarding';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Redirect away from onboarding if already completed
+  if (user && request.nextUrl.pathname === '/onboarding') {
+    const { data: onboarding } = await supabase
+      .from('onboarding_progress')
+      .select('completed')
+      .eq('user_id', user.id)
+      .single();
+
+    if (onboarding && onboarding.completed) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
+  }
 
   return response;
 }

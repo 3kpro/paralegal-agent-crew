@@ -17,244 +17,85 @@ import {
   Eye
 } from "lucide-react";
 import Link from "next/link";
-import { CCAI_TARGETS } from "@/lib/data/ccai-targets";
+import { LAUNCH_TEMPLATES } from "@/lib/data/launch-templates";
 
-interface Campaign {
-  id: string;
-  name: string;
-  product_name: string;
-  product_description: string;
-  status: string;
-}
+// ... imports
 
-interface LaunchTarget {
-  id: string;
-  platform: string;
-  community_name: string;
-  target_url?: string;
-  status: 'draft' | 'review' | 'ready' | 'posted';
-  content: any;
-  posted_url?: string;
-}
-
-interface ToastState {
-  show: boolean;
-  type: 'success' | 'error';
-  message: string;
-}
-
-function CopyButton({ text, label = "Copy", className = "" }: { text: string, label?: string, className?: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
-  return (
-    <button
-      onClick={handleCopy}
-      className={`flex items-center justify-center gap-2 px-4 py-2 transition-all ${
-        copied 
-          ? 'bg-green-500/20 text-green-400 border-green-500/30' 
-          : 'bg-gray-800 hover:bg-gray-700 text-white border-gray-700'
-      } border rounded-lg text-sm font-medium ${className}`}
-    >
-      {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-      {copied ? "Copied!" : label}
-    </button>
-  );
-}
-
-export default function CampaignDetailPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const supabase = createClient();
-  const [campaign, setCampaign] = useState<Campaign | null>(null);
-  const [targets, setTargets] = useState<LaunchTarget[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showPosted, setShowPosted] = useState(false);
-  const [currentDay, setCurrentDay] = useState(1);
-  const [toast, setToast] = useState<ToastState>({ show: false, type: 'success', message: '' });
-  const TOTAL_DAYS = 4;
+// Helper to fill templates
+const fillTemplate = (template: any, campaign: Campaign) => {
+  if (!template) return null;
+  const content = { ...template };
   
-  // ... (No AI State)
-
-  useEffect(() => {
-    if (searchParams.get('created') === 'true') {
-      setToast({
-        show: true,
-        type: 'success',
-        message: 'Mission Initialized Successfully!'
-      });
-      // Hide toast after 3 seconds
-      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    fetchCampaignData();
-  }, [params.id]);
-
-  // ... (fetchCampaignData remains same)
-
-  // ... (handleMarkPosted remains same)
-
-  // ... (handleCompleteDay remains same)
-
-  // ... (handleAskAI REMOVED)
-
-  const handleGenerateContent = async () => {
-    if (!campaign) return;
-    setLoading(true);
-    try {
-      // Get all target IDs for the current day
-      const dayTargets = targets.filter(t => {
-        const targetDay = CCAI_TARGETS.find((ct: any) => ct.platform === t.platform && ct.community_name === t.community_name)?.day || 1;
-        return targetDay === currentDay;
-      });
-
-      const response = await fetch('/api/launchpad/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          campaignId: campaign.id,
-          targetIds: dayTargets.map(t => t.id)
-        })
-      });
-
-      if (!response.ok) throw new Error('Generation failed');
-      
-      const result = await response.json();
-      
-      // Refresh data
-      await fetchCampaignData();
-      
-      setToast({
-        show: true,
-        type: 'success',
-        message: 'Content Generated Successfully!'
-      });
-      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
-
-    } catch (error) {
-      console.error('Error generating content:', error);
-      setToast({
-        show: true,
-        type: 'error',
-        message: 'Failed to generate content.'
-      });
-      setTimeout(() => setToast(prev => ({ ...prev, show: false })), 3000);
-    } finally {
-      setLoading(false);
-    }
+  const replacements: Record<string, string> = {
+    "{{product_name}}": campaign.product_name || "Our Product",
+    "{{product_description}}": campaign.product_description || "A revolutionary tool.",
+    "{{problem_statement}}": "solving complex problems", // Default fallback
+    "{{target_audience}}": "users",
+    "{{core_benefit}}": "save time and money",
+    "{{key_feature}}": "AI automation",
+    "{{url}}": "https://example.com" // Should ideally come from campaign data if available
   };
 
-  // ... (groupedTargets remains same)
+  // Simple string replacement for all string properties
+  const replaceInString = (str: string) => {
+    let newStr = str;
+    Object.entries(replacements).forEach(([key, value]) => {
+      newStr = newStr.replace(new RegExp(key, 'g'), value);
+    });
+    return newStr;
+  };
 
-  if (loading) return <div className="text-white p-8">Loading mission data...</div>;
-  if (!campaign) return <div className="text-white p-8">Campaign not found.</div>;
+  if (content.title) content.title = replaceInString(content.title);
+  if (content.body) content.body = replaceInString(content.body);
+  if (content.text) content.text = replaceInString(content.text);
+  if (content.caption) content.caption = replaceInString(content.caption);
+  if (content.tagline) content.tagline = replaceInString(content.tagline);
+  if (content.description) content.description = replaceInString(content.description);
+  if (content.first_comment) content.first_comment = replaceInString(content.first_comment);
+  if (content.thread) content.thread = content.thread.map(replaceInString);
+  if (content.image_prompt) content.image_prompt = replaceInString(content.image_prompt);
 
-  return (
-    <div className="flex h-[calc(100vh-64px)] overflow-hidden">
-      <Toast toast={toast} />
-      {/* Main Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/launchpad" className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-white">{campaign.name}</h1>
-              <div className="flex items-center gap-2 text-gray-400 text-sm">
-                <span>Protocol: TrendPulse Launch</span>
-                <span className="w-1 h-1 bg-gray-600 rounded-full" />
-                <span className="text-coral-400 font-bold">Day {currentDay} of {TOTAL_DAYS}</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-             <button
-              onClick={handleGenerateContent}
-              disabled={loading}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 rounded-lg font-medium transition-colors border border-purple-600/30 disabled:opacity-50"
-            >
-              <Sparkles className="w-4 h-4" />
-              Generate Content
-            </button>
+  return content;
+};
 
-             <button
-              onClick={() => setShowPosted(!showPosted)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              {showPosted ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {showPosted ? "Hide Completed" : "Show Completed"}
-            </button>
-            
-            <button
-              onClick={handleCompleteDay}
-              className="px-6 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
-            >
-              <CheckCircle className="w-4 h-4" />
-              {currentDay < TOTAL_DAYS ? `Complete Day ${currentDay}` : "Finish Mission"}
-            </button>
-          </div>
-        </div>
+// ... inside component
 
-        {/* Platform Sections */}
-        <div className="space-y-8">
-          {Object.entries(groupedTargets).map(([platform, platformTargets]) => (
-            <div key={platform} className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden">
-              <div className="bg-gray-800/50 px-6 py-4 border-b border-gray-800 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white capitalize flex items-center gap-2">
-                  {platform.replace('_', ' ')}
-                  <span className="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full">
-                    {platformTargets.length}
-                  </span>
-                </h2>
-              </div>
-              
-              <div className="divide-y divide-gray-800">
-                {platformTargets.map(target => (
-                  <div key={target.id} className="p-6 hover:bg-gray-800/30 transition-colors group">
-                    <div className="flex items-start justify-between gap-6">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-medium text-coral-400">{target.community_name}</h3>
-                          {target.status === 'posted' && (
-                            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded border border-green-500/30 flex items-center gap-1">
-                              <CheckCircle className="w-3 h-3" /> Posted
-                            </span>
-                          )}
-                          {/* Viral Score Badge */}
-                          <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-800 border border-gray-700 rounded text-xs">
-                            <Sparkles className="w-3 h-3 text-yellow-400" />
-                            <span className="text-gray-300">Viral Score:</span>
-                            <span className="font-bold text-white">
-                              {/* Pseudo-random score based on ID */}
-                              {85 + (target.id.charCodeAt(0) % 15)}/100
-                            </span>
-                          </div>
-                        </div>
-                        
+  // Group targets by platform
+  const groupedTargets = targets.reduce((acc, target) => {
+    // Only show targets for current day
+    const template = LAUNCH_TEMPLATES.find((ct: any) => ct.platform === target.platform && ct.community_name === target.community_name);
+    const targetDay = template?.day || 1;
+    
+    if (targetDay !== currentDay) return acc;
+    
+    // Filter out posted if hidden
+    if (!showPosted && target.status === 'posted') return acc;
+
+    if (!acc[target.platform]) {
+      acc[target.platform] = [];
+    }
+    acc[target.platform].push(target);
+    return acc;
+  }, {} as Record<string, LaunchTarget[]>);
+
+// ... inside render loop
+
                         {(() => {
-                          // Use DB content if valid, otherwise fallback to static content
-                          const content = (target.content && !target.content.error) 
+                          // Use DB content if valid, otherwise fallback to DYNAMIC template content
+                          let content = (target.content && !target.content.error) 
                             ? target.content 
-                            : CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+                            : null;
+                          
+                          if (!content) {
+                             const template = LAUNCH_TEMPLATES.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+                             content = fillTemplate(template, campaign);
+                          }
 
                           if (content) {
                             return (
                               <div className="bg-gray-900 rounded-lg p-4 border border-gray-700/50 text-gray-300 text-sm whitespace-pre-wrap font-mono">
                                 {content.title && <div className="font-bold mb-2">{content.title}</div>}
-                                {content.text || content.body || content.caption || (content.thread && content.thread.join('\n\n---\n\n'))}
+                                {content.text || content.body || content.caption || (content.thread && content.thread.join('\n\n---\n\n')) || content.tagline}
                                 {content.image_prompt && (
                                   <div className="mt-4 pt-4 border-t border-gray-800 flex items-start justify-between gap-4">
                                     <div>
@@ -274,32 +115,18 @@ export default function CampaignDetailPage() {
                             return <div className="text-gray-500 italic text-sm">No content available.</div>;
                           }
                         })()}
-                      </div>
 
-                      <div className="flex flex-col gap-2 min-w-[140px]">
-                        {(() => {
-                          const targetUrl = target.target_url || CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.url;
-                          
-                          if (targetUrl) {
-                            return (
-                              <a
-                                href={targetUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-600/30"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                                Open Link
-                              </a>
-                            );
-                          }
-                          return null;
-                        })()}
+// ... inside CopyButton logic
 
                         {(() => {
-                          const content = (target.content && !target.content.error) 
+                          let content = (target.content && !target.content.error) 
                             ? target.content 
-                            : CCAI_TARGETS.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+                            : null;
+                            
+                          if (!content) {
+                             const template = LAUNCH_TEMPLATES.find((t: any) => t.platform === target.platform && t.community_name === target.community_name)?.content;
+                             content = fillTemplate(template, campaign);
+                          }
 
                           if (!content) return null;
 
@@ -314,36 +141,7 @@ export default function CampaignDetailPage() {
 
                           return (
                             <CopyButton 
-                              text={content.text || content.caption || content.thread?.join('\n\n')}
+                              text={content.text || content.caption || content.thread?.join('\n\n') || content.tagline}
                             />
                           );
                         })()}
-                        
-                        {target.status !== 'posted' && (
-                          <button
-                            onClick={() => handleMarkPosted(target.id)}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 text-green-400 rounded-lg text-sm font-medium transition-colors border border-green-600/30"
-                          >
-                            <CheckCircle className="w-4 h-4" />
-                            Mark Done
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          
-          {Object.keys(groupedTargets).length === 0 && (
-            <div className="text-center py-20 text-gray-500">
-              <h3 className="text-xl font-bold text-white mb-2">Day {currentDay} Complete!</h3>
-              <p className="text-gray-400">You've finished all tasks for today. Click "Complete Day" to advance.</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}

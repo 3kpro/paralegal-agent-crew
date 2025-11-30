@@ -26,7 +26,8 @@
       "Bash(dir:*)",
       "Bash(test:*)",
       "Bash(if exist .next rd /s /q .next)",
-      "Bash(timeout 10 bash:*)"
+      "Bash(timeout 10 bash:*)",
+      "Bash(cmd /c \"if exist .next rd /s /q .next\")"
     ],
     "deny": [],
     "ask": []

@@ -1067,41 +1067,7 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Info Box */}
-              <div className="bg-gradient-to-r from-tron-dark to-tron-grid border border-tron-cyan/30 rounded-lg p-6">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <span className="text-2xl">🤖</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-tron-cyan mb-2">
-                      Local AI Already Available
-                    </h3>
-                    <p className="text-sm text-tron-cyan mb-3">
-                      <strong>LM Studio</strong> is already configured and ready
-                      to use! This gives you free, unlimited AI content
-                      generation without needing external API keys.
-                    </p>
-                    <div className="space-y-1 text-sm text-tron-cyan">
-                      <p>
-                        • ✅ <strong>Free:</strong> No usage costs or API limits
-                      </p>
-                      <p>
-                        • ✅ <strong>Private:</strong> Your data stays on your
-                        device
-                      </p>
-                      <p>
-                        • ✅ <strong>Fast:</strong> No network latency for
-                        generation
-                      </p>
-                      <p>
-                        • 💡 <strong>Tip:</strong> Add external APIs for access
-                        to latest models like GPT-4 or Claude
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Info Box - Removed LM Studio message */}
             </div>
           </div>
         )}

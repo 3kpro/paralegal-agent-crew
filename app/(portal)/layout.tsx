@@ -112,13 +112,6 @@ export default function PortalLayout({
               <span>Dashboard</span>
             </Link>
             <Link
-              href="/launchpad"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">🚀</span>
-              <span>Launchpad</span>
-            </Link>
-            <Link
               href="/campaigns"
               className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
             >
@@ -195,7 +188,7 @@ export default function PortalLayout({
                <div className="flex items-center gap-3">
                  <TrendPulseLogo className="w-7 h-7" />
                  <h2 className="text-lg md:text-xl font-semibold text-white">
-                   TrendPulse
+                   3K Pro Services
                  </h2>
                </div>
               <div className="flex items-center space-x-2 md:space-x-3">
