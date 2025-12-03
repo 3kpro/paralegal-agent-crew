@@ -411,13 +411,6 @@ export default function PortalLayout({
               <span className="text-xs text-white mt-1">Dashboard</span>
             </Link>
             <Link
-              href="/lp"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-lg">🚀</span>
-              <span className="text-xs text-white mt-1">Launchpad</span>
-            </Link>
-            <Link
               href="/campaigns"
               className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
             >

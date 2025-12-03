@@ -56,11 +56,6 @@ export function FloatingNav() {
           label="Dashboard"
         />
         <MenuItem
-          icon={<Rocket size={22} strokeWidth={1.5} className="text-coral-400" />}
-          onClick={() => router.push('/lp')}
-          label="Launchpad"
-        />
-        <MenuItem
           icon={<Zap size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/campaigns')}
           label="Campaigns"
