@@ -37,7 +37,7 @@ export const generateContentSchema = z.object({
   formats: z.array(z.enum(["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit", "email"])).min(1, "Select at least one format"),
   preferredProvider: z.enum(["openai", "anthropic", "google", "lmstudio"]).optional(),
   temperature: z.number().min(0).max(1).optional(),
-  tone: z.enum(["professional", "casual", "humorous", "inspirational", "educational"]).optional(),
+  tone: z.enum(["professional", "casual", "friendly", "humorous", "inspirational", "educational"]).optional(),
   length: z.enum(["concise", "standard", "detailed"]).optional(),
   audience: z.enum(["general", "professionals", "entrepreneurs", "creators", "students", "techies", "gamers", "hobbyists"]).optional(),
   contentFocus: z.enum(["informative", "discussion", "opinion", "news", "tips", "story", "walkthrough"]).optional(),
