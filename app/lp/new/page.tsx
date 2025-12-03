@@ -58,7 +58,7 @@ export default function NewCampaignPage() {
 
       if (seedError) console.error("Error seeding targets:", seedError);
 
-      router.push(`/launchpad/${campaign.id}?created=true`);
+      router.push(`/lp/${campaign.id}?created=true`);
     } catch (error) {
       console.error("Error creating campaign:", error);
       alert("Failed to create campaign");
@@ -71,7 +71,7 @@ export default function NewCampaignPage() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <Link
-          href="/launchpad"
+          href="/lp"
           className="inline-flex items-center text-gray-400 hover:text-white mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
