@@ -3,40 +3,52 @@ import type { Metadata, Viewport } from "next";
 import "@/lib/env"; // Validate environment variables at startup
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/next";
+import { StructuredData } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "TrendPulse™ Beta - AI-Powered Content Creation | Early Access Live",
+  title: "TrendPulse™ - AI Viral Content Prediction | 87% Accuracy Score",
   description:
-    "Join 2,500+ creators in TrendPulse™ Beta. Experience next-gen AI content creation with 6-platform publishing, real-time trend detection, and 50% lifetime pricing. Beta access available now.",
+    "Predict viral content BEFORE you create it. TrendPulse AI analyzes 1M+ viral posts to give you a Viral Score (0-100) with 87% accuracy. Stop wasting time on content that flops. Multi-platform content generation for Twitter, LinkedIn, Instagram, Reddit.",
   keywords:
-    "TrendPulse Beta, AI content creation, beta access, content automation, social media automation, multi-platform publishing, trend detection, GPT-4 content, Claude AI, real-time analytics, beta pricing, early access",
+    "viral content prediction, AI content analysis, viral score, content performance prediction, social media AI, trending topics, content marketing AI, viral marketing tool, engagement prediction, content analytics, Twitter viral, LinkedIn viral, Instagram growth, Reddit marketing, AI content generator, GPT-4 content, Gemini AI, content automation, social media automation",
   authors: [{ name: "3K Pro Services" }],
   openGraph: {
-    title: "TrendPulse™ Beta - Next-Generation AI Content Creation",
+    title: "TrendPulse™ - Predict Viral Content with 87% Accuracy",
     description:
-      "Join 2,500+ beta creators using TrendPulse™ for 6-platform content publishing, real-time trend detection, and enterprise AI generation. 50% lifetime pricing for early adopters.",
-    url: "https://3kpro.services",
-    siteName: "TrendPulse™ Beta",
+      "Stop guessing. Start knowing. TrendPulse AI predicts what content will go viral BEFORE you create it. Viral Score™ system trained on 1M+ viral posts. Save 15+ hours/week by eliminating content that flops.",
+    url: "https://trendpulse.3kpro.services",
+    siteName: "TrendPulse™",
     type: "website",
     images: [
       {
-        url: "https://3kpro.services/og-image.png",
+        url: "https://trendpulse.3kpro.services/og-image.png",
         width: 1200,
         height: 630,
-        alt: "TrendPulse™ Beta - AI-powered content creation platform with multi-platform publishing",
+        alt: "TrendPulse - AI viral content prediction with 87% accuracy. Predict performance before you publish.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "TrendPulse™ Beta - AI Content Creation Revolution",
+    title: "TrendPulse™ - AI Predicts Viral Content (87% Accuracy)",
     description:
-      "🚀 Beta Live Now! Join 2,500+ creators using next-gen AI for content creation. Real-time trends, 6-platform publishing, 50% lifetime pricing.",
-    images: ["https://3kpro.services/og-image.png"],
+      "Know what will go viral BEFORE creating it. Viral Score™ system analyzes 1M+ posts. Save 15+ hours/week. Free tier available.",
+    images: ["https://trendpulse.3kpro.services/og-image.png"],
+    creator: "@3kproservices",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'jBm4gu3jK_jeW_9YtU_BRQpCI3FGQhZJAzEdRkplz7s',
   },
 };
 
@@ -51,6 +63,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        <StructuredData />
+      </head>
       <body className="bg-tron-dark text-tron-text antialiased">
         <ErrorBoundary>{children}</ErrorBoundary>
         <Analytics />
