@@ -44,6 +44,7 @@ import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
 import PublishButton from "@/components/PublishButton";
+import { ViralScoreBreakdown } from "@/components/ViralScoreBreakdown";
 import {
   Platform,
   StepConfig,
@@ -1745,6 +1746,18 @@ export default function NewCampaignPage() {
                               )}
                             </div>
                           </div>
+
+                          {/* Viral Score Breakdown */}
+                          {trend.viralFactors && trend.viralScore !== undefined && (
+                            <div className="mt-3 px-3">
+                              <ViralScoreBreakdown
+                                score={trend.viralScore}
+                                potential={trend.viralPotential || 'low'}
+                                factors={trend.viralFactors}
+                                aiReasoning={trend.aiReasoning}
+                              />
+                            </div>
+                          )}
                         </motion.button>
                       );
                     })}

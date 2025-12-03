@@ -8,10 +8,10 @@ interface ServiceItem {
 
 const services: ServiceItem[] = [
   {
-    icon: "▶",
-    title: "Professional UGC Videos",
+    icon: "🎯",
+    title: "Viral Score Prediction",
     description:
-      "AI-generated user-generated-style videos with consistent characters and professional quality.",
+      "87% accuracy AI model predicts viral potential before you create. Know what will perform before investing time.",
   },
   {
     icon: "📊",
@@ -27,9 +27,9 @@ const services: ServiceItem[] = [
   },
   {
     icon: "📈",
-    title: "SEO Content",
+    title: "Trend-Based Generation",
     description:
-      "Search-optimized blog posts, FAQ sections, and meta descriptions for better visibility.",
+      "Enter any trending topic and generate viral-optimized content across all platforms instantly.",
   },
   {
     icon: "👥",
@@ -54,12 +54,11 @@ export const ServicesGrid: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-tron-text mb-4">
-            One Upload. Complete Campaign.
+            One Topic. Viral Campaign.
           </h2>
           <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-            Upload any content and watch our AI transform it into a coherent,
-            multi-channel campaign that maintains your brand voice across all
-            platforms.
+            Enter any trending topic and watch our AI predict viral potential with 87% accuracy,
+            then generate optimized content for every platform that maintains your brand voice.
           </p>
         </div>
 

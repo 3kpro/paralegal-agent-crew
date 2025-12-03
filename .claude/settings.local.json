@@ -27,7 +27,9 @@
       "Bash(test:*)",
       "Bash(if exist .next rd /s /q .next)",
       "Bash(timeout 10 bash:*)",
-      "Bash(cmd /c \"if exist .next rd /s /q .next\")"
+      "Bash(cmd /c \"if exist .next rd /s /q .next\")",
+      "Bash(magick identify:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

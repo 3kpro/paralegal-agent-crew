@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('path');
 
 const nextConfig = {
@@ -17,7 +16,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['yourdomain.com', '3kpro.services'],
+    domains: ['yourdomain.com', '3kpro.services', 'api.dicebear.com'],
   },
 
   // Security headers including CSP for DotLottie animations

@@ -52,9 +52,11 @@ export interface Trend {
   viralFactors?: {
     volume: number;
     multiSource: number;
-    specificity: number;
     freshness: number;
+    keywordBoost: number;
+    aiAnalysis: number;
   };
+  aiReasoning?: string;
   sources?: string[];
 }
 

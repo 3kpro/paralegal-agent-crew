@@ -7,7 +7,6 @@ import {
   StatsSection,
   ServicesGrid,
   FAQSection,
-  FeatureShowcase,
   WaitlistSection,
 } from "../components/sections";
 import { Navigation, Footer, ContactSection } from "../components";
@@ -33,8 +32,6 @@ export default function ModernLandingPage() {
       <ServicesGrid />
 
       <ModernPricing />
-
-      <FeatureShowcase />
 
       <FAQSection />
 
