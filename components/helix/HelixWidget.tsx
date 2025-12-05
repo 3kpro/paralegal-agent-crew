@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useChat } from "ai/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -27,19 +28,44 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
   const [isExpanded, setIsExpanded] = useState(false); // Full screen mode
   const [isSidePanel, setIsSidePanel] = useState(false); // Side panel mode
   const [isTransparent, setIsTransparent] = useState(false); // Transparency mode
-  const [query, setQuery] = useState("");
   const [messageCount, setMessageCount] = useState(0);
-  const [messages, setMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([
-    { role: 'assistant', content: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?" }
-  ]);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{startX: number, startY: number} | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
+
+  // Use Vercel AI SDK's useChat hook for streaming
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+    api: '/api/helix/chat',
+    initialMessages: [
+      { id: 'welcome', role: 'assistant', content: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?" }
+    ],
+    body: {
+      sessionId,
+      context: {
+        currentPath: pathname
+      }
+    },
+    onResponse: (response) => {
+      // Extract sessionId from headers if it's a new session
+      const newSessionId = response.headers.get('X-Session-Id');
+      if (newSessionId && !sessionId) {
+        setSessionId(newSessionId);
+      }
+    },
+    onFinish: () => {
+      // Increment usage count for free users
+      if (isLocked) {
+        setMessageCount(prev => prev + 1);
+      }
+    },
+    onError: (error) => {
+      console.error("Helix Error:", error);
+    }
+  });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,49 +75,15 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
     scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!input.trim()) return;
 
     // Check limit for free users
     if (isLocked && messageCount >= 3) return;
 
-    const userMessage = query;
-    setQuery("");
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setLoading(true);
-    
-    // Increment usage count
-    setMessageCount(prev => prev + 1);
-
-    try {
-      const response = await fetch('/api/helix/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: userMessage,
-          sessionId: sessionId,
-          context: {
-            currentPath: pathname
-          }
-        })
-      });
-
-      if (!response.ok) throw new Error("Failed to connect to Helix");
-
-      const data = await response.json();
-
-      if (data.sessionId && !sessionId) {
-        setSessionId(data.sessionId);
-      }
-
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-    } catch (error) {
-      console.error("Helix Error:", error);
-      setMessages(prev => [...prev, { role: 'assistant', content: "I apologize. My connection is unstable. Please check your configuration." }]);
-    } finally {
-      setLoading(false);
-    }
+    // useChat hook handles the actual submission
+    handleSubmit(e);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -265,7 +257,7 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                     </div>
                   ))}
                   
-                  {loading && (
+                  {isLoading && (
                     <div className="flex gap-3">
                       <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
                         <Sparkles className="w-4 h-4 text-coral-400 animate-pulse" />
@@ -287,14 +279,14 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                   <form onSubmit={handleSend} className="relative">
                     <input
                       type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
+                      value={input}
+                      onChange={handleInputChange}
                       placeholder={isLocked ? `Ask Helix... (${3 - messageCount} left)` : "Ask Helix..."}
                       className="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-coral-500/50 focus:ring-1 focus:ring-coral-500/50 transition-all"
                     />
-                    <button 
+                    <button
                       type="submit"
-                      disabled={!query.trim() || loading}
+                      disabled={!input.trim() || isLoading}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-coral-500"
                     >
                       <Send className="w-4 h-4" />
