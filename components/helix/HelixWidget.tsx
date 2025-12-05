@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -37,35 +38,63 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
 
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
 
-  // Use Vercel AI SDK's useChat hook for streaming
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: '/api/helix/chat',
-    initialMessages: [
-      { id: 'welcome', role: 'assistant', content: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?" }
-    ],
-    body: {
-      sessionId,
-      context: {
-        currentPath: pathname
+  // Local input state (AI SDK 5.0 no longer manages input internally)
+  const [input, setInput] = useState("");
+
+  // Use Vercel AI SDK's useChat hook for streaming (AI SDK 5.0)
+  const { messages, sendMessage, status, setMessages } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/helix/chat',
+      body: {
+        sessionId,
+        context: {
+          currentPath: pathname
+        }
       }
-    },
-    onResponse: (response) => {
-      // Extract sessionId from headers if it's a new session
-      const newSessionId = response.headers.get('X-Session-Id');
-      if (newSessionId && !sessionId) {
-        setSessionId(newSessionId);
-      }
-    },
-    onFinish: () => {
-      // Increment usage count for free users
-      if (isLocked) {
+    })
+  });
+
+  // Add welcome message on first render
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: 'welcome',
+          role: 'assistant',
+          parts: [{ type: 'text', text: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?" }]
+        }
+      ]);
+    }
+  }, []); // Run only once on mount
+
+  // Handle message completion
+  useEffect(() => {
+    if (status === 'ready' && messages.length > 1) { // More than just welcome message
+      // Increment usage count for free users when assistant responds
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'assistant' && isLocked) {
         setMessageCount(prev => prev + 1);
       }
-    },
-    onError: (error) => {
-      console.error("Helix Error:", error);
     }
-  });
+  }, [status, messages, isLocked]);
+
+  const isLoading = status === 'streaming' || status === 'submitted';
+
+  // Helper function to extract text content from AI SDK 5.0 message parts
+  const getMessageText = (message: any): string => {
+    if (typeof message.content === 'string') {
+      // Fallback for initial messages that might have content string
+      return message.content;
+    }
+    if (message.parts) {
+      // AI SDK 5.0 format with parts array
+      return message.parts
+        .filter((part: any) => part.type === 'text')
+        .map((part: any) => part.text)
+        .join('\n');
+    }
+    return '';
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,13 +106,19 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input?.trim()) return;
 
     // Check limit for free users
     if (isLocked && messageCount >= 3) return;
 
-    // useChat hook handles the actual submission
-    handleSubmit(e);
+    // Send message using AI SDK 5.0 sendMessage with parts
+    sendMessage({
+      role: 'user',
+      parts: [{ type: 'text', text: input }]
+    });
+
+    // Clear input after sending
+    setInput("");
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -131,7 +166,6 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
             animate={{
               opacity: 1,
               scale: 1,
-              y: 0,
               x: isSidePanel ? 0 : position.x,
               y: isSidePanel || isExpanded ? 0 : position.y
             }}
@@ -248,11 +282,11 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                       </div>
                       
                       <div className={`p-3 rounded-2xl max-w-[85%] text-sm whitespace-pre-wrap leading-relaxed ${
-                        msg.role === 'assistant' 
-                          ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300' 
+                        msg.role === 'assistant'
+                          ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300'
                           : 'bg-coral-500 text-white shadow-lg shadow-coral-500/10'
                       }`}>
-                        {msg.content}
+                        {getMessageText(msg)}
                       </div>
                     </div>
                   ))}
@@ -280,7 +314,7 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                     <input
                       type="text"
                       value={input}
-                      onChange={handleInputChange}
+                      onChange={(e) => setInput(e.target.value)}
                       placeholder={isLocked ? `Ask Helix... (${3 - messageCount} left)` : "Ask Helix..."}
                       className="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-coral-500/50 focus:ring-1 focus:ring-coral-500/50 transition-all"
                     />
