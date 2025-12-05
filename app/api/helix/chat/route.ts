@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { streamText, tool } from 'ai';
+import { streamText, tool, convertToModelMessages } from 'ai';
 import { google } from '@ai-sdk/google';
 import { z } from 'zod';
 
@@ -66,12 +66,14 @@ Instructions:
 - When users ask about their brand, campaigns, or content, use the available tools to fetch real data
 - Always stay helpful and conversational`;
 
-    // 5. Stream response with Vercel AI SDK
+    // 5. Convert UIMessages to ModelMessages and stream response
+    const modelMessages = convertToModelMessages(messages);
+
     const result = await streamText({
       model: google('gemini-2.0-flash-exp'),
       messages: [
         { role: 'system', content: systemPrompt },
-        ...messages
+        ...modelMessages
       ],
       tools: {
         update_brand_dna: tool({
