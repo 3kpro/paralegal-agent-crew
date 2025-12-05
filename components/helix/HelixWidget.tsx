@@ -313,14 +313,14 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                   <form onSubmit={handleSend} className="relative">
                     <input
                       type="text"
-                      value={input}
+                      value={input || ""}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder={isLocked ? `Ask Helix... (${3 - messageCount} left)` : "Ask Helix..."}
                       className="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-coral-500/50 focus:ring-1 focus:ring-coral-500/50 transition-all"
                     />
                     <button
                       type="submit"
-                      disabled={!input.trim() || isLoading}
+                      disabled={!input || !input.trim() || isLoading}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-coral-500"
                     >
                       <Send className="w-4 h-4" />
