@@ -70,7 +70,9 @@ Instructions:
     const modelMessages = convertToModelMessages(messages);
 
     const result = await streamText({
-      model: google('gemini-2.0-flash-exp'),
+      model: google('gemini-2.0-flash-exp', {
+        apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY
+      }),
       messages: [
         { role: 'system', content: systemPrompt },
         ...modelMessages
