@@ -1,0 +1,4 @@
+Next Steps:
+1.  Create a 3KPRO.SERVICES website for my services website, that way we can do ccai.3kpro.services. I will provide detail after this prompt.
+2.  Finalize the stripe setup and move from sandbox to production.
+3.  

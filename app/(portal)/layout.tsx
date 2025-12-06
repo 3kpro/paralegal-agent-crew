@@ -9,7 +9,7 @@ import { FloatingNav } from "@/components/ui/floating-nav";
 import SettingsModal from "@/components/SettingsModal";
 import { Settings, Sparkles, ChevronDown } from "lucide-react";
 import HelixWidget from "@/components/helix/HelixWidget";
-import TrendPulseLogo from "@/components/TrendPulseLogo";
+import { TrendPulseLogo } from "@/components/TrendPulseLogo";
 
 interface Profile {
   email?: string;
@@ -186,10 +186,10 @@ export default function PortalLayout({
           <header className="bg-[#343a40] border-b border-gray-700/50 px-4 md:px-8 py-3 md:pl-32">
             <div className="flex items-center justify-between">
                <div className="flex items-center gap-3">
-                 <TrendPulseLogo className="w-7 h-7" />
                  <h2 className="text-lg md:text-xl font-semibold text-white">
                    3K Pro Services
                  </h2>
+                 <TrendPulseLogo className="w-14 h-14" />
                </div>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}

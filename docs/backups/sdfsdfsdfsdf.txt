@@ -1,0 +1,24 @@
+Cloud & Identity
+Azure, Entra ID, Microsoft 365 (tenant design, hybrid identity, AD Connect/Cloud Sync), Azure IaaS (VMs, Virtual Networks, Network Security Groups, load balancers, Azure Files/Storage), Azure Virtual Desktop (AVD), Azure Backup, Site Recovery (DR), Azure Migrate for lift-and-shift and hybrid deployments
+Directory & Core Services
+Active Directory Domain Services (AD DS), Group Policy Objects (GPO), DNS/DHCP, Windows Server, certificate services readiness
+Endpoint & Device Management
+Intune (MDM/MAM, compliance, configuration profiles, WinGet, LOB packaging), Autopilot, Microsoft Endpoint Configuration Manager (MECM) for packaging, patching, and compliance, SCCM→Intune co-management, Windows 10/11, macOS, iOS/iPadOS
+Security & Zero Trust
+Conditional Access, multifactor authentication (MFA), Privileged Identity Management (PIM), least privilege enforcement, baseline hardening
+Migration & Modernization
+Exchange Online, SharePoint/OneDrive, Teams, Intune device and app migration, staged and cutover migration plans
+Collaboration Workloads
+Exchange Online, SharePoint, Teams, licensing and governance
+Virtualization & Hybrid Infrastructure
+VMware vSphere, Hyper-V, Citrix (Director/XenApp Administration)
+Networking for Cloud
+Site-to-site VPN, routing, firewall rules for hybrid connectivity
+Scripting & Automation
+PowerShell, Microsoft Graph API, Power Automate (bulk changes, reporting, runbooks), Bicep/ARM templates, GitHub Actions (CI/CD)
+Monitoring & Operations
+Azure Monitor, Log Analytics, alerting and dashboards
+Documentation & Process
+Runbooks, SOPs, change control, root cause analysis (RCA)
+End-User Support & Incident Management
+L3/L4 escalation owner for Windows, macOS, and SaaS with VIP support, P1/P2 triage, root cause analysis, and recovery

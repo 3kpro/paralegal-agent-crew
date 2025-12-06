@@ -1,0 +1,23 @@
+Consumer Keys
+API Key 
+zTiZvzJiM4vYJEHAFY3PnDJnT
+
+Secret
+YtlFziI7mf0ZbliFtST0zU5HU13iyQFqWXAzhyzRQRaaT5BjPU
+
+
+Access Token
+1971380765389705216-CZbhogZwfiPDXMI6nh4Kw9UL2wIUjR
+
+Access Token Secret
+YeXHM3P6u9uW6Bvyu8VYWfSuSC9x4u331fJKdYMoy9HCV
+
+
+
+
+
+Client ID
+UUlMY0pmdWh6d200Q1RSY1BuN2M6MTpjaQ
+
+Client Secret
+d0x99ZWj36SjV42nj1r9anqx2UUdVnt2m92WUiz1ly-76m7A4U

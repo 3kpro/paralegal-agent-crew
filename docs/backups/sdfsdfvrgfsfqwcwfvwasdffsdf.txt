@@ -1,0 +1,68 @@
+Han Solo: Condensed.
+
+Integration works. Use publisher endpoint only.
+
+Env:
+
+```
+export GOOGLE_PROJECT_ID=veomachine-475623
+export GOOGLE_APPLICATION_CREDENTIALS="C:/Dev/Projects/VeoMachine/veomachine-service-key.json"
+export VEO_MODEL_ID="publishers/google/models/veo-3.1-generate-preview"
+export VEO_REGION="us-central1"
+```
+
+Python:
+
+```python
+from google.cloud import aiplatform_v1
+
+client = aiplatform_v1.PredictionServiceClient()
+endpoint = (
+    "projects/veomachine-475623/locations/us-central1/"
+    "publishers/google/models/veo-3.1-generate-preview:predictLongRunning"
+)
+
+body = {
+    "instances": [{
+        "prompt": "5-sec cinematic drone sunset ocean",
+        "aspectRatio": "16:9",
+        "duration": 5.0,
+        "resolution": "1080p"
+    }],
+    "parameters": {
+        "storageUri": "gs://YOUR_BUCKET/videos/",
+        "responseCount": 1
+    }
+}
+
+resp = client.http_request(
+    method="POST",
+    url=f"https://us-central1-aiplatform.googleapis.com/v1/{endpoint}",
+    json=body
+)
+print(resp)
+```
+
+REST:
+
+```
+POST https://us-central1-aiplatform.googleapis.com/v1/projects/veomachine-475623/locations/us-central1/publishers/google/models/veo-3.1-generate-preview:predictLongRunning
+```
+
+Monitor:
+
+* Poll `projects.locations.operations.get`
+* Video appears in Cloud Storage
+
+APIs:
+
+* Vertex AI
+* Generative AI
+* Cloud Storage JSON
+
+IAM roles:
+
+* aiplatform.user
+* storage.objectUser
+
+Traffic-split error ignored. Correct path already used.

@@ -38,7 +38,7 @@ import {
   Layout,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedLoader } from "@/components/ui";
+import { TetrisLoading } from "@/components/ui";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
@@ -1229,7 +1229,7 @@ export default function NewCampaignPage() {
       <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex items-center justify-center">
         <div className="text-center">
           <div className="mb-4">
-            <AnimatedLoader />
+            <TetrisLoading size="lg" showLoadingText={false} />
           </div>
           <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
         </div>
@@ -1645,7 +1645,7 @@ export default function NewCampaignPage() {
             >
               {loadingTrends ? (
                 <div className="flex items-center justify-center min-h-[600px]">
-                  <AnimatedLoader message="" />
+                  <TetrisLoading size="lg" loadingText="Finding trends..." />
                 </div>
               ) : (
                 <>
@@ -1680,20 +1680,20 @@ export default function NewCampaignPage() {
 
                   <div className="max-w-4xl mx-auto">
                 {loadingTrends ? (
-                  <AnimatedLoader message="" />
+                  <TetrisLoading size="md" loadingText="" />
                 ) : trends.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-h-96 overflow-y-scroll pr-2 scrollbar-thin scrollbar-thumb-tron-cyan/30 scrollbar-track-tron-dark/50">
                     {trends.slice(0, 8).map((trend, idx) => {
                       const isSelected = selectedTrends.some((t) => t.title === trend.title);
                       return (
-                        <motion.button
+                        <motion.div
                           key={`${trend.title}-${idx}`}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.05 }}
                           onClick={() => toggleTrendSelection(trend)}
                           whileTap={{ scale: 0.98 }}
-                          className={`p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
+                          className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
                             isSelected
                               ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg"
                               : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-md hover:shadow-tron-cyan/20"
@@ -1758,7 +1758,7 @@ export default function NewCampaignPage() {
                               />
                             </div>
                           )}
-                        </motion.button>
+                        </motion.div>
                       );
                     })}
                   </div>
@@ -2174,7 +2174,7 @@ export default function NewCampaignPage() {
             >
               {generatingContent ? (
                 <div className="flex items-center justify-center min-h-[600px]">
-                  <AnimatedLoader message="" />
+                  <TetrisLoading size="lg" speed="fast" loadingText="Generating high-viral content..." />
                 </div>
               ) : (
                 <>

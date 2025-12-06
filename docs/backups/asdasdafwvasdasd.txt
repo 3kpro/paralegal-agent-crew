@@ -1,0 +1,16 @@
+Build Error
+NotAllowedError: Failed to execute 'writeText' on 'Clipboard': The Clipboard API has been blocked because of a permissions policy applied to the current document. See https://crbug.com/414348233 for more details.
+
+Parsing ecmascript source code failed
+
+./app/page.tsx (2:9)
+
+Parsing ecmascript source code failed
+  1 | {
+> 2 |   "name": "ai-business-evaluation-tool",
+    |         ^
+  3 |   "version": "0.1.0",
+  4 |   "private": true,
+  5 |   "scripts": {
+
+Expected ';', '}' or <eof>

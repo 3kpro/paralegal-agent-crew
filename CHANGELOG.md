@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-05] - TrendPulse Polish & Micro-SaaS Factory (Grok & Gemini)
+
+### Added
+- **TrendPulse Logo Update**:
+  - Implemented new **Gradient Arrow Logo** (Coral/Red) for maximum brand impact.
+  - Increased logo size in Header/Footer (w-16) and Portal (w-14).
+  - Positioned logo to the **right** of brand text for better visual flow.
+  - Applied `hue-rotate(160deg)` filter to perfectly match site accent colors.
+
+- **UI Enhancements**:
+  - **Tetris Spinner**: Replaced standard loader with a high-energy "Tetris Video Game" spinner for campaign generation.
+    - Located in `components/ui/tetris-loader.tsx`.
+    - Features "Generating high-viral content..." text.
+  
+- **Micro-SaaS Factory (New Feature)**:
+  - Initialized **Factory Dashboard** at `/factory` (in `3kpro-website`).
+  - Created **Incubator** tool (`/factory/incubator`) for AI-powered business plan generation.
+  - Integrated **Gemini AI** to score ideas (1-10) and suggest tech stacks/monetization.
+  - Setup `softdev/start-n8n.bat` for local automation workflow development.
+
+### Changed
+- **Helix AI Widget**:
+  - Upgraded to **Vercel AI SDK 5.0**.
+  - Migrated `useChat` hook to new `DefaultChatTransport` architecture.
+  - Fixed message rendering to support new `parts` array format.
+  - Improved input handling state management.
+
+### Technical
+- **Build & Deploy**:
+  - Resolved `Next.js` vulnerability by upgrading dependencies.
+  - Fixed `ai` SDK import errors (`@ai-sdk/react`).
+  - Added `turbopack: {}` to `next.config.js` to fix build warnings.
+  - Verified successful production deployment to Vercel.
+
+---
+
 ## [2025-12-04] - Helix AI SDK Integration & Planning (Claude)
 
 ### Added

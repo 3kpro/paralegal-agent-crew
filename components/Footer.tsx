@@ -1,4 +1,4 @@
-import TrendPulseLogo from "./TrendPulseLogo";
+import { TrendPulseLogo } from "./TrendPulseLogo";
 
 export const Footer: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
@@ -14,8 +14,8 @@ export const Footer: React.FC = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <TrendPulseLogo className="w-8 h-8" />
               <span className="text-xl font-bold">TrendPulse</span>
+              <TrendPulseLogo className="w-16 h-16" />
             </div>
             <p className="text-tron-text-muted">
               AI-powered content marketing platform for modern businesses.

@@ -1,0 +1,1 @@
+(.venv) PS C:\Dev\Projects\VeoMachine> 

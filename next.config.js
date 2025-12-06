@@ -5,10 +5,9 @@ const nextConfig = {
   // Set correct workspace root to silence multiple lockfiles warning
   outputFileTracingRoot: path.join(__dirname),
 
-  // Disable ESLint during build - warnings are not blockers
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // Explicitly disable Turbopack warnings by providing empty config
+  // We are using custom webpack config below
+  turbopack: {},
 
   // Disable TypeScript type checking during build
   typescript: {
@@ -16,7 +15,11 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['yourdomain.com', '3kpro.services', 'api.dicebear.com'],
+    remotePatterns: [
+      { hostname: 'yourdomain.com' },
+      { hostname: '3kpro.services' },
+      { hostname: 'api.dicebear.com' },
+    ],
   },
 
   // Security headers including CSP for DotLottie animations

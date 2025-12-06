@@ -1,0 +1,88 @@
+Based on my comprehensive analysis, here are the key recommendations for your landing page codebase:
+## **Priority 1: Critical Issues**
+- **Fix failing tests** - Multiple test failures due to DOM implementation and Stripe mocking issues
+- **Implement rate limiting** - Missing protection for API endpoints
+- **Add input validation** - API routes need proper sanitization
+## **Priority 2: Performance Optimization**
+- **Bundle size optimization** - Current 122kiB serialization warning needs attention
+- **Component memoization** - Add `React.memo` and `useMemo` to prevent re-renders
+- **Image optimization** - Implement Next.js Image component with proper loading states
+## **Priority 3: Code Quality**
+- **Type safety improvements** - Create comprehensive API response types
+- **Error boundary enhancement** - Add more specific error handling
+- **Component patterns** - Implement compound component patterns for better reusability
+## **Quick Wins**
+```typescript
+// Add to next.config.js
+experimental: {
+  optimizePackageImports: ['framer-motion', 'lucide-react'],
+  reactCompiler: true,
+}
+// Memoize expensive components
+export const TrendSourceSelector = memo(function TrendSourceSelector({...}) {
+  const selectedSource = useMemo(() => 
+    trendSources.find(s => s.id === value), [value]
+  );
+  // ... rest
+});
+```
+###########################################################################################################
+
+Your codebase has strong foundations with excellent TypeScript configuration and a well-structured component library. The main areas needing attention are test fixes, API security, and performance optimization.
+
+
+**What I’m seeing (read-only observations)**
+- Tron-like tokens may still appear in key places:
+  - TrendSourceSelector uses gradients like rom-tron-cyan to-tron-magenta and icons with Tron-associated colors.
+  - Global UI and campaign pages show Tron-themed classes (e.g., g-gradient-to-br from-tron-cyan to-tron-magenta, 	ext-tron-text, order-tron-cyan, etc.).
+- The updated look could be partially applied or may have been rolled back in some sections; I haven’t edited anything and am only assessing what’s in the repo.
+**Verification I recommend you run (no edits)**
+- Scan for Tron tokens and references:
+  - Command (in your shell):
+    - rg -n "tron-" -S
+    - rg -n "from-tron|to-tron|text-tron|bg-tron" -S
+- Check the TrendSourceSelector references:
+  - Inspect: components/ui/TrendSourceSelector.tsx for color tokens and icon usage.
+- Quick audit of global styling:
+  - Inspect: pp/globals.css (or the primary Tailwind setup) for hard-coded Tron colors or gradients.
+- Cross-page usage:
+  - Look for Tron-related classes across campaign pages: pp/(portal)/campaigns/new/page.tsx and similar.
+If you want, I can summarize exact line evidence from those scans and map out every filename where Tron tokens still appear.
+**Migration plan to a modern, token-driven theme (high level)**
+Phase 1 — Discovery and token planning
+- Inventory all Tron-related tokens/classes in UI (colors, gradients, borders, shadows) across core components.
+- Define a minimal design-token schema (colors, surfaces, text, radii, shadows, gradients) that covers TrendSourceSelector and major cards.
+- Decide on token format: CSS variables (preferred for runtime theme switching) or Tailwind theme extensions.
+Phase 2 — Baseline design tokens
+- Introduce a small set of global tokens (e.g., --color-primary, --color-surface, --color-text, --bg-gradient-start, --bg-gradient-end, --shadow-sm, --shadow-md).
+- Replace hard-coded Tron values in the most visible components (TrendSourceSelector, main cards, and campaign editor) with token references.
+- Ensure both dark and light modes are supported by tokens (default to dark if appropriate).
+Phase 3 — Component-level refactor (non-breaking)
+- Update TrendSourceSelector to consume tokens (these can map from trend source to token-based colors).
+- If you’re using Tailwind, extend the config to reference CSS variables or create a small utility layer (e.g., theme-compatible gradient utilities).
+Phase 4 — Global polish and QA
+- Full visual audit across breakpoints (mobile, tablet, desktop).
+- Accessibility pass: verify aria attributes, focus management, keyboard navigation, and color contrast with the new tokens.
+- Performance check: ensure no regressions from token lookups; keep heavy UI paths lightweight.
+Phase 5 — Rollout strategy
+- Introduce a feature flag to switch between Tron-legacy visuals and the new theme for staging.
+- Run manual QA and automated tests in both modes.
+- Pull the flag into CI to guard against regressions.
+**Deliverables you could prepare (docs, not code)**
+- A design-token spec document detailing:
+  - Tokens and token names
+  - Mapping from existing Tron values to new tokens
+  - Theme-switching approach (e.g., CSS variables)
+- A migration checklist with:
+  - A list of components to convert (prioritized by UI impact)
+  - Acceptance criteria (contrast, accessibility, and performance targets)
+- A lightweight PR template for future theme updates (include a11y checks and visual regression notes)
+**Risks and mitigations (quick read)**
+- Risk: Incomplete token coverage leads to inconsistent visuals.
+  - Mitigation: Start with the most visible screens (TrendSourceSelector and campaign editor), then expand.
+- Risk: Theme switch breaks accessibility contrasts.
+  - Mitigation: Run a11y checks and color-contrast tests as you map tokens.
+- Risk: Regression in dark/light behavior.
+  - Mitigation: Include both mode tests in the plan and enable a staging toggle.
+Would you like me to:
+- Produce a concrete token map ( Tron-to-modern tokens ) you can reference in a patch, or

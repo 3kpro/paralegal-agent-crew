@@ -1,0 +1,2 @@
+Another enhancement:
+Since ths is a demo to impress lets have an informative assistant.  A pop up windows that comes up on the left side.  Not overlapping, that relevant info for the task at hand.  If not informing, then bragging/advertising.

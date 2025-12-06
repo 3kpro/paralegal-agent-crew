@@ -34,7 +34,10 @@ export function ViralScoreBreakdown({
     <div className="w-full">
       {/* Expandable Trigger */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
         className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-tron-grid/30 transition-colors text-sm"
       >
         <span className="text-tron-text-muted flex items-center gap-2">
