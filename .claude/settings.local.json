@@ -30,7 +30,8 @@
       "Bash(cmd /c \"if exist .next rd /s /q .next\")",
       "Bash(magick identify:*)",
       "Bash(python:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

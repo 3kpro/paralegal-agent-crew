@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-06] - Helix Chat Restoration & TrendPulse Analyst (Gemini)
+
+### Added
+- **TrendPulse Analyst (NL2SQL)**:
+  - Implemented Natural Language to SQL feature at `/analyst`.
+  - Creates visualizations (Trends Table) from plain English questions like "Show me top viral posts".
+  - Secured with `execute_readonly_sql` Supabase RPC function to prevent modification/injection.
+  - Powered by Gemini 2.0 Flash for SQL generation.
+
+- **Helix Chat (Production Fix)**:
+  - Fully restored Helix Chat functionality after SDK upgrade issues.
+  - Implemented **Manual Fetch & Stream** logic (`HelixWidget.tsx`) to bypass flaky SDK hooks.
+  - Added **Safe Backend Mapping** to prevents crashes on undefined message properties.
+  - Features: Optimistic UI updates, Real-time streaming, usage tracking (3 free daily messages).
+  - Visual: Fixed all JSX syntax errors and restored correct component hierarchy.
+  - Verified stability: No more invisible messages or backend 500 errors.
+
+### Technical
+- **Backend Architecture**:
+  - `app/api/analyst/query/route.ts`: New endpoint for translating natural language to SQL.
+  - `app/api/helix/chat/route.ts`: Hardened against malformed inputs and version mismatches.
+- **Database**:
+  - Added `execute_readonly_sql` migration for safe analyst queries.
+
+
 ## [2025-12-05] - TrendPulse Polish & Micro-SaaS Factory (Grok & Gemini)
 
 ### Added

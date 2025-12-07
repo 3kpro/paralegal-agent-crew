@@ -24,12 +24,12 @@ export async function POST(req: NextRequest) {
     let sessionId = providedSessionId;
     if (!sessionId) {
       // Create a new session if none provided
-      const firstUserMessage = messages.find(m => m.role === 'user')?.content || 'New conversation';
+      const firstUserMessage = messages.find((m: any) => m.role === 'user')?.content || 'New conversation';
       const { data: session, error: sessionError } = await supabase
         .from('helix_sessions')
         .insert({
           user_id: user.id,
-          title: firstUserMessage.substring(0, 50) + (firstUserMessage.length > 50 ? '...' : '')
+          title: (typeof firstUserMessage === 'string' ? firstUserMessage : 'New Conversation').substring(0, 50)
         })
         .select()
         .single();
@@ -69,11 +69,8 @@ Instructions:
     // 5. Convert UIMessages to ModelMessages and stream response
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
-    // Explicitly safe map to avoid "undefined map" errors in SDK utilities
-    const modelMessages = messages.map((m: any) => ({
-      role: m.role,
-      content: typeof m.content === 'string' ? m.content : JSON.stringify(m.parts || "")
-    }));
+    // Convert parts automatically if possible, or handle manual fallback
+    const modelMessages = convertToModelMessages(messages);
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
@@ -145,12 +142,19 @@ Instructions:
         try {
           // Save user message (last message in array)
           const lastUserMessage = messages[messages.length - 1];
+          let userContent = '';
           if (lastUserMessage?.role === 'user') {
+             if (typeof lastUserMessage.content === 'string') {
+                userContent = lastUserMessage.content;
+             } else if (Array.isArray(lastUserMessage.parts)) {
+                userContent = lastUserMessage.parts.map((p:any) => p.text).join(' ');
+             }
+
             await supabase.from('helix_messages').insert({
               session_id: sessionId,
               user_id: user.id,
               role: 'user',
-              content: lastUserMessage.content
+              content: userContent
             });
           }
 

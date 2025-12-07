@@ -295,6 +295,67 @@ export function ChatInterface() {
 
 ---
 
+### 2.5 TrendPulse Content Calendar
+**Priority:** MEDIUM
+**Estimated Time:** 1 week
+**Source:** Cherry-picked from DeepSeek Feature Enhancement suggestions
+
+#### Why Add This?
+Users need a visual way to plan and schedule their content across multiple platforms. Complements the Viral Score system by helping users organize WHEN to publish content that's already been optimized.
+
+#### Tasks:
+- [ ] **Calendar View Component**
+  - File: `app/trendpulse/components/ContentCalendar.tsx`
+  - Monthly/weekly/daily views
+  - Drag-and-drop content scheduling
+  - Color-coded by platform (Twitter blue, LinkedIn blue, Reddit orange, etc.)
+  - Multi-day content campaigns visualization
+
+- [ ] **Scheduling System**
+  - Link campaigns to calendar dates
+  - Set preferred posting times per platform
+  - Show optimal posting windows (based on TrendPulse viral score timing analysis)
+  - Conflict detection (too many posts on same day)
+
+- [ ] **Calendar Integration**
+  - Export to Google Calendar
+  - Export to Outlook Calendar
+  - iCal format download
+  - Webhook reminders
+
+- [ ] **Content Planning Features**
+  - Add notes/ideas for future dates
+  - Template recurring content (e.g., weekly newsletter)
+  - View content pipeline health (gaps in schedule)
+  - Batch scheduling for campaigns
+
+#### UI Design:
+```
+┌──────────────────────────────────────────────────┐
+│  December 2025                    Week | Month   │
+├──────────────────────────────────────────────────┤
+│  Mon   Tue   Wed   Thu   Fri   Sat   Sun        │
+│   1     2     3     4     5     6     7          │
+│        [T]   [L]        [T]                      │
+│                       [R]                        │
+│                                                  │
+│   8     9    10    11    12    13    14          │
+│  [T]        [T]   [L]                            │
+│        [R]        [I]                            │
+├──────────────────────────────────────────────────┤
+│  T = Twitter  L = LinkedIn  R = Reddit           │
+│  I = Instagram                                   │
+└──────────────────────────────────────────────────┘
+```
+
+#### Benefits:
+✅ **Visual planning** - see content pipeline at a glance
+✅ **Prevents over-posting** - avoid platform fatigue
+✅ **Optimal timing** - leverage TrendPulse timing data
+✅ **Multi-platform coordination** - coordinate cross-platform campaigns
+
+---
+
 ### 2.1 Voice Input/Output
 **Priority:** MEDIUM
 **Estimated Time:** 1 week
@@ -403,6 +464,70 @@ Steps:
 
 ---
 
+### 2.6 Automated Reminders & Notifications
+**Priority:** HIGH (Quick Win)
+**Estimated Time:** 3-4 days
+**Source:** Cherry-picked from DeepSeek Feature Enhancement suggestions
+
+#### Why Add This?
+Content creators forget deadlines and optimal posting times. Automated reminders ensure users publish content when it will perform best, increasing the ROI of their TrendPulse viral scores.
+
+#### Tasks:
+- [ ] **Deadline Tracking System**
+  - File: `app/api/reminders/route.ts`
+  - Store reminders in `reminders` table (new)
+  - Link to campaigns/content items
+  - Support one-time and recurring reminders
+  - Time zone awareness
+
+- [ ] **Notification Delivery**
+  - In-app notifications (badge + toast)
+  - Email notifications (via Resend or SendGrid)
+  - Browser push notifications (with user permission)
+  - SMS notifications for Pro users (optional, via Twilio)
+
+- [ ] **Reminder Types**
+  - Campaign deadline approaching (24h, 1h before)
+  - Optimal posting time (based on TrendPulse timing data)
+  - Follow-up on published content (check engagement after 1 day)
+  - Weekly content planning reminder
+  - Subscription renewal reminder
+
+- [ ] **User Preferences**
+  - File: `app/settings/notifications/page.tsx`
+  - Toggle notification types on/off
+  - Set quiet hours (no notifications)
+  - Choose delivery methods (email, push, SMS)
+  - Snooze feature (remind me in 1 hour)
+
+#### Implementation:
+```typescript
+// Database schema
+CREATE TABLE reminders (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  type VARCHAR(50), // 'deadline', 'posting_time', 'follow_up'
+  title TEXT,
+  description TEXT,
+  scheduled_for TIMESTAMP,
+  recurring BOOLEAN DEFAULT FALSE,
+  recurring_pattern VARCHAR(20), // 'daily', 'weekly', 'monthly'
+  delivered BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+// Background job (runs every minute)
+// Check for due reminders and send notifications
+```
+
+#### Benefits:
+✅ **Quick to implement** - 3-4 days vs weeks for other features
+✅ **High user value** - never miss optimal posting times
+✅ **Increases engagement** - users return to app more frequently
+✅ **Drives conversions** - reminds free users of upgrade benefits
+
+---
+
 ## Phase 3: Intelligence & Learning (3-6 months)
 **Goal:** Make Helix truly personalized and proactive
 
@@ -508,6 +633,86 @@ const actions = {
   }
 };
 ```
+
+---
+
+### 3.5 Viral Hook Library
+**Priority:** MEDIUM
+**Estimated Time:** 1-2 weeks
+**Source:** Cherry-picked from DeepSeek Feature Enhancement suggestions
+
+#### Why Add This?
+Hook structure = 70% of viral success (from TrendPulse analysis). Users need a searchable library of proven hooks they can customize for their content, reducing guesswork and increasing viral potential.
+
+#### Tasks:
+- [ ] **Hook Database**
+  - File: `lib/data/viral-hooks.ts` or database table
+  - Categorize hooks by type (curiosity, fear, social proof, controversy, etc.)
+  - Tag by platform (Twitter, LinkedIn, Reddit, Instagram)
+  - Tag by industry (SaaS, fitness, finance, etc.)
+  - Include performance metrics (avg engagement rate)
+
+- [ ] **Hook Browser UI**
+  - File: `app/trendpulse/components/HookLibrary.tsx`
+  - Search/filter by category, platform, industry
+  - Copy hook to clipboard
+  - Favorite hooks for quick access
+  - View hook variations (different phrasings)
+
+- [ ] **Hook Analytics**
+  - Track which hooks users try
+  - Correlate hook usage with actual viral scores
+  - Show "trending hooks" (most used this week)
+  - Personalize suggestions based on user's brand DNA
+
+- [ ] **Hook Templates with Variables**
+  - Template: "Are you making this {mistake}?"
+  - User fills in: mistake = "email marketing error"
+  - Result: "Are you making this email marketing error?"
+  - Variable suggestions based on user's niche
+
+- [ ] **Community Contributions**
+  - Users can submit hooks that worked for them
+  - Moderation queue for quality control
+  - Upvote/downvote system
+  - Credit original submitter
+
+#### Example Hook Categories:
+```yaml
+Curiosity Hooks:
+  - "Are you making this {mistake}?"
+  - "The {thing} nobody talks about"
+  - "I tried {X}. Here's what happened."
+  - "Why {successful_people} do {X} differently"
+
+Social Proof:
+  - "How I {achievement} in {timeframe}"
+  - "{X} people are doing this wrong"
+  - "The {thing} that made me {result}"
+
+Controversy:
+  - "Unpopular opinion: {statement}"
+  - "{Common_belief} is dead. Here's why."
+  - "Stop {common_practice}. Do this instead."
+
+Lists:
+  - "{Number} {things} that {result}"
+  - "Here's what I learned after {X}"
+  - "The only {number} {things} you need"
+```
+
+#### Integration with TrendPulse:
+- When user creates campaign, show "Suggested Hooks" based on topic
+- Helix AI can recommend hooks during chat
+- A/B test hook variations before publishing
+- Track which hooks perform best for user's niche
+
+#### Benefits:
+✅ **Reduces writer's block** - never stare at blank page
+✅ **Proven patterns** - hooks with actual performance data
+✅ **Personalized** - recommendations based on Brand DNA
+✅ **Community-driven** - library grows with user contributions
+✅ **Competitive moat** - proprietary hook database
 
 ---
 

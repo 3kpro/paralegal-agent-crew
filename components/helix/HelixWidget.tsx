@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -23,78 +21,45 @@ interface HelixWidgetProps {
   subscriptionTier?: string;
 }
 
+interface Message {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  parts?: any[];
+}
+
 export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false); // Full screen mode
-  const [isSidePanel, setIsSidePanel] = useState(false); // Side panel mode
-  const [isTransparent, setIsTransparent] = useState(false); // Transparency mode
+  const [isExpanded, setIsExpanded] = useState(false); 
+  const [isSidePanel, setIsSidePanel] = useState(false); 
+  const [isTransparent, setIsTransparent] = useState(false); 
   const [messageCount, setMessageCount] = useState(0);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{startX: number, startY: number} | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
 
-  // Local input state (AI SDK 5.0 no longer manages input internally)
+  // Manual State Management
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Use Vercel AI SDK's useChat hook for streaming (AI SDK 5.0)
-  const { messages, sendMessage, status, setMessages } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/helix/chat',
-      body: {
-        sessionId,
-        context: {
-          currentPath: pathname
-        }
-      }
-    })
-  });
-
-  // Add welcome message on first render
+  // Initialize with Welcome Message
   useEffect(() => {
     if (messages.length === 0) {
       setMessages([
         {
           id: 'welcome',
           role: 'assistant',
-          parts: [{ type: 'text', text: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?" }]
+          content: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?"
         }
       ]);
     }
-  }, []); // Run only once on mount
-
-  // Handle message completion
-  useEffect(() => {
-    if (status === 'ready' && messages.length > 1) { // More than just welcome message
-      // Increment usage count for free users when assistant responds
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage.role === 'assistant' && isLocked) {
-        setMessageCount(prev => prev + 1);
-      }
-    }
-  }, [status, messages, isLocked]);
-
-  const isLoading = status === 'streaming' || status === 'submitted';
-
-  // Helper function to extract text content from AI SDK 5.0 message parts
-  const getMessageText = (message: any): string => {
-    if (typeof message.content === 'string') {
-      // Fallback for initial messages that might have content string
-      return message.content;
-    }
-    if (message.parts) {
-      // AI SDK 5.0 format with parts array
-      return message.parts
-        .filter((part: any) => part.type === 'text')
-        .map((part: any) => part.text)
-        .join('\n');
-    }
-    return '';
-  };
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -104,25 +69,97 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
     scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input?.trim()) return;
+  // Helper to get text safe
+  const getMessageText = (msg: Message) => {
+    return msg.content || (msg.parts ? JSON.stringify(msg.parts) : "");
+  };
 
-    // Check limit for free users
+  // Manual Send Handler
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
     if (isLocked && messageCount >= 3) return;
 
-    // Send message using AI SDK 5.0 sendMessage with parts
-    sendMessage({
-      role: 'user',
-      parts: [{ type: 'text', text: input }]
-    });
-
-    // Clear input after sending
+    const userText = input.trim();
     setInput("");
+    
+    // 1. Optimistically add user message
+    const newUserMsg: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: userText
+    };
+    
+    const newHistory = [...messages, newUserMsg];
+    setMessages(newHistory);
+    setIsLoading(true);
+
+    try {
+      // 2. Fetch from backend
+      const response = await fetch('/api/helix/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newHistory,
+          sessionId: sessionId || undefined,
+          context: { currentPath: pathname }
+        })
+      });
+
+      if (!response.ok) throw new Error(response.statusText);
+      
+      // Update session ID if provided header
+      const newSessionId = response.headers.get('X-Session-Id');
+      if (newSessionId) setSessionId(newSessionId);
+
+      // 3. Handle Stream or Text Response
+      // Note: Since we reverted backend to toTextStreamResponse, 
+      // standard fetch reader is robust.
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      
+      if (!reader) throw new Error("No reader available");
+
+      // Create placeholder assistant message
+      const assistantId = "ai-" + Date.now();
+      let assistantContent = "";
+      
+      setMessages(prev => [
+        ...prev,
+        { id: assistantId, role: 'assistant', content: "" }
+      ]);
+      
+      // Increment count
+      if (isLocked) setMessageCount(c => c + 1);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value, { stream: true });
+        assistantContent += chunk;
+        
+        // Update the last message in state
+        setMessages(prev => {
+          const updated = [...prev];
+          const last = updated[updated.length - 1];
+          if (last.id === assistantId) {
+            last.content = assistantContent;
+          }
+          return updated;
+        });
+      }
+
+    } catch (err) {
+      console.error("Chat error:", err);
+      // Optional: Add error message to chat
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (isSidePanel || isExpanded) return; // Don't allow dragging in side panel or expanded mode
+    if (isSidePanel || isExpanded) return; 
     setIsDragging(true);
     dragRef.current = {
       startX: e.clientX - position.x,
@@ -148,7 +185,6 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
-
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -286,22 +322,29 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                           ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300'
                           : 'bg-coral-500 text-white shadow-lg shadow-coral-500/10'
                       }`}>
-                        {getMessageText(msg)}
+                        {msg.role === 'assistant' && !msg.content ? (
+                           // Loading dots if empty
+                           <span className="flex gap-1">
+                             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                             <span className="w-1.5 h-1.5 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                           </span>
+                        ) : getMessageText(msg)}
                       </div>
                     </div>
                   ))}
                   
-                  {isLoading && (
+                  {isLoading && messages.length > 0 && messages[messages.length-1].role !== 'assistant' && (
                     <div className="flex gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-4 h-4 text-coral-400 animate-pulse" />
-                      </div>
-                      <div className="bg-gray-800/50 border border-gray-700/50 p-3 rounded-2xl flex items-center gap-2 text-gray-400 text-sm">
-                        <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </div>
-                    </div>
+                         <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
+                           <Sparkles className="w-4 h-4 text-coral-400 animate-pulse" />
+                         </div>
+                         <div className="bg-gray-800/50 border border-gray-700/50 p-3 rounded-2xl flex items-center gap-2 text-gray-400 text-sm">
+                           <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                           <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                           <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                         </div>
+                     </div>
                   )}
                   <div ref={messagesEndRef} />
                 </div>
@@ -313,14 +356,14 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
                   <form onSubmit={handleSend} className="relative">
                     <input
                       type="text"
-                      value={input || ""}
+                      value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder={isLocked ? `Ask Helix... (${3 - messageCount} left)` : "Ask Helix..."}
                       className="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-coral-500/50 focus:ring-1 focus:ring-coral-500/50 transition-all"
                     />
                     <button
                       type="submit"
-                      disabled={!input || !input.trim() || isLoading}
+                      disabled={!input.trim() || isLoading}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-coral-500"
                     >
                       <Send className="w-4 h-4" />
