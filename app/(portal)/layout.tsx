@@ -303,76 +303,81 @@ export default function PortalLayout({
 
                 {/* Modal Content */}
                 <div className="overflow-y-auto p-6 space-y-6">
-                  {/* Campaign Archive Feature */}
+                  {/* Signal Tracking Feature */}
                   <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
                     <div className="flex items-start gap-3 mb-3">
-                      <span className="text-2xl">📦</span>
+                      <span className="text-2xl">📡</span>
                       <div>
-                        <h3 className="text-lg font-bold text-white mb-2">Campaign Archive</h3>
+                        <h3 className="text-lg font-bold text-white mb-2">Real-Time Signal Tracking</h3>
                         <p className="text-gray-300 text-sm mb-3">
-                          Keep your workspace clean without losing data! Archive old campaigns to hide them from your main view, and restore them anytime.
+                          XELORA monitors emerging signals across 6+ platforms to identify trends before they peak. Predictive momentum detection in real-time.
                         </p>
                         <div className="space-y-2">
                           <div className="flex items-start gap-2">
-                            <span className="text-green-400 mt-0.5">✓</span>
-                            <span className="text-sm text-gray-300">Non-destructive archiving - restore anytime</span>
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Multi-platform signal analysis</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <span className="text-green-400 mt-0.5">✓</span>
-                            <span className="text-sm text-gray-300">Clean workspace for active campaigns</span>
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Emerging trend identification</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <span className="text-green-400 mt-0.5">✓</span>
-                            <span className="text-sm text-gray-300">Keep records for compliance</span>
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Momentum prediction algorithms</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* AI Studio Coming Soon */}
-                  <div className="bg-[#2b2b2b] border border-purple-500/30 rounded-lg p-5">
-                    <div className="flex items-start gap-3 mb-3">
-                      <span className="text-2xl">🧠</span>
-                      <div>
-                        <h3 className="text-lg font-bold text-white mb-2">
-                          AI Studio <span className="text-xs px-2 py-1 bg-purple-500/20 border border-purple-500/30 rounded-full text-purple-300">Coming Soon</span>
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-3">
-                          Access 50+ AI models from 8 major providers through one powerful interface. Mix and match for optimal results!
-                        </p>
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          {['OpenAI', 'Claude', 'Gemini', 'Llama', 'Mistral', 'Groq', 'Cohere', 'Perplexity'].map(provider => (
-                            <span key={provider} className="text-xs px-2 py-1 bg-purple-500/10 border border-purple-500/20 rounded text-purple-300">
-                              {provider}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Font Upgrade */}
+                  {/* Viral Content Optimization */}
                   <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
                     <div className="flex items-start gap-3 mb-3">
-                      <span className="text-2xl">✨</span>
+                      <span className="text-2xl">🔥</span>
                       <div>
-                        <h3 className="text-lg font-bold text-white mb-2">Modern Font Upgrade</h3>
+                        <h3 className="text-lg font-bold text-white mb-2">Virality Engineering</h3>
+                        <p className="text-gray-300 text-sm mb-3">
+                          Optimize content for maximum engagement. XELORA analyzes what makes content viral and helps you engineer your next breakthrough moment.
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Viral score prediction</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Content optimization suggestions</span>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="text-cyan-400 mt-0.5">✓</span>
+                            <span className="text-sm text-gray-300">Timing intelligence for maximum reach</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Multi-Platform Publishing */}
+                  <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="text-2xl">🌍</span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">6+ Platform Integration</h3>
                         <p className="text-gray-300 text-sm">
-                          Upgraded to <strong>Space Grotesk</strong> for a more modern, tech-forward aesthetic throughout the platform.
+                          Publish your optimized content across Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit from a single dashboard.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Pre-launch Polish */}
+                  {/* Beta Status */}
                   <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
                     <div className="flex items-start gap-3 mb-3">
-                      <span className="text-2xl">🚀</span>
+                      <span className="text-2xl">⚡</span>
                       <div>
-                        <h3 className="text-lg font-bold text-white mb-2">Pre-launch Polish</h3>
+                        <h3 className="text-lg font-bold text-white mb-2">Now in Beta</h3>
                         <p className="text-gray-300 text-sm mb-3">
-                          Enhanced all pages with professional "Coming Soon" messaging. Features are showcased beautifully without appearing unfinished.
+                          XELORA is actively being enhanced with advanced features and signal analysis improvements. Your feedback shapes the future.
                         </p>
                       </div>
                     </div>

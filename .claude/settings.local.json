@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(nslookup:*)",
-      "Bash(timeout 120 bash:*)"
+      "Bash(timeout 120 bash:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

@@ -78,16 +78,13 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         {/* Logo & Tagline */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-coral-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">3K</span>
-            </div>
-            <span className="text-2xl font-bold text-white">
+          <Link href="/" className="inline-flex items-center justify-center mb-4">
+            <span className="text-3xl font-bold text-white uppercase tracking-wider">
               XELORA
             </span>
           </Link>
           <p className="text-gray-300 mt-2">
-            From trending topics to published content in minutes
+            Predict Momentum. Engineer Virality.
           </p>
         </div>
 
