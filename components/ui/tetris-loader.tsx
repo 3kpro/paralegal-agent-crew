@@ -293,17 +293,13 @@ export default function TetrisLoading({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="mb-4 flex justify-center">
-        <div className={`border-2 border-tron-grid bg-tron-dark/50 backdrop-blur-md rounded-xl shadow-xl ${config.padding} transition-colors`}>
-          {renderGrid()}
-        </div>
+    <div className="flex flex-col items-center gap-4">
+      <div className={`border-2 border-tron-grid bg-tron-dark/50 backdrop-blur-md rounded-xl shadow-xl ${config.padding} transition-colors`}>
+        {renderGrid()}
       </div>
 
       {showLoadingText && (
-        <div className="text-center">
-          <p className="text-gray-400 font-medium text-sm animate-pulse">{loadingText}</p>
-        </div>
+        <p className="text-gray-400 font-medium text-sm animate-pulse">{loadingText}</p>
       )}
     </div>
   )

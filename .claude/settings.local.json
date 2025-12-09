@@ -4,7 +4,8 @@
       "Bash(nslookup:*)",
       "Bash(timeout 120 bash:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

@@ -155,12 +155,20 @@ export default function CampaignDetailClient({
 
       {/* Header */}
       <div className="mb-8">
-        <Link
-          href="/campaigns"
-          className="inline-flex items-center text-tron-cyan hover:text-tron-cyan/80 mb-4"
-        >
-          ← Back to Campaigns
-        </Link>
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={handleEdit}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan/20 border border-tron-cyan text-tron-cyan hover:bg-tron-cyan/30 rounded-lg transition-colors"
+          >
+            ✏️ Continue Editing
+          </button>
+          <Link
+            href="/campaigns"
+            className="inline-flex items-center gap-2 px-4 py-2 text-tron-cyan hover:text-tron-cyan/80 transition-colors"
+          >
+            📋 View All Campaigns
+          </Link>
+        </div>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-tron-text mb-2">
