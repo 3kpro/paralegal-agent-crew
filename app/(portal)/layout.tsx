@@ -9,7 +9,7 @@ import { FloatingNav } from "@/components/ui/floating-nav";
 import SettingsModal from "@/components/SettingsModal";
 import { Settings, Sparkles, ChevronDown } from "lucide-react";
 import HelixWidget from "@/components/helix/HelixWidget";
-import { XELORALogo } from "@/components/XELORALogo";
+import { XeloraLogo } from "@/components/XeloraLogo";
 
 interface Profile {
   email?: string;
@@ -189,7 +189,7 @@ export default function PortalLayout({
                  <h2 className="text-lg md:text-xl font-semibold text-white">
                    3K Pro Services
                  </h2>
-                 <XELORALogo className="w-14 h-14" />
+                 <XeloraLogo className="w-14 h-14" />
                </div>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}

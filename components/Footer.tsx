@@ -1,4 +1,4 @@
-import { XeloraLogo } from "./XELORALogo";
+import { XeloraLogo } from "./XeloraLogo";
 
 export const Footer: React.FC = () => {
   const scrollToSection = (sectionId: string) => {

@@ -1,7 +1,7 @@
 import { Button } from "./ui/Button";
 import Link from "next/link";
 import { useState } from "react";
-import { XeloraLogo } from "./XELORALogo";
+import { XeloraLogo } from "./XeloraLogo";
 
 interface NavigationProps {
   onContactClick?: () => void;
