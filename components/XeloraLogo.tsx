@@ -12,10 +12,13 @@ export function XeloraLogo({ className = "w-16 h-16", showText = false }: { clas
         <Image
           src="/xelora-logo.png"
           alt="XELORA Logo"
-          fill
-          className="object-contain"
+          width={64}
+          height={64}
+          className="w-full h-full object-contain"
           priority
-          style={{ filter: "brightness(0) saturate(100%) invert(59%) sepia(89%) saturate(1270%) hue-rotate(181deg) brightness(100%) contrast(101%)" }}
+          style={{
+            filter: "brightness(0) saturate(100%) invert(59%) sepia(89%) saturate(1270%) hue-rotate(181deg) brightness(100%) contrast(101%)",
+          }}
         />
       </div>
     </div>

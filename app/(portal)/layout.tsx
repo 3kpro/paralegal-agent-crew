@@ -186,10 +186,10 @@ export default function PortalLayout({
           <header className="bg-[#343a40] border-b border-gray-700/50 px-4 md:px-8 py-3 md:pl-32">
             <div className="flex items-center justify-between">
                <div className="flex items-center gap-3">
-                 <h2 className="text-lg md:text-xl font-semibold text-white">
-                   3K Pro Services
-                 </h2>
-                 <XeloraLogo className="w-14 h-14" />
+                 <span className="text-lg md:text-xl font-bold text-white uppercase tracking-wide">
+                   XELORA
+                 </span>
+                 <XeloraLogo className="w-12 h-12" />
                </div>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}

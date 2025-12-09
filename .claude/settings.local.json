@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(nslookup:*)"
+      "Bash(nslookup:*)",
+      "Bash(timeout 120 bash:*)"
     ],
     "deny": [],
     "ask": []

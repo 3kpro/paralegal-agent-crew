@@ -56,7 +56,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#0A0F1F] flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full">
         {/* Progress */}
         <div className="mb-8">
@@ -70,14 +70,14 @@ export default function OnboardingPage() {
           </div>
           <div className="w-full bg-gray-700/50 rounded-full h-2 relative overflow-hidden">
             <div
-              className="bg-coral-500 h-full rounded-full transition-all duration-300 absolute top-0 left-0"
+              className="bg-[#00C7F2] h-full rounded-full transition-all duration-300 absolute top-0 left-0"
               style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Step Content */}
-        <div className="bg-[#343a40] rounded-2xl shadow-xl p-8 border-2 border-gray-700/50">
+        <div className="bg-[#1a2030] rounded-2xl shadow-xl p-8 border-2 border-[#00C7F2]/30">
           {/* Step 1: Interest Selection */}
           {step === 1 && (
             <InterestSelection
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                     type="text"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full h-12 px-4 bg-[#2b2b2b] border border-gray-700 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-white"
+                    className="w-full h-12 px-4 bg-[#0F1628] border border-[#00C7F2]/30 rounded-lg focus:ring-2 focus:ring-[#00C7F2] focus:border-transparent text-white"
                     placeholder="Acme Inc."
                   />
                 </div>
@@ -131,7 +131,7 @@ export default function OnboardingPage() {
                     onChange={(e) => setIndustry(e.target.value)}
                     aria-label="Industry"
                     title="Select your industry"
-                    className="w-full h-12 px-4 bg-[#2b2b2b] border border-gray-700 rounded-lg focus:ring-2 focus:ring-coral-500 focus:border-transparent text-white"
+                    className="w-full h-12 px-4 bg-[#0F1628] border border-[#00C7F2]/30 rounded-lg focus:ring-2 focus:ring-[#00C7F2] focus:border-transparent text-white"
                   >
                     <option value="">Select industry...</option>
                     <option value="technology">Technology</option>
@@ -146,7 +146,7 @@ export default function OnboardingPage() {
 
                 <button
                   onClick={() => setStep(4)}
-                  className="w-full h-14 bg-coral-500 hover:bg-coral-600 text-white font-semibold rounded-lg transition-colors"
+                  className="w-full h-14 bg-[#00C7F2] hover:bg-[#A17CF9] text-[#0A0F1F] font-semibold rounded-lg transition-colors uppercase tracking-wide"
                 >
                   Next: Connect Socials →
                 </button>
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={() => router.push("/api/auth/connect/twitter")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🐦</span>
                   <span className="font-medium text-gray-300">
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => router.push("/api/auth/connect/linkedin")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">💼</span>
                   <span className="font-medium text-gray-300">
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => router.push("/api/auth/connect/facebook")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">📘</span>
                   <span className="font-medium text-gray-300">
@@ -195,7 +195,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => router.push("/api/auth/connect/instagram")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">📸</span>
                   <span className="font-medium text-gray-300">
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => router.push("/api/auth/connect/tiktok")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🎵</span>
                   <span className="font-medium text-gray-300">
@@ -213,7 +213,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => router.push("/api/auth/connect/reddit")}
-                  className="h-16 border-2 border-gray-700 hover:border-coral-500 rounded-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
                   <span className="text-2xl">🤖</span>
                   <span className="font-medium text-gray-300">
@@ -226,7 +226,7 @@ export default function OnboardingPage() {
                 <button
                   onClick={handleComplete}
                   disabled={loading}
-                  className="w-full h-14 bg-coral-500 hover:bg-coral-600 disabled:bg-coral-500/40 text-white font-semibold rounded-lg transition-colors"
+                  className="w-full h-14 bg-[#00C7F2] hover:bg-[#A17CF9] disabled:bg-[#00C7F2]/40 text-[#0A0F1F] font-semibold rounded-lg transition-colors uppercase tracking-wide"
                 >
                   {loading ? "Completing..." : "Complete Setup →"}
                 </button>

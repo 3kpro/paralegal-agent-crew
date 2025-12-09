@@ -12,29 +12,29 @@ interface WelcomeMessage {
 
 const welcomeMessages: WelcomeMessage[] = [
   {
-    text: "Tired of staring at blank screens?",
-    subtext: "Welcome to XELORA. We fixed that.",
-    duration: 3500,
+    text: "Before they see it.",
+    subtext: "Before the internet reacts to it.",
+    duration: 5000,
   },
   {
-    text: "Here's the secret:",
-    subtext: "Trends are just conversations you're late to... until now",
-    duration: 3500,
+    text: "XELORA predicts momentum.",
+    subtext: "Emerging signals across platforms, decoded in real-time.",
+    duration: 5500,
   },
   {
-    text: "We find what's hot.",
-    subtext: "AI writes the content. You take the credit.",
-    duration: 3500,
+    text: "While creators are guessing,",
+    subtext: "you're engineering virality.",
+    duration: 5500,
   },
   {
-    text: "While they're still brainstorming,",
-    subtext: "you're already posting. That's the edge.",
-    duration: 3500,
+    text: "Trends reveal themselves to those who listen.",
+    subtext: "XELORA helps you hear them first.",
+    duration: 5500,
   },
   {
-    text: "Ready to move at internet speed?",
-    subtext: "Let's build your first campaign",
-    duration: 4500,
+    text: "Ready to engineer your next viral moment?",
+    subtext: "Let's begin.",
+    duration: 6000,
   },
 ];
 
