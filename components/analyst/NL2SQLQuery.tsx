@@ -69,14 +69,25 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
     }
 
     // MVP: Simple Table / JSON View
-    console.log('[NL2SQL] Result Data:', result.data);
+    console.log('[NL2SQL] Raw Data:', result.data);
     
+    // cast result.data to any to handle runtime type mismatches
+     
+    let rows: any = result.data;
+
+    // Handle single object response (e.g. from COUNT or single row queries)
+    if (!Array.isArray(rows) && rows && typeof rows === 'object') {
+       console.log('[NL2SQL] Wrapping single object in array');
+       rows = [rows];
+    }
+
     // Ensure we have an array of objects
-    if (!Array.isArray(result.data)) {
+    if (!Array.isArray(rows)) {
         return <div className="p-4 bg-red-900/20 text-red-200 rounded-xl">Error: Data is not an array. Received: {typeof result.data}</div>
     }
 
-    const firstValidRow = result.data.find(row => row && typeof row === 'object');
+     
+    const firstValidRow = rows.find((row: any) => row && typeof row === 'object');
     if (!firstValidRow) {
          return <div className="p-4 bg-gray-900/50 text-gray-400 rounded-xl">Data found but format is invalid for table display.</div>
     }
@@ -95,7 +106,8 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              {result.data.map((row, idx) => (
+              { }
+              {rows.map((row: any, idx: number) => (
                 <tr key={idx} className="hover:bg-white/5 transition-colors">
                   {keys.map((k) => (
                     <td key={`${idx}-${k}`} className="px-6 py-4 text-gray-300">

@@ -5,7 +5,9 @@
       "Bash(timeout 120 bash:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git push:*)",
+      "Bash(vercel deploy:*)"
     ],
     "deny": [],
     "ask": []
