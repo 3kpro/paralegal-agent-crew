@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-08] - AI Studio Icons & TrendPulse Demo Video
+
+### Added
+- **TrendPulse Product Hunt Demo Video**:
+  - Professional 105-second demo video showcasing TrendPulse workflow.
+  - Narrative structure: Pain point → Solution → App walkthrough → Brand confidence.
+  - Scenes: Campaign creation, platform selection, trend analysis, AI content shaping, final review.
+  - Features opening hook ("3 hours, 3 likes") and animated logo outro.
+  - Produced with CapCut, Veo 3.1 AI scenes, and professional audio mixing.
+  - File: `/public/media/VIDEO/Promo_Video_TrendPulse/V2/Final/FinalDemoVid_12_08_25_with_Audio.mp4`
+
+### Fixed
+- **AI Studio Provider Icons**:
+  - Resolved missing brand logos on `/ai-studio` page.
+  - Copied 8 provider logos (OpenAI, Anthropic, Google, Meta, Mistral, Cohere, Groq, Perplexity) to `/public/brands/`.
+  - Icons now display correctly instead of placeholder lucide-react icons.
+
+### Changed
+- **Navigation**: Added "Analyst" link to the desktop floating navigation menu.
+
 ## [2025-12-06] - Helix Chat Restoration & TrendPulse Analyst (Gemini)
 
 ### Added

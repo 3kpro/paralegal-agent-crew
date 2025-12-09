@@ -72,6 +72,11 @@ export function FloatingNav() {
           label="Reactor"
         />
         <MenuItem
+          icon={<div className="text-coral-400"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>}
+          onClick={() => router.push('/analyst')}
+          label="Analyst"
+        />
+        <MenuItem
           icon={<BarChart3 size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/analytics')}
           label="Analytics"
