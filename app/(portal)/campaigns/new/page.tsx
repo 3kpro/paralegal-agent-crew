@@ -1226,13 +1226,9 @@ export default function NewCampaignPage() {
   // Show loading screen while loading campaign data in edit mode
   if (loadingCampaignData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4">
-            <TetrisLoading size="lg" showLoadingText={false} />
-          </div>
-          <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex flex-col items-center justify-center gap-4">
+        <TetrisLoading size="lg" showLoadingText={false} />
+        <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
       </div>
     );
   }

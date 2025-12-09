@@ -71,7 +71,7 @@ export default function ModernFeatures() {
   return (
     <section
       id="features"
-      className="py-24 bg-[#2b2b2b] relative overflow-hidden"
+      className="py-24 bg-[#0A0F1F] relative overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 bg-grid-gray-900 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.05))] -z-10" />
@@ -133,7 +133,7 @@ export default function ModernFeatures() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group relative"
               >
-                <div className="h-full bg-[#343a40] rounded-2xl p-6 shadow-xl transition-all duration-300 border-2 border-gray-700/50 hover:border-coral-500/50 hover:shadow-coral-500/10 flex flex-col">
+                <div className="h-full bg-[#1a2030] rounded-2xl p-6 shadow-xl transition-all duration-300 border-2 border-[#00C7F2]/20 hover:border-[#00C7F2]/50 hover:shadow-[#00C7F2]/10 flex flex-col">
                   {/* Icon and Status Badge Row */}
                   <div className="flex items-start justify-between mb-4">
                     <div
@@ -157,7 +157,7 @@ export default function ModernFeatures() {
                   </h3>
 
                   {/* Subtitle */}
-                  <p className="text-xs font-semibold text-coral-400 mb-3 uppercase tracking-wide">
+                  <p className="text-xs font-semibold text-[#00C7F2] mb-3 uppercase tracking-wide">
                     {feature.subtitle}
                   </p>
 
