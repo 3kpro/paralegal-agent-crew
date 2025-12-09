@@ -22,7 +22,7 @@ export interface Interest {
   id: string;
   label: string;
   icon: React.ComponentType<any>;
-  keywords: string[]; // For TrendPulse™ search
+  keywords: string[]; // For XELORA™ search
 }
 
 const INTERESTS: Interest[] = [
@@ -141,7 +141,7 @@ export default function InterestSelection({
         </h1>
         <p className="text-gray-400">
           Select {minSelection}-{maxSelection} topics to discover trending
-          content in YOUR interests. This helps TrendPulse™ show you relevant
+          content in YOUR interests. This helps XELORA™ show you relevant
           trends.
         </p>
         <p className="text-sm text-coral-400 mt-2">

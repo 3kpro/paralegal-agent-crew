@@ -193,7 +193,7 @@ export default function ModernFeatures() {
               className="inline-flex items-center gap-2 px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200"
             >
               <Sparkles className="w-5 h-5" />
-              Join TrendPulse™ Beta
+              Join XELORA™ Beta
             </a>
             <span className="text-sm text-gray-400">
               Limited spots available

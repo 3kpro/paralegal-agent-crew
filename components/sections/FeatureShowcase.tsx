@@ -5,7 +5,7 @@ import { Star, Quote, Twitter, Linkedin, MessageSquare } from "lucide-react";
 
 const features = [
   {
-    name: "TrendPulse™",
+    name: "XELORA™",
     role: "Real-Time Trend Detection",
     image: "TP",
     content:

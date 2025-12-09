@@ -7,7 +7,7 @@ export function StructuredData() {
   const softwareApplicationSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "TrendPulse",
+    "name": "XELORA",
     "applicationCategory": "BusinessApplication",
     "applicationSubCategory": "Content Marketing Software",
     "operatingSystem": "Web Browser",
@@ -67,7 +67,7 @@ export function StructuredData() {
     "name": "3K Pro Services",
     "url": "https://trendpulse.3kpro.services",
     "logo": "https://trendpulse.3kpro.services/logo.png",
-    "description": "AI-powered content marketing tools for creators and businesses. TrendPulse predicts viral content with 87% accuracy.",
+    "description": "AI-powered content marketing tools for creators and businesses. XELORA predicts viral content with 87% accuracy.",
     "sameAs": [
       "https://twitter.com/3kproservices",
       "https://linkedin.com/company/3kproservices"
@@ -82,7 +82,7 @@ export function StructuredData() {
   const webApplicationSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "TrendPulse",
+    "name": "XELORA",
     "url": "https://trendpulse.3kpro.services",
     "description": "Predict viral content performance before creating it. AI analyzes 1M+ viral posts for accurate engagement predictions.",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -103,10 +103,10 @@ export function StructuredData() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What is TrendPulse?",
+        "name": "What is XELORA?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "TrendPulse is an AI-powered tool that predicts viral content performance before you create it. Our Viral Score system analyzes 1M+ viral posts to give you a 0-100 score with 87% accuracy, helping you eliminate wasted time on content that flops."
+          "text": "XELORA is an AI-powered tool that predicts viral content performance before you create it. Our Viral Score system analyzes 1M+ viral posts to give you a 0-100 score with 87% accuracy, helping you eliminate wasted time on content that flops."
         }
       },
       {
@@ -119,7 +119,7 @@ export function StructuredData() {
       },
       {
         "@type": "Question",
-        "name": "Do I need API keys to use TrendPulse?",
+        "name": "Do I need API keys to use XELORA?",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "No. All new users automatically use our global API keys for campaign generation. There's no setup required - just sign up and start creating viral content immediately."
@@ -127,10 +127,10 @@ export function StructuredData() {
       },
       {
         "@type": "Question",
-        "name": "What platforms does TrendPulse support?",
+        "name": "What platforms does XELORA support?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "TrendPulse generates platform-optimized content for Twitter, LinkedIn, Instagram, Facebook, Reddit, and TikTok. Each platform gets content optimized for its specific format, character limits, and engagement patterns."
+          "text": "XELORA generates platform-optimized content for Twitter, LinkedIn, Instagram, Facebook, Reddit, and TikTok. Each platform gets content optimized for its specific format, character limits, and engagement patterns."
         }
       }
     ]

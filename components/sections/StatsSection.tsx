@@ -113,7 +113,7 @@ export const StatsSection: React.FC = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
             <Star className="w-4 h-4 text-coral-400" fill="currentColor" />
             <span className="text-sm font-semibold text-coral-400">
-              TrendPulse™ Platform
+              XELORA™ Platform
             </span>
           </div>
 

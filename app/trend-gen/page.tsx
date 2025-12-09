@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import TrendDiscovery from "../../components/TrendDiscovery";
 
 export default function TrendGenPage() {
@@ -17,16 +18,16 @@ export default function TrendGenPage() {
                 <span className="text-white font-bold text-sm">3K</span>
               </div>
               <span className="text-xl font-bold text-white">
-                TrendPulse
+                XELORA
               </span>
             </button>
             <div className="flex items-center space-x-4">
-              <a
+              <Link
                 href="/"
                 className="text-gray-300 hover:text-white transition-colors"
               >
                 ← Back to Home
-              </a>
+              </Link>
               <a href="/signup" className="px-4 py-2 bg-coral-500 hover:bg-coral-600 text-white rounded-lg transition-colors">
                 Sign Up
               </a>

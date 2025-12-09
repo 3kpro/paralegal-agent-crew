@@ -82,7 +82,7 @@ export default function SignupPage() {
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              TrendPulse
+              XELORA
             </span>
           </Link>
           <p className="text-gray-300 mt-2">

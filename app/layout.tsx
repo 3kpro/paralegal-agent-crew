@@ -6,34 +6,34 @@ import { Analytics } from "@vercel/analytics/next";
 import { StructuredData } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
-  title: "TrendPulse™ - AI Viral Content Prediction | 87% Accuracy Score",
+  title: "XELORA - Predictive Intelligence for Creators",
   description:
-    "Predict viral content BEFORE you create it. TrendPulse AI analyzes 1M+ viral posts to give you a Viral Score (0-100) with 87% accuracy. Stop wasting time on content that flops. Multi-platform content generation for Twitter, LinkedIn, Instagram, Reddit.",
+    "XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality. Real-time signal analysis, multi-platform optimization, 6+ platform integration.",
   keywords:
-    "viral content prediction, AI content analysis, viral score, content performance prediction, social media AI, trending topics, content marketing AI, viral marketing tool, engagement prediction, content analytics, Twitter viral, LinkedIn viral, Instagram growth, Reddit marketing, AI content generator, GPT-4 content, Gemini AI, content automation, social media automation",
+    "viral prediction, trend analysis, content optimization, signal intelligence, momentum prediction, multi-platform content, social media AI, AI content prediction, trend forecasting, viral intelligence, creator tools",
   authors: [{ name: "3K Pro Services" }],
   openGraph: {
-    title: "TrendPulse™ - Predict Viral Content with 87% Accuracy",
+    title: "XELORA - Predict Momentum. Engineer Virality.",
     description:
-      "Stop guessing. Start knowing. TrendPulse AI predicts what content will go viral BEFORE you create it. Viral Score™ system trained on 1M+ viral posts. Save 15+ hours/week by eliminating content that flops.",
-    url: "https://trendpulse.3kpro.services",
-    siteName: "TrendPulse™",
+      "XELORA analyzes emerging signals across platforms to reveal what's about to rise. Before creators see it. Before the internet reacts to it.",
+    url: "https://xelora.app",
+    siteName: "XELORA",
     type: "website",
     images: [
       {
-        url: "https://trendpulse.3kpro.services/og-image.png",
+        url: "https://xelora.app/og-image.png",
         width: 1200,
         height: 630,
-        alt: "TrendPulse - AI viral content prediction with 87% accuracy. Predict performance before you publish.",
+        alt: "XELORA - Predictive intelligence platform for creators and brands.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "TrendPulse™ - AI Predicts Viral Content (87% Accuracy)",
+    title: "XELORA - Predictive Intelligence",
     description:
-      "Know what will go viral BEFORE creating it. Viral Score™ system analyzes 1M+ posts. Save 15+ hours/week. Free tier available.",
-    images: ["https://trendpulse.3kpro.services/og-image.png"],
+      "Predict momentum. Engineer virality. XELORA analyzes signals before the internet reacts.",
+    images: ["https://xelora.app/og-image.png"],
     creator: "@3kproservices",
   },
   robots: {

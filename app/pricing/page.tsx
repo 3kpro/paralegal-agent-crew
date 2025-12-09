@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { TIER_LIMITS } from '@/lib/stripe';
 import { CheckoutButton } from '@/components/CheckoutButton';
 import { createClient } from '@/lib/supabase/server';
@@ -28,7 +29,7 @@ export default async function PricingPage() {
       <nav className="bg-gray-900/95 backdrop-blur-md shadow-sm border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <a
+            <Link
               href="/"
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
@@ -36,9 +37,9 @@ export default async function PricingPage() {
                 <span className="text-white font-bold text-sm">3K</span>
               </div>
                <span className="text-xl font-bold text-white">
-                 TrendPulse
+                 XELORA
                </span>
-            </a>
+            </Link>
             <div className="flex items-center space-x-4">
               <a
                 href="/dashboard"
@@ -75,7 +76,7 @@ export default async function PricingPage() {
               </button>
             </div>
             <div className="px-6 pt-6 pb-8">
-              <h4 className="text-sm font-medium text-white">TrendPulse™ Access:</h4>
+              <h4 className="text-sm font-medium text-white">XELORA™ Access:</h4>
               <ul className="mt-6 space-y-4">
                 <li className="flex items-center space-x-3">
                   <span className="text-coral-400">✓</span>
@@ -166,7 +167,7 @@ export default async function PricingPage() {
               <ul className="mt-6 space-y-4">
                 <li className="flex items-center space-x-3">
                   <span className="text-coral-400">✓</span>
-                  <span className="text-sm text-gray-300">White-label TrendPulse™</span>
+                  <span className="text-sm text-gray-300">White-label XELORA™</span>
                 </li>
                 <li className="flex items-center space-x-3">
                   <span className="text-coral-400">✓</span>

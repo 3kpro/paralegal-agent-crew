@@ -1,37 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)",
-      "Bash(npx tsc:*)",
-      "Bash(npm run lint:*)",
-      "Bash(npm install:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(vercel ls:*)",
-      "Bash(git rm:*)",
-      "Bash(cat:*)",
-      "Bash(timeout 15 bash:*)",
-      "Bash(npm run dev:*)",
-      "Bash(taskkill:*)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(timeout 30 bash:*)",
-      "Bash(curl:*)",
-      "SlashCommand(/deploy)",
-      "Bash(vercel:*)",
-      "Bash(npx tsx:*)",
-      "Bash(if exist ZENCODER_HANDOFF_DESIGN.md del ZENCODER_HANDOFF_DESIGN.md)",
-      "Bash(if exist CHATGPT_HANDOFF_QA.md del CHATGPT_HANDOFF_QA.md)",
-      "Bash(dir:*)",
-      "Bash(test:*)",
-      "Bash(if exist .next rd /s /q .next)",
-      "Bash(timeout 10 bash:*)",
-      "Bash(cmd /c \"if exist .next rd /s /q .next\")",
-      "Bash(magick identify:*)",
-      "Bash(python:*)",
-      "Bash(tail:*)",
-      "Bash(node:*)"
+      "Bash(nslookup:*)"
     ],
     "deny": [],
     "ask": []

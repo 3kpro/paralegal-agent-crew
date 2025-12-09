@@ -1,4 +1,4 @@
-import { TrendPulseLogo } from "./TrendPulseLogo";
+import { XeloraLogo } from "./XELORALogo";
 
 export const Footer: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
@@ -14,8 +14,8 @@ export const Footer: React.FC = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <span className="text-xl font-bold">TrendPulse</span>
-              <TrendPulseLogo className="w-16 h-16" />
+              <span className="text-xl font-bold">XELORA</span>
+              <XeloraLogo className="w-16 h-16" />
             </div>
             <p className="text-tron-text-muted">
               AI-powered content marketing platform for modern businesses.
@@ -124,7 +124,7 @@ export const Footer: React.FC = () => {
         <div className="border-t border-tron-grid mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-tron-text-muted">
-              &copy; 2025 TrendPulse. All rights reserved.
+              &copy; 2025 XELORA. All rights reserved.
             </p>
 
             <div className="flex space-x-6 mt-4 md:mt-0">

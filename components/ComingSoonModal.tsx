@@ -101,10 +101,10 @@ export default function ComingSoonModal({
                     {/* Big Picture Vision */}
                     <div className="space-y-4">
                       <h3 className="text-xl font-bold text-tron-cyan">
-                        The Big Picture: TrendPulse
+                        The Big Picture: XELORA
                       </h3>
                       <p className="text-tron-text-muted leading-relaxed">
-                        TrendPulse is just the beginning. We're building a
+                        XELORA is just the beginning. We're building a
                         complete AI-powered content ecosystem that transforms
                         how you create, manage, and distribute content across
                         the internet.
@@ -116,7 +116,7 @@ export default function ComingSoonModal({
                       <div className="bg-tron-dark/50 border border-tron-cyan/20 rounded-lg p-4">
                         <div className="text-2xl mb-2">🎯</div>
                         <h4 className="font-semibold text-tron-text mb-1">
-                          TrendPulse
+                          XELORA
                         </h4>
                         <p className="text-xs text-tron-text-muted">
                           Ride trending topics before your competition

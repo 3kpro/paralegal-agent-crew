@@ -9,14 +9,14 @@ const faqs = [
     category: "Getting Started",
     questions: [
       {
-        question: "How does TrendPulse work?",
+        question: "How does XELORA work?",
         answer:
-          "TrendPulse uses our TrendPulse™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ publishes or schedules across all your channels. The entire process takes under 60 seconds.",
+          "XELORA uses our XELORA™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ publishes or schedules across all your channels. The entire process takes under 60 seconds.",
       },
       {
         question: "Do I need any technical skills to use it?",
         answer:
-          "Not at all! TrendPulse is designed for creators, not developers. If you can post on social media, you can use our platform. Our onboarding wizard walks you through connecting your accounts and launching your first campaign in under 5 minutes.",
+          "Not at all! XELORA is designed for creators, not developers. If you can post on social media, you can use our platform. Our onboarding wizard walks you through connecting your accounts and launching your first campaign in under 5 minutes.",
       },
       {
         question: "Which platforms does it support?",
@@ -46,7 +46,7 @@ const faqs = [
       {
         question: "What if my industry is very niche?",
         answer:
-          "TrendPulse™ works across all industries! You can specify your niche during setup (SaaS, coaching, e-commerce, etc.) and our trend discovery focuses on your specific market. The more specific you are, the better your results.",
+          "XELORA™ works across all industries! You can specify your niche during setup (SaaS, coaching, e-commerce, etc.) and our trend discovery focuses on your specific market. The more specific you are, the better your results.",
       },
     ],
   },
@@ -66,7 +66,7 @@ const faqs = [
       {
         question: "Do you offer refunds?",
         answer:
-          "We offer a 30-day money-back guarantee on all plans. If you're not satisfied with TrendPulse, contact us within 30 days for a full refund.",
+          "We offer a 30-day money-back guarantee on all plans. If you're not satisfied with XELORA, contact us within 30 days for a full refund.",
       },
     ],
   },
@@ -234,7 +234,7 @@ export default function FAQSection() {
             </h3>
             <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
               Our team is here to help! Book a free 15-minute consultation to
-              discuss your content strategy and see if TrendPulse is
+              discuss your content strategy and see if XELORA is
               right for you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

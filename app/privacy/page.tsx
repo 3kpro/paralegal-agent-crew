@@ -8,7 +8,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">Introduction</h2>
             <p>
-              TrendPulse ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our social media management platform.
+              XELORA ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our social media management platform.
             </p>
           </section>
 
@@ -16,7 +16,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold text-tron-text mb-4">Information We Collect</h2>
             <h3 className="text-xl font-medium text-tron-text mb-2">Account Information</h3>
             <p className="mb-4">
-              When you register for TrendPulse, we collect your email address, name, and password. You may also provide additional profile information.
+              When you register for XELORA, we collect your email address, name, and password. You may also provide additional profile information.
             </p>
 
             <h3 className="text-xl font-medium text-tron-text mb-2">Social Media Connections</h3>
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
 
             <h3 className="text-xl font-medium text-tron-text mb-2">Usage Data</h3>
             <p>
-              We collect information about how you use TrendPulse, including campaigns created, content generated, posts published, and platform usage statistics.
+              We collect information about how you use XELORA, including campaigns created, content generated, posts published, and platform usage statistics.
             </p>
           </section>
 
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">Third-Party Services</h2>
             <p className="mb-4">
-              TrendPulse integrates with the following third-party services:
+              XELORA integrates with the following third-party services:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li><strong>Social Media Platforms:</strong> Twitter/X, Instagram, LinkedIn, TikTok, Facebook</li>

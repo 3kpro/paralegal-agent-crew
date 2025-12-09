@@ -42,7 +42,7 @@ export default function WaitlistSection() {
               🎉 You're on the list!
             </h2>
             <p className="text-xl text-gray-300">
-              We'll notify you when TrendPulse launches. Get ready to
+              We'll notify you when XELORA launches. Get ready to
               revolutionize your content workflow!
             </p>
           </motion.div>
@@ -82,7 +82,7 @@ export default function WaitlistSection() {
           </div>
 
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Join TrendPulse™ Beta
+            Join XELORA™ Beta
             <br />
             <span className="bg-gradient-to-r from-coral-400 to-coral-600 bg-clip-text text-transparent">
               Available Now

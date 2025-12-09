@@ -8,14 +8,14 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using TrendPulse, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.
+              By accessing or using XELORA, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">2. Description of Service</h2>
             <p>
-              TrendPulse is a social media management platform that provides AI-powered content generation, trend discovery, and multi-platform publishing capabilities for businesses and individuals.
+              XELORA is a social media management platform that provides AI-powered content generation, trend discovery, and multi-platform publishing capabilities for businesses and individuals.
             </p>
           </section>
 
@@ -23,7 +23,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-semibold text-tron-text mb-4">3. User Accounts</h2>
             <h3 className="text-xl font-medium text-tron-text mb-2">Registration</h3>
             <p className="mb-4">
-              You must create an account to use TrendPulse. You agree to provide accurate, current information and keep your account secure.
+              You must create an account to use XELORA. You agree to provide accurate, current information and keep your account secure.
             </p>
 
             <h3 className="text-xl font-medium text-tron-text mb-2">Account Responsibility</h3>
@@ -35,7 +35,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">4. Social Media Connections</h2>
             <p className="mb-4">
-              When you connect social media accounts to TrendPulse:
+              When you connect social media accounts to XELORA:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>You grant us permission to post content on your behalf</li>
@@ -75,7 +75,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">7. Subscription and Payment</h2>
             <p className="mb-4">
-              TrendPulse offers subscription-based pricing with different tiers:
+              XELORA offers subscription-based pricing with different tiers:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Subscriptions renew automatically unless cancelled</li>

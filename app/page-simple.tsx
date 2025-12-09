@@ -2,7 +2,7 @@ export default function SimpleHomePage() {
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-blue-600 text-white p-6">
-        <h1 className="text-3xl font-bold">TrendPulse</h1>
+        <h1 className="text-3xl font-bold">XELORA</h1>
         <p className="text-xl mt-2">
           Turn Trending Topics Into Published Content
         </p>
@@ -21,7 +21,7 @@ export default function SimpleHomePage() {
 
         <section className="grid md:grid-cols-3 gap-8">
           <div className="text-center p-6">
-            <h3 className="text-xl font-semibold mb-2">TrendPulse™</h3>
+            <h3 className="text-xl font-semibold mb-2">XELORA™</h3>
             <p className="text-gray-600">Discover what's trending</p>
           </div>
           <div className="text-center p-6">

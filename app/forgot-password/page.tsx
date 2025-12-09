@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">
-              TrendPulse
+              XELORA
             </span>
           </Link>
           <p className="text-gray-600 mt-2">Reset your password</p>

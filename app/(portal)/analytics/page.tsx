@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
           </h2>
           <p className="text-tron-text-muted max-w-2xl mx-auto">
             Advanced analytics and insights are being built as part of the next
-            TrendPulse platform expansion. You'll soon have access to comprehensive
+            XELORA platform expansion. You'll soon have access to comprehensive
             performance tracking, audience insights, and campaign optimization
             tools.
           </p>

@@ -15,7 +15,7 @@ const plans = [
       "5 trend campaigns per month",
       "10 trend searches per day",
       "Viral Score™ predictions",
-      "TrendPulse™ Discovery",
+      "XELORA™ Discovery",
       "Basic analytics",
       "Community support",
     ],
@@ -50,7 +50,7 @@ const plans = [
     gradient: "from-purple-500 to-pink-600",
     features: [
       "Everything in Pro",
-      "White-label TrendPulse™",
+      "White-label XELORA™",
       "Custom Viral Score™ models",
       "100GB storage",
       "24/7 priority support",
@@ -78,11 +78,11 @@ export default function ModernPricing() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-            TrendPulse™ Launch Pricing
+            XELORA™ Launch Pricing
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             Start for free. Upgrade anytime for unlimited access.
-            More TrendPulse features coming soon.
+            More XELORA features coming soon.
           </p>
         </motion.div>
 

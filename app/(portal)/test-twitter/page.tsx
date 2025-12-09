@@ -6,11 +6,11 @@ import { motion } from "framer-motion";
 import { Sparkles, RefreshCw } from "lucide-react";
 
 const mockContent = [
-  "🚀 Just discovered the secret to viral content: AI + trending topics = engagement gold! Who else is using TrendPulse? #ContentMarketing #AI",
+  "🚀 Just discovered the secret to viral content: AI + trending topics = engagement gold! Who else is using XELORA? #ContentMarketing #AI",
   "Breaking: The future of social media is here. And it's automated. 🤖✨ #TechTrends #SocialMedia",
-  "Hot take: If you're not using AI for content creation in 2025, you're already behind. TrendPulse is changing the game! 🔥",
-  "💡 Pro tip: The best time to post on Twitter is... RIGHT NOW. Test it with TrendPulse! #TwitterTips #GrowthHacking",
-  "This is a test tweet from TrendPulse's testing page. If you see this, our Twitter integration is WORKING! 🎉 #DevLife",
+  "Hot take: If you're not using AI for content creation in 2025, you're already behind. XELORA is changing the game! 🔥",
+  "💡 Pro tip: The best time to post on Twitter is... RIGHT NOW. Test it with XELORA! #TwitterTips #GrowthHacking",
+  "This is a test tweet from XELORA's testing page. If you see this, our Twitter integration is WORKING! 🎉 #DevLife",
 ];
 
 export default function TestTwitterPage() {

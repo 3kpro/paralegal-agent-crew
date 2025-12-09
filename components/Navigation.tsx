@@ -1,7 +1,7 @@
 import { Button } from "./ui/Button";
 import Link from "next/link";
 import { useState } from "react";
-import { TrendPulseLogo } from "./TrendPulseLogo";
+import { XeloraLogo } from "./XELORALogo";
 
 interface NavigationProps {
   onContactClick?: () => void;
@@ -36,9 +36,9 @@ export const Navigation: React.FC<NavigationProps> = () => {
             className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
           >
             <span className="text-xl font-semibold text-white">
-              TrendPulse
+              XELORA
             </span>
-            <TrendPulseLogo className="w-16 h-16" />
+            <XeloraLogo className="w-16 h-16" />
           </button>
 
           <div className="hidden md:flex items-center space-x-8">

@@ -1,6 +1,6 @@
 "use client";
 
-// Force rebuild - TrendPulse Landing Page
+// Force rebuild - XELORA Landing Page
 import {
   ModernHero,
   ModernFeatures,

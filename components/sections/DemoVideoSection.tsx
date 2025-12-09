@@ -40,7 +40,7 @@ export default function DemoVideoSection() {
             </h2>
 
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              See how TrendPulse transforms trending topics into
+              See how XELORA transforms trending topics into
               published content across Twitter, LinkedIn, and
               email—automatically.
             </p>
@@ -142,7 +142,7 @@ export default function DemoVideoSection() {
                 <Zap className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-semibold text-tron-text mb-2">
-                TrendPulse™ Discovery
+                XELORA™ Discovery
               </h3>
               <p className="text-tron-text-muted">
                 Watch how we automatically discover trending topics in your

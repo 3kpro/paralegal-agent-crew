@@ -45,7 +45,7 @@ export default function ModernBentoHero() {
             </h1>
 
             <p className="text-lg text-gray-400 mb-8 max-w-xl leading-relaxed">
-              Stop guessing. TrendPulse uses AI to analyze millions of data points, predicting content performance with <span className="text-white font-semibold">87% accuracy</span>.
+              Stop guessing. XELORA uses AI to analyze millions of data points, predicting content performance with <span className="text-white font-semibold">87% accuracy</span>.
             </p>
 
             {/* CTAs */}

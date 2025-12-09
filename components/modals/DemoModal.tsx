@@ -24,7 +24,7 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">
-            TrendPulse Demo
+            XELORA Demo
           </h2>
           <button
             onClick={onClose}

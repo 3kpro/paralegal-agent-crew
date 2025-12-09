@@ -138,7 +138,7 @@ export const EnhancedTwitterDemo: React.FC<DemoModalProps> = ({
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b">
           <h2 className="text-2xl font-bold text-gray-800">
-            🚀 TrendPulse - Enhanced Twitter Integration
+            🚀 XELORA - Enhanced Twitter Integration
           </h2>
           <button
             onClick={onClose}

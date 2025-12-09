@@ -13,7 +13,7 @@ interface WelcomeMessage {
 const welcomeMessages: WelcomeMessage[] = [
   {
     text: "Tired of staring at blank screens?",
-    subtext: "Welcome to TrendPulse. We fixed that.",
+    subtext: "Welcome to XELORA. We fixed that.",
     duration: 3500,
   },
   {

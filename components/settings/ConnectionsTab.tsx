@@ -122,7 +122,7 @@ export default function ConnectionsTab() {
       <div>
         <h2 className="text-2xl font-bold text-tron-text">Social Connections</h2>
         <p className="text-tron-text-muted mt-2">
-          Connect your social media accounts to publish content directly from TrendPulse.
+          Connect your social media accounts to publish content directly from XELORA.
         </p>
       </div>
 
