@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { StructuredData } from "@/components/StructuredData";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://xelora.app'),
   title: "XELORA - Predictive Intelligence for Creators",
   description:
     "XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality. Real-time signal analysis, multi-platform optimization, 6+ platform integration.",

@@ -98,8 +98,8 @@ export default function PrivacyPage() {
               If you have questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
-              Email: privacy@3kpro.services<br />
-              Website: https://trendpulse.3kpro.services
+              Email: support@xelora.app<br />
+              Website: https://xelora.app
             </p>
           </section>
 

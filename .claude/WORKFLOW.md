@@ -85,7 +85,7 @@ Use these slash commands for autonomous task handling:
 
 ## Deployment Info
 
-**Production URL**: https://trendpulse.3kpro.services
+**Production URL**: https://xelora.app
 **Vercel Project**: 3kpros-projects/landing-page
 **GitHub**: https://github.com/3kpro/content-cascade-ai-landing
 **Tech Stack**: Next.js 15, Supabase, Vercel

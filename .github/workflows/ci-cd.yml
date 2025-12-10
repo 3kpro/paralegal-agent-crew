@@ -128,9 +128,9 @@ jobs:
         run: npm run build
         env:
           # Add required build environment variables
-          NEXT_PUBLIC_APP_URL: https://ccai.3kpro.services
-          NEXT_PUBLIC_BASE_URL: https://ccai.3kpro.services
-          NEXT_PUBLIC_SITE_URL: https://ccai.3kpro.services
+          NEXT_PUBLIC_APP_URL: https://xelora.app
+          NEXT_PUBLIC_BASE_URL: https://xelora.app
+          NEXT_PUBLIC_SITE_URL: https://xelora.app
 
       - name: Analyze bundle size
         run: npx next-bundle-analyzer
@@ -237,7 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://ccai.3kpro.services
+      url: https://xelora.app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -271,7 +271,7 @@ jobs:
         id: determine-url
         run: |
           if [ "${{ needs.deploy-production.result }}" == "success" ]; then
-            echo "url=https://ccai.3kpro.services" >> $GITHUB_OUTPUT
+            echo "url=https://xelora.app" >> $GITHUB_OUTPUT
           else
             echo "url=${{ needs.deploy-staging.outputs.url }}" >> $GITHUB_OUTPUT
           fi
@@ -279,7 +279,7 @@ jobs:
       - name: Check deployment health
         run: |
           curl -sSf ${{ steps.determine-url.outputs.url }}/api/health || exit 1
-          curl -sSf ${{ steps.determine-url.outputs.url }} | grep -q "TrendPulse" || exit 1
+          curl -sSf ${{ steps.determine-url.outputs.url }} | grep -q "XELORA" || exit 1
 
       - name: Run performance tests
         uses: k6io/action@v0.2.0
@@ -312,7 +312,7 @@ jobs:
         run: |
           if [ "${{ needs.deploy-production.result }}" == "success" ]; then
             echo "env=Production" >> $GITHUB_OUTPUT
-            echo "url=https://ccai.3kpro.services" >> $GITHUB_OUTPUT
+            echo "url=https://xelora.app" >> $GITHUB_OUTPUT
           elif [ "${{ needs.deploy-staging.result }}" == "success" ]; then
             echo "env=Staging" >> $GITHUB_OUTPUT
             echo "url=${{ needs.deploy-staging.outputs.url }}" >> $GITHUB_OUTPUT

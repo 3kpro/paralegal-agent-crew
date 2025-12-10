@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/admin/"],
     },
-    sitemap: "https://3kpro.services/sitemap.xml",
+    sitemap: "https://xelora.app/sitemap.xml",
   };
 }

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://3kpro.services";
+  const baseUrl = "https://xelora.app";
 
   return [
     {

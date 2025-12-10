@@ -121,7 +121,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold text-tron-text mb-4">11. Limitation of Liability</h2>
             <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, TRENDPULSE AND 3K PRO SERVICES SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE SERVICE.
+              TO THE MAXIMUM EXTENT PERMITTED BY LAW, XELORA SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE SERVICE.
             </p>
           </section>
 
@@ -145,8 +145,8 @@ export default function TermsPage() {
               For questions about these Terms, contact us at:
             </p>
             <p className="mt-2">
-              Email: support@3kpro.services<br />
-              Website: https://trendpulse.3kpro.services
+              Email: support@xelora.app<br />
+              Website: https://xelora.app
             </p>
           </section>
 
