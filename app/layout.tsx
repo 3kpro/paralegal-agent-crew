@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'jBm4gu3jK_jeW_9YtU_BRQpCI3FGQhZJAzEdRkplz7s',
+    google: 'IcYTc1Uhe9VoxubFMT9w-YxpcN6udMBRFJ5BDVmV-HI',
     other: {
       'msvalidate.01': process.env.NEXT_PUBLIC_BING_VERIFICATION || 'ADD_YOUR_BING_CODE_HERE',
     },
