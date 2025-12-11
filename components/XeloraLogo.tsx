@@ -5,7 +5,7 @@ export function XeloraLogo({ className = "w-16 h-16", showText = false }: { clas
     <div className="flex items-center gap-3">
       <div className={className}>
         <Image
-          src="/xelora-logo-transparent.png"
+          src="/logoOnly.png"
           alt="XELORA"
           width={256}
           height={256}
