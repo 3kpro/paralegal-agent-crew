@@ -12,6 +12,12 @@ All notable changes to this project will be documented in this file.
   - Fixed issue where Helix claimed "I am unable to access that information".
   - Implemented direct context injection for real-time user data in the chat system prompt.
 
+### Improved
+- **Helix UI/UX**:
+  - **Smart Docking**: Helix sidebar now acts as a layout frame, pushing page content instead of overlapping.
+  - **Z-Index Fix**: Fullscreen mode now correctly layers above floating navigation.
+  - **Toggle Animation**: Smoother transitions between Floating and Docked states.
+
 ## [2025-12-11] - XELORA Launch Polish & Logo Standardization
 
 ### Fixed

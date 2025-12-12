@@ -19,6 +19,7 @@ import {
 
 interface HelixWidgetProps {
   subscriptionTier?: string;
+  onSidebarChange?: (isOpen: boolean) => void;
 }
 
 interface Message {
@@ -28,7 +29,7 @@ interface Message {
   parts?: any[];
 }
 
-export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetProps) {
+export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange }: HelixWidgetProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); 
@@ -42,6 +43,13 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
+
+  // Notify parent layout about sidebar state
+  useEffect(() => {
+    if (onSidebarChange) {
+      onSidebarChange(isOpen && isSidePanel);
+    }
+  }, [isSidePanel, isOpen, onSidebarChange]);
 
   // Manual State Management
   const [messages, setMessages] = useState<Message[]>([]);
@@ -192,8 +200,10 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
   }, [isDragging]);
 
   return (
-    <div className={`fixed z-40 flex flex-col items-end pointer-events-none ${
-      isSidePanel ? "right-0 top-0 bottom-0 h-screen" : "bottom-6 right-6"
+    <div className={`${
+      isSidePanel 
+        ? "relative z-40 shrink-0 h-screen w-[320px] bg-gray-900 border-l border-gray-800 flex flex-col" 
+        : "fixed z-[100] flex flex-col items-end pointer-events-none bottom-6 right-6"
     }`}>
       <AnimatePresence>
         {isOpen && (
@@ -213,7 +223,7 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
               isTransparent ? "bg-gray-900/70 backdrop-blur-xl border-gray-800/50" : "bg-gray-900 border-gray-800"
             } ${
               isSidePanel
-                ? "rounded-l-2xl w-[320px] h-full"
+                ? "w-full h-full rounded-none border-0"
                 : isExpanded
                   ? "fixed inset-4 bottom-24 right-6 w-auto h-auto rounded-2xl mb-4"
                   : "w-[400px] h-[600px] rounded-2xl mb-4" + (isDragging ? " cursor-move" : " cursor-grab")
@@ -376,19 +386,21 @@ export default function HelixWidget({ subscriptionTier = 'free' }: HelixWidgetPr
         )}
       </AnimatePresence>
 
-      {/* Toggle Button */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className={`pointer-events-auto w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${
-          isOpen 
-            ? "bg-gray-800 text-gray-400 hover:text-white border border-gray-700" 
-            : "bg-gradient-to-br from-coral-500 to-purple-600 text-white hover:shadow-coral-500/25"
-        }`}
-      >
-        {isOpen ? <ChevronDown className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
-      </motion.button>
+      {/* Toggle Button - Hide when side panel is active */}
+        {!isSidePanel && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(!isOpen)}
+            className={`pointer-events-auto w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${
+              isOpen 
+                ? "bg-gray-800 text-gray-400 hover:text-white border border-gray-700" 
+                : "bg-gradient-to-br from-coral-500 to-purple-600 text-white hover:shadow-coral-500/25"
+            }`}
+          >
+            {isOpen ? <ChevronDown className="w-6 h-6" /> : <Sparkles className="w-6 h-6" />}
+          </motion.button>
+        )}
     </div>
   );
 }
