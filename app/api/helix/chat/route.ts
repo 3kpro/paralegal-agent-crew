@@ -41,12 +41,18 @@ export async function POST(req: NextRequest) {
       sessionId = session.id;
     }
 
-    // 3. Load Brand DNA
-    const { data: brandDna } = await supabase
-      .from('helix_brand_dna')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
+    // 3. Data Fetching for Context (Campaigns, Connections, Brand)
+    const [
+      { count: campaignCount },
+      { data: connections },
+      { data: brandDna }
+    ] = await Promise.all([
+      supabase.from('campaigns').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('user_social_connections').select('platform').eq('user_id', user.id),
+      supabase.from('helix_brand_dna').select('*').eq('user_id', user.id).single()
+    ]);
+
+    const connectedPlatforms = connections?.map(c => c.platform).join(', ') || 'None';
 
     // 4. Construct System Prompt
     const systemPrompt = `You are Helix, an advanced AI Marketing Assistant.
@@ -56,15 +62,19 @@ Your Goal: Help the user build their brand, plan strategy, and generate content.
 User Context:
 - Current Page: ${context?.currentPath || 'Unknown'}
 ${context?.pageContent ? `- Page Content Summary: ${context.pageContent}` : ''}
+- Live Dashboard Data:
+  - Total Campaigns Created: ${campaignCount || 0}
+  - Connected Platforms: ${connectedPlatforms}
 
 Brand Context:
 ${brandDna ? JSON.stringify(brandDna.dna_attributes) : "No brand DNA established yet. Ask the user to define their voice."}
 
 Instructions:
-- Be professional, insightful, and proactive
-- Use the "Current Page" context to tailor your advice
-- When users ask about their brand, campaigns, or content, use the available tools to fetch real data
-- Always stay helpful and conversational`;
+- You HAVE access to the user's live data listed above. Do not claim you cannot access it.
+- If asked "How many campaigns?", answer directly using the "Total Campaigns Created" value.
+- Be professional, insightful, and proactive.
+- Use the "Current Page" context to tailor your advice.
+- Always stay helpful and conversational.`;
 
     // 5. Convert UIMessages to ModelMessages and stream response
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));

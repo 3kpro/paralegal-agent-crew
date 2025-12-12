@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+ 
+## [2025-12-12] - Helix Context Awareness Fix
+
+### Fixed
+- **Helix AI Mindset**:
+  - Restored Helix's ability to see dashboard stats (Campaign Count, Connected Accounts).
+  - Fixed issue where Helix claimed "I am unable to access that information".
+  - Implemented direct context injection for real-time user data in the chat system prompt.
 
 ## [2025-12-11] - XELORA Launch Polish & Logo Standardization
 
