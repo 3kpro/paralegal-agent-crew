@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function ModernHero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0F1F] pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#2b2b2b] pt-20">
       {/* Minimal cyan accents background */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -22,7 +22,7 @@ export default function ModernHero() {
           }}
         />
         <motion.div
-          className="absolute top-40 right-20 w-72 h-72 bg-[#A17CF9]/5 rounded-full filter blur-3xl"
+          className="absolute top-40 right-20 w-72 h-72 bg-coral-500/5 rounded-full filter blur-3xl"
           animate={{
             x: [0, -100, 0],
             y: [0, 100, 0],
@@ -42,13 +42,13 @@ export default function ModernHero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#0F1628] backdrop-blur-sm rounded-full shadow-lg mb-8 border-2 border-[#00C7F2]/30 hover:border-[#00C7F2]/60 transition-all duration-300"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030] backdrop-blur-sm rounded-full shadow-lg mb-8 border-2 border-[#00C7F2]/30 hover:border-[#00C7F2]/60 transition-all duration-300"
           >
             <Zap className="w-5 h-5 text-[#00C7F2]" />
             <span className="text-sm font-semibold text-[#F5F7FA] uppercase tracking-wide">
               XELORA • Predictive Intelligence
             </span>
-            <span className="px-2 py-1 bg-[#A17CF9]/20 rounded-full text-xs font-semibold text-[#A17CF9] border border-[#A17CF9]/30 uppercase">
+            <span className="px-2 py-1 bg-coral-500/20 rounded-full text-xs font-semibold text-coral-500 border border-coral-500/30 uppercase">
               Live
             </span>
           </motion.div>
@@ -60,7 +60,7 @@ export default function ModernHero() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight uppercase tracking-tight"
           >
-            <span className="bg-gradient-to-r from-[#F5F7FA] via-[#00C7F2] to-[#A17CF9] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-white via-coral-400 to-tron-cyan bg-clip-text text-transparent">
               Predict Momentum
             </span>
             <br />
@@ -91,7 +91,7 @@ export default function ModernHero() {
             <div className="relative">
               <Link
                 href="/signup"
-                className="group relative px-8 py-4 bg-[#00C7F2] text-[#0A0F1F] rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-[#A17CF9] transform hover:scale-105 transition-all duration-200 flex items-center gap-2 uppercase tracking-wide"
+                className="group relative px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2 uppercase tracking-wide"
               >
                 <Zap className="w-5 h-5" />
                 Get Early Access
