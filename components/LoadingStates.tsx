@@ -1,23 +1,37 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { LumaSpin } from "@/components/ui/luma-spin";
 
 interface LoadingStateProps {
   message?: string;
   size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
+  variant?: "default" | "luma";
 }
 
 export function LoadingState({
   message = "Loading...",
   size = "md",
   fullScreen = false,
+  variant = "default",
 }: LoadingStateProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-8 h-8",
     lg: "w-12 h-12",
   };
+
+  if (variant === "luma") {
+    return (
+      <div className={`flex flex-col items-center justify-center gap-6 ${fullScreen ? "min-h-screen bg-[#2b2b2b]" : "p-8"}`}>
+        <LumaSpin />
+        {message && (
+          <p className="text-gray-400 text-sm animate-pulse tracking-wider font-medium">{message}</p>
+        )}
+      </div>
+    );
+  }
 
   const content = (
     <div className="flex flex-col items-center justify-center gap-4">

@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
   - **Smart Docking**: Helix sidebar now acts as a layout frame, pushing page content instead of overlapping.
   - **Z-Index Fix**: Fullscreen mode now correctly layers above floating navigation.
   - **Toggle Animation**: Smoother transitions between Floating and Docked states.
+  - **Loading UI**: Added new 'Luma' Tetris-style spinner for enhanced visual feedback during long operations.
 
 ## [2025-12-11] - XELORA Launch Polish & Logo Standardization
 
