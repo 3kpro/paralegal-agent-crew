@@ -52,30 +52,30 @@ export function StructuredData() {
       "Real-Time Analytics",
       "Campaign Scheduling"
     ],
-    "screenshot": "https://trendpulse.3kpro.services/og-image.png",
-    "url": "https://trendpulse.3kpro.services",
+    "screenshot": "https://xelora.app/og-image.png",
+    "url": "https://xelora.app",
     "creator": {
       "@type": "Organization",
       "name": "3K Pro Services",
-      "url": "https://trendpulse.3kpro.services"
+      "url": "https://xelora.app"
     }
   };
 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "3K Pro Services",
-    "url": "https://trendpulse.3kpro.services",
-    "logo": "https://trendpulse.3kpro.services/logo.png",
-    "description": "AI-powered content marketing tools for creators and businesses. XELORA predicts viral content with 87% accuracy.",
+    "name": "XELORA",
+    "url": "https://xelora.app",
+    "logo": "https://xelora.app/og-image.png",
+    "description": "Predictive intelligence for creators. XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality.",
     "sameAs": [
-      "https://twitter.com/3kproservices",
-      "https://linkedin.com/company/3kproservices"
+      "https://x.com/3KPRO_SAAS",
+      "https://linkedin.com/company/3k-pro-services"
     ],
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "Customer Support",
-      "email": "james.lawson@gmail.com"
+      "email": "info@3kpro.services"
     }
   };
 
@@ -83,8 +83,8 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "XELORA",
-    "url": "https://trendpulse.3kpro.services",
-    "description": "Predict viral content performance before creating it. AI analyzes 1M+ viral posts for accurate engagement predictions.",
+    "url": "https://xelora.app",
+    "description": "Predictive intelligence platform that analyzes emerging signals across platforms to reveal what's about to rise. Before creators see it. Before the internet reacts to it.",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "operatingSystem": "Any",
     "applicationCategory": "Marketing Software",

@@ -107,8 +107,10 @@ ${campaignId ? `- Campaign ID Filter: ${campaignId}` : ''}
 
     // 4. Execute SQL via RPC
     // Note: We use the `execute_readonly_sql` function we created in the migration
+    // IMPORTANT: Strip trailing semicolon as it breaks the subquery in the RPC function
+    const cleanSql = result.sql.trim().replace(/;$/, '');
     const { data: queryData, error: dbError } = await supabase.rpc('execute_readonly_sql', {
-      query: result.sql
+      query: cleanSql
     });
 
     if (dbError) {

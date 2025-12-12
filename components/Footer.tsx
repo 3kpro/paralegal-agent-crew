@@ -15,7 +15,7 @@ export const Footer: React.FC = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <span className="text-xl font-bold">XELORA</span>
-              <XeloraLogo className="w-16 h-16" />
+              <XeloraLogo className="w-10 h-10" />
             </div>
             <p className="text-tron-text-muted">
               AI-powered content marketing platform for modern businesses.
@@ -129,7 +129,7 @@ export const Footer: React.FC = () => {
 
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a
-                href="https://x.com/3kpro_services"
+                href="https://x.com/3KPRO_SAAS"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-tron-text-muted hover:text-tron-cyan transition-colors"
@@ -161,7 +161,7 @@ export const Footer: React.FC = () => {
               </a>
 
               <a
-                href="mailto:contact@3kpro.services"
+                href="mailto:info@3kpro.services"
                 className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Email us"
               >

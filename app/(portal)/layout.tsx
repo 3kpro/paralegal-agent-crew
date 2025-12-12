@@ -189,7 +189,7 @@ export default function PortalLayout({
                  <span className="text-lg md:text-xl font-bold text-white uppercase tracking-wide">
                    XELORA
                  </span>
-                 <XeloraLogo className="w-12 h-12" />
+                 <XeloraLogo className="w-9 h-9" />
                </div>
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}

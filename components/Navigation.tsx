@@ -38,7 +38,7 @@ export const Navigation: React.FC<NavigationProps> = () => {
             <span className="text-xl font-semibold text-white">
               XELORA
             </span>
-            <XeloraLogo className="w-16 h-16" />
+            <XeloraLogo className="w-10 h-10" />
           </button>
 
           <div className="hidden md:flex items-center space-x-8">
