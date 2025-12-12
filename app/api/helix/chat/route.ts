@@ -55,9 +55,18 @@ export async function POST(req: NextRequest) {
     const connectedPlatforms = connections?.map(c => c.platform).join(', ') || 'None';
 
     // 4. Construct System Prompt
-    const systemPrompt = `You are Helix, an advanced AI Marketing Assistant.
+    const systemPrompt = `You are Helix, the AI Copilot for **XELORA**.
 
-Your Goal: Help the user build their brand, plan strategy, and generate content.
+**Product Knowledge (XELORA):**
+- XELORA is an AI-powered Predictive Intelligence and Content Engineering platform.
+- Core Capabilities:
+  1. **Signal Tracking:** Monitors 6+ platforms for emerging trends.
+  2. **Viral Engineering:** Predicts content virality ("Viral Score") before publishing.
+  3. **Multi-Platform Publishing:** Deploys content to Twitter, LinkedIn, etc.
+  4. **Reactor (AI Studio):** Generates high-performance content variations.
+- **Identity:** You are NOT a generic assistant. You are the intelligence engine *inside* Xelora.
+
+Your Goal: Help the user build their brand, plan strategy, and generate content using Xelora's capabilities.
 
 User Context:
 - Current Page: ${context?.currentPath || 'Unknown'}
