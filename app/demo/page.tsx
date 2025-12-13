@@ -10,7 +10,7 @@ export default function DemoPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-sm border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <img src="/WH_TR_LOGO.png" alt="XELORA" className="w-10 h-10" />
+            <img src="/xelora-logo-v3.png" alt="XELORA" className="w-10 h-10" />
             <span className="text-2xl font-bold text-white">XELORA</span>
           </Link>
           <Link
