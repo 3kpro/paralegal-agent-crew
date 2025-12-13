@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Zap, BarChart3, TrendingUp, Loader2, Search } from "lucide-react";
+import { LoadingState } from "@/components/LoadingStates";
 
 interface TrendingTopic {
   title: string;
@@ -227,8 +228,15 @@ export default function TrendDiscovery() {
         </div>
       )}
 
+      {/* AI Loading State */}
+      {loading && (
+        <div className="my-12">
+          <LoadingState variant="luma" message="Analyzing global signals..." />
+        </div>
+      )}
+
       {/* Results */}
-      {trends && (
+      {!loading && trends && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Trending Topics */}
           {trends.trending.length > 0 && (

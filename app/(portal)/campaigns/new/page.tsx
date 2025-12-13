@@ -229,6 +229,7 @@ export default function NewCampaignPage() {
       techies: { boost: "+21%", desc: "Twitter/Reddit strong" },
       gamers: { boost: "+19%", desc: "Twitch/YouTube crossover" },
       hobbyists: { boost: "+17%", desc: "Niche communities" },
+      parents: { boost: "+23%", desc: "Safety/education content, high share" },
     },
     callToAction: {
       engage: { boost: "+12%", desc: "Generic but effective" },
@@ -734,7 +735,7 @@ export default function NewCampaignPage() {
       food: ["hobbyists"],
       fashion: ["creators"],
       entertainment: ["creators"],
-      parenting: ["hobbyists"],
+      parenting: ["parents"],
       lifestyle: ["hobbyists"],
     };
 
@@ -2002,7 +2003,7 @@ export default function NewCampaignPage() {
                         Target Audience <span className="text-xs text-tron-text-muted">(Select up to 3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists'].map((a) => (
+                        {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists', 'parents'].map((a) => (
                           <div key={a} className="group relative">
                             <button
                               type="button"
