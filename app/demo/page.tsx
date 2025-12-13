@@ -1,8 +1,7 @@
 "use client";
 
-import { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function DemoPage() {
   return (
@@ -46,7 +45,7 @@ export default function DemoPage() {
               className="w-full aspect-video"
               poster="/demo-thumbnail.jpg"
             >
-              <source src="/media/xelora-demo.mp4" type="video/mp4" />
+              <source src="/media/VIDEO/Xelora/demo_007.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
