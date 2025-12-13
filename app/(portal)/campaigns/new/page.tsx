@@ -38,7 +38,7 @@ import {
   Layout,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TetrisLoading } from "@/components/ui";
+import { LoadingState } from "@/components/LoadingStates";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
@@ -1228,7 +1228,7 @@ export default function NewCampaignPage() {
   if (loadingCampaignData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex flex-col items-center justify-center gap-4">
-        <TetrisLoading size="lg" showLoadingText={false} />
+        <LoadingState variant="luma" message="" />
         <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
       </div>
     );
@@ -1642,7 +1642,7 @@ export default function NewCampaignPage() {
             >
               {loadingTrends ? (
                 <div className="flex items-center justify-center min-h-[600px]">
-                  <TetrisLoading size="lg" loadingText="Finding trends..." />
+                  <LoadingState variant="luma" message="Finding trends..." />
                 </div>
               ) : (
                 <>
@@ -1677,7 +1677,7 @@ export default function NewCampaignPage() {
 
                   <div className="max-w-4xl mx-auto">
                 {loadingTrends ? (
-                  <TetrisLoading size="md" loadingText="" />
+                  <LoadingState variant="luma" message="" />
                 ) : trends.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-h-96 overflow-y-scroll pr-2 scrollbar-thin scrollbar-thumb-tron-cyan/30 scrollbar-track-tron-dark/50">
                     {trends.slice(0, 8).map((trend, idx) => {
@@ -2171,7 +2171,7 @@ export default function NewCampaignPage() {
             >
               {generatingContent ? (
                 <div className="flex items-center justify-center min-h-[600px]">
-                  <TetrisLoading size="lg" speed="fast" loadingText="Generating high-viral content..." />
+                   <LoadingState variant="luma" message="Generating high-viral content..." />
                 </div>
               ) : (
                 <>
