@@ -60,7 +60,7 @@ module.exports = {
         },
         navy: '#1e293b',
         charcoal: '#374151',
-        
+
         // LEGACY TRON COLORS - Mapped to new coral/dark scheme
         // This allows old code to work without changes
         'tron-dark': '#2b2b2b',        // → dark-800
@@ -78,6 +78,7 @@ module.exports = {
         'fade-in': 'fadeIn 0.6s ease-in-out',
         'slide-up': 'slideUp 0.8s ease-out',
         'float': 'float 3s ease-in-out infinite',
+        'loaderAnim': 'loaderAnim 2.5s infinite',
       },
       keyframes: {
         fadeIn: {
@@ -91,6 +92,17 @@ module.exports = {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
+        },
+        loaderAnim: {
+          '0%': { inset: '0 35px 35px 0' },
+          '12.5%': { inset: '0 35px 0 0' },
+          '25%': { inset: '35px 35px 0 0' },
+          '37.5%': { inset: '35px 0 0 0' },
+          '50%': { inset: '35px 0 0 35px' },
+          '62.5%': { inset: '0 0 0 35px' },
+          '75%': { inset: '0 0 35px 35px' },
+          '87.5%': { inset: '0 0 35px 0' },
+          '100%': { inset: '0 35px 35px 0' },
         },
       },
     },
