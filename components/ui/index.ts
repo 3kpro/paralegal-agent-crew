@@ -6,4 +6,4 @@ export { InteractiveHoverButton } from "./interactive-hover-button";
 export { default as AnimatedLoader } from "./animated-loader";
 export { Menu, MenuItem, MenuContainer } from "./fluid-menu";
 export { FloatingNav } from "./floating-nav";
-export { default as TetrisLoading } from "./tetris-loader";
+

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Database, BarChart2, AlertCircle, Code, ChevronDown, ChevronUp } from 'lucide-react';
-import TetrisLoader from '@/components/ui/tetris-loader';
+import { LoadingState } from "@/components/LoadingStates";
 
 interface NL2SQLQueryProps {
   campaignId?: string;
@@ -161,7 +161,7 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
             exit={{ opacity: 0, height: 0 }}
             className="flex flex-col items-center justify-center py-12"
           >
-            <TetrisLoader loadingText="Analyzing data & generating SQL..." />
+            <LoadingState variant="luma" message="Analyzing data & generating SQL..." />
           </motion.div>
         )}
       </AnimatePresence>
