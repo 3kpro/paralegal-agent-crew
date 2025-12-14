@@ -36,6 +36,9 @@ import {
   Flame,
   Copy,
   Layout,
+  Search,
+  Activity,
+  BrainCircuit,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
@@ -1490,7 +1493,7 @@ export default function NewCampaignPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
-                        <Sparkles className="w-8 h-8 text-white" />
+                        <Flame className="w-8 h-8 text-white" />
                       </div>
                       <div className="text-left">
                         <h3 className="text-2xl font-bold text-tron-text mb-1">
@@ -1515,7 +1518,7 @@ export default function NewCampaignPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
-                        <TrendingUp className="w-8 h-8 text-white" />
+                        <Search className="w-8 h-8 text-white" />
                       </div>
                       <div className="text-left">
                         <h3 className="text-2xl font-bold text-tron-text mb-1">
@@ -1661,7 +1664,7 @@ export default function NewCampaignPage() {
                   {trends.length > 0 && (
                     <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl flex items-start gap-4">
                       <div className="p-2 bg-gray-800 rounded-lg">
-                        <Sparkles className="w-5 h-5 text-coral-400" />
+                        <Activity className="w-5 h-5 text-coral-400" />
                       </div>
                       <div>
                         <h4 className="text-sm font-bold text-white mb-1">
@@ -1821,7 +1824,7 @@ export default function NewCampaignPage() {
                     whileTap={{ scale: 0.98 }}
                     className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-white shadow-lg flex items-center gap-2"
                   >
-                    <Sparkles className="w-5 h-5" />
+                    <BrainCircuit className="w-5 h-5" />
                     AI Optimize (A)
                   </motion.button>
 

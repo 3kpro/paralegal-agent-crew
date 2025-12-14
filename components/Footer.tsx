@@ -20,6 +20,21 @@ export const Footer: React.FC = () => {
             <p className="text-tron-text-muted">
               AI-powered content marketing platform for modern businesses.
             </p>
+            <div className="mt-6">
+              <a
+                href="https://www.producthunt.com/products/xelora?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-xelora"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1049670&theme=dark&t=1765658239336"
+                  alt="XELORA - XELORA: Predict Momentum. Engineer Virality. | Product Hunt"
+                  style={{ width: '250px', height: '54px' }}
+                  width="250"
+                  height="54"
+                />
+              </a>
+            </div>
           </div>
 
           <div>
