@@ -4,9 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [2025-12-15] - Vision Approved & Product Hunt Strategy Correction
+## [2025-12-15] - Vision Approved, Press Packs Updated & Product Hunt Strategy Correction
 
 ### Added
+- **XELORA_PRESS_PACK.md** - New consumer/creator platform press pack
+  - Replaces deprecated TRENDPULSE_PRESS_PACK.md
+  - Positioning: Viral content prediction platform for creators ($0-$79/mo)
+  - Tagline: "Predict Momentum. Engineer Virality."
+  - Patent-pending Viral Score™ (87% accuracy)
+  - Bootstrap financials: $132K ARR Year 1, $117K profit (89% margin)
+  - Two-product strategy: XELORA (hook) → CCAI (mothership)
+  - Complete media assets, team bios, contact information
+
 - **VISION.md - Canonical Source of Truth** (`docs/SYSTEM/VISION.md`):
   - **Status**: ✅ Approved by Founder on December 15, 2025
   - Defines complete end-state vision for XELORA → CCAI evolution
@@ -32,6 +41,30 @@ All notable changes to this project will be documented in this file.
   - **End Game**: Category leadership or strategic acquisition ($100M-$500M+)
 
 **Status**: VISION.md is now the canonical source of truth for all product decisions
+
+### Updated
+- **CCAI_PRESS_PACK.md** - Aligned with VISION.md branding
+  - Replaced all "TrendPulse" references with "XELORA"
+  - Updated launch strategy to two-product approach
+  - Clarified XELORA → CCAI upgrade path
+  - Updated URLs: xelora.app (XELORA) | ccai.app (CCAI - coming 2026)
+  - Updated version to 2.0 (December 2025)
+
+- **PRESS_PACK_SUMMARY.md** - Comprehensive rewrite
+  - Two-product strategy clearly explained (XELORA + CCAI)
+  - Brand positioning for both products
+  - Updated pricing tiers aligned with VISION.md
+  - Removed all TrendPulse references
+  - Added section on upgrade path and grandfathered pricing
+  - Version 2.0 aligned with VISION.md
+
+### Deprecated
+- **TRENDPULSE_PRESS_PACK.md** → **TRENDPULSE_PRESS_PACK.md.DEPRECATED**
+  - Legacy branding, no longer in use
+  - Replaced by XELORA_PRESS_PACK.md
+  - Kept for historical reference
+
+**Status**: All press packs now aligned with approved VISION.md and XELORA branding
 
 ## [2025-12-15] - Product Hunt Strategy Correction
 
