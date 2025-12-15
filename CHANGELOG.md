@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-15] - Vision Approved & Product Hunt Strategy Correction
+
+### Added
+- **VISION.md - Canonical Source of Truth** (`docs/SYSTEM/VISION.md`):
+  - **Status**: ✅ Approved by Founder on December 15, 2025
+  - Defines complete end-state vision for XELORA → CCAI evolution
+  - **Key strategic decisions documented**:
+    1. **Brand**: TrendPulse deprecated; XELORA is hook, CCAI is mothership
+    2. **AI Infrastructure**: Hybrid approach (OpenRouter + Vertex AI)
+    3. **Product Strategy**: CCAI is platform, XELORA is component; grandfathered early adopters
+    4. **Fundraising**: Bootstrap until seed opportunity; open to Series A at $1M ARR
+    5. **Redis**: Hybrid with Supabase (Redis = cache layer, not replacement)
+    6. **AutoShorts.ai**: Integrate into CCAI using Vertex AI, Veo, Imagen
+  - **8 Core Platform Capabilities** defined:
+    1. Viral Prediction Intelligence (VPI)™ - Patent pending
+    2. AI Content Studio - Multi-format generation
+    3. Brand-Brain - Custom AI training
+    4. Multi-Channel Automation Hub
+    5. Analytics & Attribution Hub
+    6. Gemini AI Marketing Assistant
+    7. Team Collaboration & Workflow
+    8. AI Provider Marketplace
+  - **Success Metrics**: $50M-$100M ARR, 95%+ prediction accuracy, 80%+ margins
+  - **Two-Product Strategy**: XELORA ($0-$79/mo) → CCAI ($199-$1,499+/mo)
+  - **Technical Moat**: Patent-pending viral prediction, AI-native architecture, data flywheel
+  - **End Game**: Category leadership or strategic acquisition ($100M-$500M+)
+
+**Status**: VISION.md is now the canonical source of truth for all product decisions
+
 ## [2025-12-15] - Product Hunt Strategy Correction
 
 ### Added
