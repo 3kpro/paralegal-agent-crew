@@ -134,9 +134,20 @@ Instructions:
               question: z.string().describe('The natural language question to ask the Analyst')
             }),
             execute: async ({ question }: { question: string }) => {
-               console.log('[Helix] Invoking Analyst with:', question);
-               const result = await generateAnalystQuery(question, user.id, supabase);
-               return result;
+               try {
+                 console.log('[Helix] Invoking Analyst with:', question);
+                 const result = await generateAnalystQuery(question, user.id, supabase);
+                 return result;
+               } catch (err: any) {
+                 console.error('[Helix] Analyst Error:', err);
+                 return {
+                   error: err.message || 'Failed to query analytics.',
+                   sql: 'N/A',
+                   explanation: 'I encountered an error while trying to access the analytics database.',
+                   chartType: 'number',
+                   data: []
+                 };
+               }
             }
           }) as any
         },
