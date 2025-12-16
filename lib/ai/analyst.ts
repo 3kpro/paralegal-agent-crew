@@ -70,7 +70,9 @@ export async function generateAnalystQuery(
       3. For time series, group by date_trunc('day', tracked_at) and order by date.
       4. For 'impressions', sum(impressions) as "views".
       5. For 'tracked_at', cast as date (e.g. tracked_at::date as "date").
-      6. Return valid JSON with 'sql', 'explanation' and 'chartType'.
+      6. For "oldest" or "newest" queries, ORDER BY created_at ASC/DESC per need and LIMIT 1.
+      7. For specific single records (top performing, oldest, etc), SELECT name and the relevant metric/date.
+      8. Return valid JSON with 'sql', 'explanation' and 'chartType'.
     `,
     prompt: question
   });
