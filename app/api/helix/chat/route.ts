@@ -131,7 +131,7 @@ Instructions:
           query_analytics: tool({
             description: 'Access the Analyst: query data, check performance, or generate charts. Use this when the user asks about stats, views, campaigns, or wants visualized data.',
             parameters: z.object({
-              question: z.string().describe('The natural language question to ask the Analyst')
+              question: z.string().describe('The detailed, self-contained natural language question to ask the Analyst. If the user query is vague (e.g. "which is the oldest"), rewrite it to be specific (e.g. "Which campaign is the oldest?") based on conversation history.')
             }),
             execute: async ({ question }: { question: string }) => {
                try {
