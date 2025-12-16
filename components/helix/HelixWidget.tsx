@@ -21,7 +21,7 @@ import {
   PanelRight
 } from "lucide-react";
 
-const AnalystCharts = dynamic(() => import('@/components/analyst/AnalystCharts'), { 
+const AnalystCharts = dynamic(() => import('../analyst/AnalystCharts'), { 
   loading: () => <div className="h-40 w-full flex items-center justify-center text-xs text-gray-500">Loading chart...</div>,
   ssr: false 
 });
