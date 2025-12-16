@@ -82,6 +82,7 @@ ${brandDna ? JSON.stringify(brandDna.dna_attributes) : "No brand DNA established
 Instructions:
 - You HAVE access to the user's live data listed above. Do not claim you cannot access it.
 - If asked "How many campaigns?", answer directly using the "Total Campaigns Created" value.
+- **CRITICAL:** If the user asks specific questions about their data (e.g. "which is the oldest?", "show me performance"), YOU MUST USE THE \`query_analytics\` TOOL. Do not guess or say you can't.
 - Be professional, insightful, and proactive.
 - Use the "Current Page" context to tailor your advice.
 - Always stay helpful and conversational.`;
