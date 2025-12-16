@@ -4,6 +4,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Database, BarChart2, AlertCircle, Code, ChevronDown, ChevronUp } from 'lucide-react';
 import { LoadingState } from "@/components/LoadingStates";
+import dynamic from 'next/dynamic';
+
+const AnalystCharts = dynamic(() => import('./AnalystCharts'), { 
+  loading: () => <div className="h-[400px] w-full flex items-center justify-center text-gray-500">Loading visualization...</div>,
+  ssr: false 
+});
 
 interface NL2SQLQueryProps {
   campaignId?: string;
@@ -68,31 +74,30 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
       );
     }
 
-    // MVP: Simple Table / JSON View
-    console.log('[NL2SQL] Raw Data:', result.data);
-    
-    // cast result.data to any to handle runtime type mismatches
-     
-    let rows: any = result.data;
-
-    // Handle single object response (e.g. from COUNT or single row queries)
-    if (!Array.isArray(rows) && rows && typeof rows === 'object') {
-       console.log('[NL2SQL] Wrapping single object in array');
-       rows = [rows];
+    if (result.chartType === 'number') {
+      const value = Object.values(result.data[0])[0];
+      const key = Object.keys(result.data[0])[0];
+      return (
+        <div className="flex flex-col items-center justify-center p-12 bg-gray-900 border border-gray-800 rounded-xl">
+          <span className="text-sm text-gray-400 uppercase tracking-widest mb-2">{key.replace(/_/g, ' ')}</span>
+          <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-coral-500 to-amber-500">
+            {typeof value === 'number' ? value.toLocaleString() : value}
+          </span>
+        </div>
+      );
+    }
+  
+    // Dynamic chart rendering
+    if (result.chartType === 'bar' || result.chartType === 'line' || result.chartType === 'pie') {
+      return (
+        <div className="h-[400px] w-full bg-gray-900/50 rounded-xl p-6 border border-gray-800">
+          <AnalystCharts data={result.data} type={result.chartType} />
+        </div>
+      );
     }
 
-    // Ensure we have an array of objects
-    if (!Array.isArray(rows)) {
-        return <div className="p-4 bg-red-900/20 text-red-200 rounded-xl">Error: Data is not an array. Received: {typeof result.data}</div>
-    }
-
-     
-    const firstValidRow = rows.find((row: any) => row && typeof row === 'object');
-    if (!firstValidRow) {
-         return <div className="p-4 bg-gray-900/50 text-gray-400 rounded-xl">Data found but format is invalid for table display.</div>
-    }
-
-    const keys = Object.keys(firstValidRow);
+    // Default: Table
+    const keys = Object.keys(result.data[0]);
 
     return (
       <div className="overflow-hidden rounded-xl border border-gray-800 bg-gray-900/50">
@@ -106,8 +111,7 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
-              { }
-              {rows.map((row: any, idx: number) => (
+              {result.data.map((row: any, idx: number) => (
                 <tr key={idx} className="hover:bg-white/5 transition-colors">
                   {keys.map((k) => (
                     <td key={`${idx}-${k}`} className="px-6 py-4 text-gray-300">
