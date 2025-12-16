@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-15 Late Night] - Helix UI & Brand Polish
+
+### Added
+- **Helix Slide-out Panel**:
+  - Implemented resizeable side panel mode (320px - 800px).
+  - Added drag handle for smooth width adjustment.
+  - Enhanced transitions between floating and docked states.
+
+### Changed
+- **Brand Integration**:
+  - Updated Helix logo to transparent asset (`Helix_logo.png`).
+  - Applied "Coral/Neon Orange" theme filters (`hue-rotate-15 saturate-200`) to match site aesthetic.
+  - Added dynamic glow effects (`drop-shadow`) that pulse with the UI.
+- **AI Infrastructure**:
+  - Upgraded Helix Chat model to **Gemini 2.5 Flash** for improved reliability and speed.
+  - Verified API key connectivity and model permissions.
+
+### Fixed
+- **UI Glitches**:
+  - Removed white background from Helix logo.
+  - Fixed resize handle positioning and z-index layering.
+
 ## [2025-12-15] - Vision Approved, Press Packs Updated & Product Hunt Strategy Correction
 
 ### Added

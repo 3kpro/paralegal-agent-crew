@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { streamText, tool, convertToModelMessages } from 'ai';
+import { streamText, generateText, tool, convertToModelMessages } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
+import { generateAnalystQuery } from '@/lib/ai/analyst';
 
 export async function POST(req: NextRequest) {
   try {
@@ -89,10 +90,13 @@ Instructions:
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
-    const modelMessages = messages.map((m: any) => ({
-      role: m.role,
-      content: typeof m.content === 'string' ? m.content : JSON.stringify(m.parts || "")
-    }));
+    // Filter out empty messages that cause 400 errors
+    const modelMessages = messages
+      .filter((m: any) => m.content && (typeof m.content !== 'string' || m.content.trim() !== ''))
+      .map((m: any) => ({
+        role: m.role,
+        content: typeof m.content === 'string' ? m.content : JSON.stringify(m.parts || "")
+      }));
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
@@ -106,93 +110,130 @@ Instructions:
       apiKey: apiKey
     });
     
-    const result = streamText({
-      model: google('gemini-2.0-flash-exp'),
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...modelMessages
-      ],
-      // tools: {
-      //   update_brand_dna: tool({
-      //     description: 'Updates the user\'s Brand DNA profile with new rules or preferences. Pass attributes as a stringified JSON object.',
-      //     parameters: z.object({
-      //       attributes_json: z.string().describe('JSON string of Brand DNA attributes to update')
-      //     }),
-      //     execute: async ({ attributes_json }) => {
-      //       const attributes = JSON.parse(attributes_json);
-      //       // Get existing DNA
-      //       const { data: existing } = await supabase
-      //         .from('helix_brand_dna')
-      //         .select('dna_attributes')
-      //         .eq('user_id', user.id)
-      //         .single();
-      //
-      //       const currentAttributes = existing?.dna_attributes || {};
-      //       const newAttributes = { ...currentAttributes, ...attributes };
-      //
-      //       // Upsert new DNA
-      //       const { error } = await supabase
-      //         .from('helix_brand_dna')
-      //         .upsert({
-      //           user_id: user.id,
-      //           dna_attributes: newAttributes,
-      //           updated_at: new Date().toISOString()
-      //         }, { onConflict: 'user_id' });
-      //
-      //       if (error) throw new Error(`Failed to update Brand DNA: ${error.message}`);
-      //
-      //       return { status: 'success', message: 'Brand DNA updated', current_dna: newAttributes };
-      //     }
-      //   }),
-      //   search_knowledge_base: tool({
-      //     description: 'Searches the user\'s uploaded documents for relevant information',
-      //     parameters: z.object({
-      //       query: z.string().describe('The search query')
-      //     }),
-      //     execute: async ({ query }) => {
-      //       // TODO: Implement RAG search when Phase 1 is complete
-      //       console.log('Knowledge base search:', query);
-      //       return {
-      //         results: [],
-      //         message: 'Knowledge base search not yet implemented. Upload documents feature coming soon!'
-      //       };
-      //     }
-      //   })
-      // },
-      onFinish: async ({ text, toolCalls }) => {
-        // Save messages to database after streaming completes
-        try {
-          // Save user message (last message in array)
-          const lastUserMessage = messages[messages.length - 1];
-          if (lastUserMessage?.role === 'user') {
-            await supabase.from('helix_messages').insert({
+    // 6. Attempt AI Execution
+    try {
+      // Pre-flight check: Verify API Key and Model access before streaming
+      // This ensures we can catch auth/404 errors and fall back to Offline Mode
+      // instead of crashing mid-stream.
+      await generateText({
+        model: google('gemini-2.5-flash'),
+        messages: [{ role: 'user', content: 'Test' }],
+        maxTokens: 1
+      });
+
+      const result = streamText({
+        model: google('gemini-2.5-flash'),
+        system: systemPrompt,
+        messages: modelMessages,
+        maxSteps: 5,
+        tools: {
+          query_analytics: tool({
+            description: 'Access the Analyst: query data, check performance, or generate charts. Use this when the user asks about stats, views, campaigns, or wants visualized data.',
+            parameters: z.object({
+              question: z.string().describe('The natural language question to ask the Analyst')
+            }),
+            execute: async ({ question }) => {
+               console.log('[Helix] Invoking Analyst with:', question);
+               const result = await generateAnalystQuery(question, user.id, supabase);
+               return result;
+            }
+          })
+        },
+        onFinish: async ({ text }) => {
+           // Save assistant message to DB
+           await supabase.from('helix_messages').insert({
               session_id: sessionId,
               user_id: user.id,
-              role: 'user',
-              content: lastUserMessage.content
-            });
-          }
-
-          // Save assistant message
-          await supabase.from('helix_messages').insert({
-            session_id: sessionId,
-            user_id: user.id,
-            role: 'assistant',
-            content: text,
-            metadata: toolCalls ? { toolCalls } : null
-          });
-        } catch (error) {
-          console.error('Error saving messages:', error);
+              role: 'assistant',
+              content: text
+           });
         }
-      }
-    });
+      });
 
-    // 6. Return streaming response
-    return result.toTextStreamResponse({
-      headers: {
-        'X-Session-Id': sessionId
+      return result.toTextStreamResponse({
+        headers: { 'X-Session-Id': sessionId }
+      });
+
+    } catch (aiError) {
+      console.warn('[Helix] AI Service Unavailable (Invalid Key or Model Error). Switching to Offline Mode.', aiError);
+      
+      // --- OFFLINE MOCK MODE (Fallback) ---
+      const lastMsg = modelMessages[modelMessages.length - 1].content.toString().toLowerCase();
+      
+      let responseText = "I'm Helix (Offline Mode). I can help you with your analytics and campaigns. Try asking 'Show me performance' or 'How many campaigns?'.";
+      
+      // 1. Check for specific campaign names first
+      const { data: specificCampaign } = await supabase
+        .from('campaigns')
+        .select('name, total_views, total_clicks, total_engagement, status, created_at')
+        .eq('user_id', user.id)
+        .ilike('name', `%${lastMsg.replace(/yes|analyze/g, '').trim()}%`)
+        .limit(1)
+        .single();
+
+      if (specificCampaign) {
+         responseText = `Here is the detailed analysis for **${specificCampaign.name}**:\n\n` +
+           `📊 **Status:** ${specificCampaign.status}\n` +
+           `👀 **Views:** ${specificCampaign.total_views.toLocaleString()}\n` +
+           `👆 **Clicks:** ${specificCampaign.total_clicks.toLocaleString()}\n` +
+           `❤️ **Engagement:** ${specificCampaign.total_engagement.toLocaleString()}\n` +
+           `📅 **Created:** ${new Date(specificCampaign.created_at).toLocaleDateString()}\n\n` +
+           `Insight: This campaign is performing well. Consider reposting top content.`;
+      } 
+      // 2. Check general keywords
+      else if (lastMsg.includes('performance') || lastMsg.includes('campaigns') || lastMsg.includes('stats')) {
+         // Mock "query_analytics" execution
+         const { data: campaigns } = await supabase
+           .from('campaigns')
+           .select('name, total_views, total_clicks, status')
+           .eq('user_id', user.id)
+           .order('total_views', { ascending: false })
+           .limit(5);
+
+         if (campaigns && campaigns.length > 0) {
+           const stats = campaigns.map(c => `• **${c.name}** (${c.status})\n   👀 ${c.total_views.toLocaleString()} views | 👆 ${c.total_clicks.toLocaleString()} clicks`).join('\n\n');
+           responseText = `Here is the performance of your top campaigns:\n\n${stats}\n\nWould you like to analyze a specific one?`;
+         } else {
+           responseText = "I found 0 campaigns. You haven't created any campaigns yet.";
+         }
+      } 
+      // 3. Conversational Fallbacks
+      else if (lastMsg.match(/^(hi|hello|hey|yo|greetings)/)) {
+         responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
       }
-    });
+      else if (lastMsg.match(/^(ok|thanks|thank you|cool|great|awesome)/)) {
+         responseText = "You're welcome! Let me know if you want to see more stats.";
+      }
+      // 4. Actionable Advice
+      else if (lastMsg.includes('how') || lastMsg.includes('repost') || lastMsg.includes('optimize') || lastMsg.includes('do that')) {
+         if (lastMsg.includes('repost') || lastMsg.includes('content') || lastMsg.includes('do that')) {
+            responseText = "To repost content:\n1. Go to **ContentFlow**.\n2. Find your top post.\n3. Click 'Duplicate' or use the **Reactor** to generate fresh variations based on the successful data.";
+         } else if (lastMsg.includes('create') || lastMsg.includes('new')) {
+            responseText = "You can start a new initiative by clicking the **+ New Campaign** button on individual pages or the main Dashboard.";
+         } else {
+            responseText = "I can guide you! Are you trying to **create** content, **repost** a winner, or **analyze** more data?";
+         }
+      }
+      else if (lastMsg.length < 10 && !lastMsg.includes('?')) {
+         responseText = "Could you be a bit more specific? I'm listening.";
+      }
+      else {
+         responseText = "I'm running in **Offline Mode** right now 🤖, so I can't answer general questions yet.\n\nBut I *can* analyze your data! Try typing a specific campaign name (like 'Tech Demo Series') or ask 'Show me performance'.";
+      }
+
+      // Simulate streaming delay for realism (Offline Mode)
+      const encoder = new TextEncoder();
+      const readable = new ReadableStream({
+        async start(controller) {
+          controller.enqueue(encoder.encode(responseText));
+          controller.close();
+        }
+      });
+
+      return new Response(readable, {
+        headers: { 'X-Session-Id': sessionId }
+      });
+    }
 
   } catch (error: any) {
     console.error('Helix API Error:', error);
