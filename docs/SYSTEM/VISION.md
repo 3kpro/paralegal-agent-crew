@@ -3,14 +3,15 @@
 **Status:** ✅ CANONICAL - Approved by Founder
 **Created:** December 13, 2025
 **Approved:** December 15, 2025
+**Updated:** December 17, 2025 (Brand consolidation)
 **Authority:** SYSTEM Document (Source of Truth)
-**Purpose:** Define the full end-state vision for XELORA → CCAI evolution
+**Purpose:** Define the full end-state vision for Xelora as single unified platform
 
 ---
 
 ## 1. THE VISION IN ONE SENTENCE
 
-**XELORA is the hook that brings creators to viral content prediction; CCAI is the mothership that transforms how businesses automate their entire marketing engine with AI.**
+**Xelora transforms how creators and businesses predict viral content and automate their entire marketing engine with AI - from solo creators to Fortune 1000.**
 
 ---
 
@@ -44,18 +45,28 @@ We're building the first **AI-native marketing intelligence platform** that:
 
 ---
 
-## 3. PRODUCT HIERARCHY (Two-Product Strategy)
+## 3. PRODUCT STRATEGY (One Platform, Expanding Tiers)
 
-### XELORA (The Hook)
-**Positioning:** Consumer/Creator AI Social Media Manager
-**Target:** Individual creators, micro-influencers, freelancers, solopreneurs, small businesses
-**Pricing:** $0-$79/month
-**Goal:** Product-led growth, viral adoption, prove product-market fit
+### Xelora: Single Brand, Multiple Tiers
 
 **Core Value Proposition:**
 > "Stop guessing what to post. Know what will go viral before you hit publish."
 
-**Key Hook Features:**
+**Target Market Progression:**
+- **Free - Pro tiers ($0-$79):** Individual creators, micro-influencers, freelancers, solopreneurs
+- **Business tier ($79-$199):** Small agencies, marketing teams
+- **Professional - Enterprise tiers ($199-$1,499+):** Mid-market companies, agencies, Fortune 1000
+
+**Tier Progression:**
+
+```
+Xelora Free → Starter → Pro → Business → Professional → Enterprise
+$0          $9         $29    $79        $199           $499-$1,499+
+
+Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
+```
+
+**Core Features (All Tiers):**
 - Viral Score™ prediction (0-100 score, 87%+ accuracy)
 - Trending topic discovery across platforms
 - AI content generation for social posts
@@ -63,39 +74,33 @@ We're building the first **AI-native marketing intelligence platform** that:
 - Campaign management and tracking
 - Gemini AI assistant for strategy advice
 
-**Strategic Role:**
-- Low barrier to entry (free tier)
-- Viral growth engine (users share predictions)
-- Brand awareness and validation
-- Conversion funnel to CCAI for growing businesses
-
----
-
-### CCAI (The Mothership)
-**Positioning:** Enterprise AI Marketing Orchestration Platform
-**Target:** Marketing teams, agencies, mid-market companies, Fortune 1000
-**Pricing:** $199-$1,499+/month
-**Goal:** High-margin recurring revenue, enterprise contracts, market domination
-
-**Core Value Proposition:**
-> "Your AI marketing team that never sleeps. Generate months of content in minutes, predict performance before spending budget, and automate distribution across every channel."
-
-**Enterprise Capabilities:**
-- Everything in XELORA, plus:
-- Multi-channel automation (social + email + blog + ads)
-- Multi-brand management (3-unlimited brands)
-- Advanced analytics & multi-touch attribution
+**Growth Tier Features (Business+):**
+- Multi-brand management (3-10+ brands)
 - Team collaboration with role-based permissions
+- Advanced analytics & reporting
+- Priority support
+
+**Enterprise Tier Features (Professional+):**
+- Multi-channel automation (social + email + blog + ads)
 - White-label platform for agencies
 - Custom AI model training (Brand Voice™)
 - API access and integrations
 - 99.9% SLA and dedicated support
+- Multi-touch attribution
+- SSO/SAML authentication
 
-**Strategic Role:**
-- High ARPU customers ($199-$1,499+/month)
-- Enterprise contracts (annual commitments)
-- Strategic partnerships with agencies
-- Acquisition target for HubSpot, Salesforce, Adobe ($100M+)
+**Strategic Approach:**
+- Low barrier to entry (free tier = viral growth engine)
+- Product-led growth (users upgrade as needs grow)
+- Single seamless upgrade path (no migration required)
+- Enterprise features justify premium pricing ($499-$1,499+)
+- Acquisition target for strategic buyers ($100M-$500M+)
+
+**Technical Foundation:**
+- Powered by Content Cascade AI (CCAI) engine
+- Single codebase, tier-based feature flags
+- Same database, seamless upgrades
+- Data flywheel: every prediction improves the model
 
 ---
 
@@ -341,28 +346,31 @@ We're building the first **AI-native marketing intelligence platform** that:
 
 ## 6. THE EVOLUTION PATH (No Timelines, Just Sequence)
 
-### Level 1: XELORA Foundation (Current)
+### Level 1: Foundation (Current)
 - Viral Score™ prediction (heuristic model)
 - Multi-platform social publishing
 - Basic AI content generation
 - Campaign management
 - Trend discovery
+- **Active Tiers:** Free, Starter, Pro, Business
 
-### Level 2: XELORA Advanced
+### Level 2: Intelligence Enhancement
 - ML-powered Viral Score™ (Vertex AI trained model)
 - Gemini AI assistant integrated
 - Smart scheduling based on audience data
 - A/B testing automation
 - Enhanced analytics dashboard
+- **Unlocks:** Professional tier features
 
-### Level 3: CCAI Introduction
+### Level 3: Enterprise Expansion
 - Multi-channel automation (email + blog integrations)
 - Brand Voice AI™ (custom model fine-tuning)
-- Multi-brand management
+- Multi-brand management (3-unlimited)
 - Team collaboration features
-- White-label platform
+- White-label platform for agencies
+- **Unlocks:** Enterprise tier features
 
-### Level 4: CCAI Enterprise
+### Level 4: Enterprise Maturity
 - Advanced analytics & attribution
 - API marketplace for third-party integrations
 - Custom ML model training
@@ -370,6 +378,7 @@ We're building the first **AI-native marketing intelligence platform** that:
 - SSO/SAML authentication
 - 99.9% SLA guarantee
 - Dedicated account management
+- **Target:** Fortune 1000 customers
 
 ### Level 5: Market Leadership
 - AutoShorts.ai (video generation via Replicate)
@@ -378,6 +387,8 @@ We're building the first **AI-native marketing intelligence platform** that:
 - Predictive budget optimization
 - Competitive intelligence dashboard
 - Acquisition by strategic buyer ($100M-$500M+)
+
+**Note:** All levels exist within **Xelora brand**. Users upgrade tiers as features unlock, no product migration required.
 
 ---
 
@@ -390,8 +401,9 @@ We're building the first **AI-native marketing intelligence platform** that:
 - User retention: **90%+ annual** (enterprise tier)
 
 ### Business Metrics
-- XELORA users: **50,000+** (free + paid)
-- CCAI enterprise customers: **5,000+**
+- Total users: **50,000+** (all tiers)
+- Paying customers: **10,000+**
+- Enterprise customers: **1,000+** (Professional/Enterprise tiers)
 - Combined ARR: **$50M-$100M+**
 - Profit margin: **80%+** at scale
 - Team size: **50-100 employees** (lean, AI-augmented)
@@ -419,38 +431,56 @@ To maintain focus, we explicitly **will not**:
 
 ---
 
-## 9. THE RELATIONSHIP: XELORA ↔ CCAI
+## 9. THE UPGRADE PATH: Growing with Xelora
 
-### How They Work Together
+### How Users Grow with the Platform
 
-**XELORA** is the entry point:
-- Low-friction onboarding (free tier)
-- Proves value immediately (viral predictions work)
-- Builds brand awareness and user base
-- Creates conversion funnel to CCAI
+**Free Tier** - Prove the value:
+- Entry point for individual creators
+- Limited features, full Viral Score™ access
+- No credit card required
+- Converts to paid when users see results
 
-**CCAI** is the upgrade path:
-- When XELORA users need multi-channel (email, blog, ads)
-- When they want white-label for clients (agencies)
-- When they need team collaboration (marketing teams)
-- When they want custom AI training (Brand Voice™)
+**Starter/Pro Tiers ($9-$29)** - Scale content creation:
+- For serious creators and freelancers
+- More posts, more accounts, AI assistance
+- When free limits become constraints
+- 80%+ of early revenue
 
-**One Platform, Two Products:**
-- Same codebase, same database
-- Tier-based feature flags control access
-- Seamless upgrade (no migration required)
-- Shared data improves both products (predictions get better with scale)
+**Business Tier ($79)** - Add team features:
+- Small agencies and marketing teams
+- Multi-user access, team collaboration
+- When solo creator becomes small team
+- Bridge to enterprise pricing
 
-**Pricing Bridge:**
-```
-XELORA                          CCAI
-Free → Starter → Pro → Business → Professional → Business → Enterprise
-$0     $9       $29    $79         $199          $499       $1,499+
+**Professional Tier ($199)** - Enterprise features begin:
+- Multi-channel automation (email, blog)
+- White-label for agencies
+- Custom branding, advanced analytics
+- When business scales beyond social-only
 
-                    ↑
-              Upgrade Path
-      (Multi-channel, Multi-brand, Team features)
-```
+**Enterprise Tier ($499-$1,499+)** - Full platform power:
+- Unlimited brands, custom AI training
+- SSO/SAML, 99.9% SLA, dedicated support
+- When marketing becomes mission-critical
+- Fortune 1000 target market
+
+### Upgrade Triggers
+
+Users upgrade when they hit natural growth milestones:
+- **Free → Starter:** "I need more than 5 posts/month"
+- **Starter → Pro:** "I manage multiple accounts now"
+- **Pro → Business:** "My team needs access"
+- **Business → Professional:** "We need email/blog automation"
+- **Professional → Enterprise:** "We need custom AI for our brand"
+
+### One Platform, Seamless Growth
+
+- Same login, same dashboard, same data
+- Upgrade with single click (no migration)
+- Feature flags unlock instantly
+- Historical data preserved
+- Predictions improve as platform scales
 
 ---
 
@@ -530,23 +560,31 @@ These strategic questions emerged during analysis and need explicit decisions:
 
 ## 12. CONCLUSION
 
-**This vision defines what XELORA and CCAI become when fully realized.**
+**This vision defines what Xelora becomes when fully realized.**
 
-- **XELORA** is the viral hook that proves content prediction works
-- **CCAI** is the enterprise mothership that automates entire marketing engines
-- Together, they form a **two-product strategy** for market domination
+**Xelora** is a single, unified platform that:
+- Proves viral content prediction works (free tier hook)
+- Scales with users from solo creator to Fortune 1000 (tier progression)
+- Automates entire marketing engines (enterprise features)
+- Maintains single brand identity throughout growth (no confusing product splits)
 
 **The moat is:**
 1. Patent-pending Viral Prediction Intelligence
 2. AI-native architecture (not bolted on)
 3. Data flywheel (predictions improve with scale)
 4. Bootstrap economics (90%+ margins, 100% equity retention)
+5. Single brand, seamless upgrade path (no product migration complexity)
 
 **The end game:**
 - Category leadership in AI marketing automation
 - $50M-$100M+ ARR at 80%+ margins
 - Acquisition target for strategic buyers ($100M-$500M+)
 - Or continue as highly profitable, founder-owned cash cow
+
+**Brand Strategy:**
+- **External:** Xelora (all tiers, all marketing, all customer-facing)
+- **Internal (optional):** "Powered by Content Cascade AI engine" (technical credibility)
+- **No separate products:** Just one platform that grows with you
 
 **This document defines the destination.**
 **ROADMAP.md defines the journey.**
@@ -557,4 +595,5 @@ These strategic questions emerged during analysis and need explicit decisions:
 **Document History:**
 - *December 13, 2025*: Draft completed (TASK-005)
 - *December 15, 2025*: **Approved by Founder as canonical VISION.md**
-- *Status*: CANONICAL - Source of Truth for XELORA → CCAI evolution
+- *December 17, 2025*: **Brand consolidation** - Simplified from two-product strategy (XELORA + CCAI) to single Xelora brand with tier progression. CCAI repositioned as optional internal descriptor.
+- *Status*: CANONICAL - Source of Truth for Xelora platform vision
