@@ -12,36 +12,36 @@ interface OnboardingStep {
 
 const onboardingSteps: OnboardingStep[] = [
   {
-    title: "🚀 Welcome to XELORA",
+    title: "👋 Welcome to XELORA",
     description:
-      "Let's create your first viral campaign in 4 simple steps. This will only take 2 minutes!",
+      "In the next 2 minutes, you'll create content that has an 87% chance of going viral. Let's get started!",
     position: "center",
   },
   {
-    title: "✨ Step 1: Name Your Campaign",
+    title: "1️⃣ Pick Your Platforms",
     description:
-      "Give your campaign a memorable name and select which platforms you want to target.",
+      "Select where you want to post: Twitter, Reddit, LinkedIn, TikTok, Instagram, or Facebook.",
     targetStep: 1,
     position: "top",
   },
   {
-    title: "🔥 Step 2: Find Trending Topics",
+    title: "2️⃣ Find What's Trending",
     description:
-      "Search for trending topics in your niche. We'll show you what's hot right now!",
+      "We'll show you topics that are exploding right now across all platforms—no more guessing!",
     targetStep: 2,
     position: "top",
   },
   {
-    title: "🤖 Step 3: Generate AI Content",
+    title: "3️⃣ Get Your Viral Score™",
     description:
-      "Watch as AI creates platform-specific content optimized for engagement.",
+      "Each topic gets a 0-100 score. Higher = more likely to go viral. Pick the winners.",
     targetStep: 3,
     position: "top",
   },
   {
-    title: "📋 Step 4: Review & Save",
+    title: "4️⃣ Generate AI Content",
     description:
-      "Review your content and save it as a campaign. Copy-paste to your platforms and go viral!",
+      "Our AI writes platform-specific posts for you. Twitter threads, LinkedIn articles, Reddit posts—all optimized.",
     targetStep: 4,
     position: "top",
   },
@@ -62,7 +62,7 @@ export default function OnboardingTour({
 
   useEffect(() => {
     // Check if user has seen the tour
-    const tourCompleted = localStorage.getItem("ccai_tour_completed");
+    const tourCompleted = localStorage.getItem("xelora_tour_completed");
     if (tourCompleted) {
       setHasSeenTour(true);
       return;
@@ -100,7 +100,7 @@ export default function OnboardingTour({
 
   const completeTour = () => {
     setIsVisible(false);
-    localStorage.setItem("ccai_tour_completed", "true");
+    localStorage.setItem("xelora_tour_completed", "true");
     setHasSeenTour(true);
     onComplete();
   };

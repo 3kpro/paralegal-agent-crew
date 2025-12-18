@@ -83,18 +83,23 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // Redirect away from onboarding if already completed
+  // Redirect away from onboarding if already completed (unless explicitly taking tour)
   if (user && request.nextUrl.pathname === '/onboarding') {
-    const { data: onboarding } = await supabase
-      .from('onboarding_progress')
-      .select('completed')
-      .eq('user_id', user.id)
-      .single();
+    // Check if user is explicitly taking the product tour
+    const isTakingTour = request.nextUrl.searchParams.get('tour') === 'true';
 
-    if (onboarding && onboarding.completed) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/dashboard';
-      return NextResponse.redirect(url);
+    if (!isTakingTour) {
+      const { data: onboarding } = await supabase
+        .from('onboarding_progress')
+        .select('completed')
+        .eq('user_id', user.id)
+        .single();
+
+      if (onboarding && onboarding.completed) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/dashboard';
+        return NextResponse.redirect(url);
+      }
     }
   }
 

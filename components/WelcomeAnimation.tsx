@@ -12,29 +12,29 @@ interface WelcomeMessage {
 
 const welcomeMessages: WelcomeMessage[] = [
   {
-    text: "Before they see it.",
-    subtext: "Before the internet reacts to it.",
-    duration: 5000,
+    text: "Know what will go viral.",
+    subtext: "Before you hit publish.",
+    duration: 3500,
   },
   {
-    text: "XELORA predicts momentum.",
-    subtext: "Emerging signals across platforms, decoded in real-time.",
-    duration: 5500,
+    text: "XELORA gives every post a Viral Score™.",
+    subtext: "0-100. 87% accurate. 2 seconds.",
+    duration: 4000,
   },
   {
-    text: "While creators are guessing,",
-    subtext: "you're engineering virality.",
-    duration: 5500,
+    text: "Find trending topics across all platforms.",
+    subtext: "Twitter. Reddit. TikTok. LinkedIn. All in one place.",
+    duration: 4000,
   },
   {
-    text: "Trends reveal themselves to those who listen.",
-    subtext: "XELORA helps you hear them first.",
-    duration: 5500,
+    text: "AI generates content for you.",
+    subtext: "Platform-optimized. Engagement-focused.",
+    duration: 3500,
   },
   {
-    text: "Ready to engineer your next viral moment?",
-    subtext: "Let's begin.",
-    duration: 6000,
+    text: "Ready?",
+    subtext: "Create your first campaign in 2 minutes.",
+    duration: 4000,
   },
 ];
 
@@ -46,7 +46,7 @@ export default function WelcomeAnimation() {
 
   useEffect(() => {
     // Check if user has seen the welcome animation
-    const welcomeCompleted = localStorage.getItem("ccai_welcome_completed");
+    const welcomeCompleted = localStorage.getItem("xelora_welcome_completed");
     if (welcomeCompleted) {
       setHasSeenWelcome(true);
       setIsComplete(true);
@@ -70,13 +70,13 @@ export default function WelcomeAnimation() {
   }, [currentMessageIndex, hasSeenWelcome, isComplete]);
 
   const handleContinue = () => {
-    localStorage.setItem("ccai_welcome_completed", "true");
+    localStorage.setItem("xelora_welcome_completed", "true");
     setIsComplete(true);
-    router.push("/campaigns/new");
+    router.push("/campaigns/create");
   };
 
   const handleSkip = () => {
-    localStorage.setItem("ccai_welcome_completed", "true");
+    localStorage.setItem("xelora_welcome_completed", "true");
     setIsComplete(true);
   };
 
@@ -159,7 +159,7 @@ export default function WelcomeAnimation() {
                   onClick={handleContinue}
                   className="group relative px-12 py-4 bg-gradient-to-r from-tron-cyan to-blue-500 text-white text-lg font-semibold rounded-lg overflow-hidden transition-all hover:shadow-2xl hover:shadow-tron-cyan/40 hover:scale-105"
                 >
-                  <span className="relative z-10">Continue →</span>
+                  <span className="relative z-10">Create First Campaign →</span>
                   <motion.div
                     className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20"
                     initial={false}

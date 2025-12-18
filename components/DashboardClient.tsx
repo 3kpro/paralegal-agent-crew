@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { DashboardSkeleton } from "./SkeletonLoader";
 import { motion } from "framer-motion";
-import WelcomeAnimation from "./WelcomeAnimation";
 import UsageMeter from "./UsageMeter";
 import {
   Zap,
@@ -16,6 +15,11 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
+import { FirstTimeHelpBanner } from "./FirstTimeTooltips";
+import { useDashboardStats } from "@/hooks/useDashboardStats";
+import ActivityChart from "./dashboard/ActivityChart";
+import QuickWins from "./dashboard/QuickWins";
+import ProgressTracker from "./dashboard/ProgressTracker";
 
 interface Campaign {
   id: string;
@@ -23,6 +27,14 @@ interface Campaign {
   target_platforms: string[];
   status: string;
   created_at: string;
+}
+
+interface StatCard {
+  icon: any;
+  value: number | string;
+  label: string;
+  subtitle?: string;
+  gradient: string;
 }
 
 interface Profile {
@@ -38,6 +50,9 @@ export default function DashboardClient() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Fetch analytics data
+  const { data: analyticsData, loading: analyticsLoading } = useDashboardStats();
 
   useEffect(() => {
     loadDashboardData();
@@ -103,35 +118,35 @@ export default function DashboardClient() {
     {
       icon: Zap,
       value: campaigns.length,
-      label: "Campaigns",
+      label: "Campaigns Created",
+      subtitle: campaigns.length === 0 ? "Start creating!" : campaigns.length === 1 ? "First one done!" : "Building momentum",
       gradient: "from-coral-500 to-coral-600",
     },
     {
-      icon: TrendingUp,
-      value: "0",
-      label: "Views",
-      gradient: "from-coral-400 to-coral-500",
+      icon: Sparkles,
+      value: campaigns.length * 4, // Estimate 4 content pieces per campaign
+      label: "Content Pieces",
+      subtitle: campaigns.length > 0 ? `$${campaigns.length * 4 * 10} saved` : "AI-powered content",
+      gradient: "from-purple-500 to-purple-600",
     },
     {
       icon: Target,
-      value: "0%",
-      label: "Engagement",
-      gradient: "from-coral-500 to-coral-600",
+      value: campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0),
+      label: "Platform Posts",
+      subtitle: campaigns.length > 0 ? "Multi-channel reach" : "Cross-platform ready",
+      gradient: "from-blue-500 to-blue-600",
     },
     {
-      icon: DollarSign,
-      value: "$0",
-      label: "AI Credits Saved",
+      icon: TrendingUp,
+      value: "Day 1+",
+      label: "Building Your Brand",
+      subtitle: campaigns.length > 0 ? "Keep going!" : "Just getting started",
       gradient: "from-green-400 to-green-500",
     },
   ];
 
   return (
-    <>
-      {/* Welcome Animation */}
-      <WelcomeAnimation />
-
-      <div className="min-h-screen bg-[#2b2b2b] p-8">
+    <div className="min-h-screen bg-[#2b2b2b] p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header */}
           <motion.div
@@ -156,7 +171,7 @@ export default function DashboardClient() {
               </p>
             </div>
 
-            <Link href="/campaigns/new">
+            <Link href="/campaigns/create">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -167,6 +182,9 @@ export default function DashboardClient() {
               </motion.button>
             </Link>
           </motion.div>
+
+          {/* First-Time Help Banner */}
+          <FirstTimeHelpBanner />
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -208,6 +226,11 @@ export default function DashboardClient() {
                     <div className="text-sm text-gray-300 font-medium">
                       {stat.label}
                     </div>
+                    {stat.subtitle && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        {stat.subtitle}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               );
@@ -336,7 +359,7 @@ export default function DashboardClient() {
                   Start creating amazing content campaigns with AI-powered
                   generation. Your first campaign is just a click away!
                 </p>
-                <Link href="/campaigns/new">
+                <Link href="/campaigns/create">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -350,8 +373,25 @@ export default function DashboardClient() {
             )}
           </motion.div>
           </div>
+
+          {/* Analytics Section - Activity Chart, Quick Wins, Progress */}
+          {!analyticsLoading && analyticsData && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Activity Chart */}
+              <div className="lg:col-span-2">
+                <ActivityChart />
+              </div>
+
+              {/* Quick Wins */}
+              {analyticsData.quick_wins && analyticsData.quick_wins.length > 0 && (
+                <QuickWins wins={analyticsData.quick_wins} />
+              )}
+
+              {/* Progress Tracker */}
+              <ProgressTracker progress={analyticsData.progress} />
+            </div>
+          )}
         </div>
       </div>
-    </>
   );
 }

@@ -200,7 +200,7 @@ Both press packs include a dedicated section on the **bootstrap strategy using A
 
 ## 👥 Team
 
-### James Williams - Founder & CEO
+### James Lawson - Founder & CEO
 - **Background**: 20+ years in enterprise software development
 - **Company**: 3K Pro Services
 - **Expertise**: Full-stack development, AI/ML integration, SaaS architecture

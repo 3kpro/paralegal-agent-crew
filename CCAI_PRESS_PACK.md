@@ -591,7 +591,7 @@ CCAI/XELORA is pioneering a new model: **Bootstrap with AI as your workforce unt
 
 ## 👥 Team & Leadership
 
-### Kevin Williams - Founder & CEO
+### James Lawson - Founder & CEO
 - **Background**: 20+ years enterprise software development
 - **Expertise**: AI/ML, SaaS architecture, product development
 - **Previous**: Led development teams at Fortune 500 companies

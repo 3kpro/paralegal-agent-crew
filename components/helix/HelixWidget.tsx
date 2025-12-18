@@ -55,7 +55,20 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
       {
         id: 'welcome',
         role: 'assistant',
-        content: "I'm Helix. I'm here to help you build your brand. How can I assist you on this page?"
+        content: `👋 Hi! I'm Helix, your AI marketing assistant.
+
+I can help you:
+✨ Navigate XELORA and learn features
+📊 Analyze your campaign data
+💡 Get strategic content advice
+🎯 Understand viral scores
+
+Try asking me anything like:
+• "How do I create a campaign?"
+• "What's my best performing content?"
+• "Tips for increasing engagement"
+
+What would you like to know?`
       }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -345,9 +358,9 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
                 <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
                   <Bot className="w-8 h-8 text-gray-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">Daily Limit Reached</h3>
-                <p className="text-gray-400 text-sm mb-6 max-w-[250px]">
-                  You've used your free messages. Upgrade to Pro for unlimited AI strategy.
+                <h3 className="text-xl font-bold text-white mb-2">Session Limit Reached</h3>
+                <p className="text-gray-400 text-sm mb-6 max-w-[280px]">
+                  You've used your 7 free messages for this session. Close and reopen Helix to start fresh, or upgrade to Pro for unlimited AI assistance.
                 </p>
                 <a 
                   href="/settings" 
