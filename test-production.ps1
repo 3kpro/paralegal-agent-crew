@@ -1,7 +1,7 @@
 # Test production API directly
-Write-Host "Testing trendpulse.3kpro.services..."
+Write-Host "Testing xelora.app..."
 try {
-    $response = Invoke-RestMethod -Uri "https://trendpulse.3kpro.services/api/trends?keyword=Immigration%20Law&mode=ideas" -UseBasicParsing -Headers @{
+    $response = Invoke-RestMethod -Uri "https://xelora.app/api/trends?keyword=Immigration%20Law&mode=ideas" -UseBasicParsing -Headers @{
         "Cache-Control" = "no-cache"
         "Pragma" = "no-cache"
     }

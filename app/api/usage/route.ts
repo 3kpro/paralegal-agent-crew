@@ -56,7 +56,7 @@ export async function GET() {
       can_schedule: false,
       can_publish: false,
       can_use_ai_studio: false,
-      features: ["trendpulse", "copy_content"],
+      features: ["xelora", "copy_content"],
     };
 
     const usage = dailyUsage?.[0] || {

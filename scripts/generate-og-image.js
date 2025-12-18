@@ -17,19 +17,19 @@ const ogImageSVG = `
   <rect width="1200" height="630" fill="url(#grad1)"/>
   
   <text x="600" y="200" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="64" font-weight="bold">
-    Content Cascade AI
+    XELORA
   </text>
   
   <text x="600" y="280" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-family="Arial, sans-serif" font-size="36">
-    Turn Trending Topics Into Published Content
+    Predict Momentum. Engineer Virality.
   </text>
   
   <text x="600" y="380" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif" font-size="24">
-    TrendPulse™ • AI Cascade™ • OmniFormat™
+    XELORA™ • AI Cascade™ • OmniFormat™
   </text>
   
   <text x="600" y="500" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial, sans-serif" font-size="28">
-    3kpro.services
+    xelora.app
   </text>
 </svg>
 `

@@ -1,19 +1,19 @@
 // Application constants
 
 export const COMPANY_INFO = {
-  name: '3K Pro Services',
-  tagline: 'AI-Powered Content Marketing Platform',
-  description: 'Transform any content into complete campaigns with our AI-powered platform',
-  email: 'hello@3kproservices.com',
+  name: 'XELORA',
+  tagline: 'Predict Momentum. Engineer Virality.',
+  description: 'XELORA analyzes emerging signals across platforms to reveal what\'s about to rise—before the internet reacts.',
+  email: 'hello@xelora.app',
   phone: '+1 (555) 123-4567',
   address: '123 Business Ave, Suite 100, City, State 12345'
 } as const
 
 export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/3kproservices',
-  linkedin: 'https://linkedin.com/company/3kproservices',
-  facebook: 'https://facebook.com/3kproservices',
-  instagram: 'https://instagram.com/3kproservices'
+  twitter: 'https://x.com/XELORA_APP',
+  linkedin: 'https://linkedin.com/company/xelora',
+  facebook: 'https://facebook.com/xelora',
+  instagram: 'https://instagram.com/xelora_app'
 } as const
 
 export const NAVIGATION_ITEMS = [

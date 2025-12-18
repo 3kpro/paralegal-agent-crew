@@ -188,7 +188,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
             </button>
           )}
           <Link
-            href="/campaigns/new"
+            href="/campaigns/create"
             className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
           >
             <Plus className="w-6 h-6" />
@@ -302,7 +302,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
           </p>
           {!showArchived && (
             <Link
-              href="/campaigns/new"
+              href="/campaigns/create"
               className="inline-block px-6 py-3 bg-coral-500 text-white hover:bg-coral-600 font-semibold rounded-lg transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
             >
               Create First Campaign

@@ -1,4 +1,4 @@
-import { GeneratedContent } from "@/app/(portal)/campaigns/new/types";
+import { GeneratedContent } from "@/app/(portal)/campaigns/create/types";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import { decryptAPIKey } from "@/lib/encryption";

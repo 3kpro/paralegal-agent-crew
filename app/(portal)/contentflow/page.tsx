@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { SchedulePostDialog } from "@/components/SchedulePostDialog";
 import { Send, RotateCcw, Check } from "lucide-react";
-import { ScheduledPost, ContentTemplate } from "../campaigns/new/types";
+import { ScheduledPost, ContentTemplate } from "../campaigns/create/types";
 
 export default function ContentFlowPage() {
   const router = useRouter();

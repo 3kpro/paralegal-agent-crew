@@ -6,8 +6,8 @@ I'm building TrendPulse, a B2B SaaS social media management platform. I need hel
 App Name: TrendPulse (or CCAI-IG based on screenshots)
 App ID: 846908931167911
 Company: 3K Pro Services
-Website: https://trendpulse.3kpro.services
-Privacy Policy: https://trendpulse.3kpro.services/privacy
+Website: https://xelora.app
+Privacy Policy: https://xelora.app/privacy
 
 === WHAT I'M BUILDING ===
 A platform where multiple businesses can:
@@ -23,7 +23,7 @@ This is a MULTI-TENANT platform - one app, many customers.
 1. INSTAGRAM OAUTH REDIRECT URI
    - I'm on: Instagram API > API setup with Instagram login
    - Modal asks for "Redirect URL"
-   - I need to add: https://trendpulse.3kpro.services/api/auth/callback/instagram
+   - I need to add: https://xelora.app/api/auth/callback/instagram
    - QUESTION: Is this the correct place? What EXACTLY do I click/fill in?
 
 2. INSTAGRAM TEST ROLE ERROR
@@ -39,7 +39,7 @@ This is a MULTI-TENANT platform - one app, many customers.
    - I need users to authorize my app to post to their Facebook Pages
    - Required permissions: pages_show_list, pages_read_engagement, pages_manage_posts, business_management
    - QUESTIONS:
-     * Where EXACTLY do I add Facebook OAuth redirect URI? (https://trendpulse.3kpro.services/api/auth/callback/facebook)
+     * Where EXACTLY do I add Facebook OAuth redirect URI? (https://xelora.app/api/auth/callback/facebook)
      * Which Use Case do I use for Facebook Login?
      * How do I configure it for Pages posting (not personal profile)?
 
@@ -87,8 +87,8 @@ Backend: Next.js 15, TypeScript
 OAuth: Standard OAuth 2.0 flow
 Token Exchange: Facebook Graph API v18.0
 Redirect URIs:
-  - Instagram: https://trendpulse.3kpro.services/api/auth/callback/instagram
-  - Facebook: https://trendpulse.3kpro.services/api/auth/callback/facebook
+  - Instagram: https://xelora.app/api/auth/callback/instagram
+  - Facebook: https://xelora.app/api/auth/callback/facebook
   - Dev: http://localhost:3000/api/auth/callback/[platform]
 
 === DESIRED END RESULT ===

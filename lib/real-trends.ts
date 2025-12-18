@@ -123,7 +123,7 @@ export async function getRedditTrends(subreddits: string[] = ['all', 'popular'])
     for (const subreddit of subreddits.slice(0, 2)) { // Limit to 2 subreddits
       const response = await axios.get(`https://www.reddit.com/r/${subreddit}/hot.json?limit=10`, {
         headers: {
-          'User-Agent': 'TrendPulse/1.0 (Content Creation Tool)',
+          'User-Agent': 'XELORA/1.0 (Content Creation Tool)',
         },
       });
 

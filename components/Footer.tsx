@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
             </p>
             <div className="mt-6">
               <a
-                href="https://www.producthunt.com/products/xelora?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-xelora"
+                href="https://www.producthunt.com/posts/xelora?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-xelora"
                 target="_blank"
                 rel="noopener noreferrer"
               >

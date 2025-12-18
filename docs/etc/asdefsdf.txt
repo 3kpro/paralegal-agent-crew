@@ -1,0 +1,24 @@
+posts on launchpad seemed to know this and said the link is my bio, which is cool.  but I am unable ot update my profile.  I go in and enter the link, or anything, and it says there is a server error.  Tried everything.  Should I create a new reddit account.  I have very little traction on my existing one.
+
+\
+
+
+
+
+Building XELORA - AI that predicts viral potential before you post content.
+
+The problem: Creators spend 3 hours on a post, get 3 likes, wonder what went wrong.
+
+The solution: Analyze trending angles across Google/Twitter/Reddit, score each 0-100, tell you what will work BEFORE you waste time creating.
+
+Bootstrapped it while driving Uber. Launching on Product Hunt this week.
+
+87% accuracy so far, but trying to figure out pricing ($29.99/mo feel right for unlimited predictions?).
+
+Happy to swap feedback! What are you building?
+Why this works:
+✅ No direct link (not spammy)
+✅ Clear value prop
+✅ Shows you're real (Uber driver detail)
+✅ Asks a question (engagement)
+✅ Offers to give feedback (reciprocity)

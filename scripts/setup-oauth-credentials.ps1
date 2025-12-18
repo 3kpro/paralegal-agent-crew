@@ -2,7 +2,7 @@
 # This script adds all social media OAuth credentials to Vercel environment variables
 
 Write-Host "===========================================================" -ForegroundColor Cyan
-Write-Host "  TrendPulse OAuth Credentials Setup" -ForegroundColor Cyan
+Write-Host "  XELORA OAuth Credentials Setup" -ForegroundColor Cyan
 Write-Host "===========================================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -99,7 +99,7 @@ Write-Host "  ✓ INSTAGRAM_CLIENT_SECRET" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "1. Deploy to production: vercel --prod" -ForegroundColor Yellow
-Write-Host "2. Test OAuth flows on https://trendpulse.3kpro.services" -ForegroundColor Yellow
+Write-Host "2. Test OAuth flows on https://xelora.app" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "View all environment variables:" -ForegroundColor Cyan
 Write-Host "vercel env ls" -ForegroundColor Yellow

@@ -1,5 +1,5 @@
 {
-  "name": "3kpro-services",
+  "name": "xelora",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "docker:build": "docker build -t content-cascade-ai .",
-    "docker:run": "docker run -p 3000:3000 content-cascade-ai",
+    "docker:build": "docker build -t xelora .",
+    "docker:run": "docker run -p 3000:3000 xelora",
     "deploy:local": "docker-compose up -d",
     "deploy:prod": "docker-compose -f docker-compose.prod.yml up -d",
     "logs": "docker-compose logs -f",

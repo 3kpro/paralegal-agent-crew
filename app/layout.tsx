@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality. Real-time signal analysis, multi-platform optimization, 6+ platform integration.",
   keywords:
     "viral prediction, trend analysis, content optimization, signal intelligence, momentum prediction, multi-platform content, social media AI, AI content prediction, trend forecasting, viral intelligence, creator tools",
-  authors: [{ name: "3K Pro Services" }],
+  authors: [{ name: "XELORA" }],
   openGraph: {
     title: "XELORA - Predict Momentum. Engineer Virality.",
     description:
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     description:
       "Predict momentum. Engineer virality. XELORA analyzes signals before the internet reacts.",
     images: ["https://xelora.app/og-image.png"],
-    creator: "@3kproservices",
+    creator: "@XELORA_APP",
   },
   robots: {
     index: true,

@@ -15,12 +15,12 @@ export const STRIPE_PRICES = {
   PREMIUM_YEARLY: (process.env.STRIPE_PREMIUM_YEARLY_PRICE_ID || "").trim(),
 };
 
-// Tier limits configuration - TrendPulse Launch (Social platforms coming soon)
+// Tier limits configuration - XELORA Launch (Social platforms coming soon)
 export const TIER_LIMITS = {
   free: {
     campaignsPerMonth: 5,
     aiTools: 1, // Gemini for Viral Score™
-    trendSearches: 10, // TrendPulse searches per day
+    trendSearches: 10, // XELORA searches per day
     storageGB: 0.1, // 100MB
   },
   pro: {

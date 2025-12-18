@@ -1,0 +1,34 @@
+Just launched XELORA - Predict what content goes viral before you post it 🚀
+
+After watching creators waste hours on posts that get 10 likes, I built an AI platform that predicts viral potential with 87% accuracy.
+
+The tech stack:
+- Next.js 15 + Vertex AI for the prediction engine
+- Custom Viral Score™ algorithm (0-100 rating per post)
+- Multi-platform content generation & scheduling
+- Built in 90 days, ~$1,500 total investment
+
+The challenge: Building this while driving Uber to pay bills. Solo founder + AI as my dev team.
+
+Launched on PH today: https://www.producthunt.com/posts/xelora
+
+Would love feedback from other builders - especially if you create content regularly. What's your biggest pain point with social media?
+
+Please break this down like I was non tech for a sec.  
+
+1.  Do we have two different Ai models working inside of Xelora?
+2.  What was the NL2SQL upgrade and what did it actually do?
+3.  Do we plan on folding these Ais into one global know and do all AI, named Helix?
+
+
+It wouold seem analyst would be limited this early in the game without our other components it relies on to make graphs implemented yet.  Am I off?
+
+
+Analyst & Helix Unification - Verification Walkthrough
+We have successfully unified the Analyst's data capabilities into the Helix chat interface, enabling a rich, agentic experience where the AI can query the database and present visualizations directly in the chat.
+
+
+
+
+Proposal
+

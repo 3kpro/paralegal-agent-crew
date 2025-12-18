@@ -1,5 +1,5 @@
 # Test what the frontend receives
-$response = Invoke-RestMethod -Uri "https://trendpulse.3kpro.services/api/trends?keyword=Immigration%20Law&mode=ideas" -UseBasicParsing
+$response = Invoke-RestMethod -Uri "https://xelora.app/api/trends?keyword=Immigration%20Law&mode=ideas" -UseBasicParsing
 
 Write-Host "========================================="
 Write-Host "FULL API RESPONSE TEST"

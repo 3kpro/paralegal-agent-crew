@@ -13,7 +13,7 @@ export default function EditCampaignPage({
 
   useEffect(() => {
     // Redirect to new campaign page with edit mode
-    router.push(`/campaigns/new?edit=${id}`);
+    router.push(`/campaigns/create?edit=${id}`);
   }, [id, router]);
 
   return (

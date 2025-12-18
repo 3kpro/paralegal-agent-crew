@@ -17,7 +17,7 @@ import {
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/campaigns", label: "Campaigns", icon: Zap },
-  { href: "/campaigns/new", label: "Create", icon: Palette },
+  { href: "/campaigns/create", label: "Create", icon: Palette },
   { href: "/contentflow", label: "ContentFlow", icon: Calendar },
   { href: "/ai-studio", label: "AI Studio", icon: Brain },
   { href: "/social-accounts", label: "Social Accounts", icon: LinkIcon },
@@ -37,6 +37,7 @@ export function SidebarNav() {
           <Link key={item.href} href={item.href} className="block">
             <InteractiveHoverButton
               text={item.label}
+              icon={item.icon}
               variant={isActive ? "primary" : "outline"}
               className={`w-full justify-start text-left ${
                 isActive
