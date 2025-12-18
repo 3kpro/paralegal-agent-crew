@@ -99,7 +99,7 @@ export default function PortalLayout({
               <div className="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold">3K</span>
               </div>
-              <span className="font-bold text-lg">Content Cascade</span>
+              <span className="font-bold text-lg">Xelora</span>
             </Link>
           </div>
 
@@ -119,8 +119,8 @@ export default function PortalLayout({
               <span>Campaigns</span>
             </Link>
             <Link
-              href="/campaigns/new"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
+              href="/campaigns/create"
+              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
             >
               <span className="text-xl">🎨</span>
               <span>Create</span>
@@ -423,7 +423,7 @@ export default function PortalLayout({
               <span className="text-xs text-white mt-1">Campaigns</span>
             </Link>
             <Link
-              href="/campaigns/new"
+              href="/campaigns/create"
               className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
             >
               <span className="text-lg">🎨</span>

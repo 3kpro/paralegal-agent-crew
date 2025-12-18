@@ -15,7 +15,7 @@ const pricingPlans: PricingPlan[] = [
     price: "$199",
     description: "Perfect for small businesses getting started",
     features: [
-      "Content Cascade (7 formats)",
+      "Multi-format content generation",
       "Basic UGC video script",
       "Social media posts",
       "Email campaign draft",

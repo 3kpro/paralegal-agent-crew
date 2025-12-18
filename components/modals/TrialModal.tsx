@@ -37,7 +37,7 @@ export const TrialModal: React.FC<TrialModalProps> = ({
           </h3>
           <p className="text-gray-500 mb-4">
             Join our early access program and be among the first to experience
-            Content Cascade
+            Xelora
           </p>
         </div>
 
