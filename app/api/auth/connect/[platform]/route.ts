@@ -18,7 +18,7 @@ export async function GET(
     const origin = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
     // Validate platform
-    const validPlatforms = ["twitter", "tiktok", "linkedin", "facebook", "instagram"];
+    const validPlatforms = ["twitter", "tiktok", "linkedin", "facebook", "instagram", "youtube"];
     if (!validPlatforms.includes(platform.toLowerCase())) {
       return NextResponse.json(
         { error: "Platform not supported" },
@@ -104,6 +104,15 @@ export async function GET(
         `&scope=instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
+        `&state=${state}`,
+      youtube:
+        `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${process.env.YOUTUBE_CLIENT_ID}` +
+        `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
+        `&response_type=code` +
+        `&scope=${encodeURIComponent("https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/userinfo.profile")}` +
+        `&access_type=offline` +
+        `&prompt=consent` +
         `&state=${state}`,
     };
 

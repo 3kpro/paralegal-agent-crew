@@ -188,6 +188,11 @@ async function exchangeToken(
       clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
       tokenUrl: "https://graph.facebook.com/v18.0/oauth/access_token",
     },
+    youtube: {
+      clientId: process.env.YOUTUBE_CLIENT_ID,
+      clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
+      tokenUrl: "https://oauth2.googleapis.com/token",
+    },
   };
 
   const config = platformConfig[platform as keyof typeof platformConfig];
@@ -223,8 +228,8 @@ async function exchangeToken(
     if (codeVerifier) {
       params.code_verifier = codeVerifier;
     }
-  } else if (platform === "linkedin" || platform === "facebook" || platform === "instagram") {
-    // LinkedIn, Facebook, Instagram use client_id and client_secret in body
+  } else if (platform === "linkedin" || platform === "facebook" || platform === "instagram" || platform === "youtube") {
+    // LinkedIn, Facebook, Instagram, YouTube use client_id and client_secret in body
     params.client_id = clientId!;
     params.client_secret = clientSecret!;
   }
@@ -383,6 +388,34 @@ async function fetchUserProfile(platform: string, accessToken: string) {
       username: igProfile.username,
       profile_image_url: '',
       followers_count: 0,
+    };
+  } else if (platform === "youtube") {
+    // Fetch YouTube channel info
+    const response = await fetch(
+      "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch YouTube profile");
+    }
+
+    const data = await response.json();
+    if (!data.items || data.items.length === 0) {
+      throw new Error("No YouTube channel found for this account");
+    }
+
+    const channel = data.items[0];
+    return {
+      id: channel.id,
+      name: channel.snippet.title,
+      username: channel.snippet.customUrl?.replace('@', '') || channel.snippet.title.toLowerCase().replace(/\s+/g, '_'),
+      profile_image_url: channel.snippet.thumbnails?.default?.url || '',
+      followers_count: parseInt(channel.statistics?.subscriberCount || "0", 10),
     };
   }
 

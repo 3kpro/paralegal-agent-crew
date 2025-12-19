@@ -80,7 +80,7 @@ const SOCIAL_PLATFORMS: SocialPlatform[] = [
     color: "bg-red-600",
     description: "Video content platform",
     features: ["Videos", "Shorts", "Community posts"],
-    isAvailable: false,
+    isAvailable: true,
   },
 ];
 

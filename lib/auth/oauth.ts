@@ -23,7 +23,7 @@ export function generateCodeVerifier(): string {
     window.crypto.getRandomValues(values);
   } else {
     // Node.js environment fallback
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+     
     const crypto = require('crypto');
     crypto.randomFillSync(values);
   }
@@ -44,7 +44,7 @@ export async function generateCodeChallenge(verifier: string): Promise<string> {
     return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
   } else {
     // Node.js environment
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+     
     const crypto = require('crypto');
     const hash = crypto.createHash('sha256').update(verifier).digest('base64');
     return hash.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
@@ -130,6 +130,11 @@ export async function refreshAccessToken(
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
       tokenUrl: 'https://graph.facebook.com/v18.0/oauth/access_token',
+    },
+    youtube: {
+      clientId: process.env.YOUTUBE_CLIENT_ID!,
+      clientSecret: process.env.YOUTUBE_CLIENT_SECRET!,
+      tokenUrl: 'https://oauth2.googleapis.com/token',
     },
   };
 

@@ -140,9 +140,108 @@ async function postToPlatform(
       return postToInstagram(accessToken, content, mediaUrls);
     case 'tiktok':
       return postToTikTok(accessToken, content, mediaUrls);
+    case 'youtube':
+      return postToYouTube(accessToken, content, mediaUrls);
     default:
       throw new Error(`Platform ${platform} not supported`);
   }
+}
+
+async function postToYouTube(
+  accessToken: string,
+  content: string,
+  mediaUrls: string[]
+): Promise<{ postId: string; url: string }> {
+  if (mediaUrls.length === 0) {
+    throw new Error('YouTube posts require a video');
+  }
+
+  // We reuse the existing YouTube publisher logic but bypass the connection-id lookups
+  // Since we already have the accessToken here.
+  // Note: For simplicity and following the pattern in this file,
+  // we could implement it directly here or call the publisher.
+  // The publisher expects YouTubeVideoContent which includes a videoUrl.
+
+  const { publishToYouTube } = await import('@/lib/publishers/youtube.publisher');
+  
+  // We need a dummy connectionId because publishToYouTube calls getValidAccessToken
+  // Wait, that's not ideal if we already have the accessToken.
+  // Let's check publishToYouTube signature again.
+  // export async function publishToYouTube(connectionId: string, content: YouTubeVideoContent)
+  
+  // Ah, the publisher is coupled with connectionId. 
+  // Maybe I should refactor the publisher to accept EITHER connectionId OR accessToken.
+  
+  // For now, I'll implement the upload logic directly here or use a modified version.
+  // Actually, I'll just copy the core upload logic from the publisher to keep this file self-contained
+  // as is the pattern for other platforms in this route.
+  
+  const videoUrl = mediaUrls[0];
+  const title = content.split('\n')[0].substring(0, 100) || "Untitled Video";
+  const description = content;
+
+  // Metadata for YouTube
+  const metadata = {
+    snippet: {
+      title,
+      description,
+      categoryId: "22", // People & Blogs
+    },
+    status: {
+      privacyStatus: "public",
+    },
+  };
+
+  // Step 1: Fetch video
+  const videoResponse = await fetch(videoUrl);
+  if (!videoResponse.ok) throw new Error(`Failed to fetch video: ${videoResponse.status}`);
+  const videoBlob = await videoResponse.blob();
+  const videoSize = videoBlob.size;
+
+  // Step 2: Init resumable upload
+  const initResponse = await fetch(
+    `https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json; charset=UTF-8",
+        "X-Upload-Content-Length": videoSize.toString(),
+        "X-Upload-Content-Type": videoBlob.type || "video/mp4",
+      },
+      body: JSON.stringify(metadata),
+    }
+  );
+
+  if (!initResponse.ok) {
+    const errorText = await initResponse.text();
+    throw new Error(`YouTube init upload failed: ${errorText}`);
+  }
+
+  const uploadUrl = initResponse.headers.get("Location");
+  if (!uploadUrl) throw new Error("No upload URL received from YouTube");
+
+  // Step 3: Upload
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": videoBlob.type || "video/mp4",
+      "Content-Length": videoSize.toString(),
+    },
+    body: videoBlob,
+  });
+
+  if (!uploadResponse.ok) {
+    const errorText = await uploadResponse.text();
+    throw new Error(`YouTube upload failed: ${errorText}`);
+  }
+
+  const uploadData = await uploadResponse.json();
+  
+  return {
+    postId: uploadData.id,
+    url: `https://www.youtube.com/watch?v=${uploadData.id}`,
+  };
 }
 
 async function postToTwitter(

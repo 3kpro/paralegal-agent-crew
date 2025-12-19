@@ -4,6 +4,50 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-18] - TikTok OAuth Integration & Frictionless Publishing Flow
+
+### Added
+- **TikTok OAuth Integration**:
+  - Created TikTok developer app with Login Kit and Content Posting API
+  - Configured OAuth redirect URI: `https://xelora.app/api/auth/callback/tiktok`
+  - Added domain verification for xelora.app
+  - Configured OAuth credentials in Vercel production environment (`TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`)
+  - Added support for video publishing and photo slideshows (2-35 photos)
+  - App submitted for TikTok review (awaiting approval)
+
+- **Frictionless OAuth Flow**:
+  - Implemented direct OAuth redirect for all OAuth platforms (TikTok, Instagram, Facebook)
+  - Removed modal friction from connection flow based on user feedback
+  - Matches modern OAuth patterns (Canva, Hootsuite style)
+  - User flow: Click Connect → Platform OAuth → Authorize → Connected ✅
+
+### Changed
+- **ConnectionCard.tsx**: Removed hardcoded "Coming Soon" blocker for TikTok, Instagram, Facebook
+- **ConnectionGrid.tsx**: Implemented auth_type checking for direct OAuth redirect vs modal flow
+  - OAuth platforms (`auth_type: 'oauth'`): Direct redirect to `/api/auth/connect/[platform]`
+  - Custom app platforms: Show modal with setup instructions
+
+### Technical
+- **OAuth Scopes**: user.info.basic, video.publish, video.upload
+- **Platform Support**: TikTok videos (MP4, MOV, WEBM) and photo slideshows
+- **Security**: AES-256-GCM token encryption already implemented
+- **Publishing**: Full TikTok publisher implementation exists at `lib/publishers/tiktok.publisher.ts`
+
+### Status
+- ✅ TikTok OAuth code complete
+- ✅ Credentials configured on Vercel
+- ✅ UI updated to remove blockers
+- ✅ Code deployed to production
+- ⏳ **Awaiting TikTok app approval** (usually 3-7 days)
+- ✅ Ready to test immediately after approval
+
+### Next Steps After Approval
+1. Test TikTok OAuth connection flow
+2. Test video/photo publishing to TikTok
+3. Set up Facebook/Instagram developer app (similar process)
+
+**VISION Alignment**: Implements Section 4.4 (Multi-Channel Automation Hub) - TikTok is a core Level 1 Foundation feature.
+
 ## [2025-12-15 Late Night] - Helix UI & Brand Polish
 
 ### Added
