@@ -1,18 +1,37 @@
 # TASKS.md
-Last Updated: 2025-12-15
+Last Updated: 2025-12-18
 
 This file lists the ONLY work that should be actively considered.
-If it’s not here, it’s not a task.
+If it's not here, it's not a task.
 
 ---
 
 ## NOW (One at a time only)
-[Empty - ready for next priority]
+- [ ] **Configure OAuth credentials for seamless platform publishing**
+      - OAuth implementation is 100% complete (code, UI, APIs, security)
+      - Only missing: Platform app credentials in environment variables
+      - See: docs/OAUTH_SETUP_GUIDE.md for complete walkthrough
+      - Tasks:
+        1. Create TikTok developer app (5 min)
+        2. Create Facebook/Instagram developer app (10 min)
+        3. Add CLIENT_ID and CLIENT_SECRET to .env.production
+        4. Deploy to Vercel
+        5. Test all three OAuth flows
+      - Time estimate: 30-45 minutes total
+      - Impact: Enables one-click publishing for users (major competitive advantage)
 
 ---
 
 ## NEXT (After NOW is complete)
-[Empty - ready for next priorities]
+- [ ] Submit Facebook/Instagram app for review
+      - Required for production use beyond test users
+      - Prepare demo video showing OAuth flow
+      - Approval takes 1-2 weeks
+- [ ] Implement Instagram Carousel and Stories publishing
+      - Photos and Reels work (80% of use cases)
+      - Add carousel/stories if users request it
+- [ ] Add YouTube OAuth and publishing
+      - Capability config exists, needs publisher implementation
 
 ## COMPLETED
 - [x] Analytics dashboard v2 (visual analytics + progress tracking)
