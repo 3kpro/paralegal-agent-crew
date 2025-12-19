@@ -40,6 +40,17 @@ export default function ConnectionGrid({
     return connections.find((conn) => conn.provider_id === providerId)
   }
 
+  // Handle connection - OAuth platforms redirect directly, custom apps show modal
+  function handleConnect(provider: SocialProvider) {
+    if (provider.auth_type === 'oauth') {
+      // Direct redirect to OAuth flow - no modal, no friction
+      window.location.href = `/api/auth/connect/${provider.provider_key}`
+    } else {
+      // Custom app setup - show modal with instructions
+      onAddConnection(provider)
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {providers.map((provider) => {
@@ -50,7 +61,7 @@ export default function ConnectionGrid({
             key={provider.id}
             provider={provider}
             connection={userConnection}
-            onConnect={() => onAddConnection(provider)}
+            onConnect={() => handleConnect(provider)}
             onRefresh={onRefresh}
           />
         )
