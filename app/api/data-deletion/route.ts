@@ -85,11 +85,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle GET requests (for testing)
+// Handle GET requests (for testing and Facebook validation)
 export async function GET() {
-  return NextResponse.json({
-    message: "Facebook/Instagram Data Deletion Callback Endpoint",
-    status: "active",
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/data-deletion`,
-  });
+  return NextResponse.json(
+    {
+      message: "Facebook/Instagram Data Deletion Callback Endpoint",
+      status: "active",
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/api/data-deletion`,
+    },
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+      },
+    }
+  );
 }
