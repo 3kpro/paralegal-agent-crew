@@ -91,13 +91,20 @@ Instructions:
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
-    // Filter out empty messages that cause 400 errors
+    // Handle SDK v5 parts if content is missing
     const modelMessages = messages
-      .filter((m: any) => m.content && (typeof m.content !== 'string' || m.content.trim() !== ''))
-      .map((m: any) => ({
-        role: m.role,
-        content: typeof m.content === 'string' ? m.content : JSON.stringify(m.parts || "")
-      }));
+      .map((m: any) => {
+        let content = m.content;
+        // If content is empty but parts exist, stringify parts
+        if ((!content || (typeof content === 'string' && content.trim() === '')) && m.parts && m.parts.length > 0) {
+           content = JSON.stringify(m.parts); 
+        }
+        return {
+          role: m.role,
+          content: typeof content === 'string' ? content : JSON.stringify(content || "")
+        };
+      })
+      .filter((m: any) => m.content && m.content.trim() !== ''); // Only keep messages with actual content
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     
@@ -170,6 +177,11 @@ Instructions:
       console.warn('[Helix] AI Service Unavailable (Invalid Key or Model Error). Switching to Offline Mode.', aiError);
       
       // --- OFFLINE MOCK MODE (Fallback) ---
+      // Safety check: ensure we have messages to process
+      if (!modelMessages || modelMessages.length === 0) {
+        return new Response('Offline mode: No valid messages to process.', { status: 400 });
+      }
+
       const lastMsg = modelMessages[modelMessages.length - 1].content.toString().toLowerCase();
       
       let responseText = "I'm Helix (Offline Mode). I can help you with your analytics and campaigns. Try asking 'Show me performance' or 'How many campaigns?'.";
