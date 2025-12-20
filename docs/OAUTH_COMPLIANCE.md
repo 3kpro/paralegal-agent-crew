@@ -46,17 +46,19 @@ This document tracks compliance requirements for all OAuth integrations.
 ### App Settings
 - **App ID:** `${FACEBOOK_APP_ID}`
 - **Redirect URI:** `https://xelora.app/api/auth/callback/facebook`
-- **Permissions:** pages_manage_posts, pages_read_engagement
+- **Permissions:** email, public_profile
+- **Note:** For Page publishing, same permissions as Instagram can be used
 
 ### Compliance Requirements
 - [x] Privacy Policy URL: `https://xelora.app/privacy`
 - [x] Terms of Service URL: `https://xelora.app/terms`
 - [x] **Data Deletion Callback URL:** `https://xelora.app/api/data-deletion`
 - [x] App icon (1024x1024px)
-- [ ] App Review submission (if needed)
+- [x] Data deletion callback configured
+- [ ] App Review submission for advanced Page permissions (if needed)
 
 ### Status
-🟡 **Pending** - Data deletion endpoint created, needs testing
+✅ **Ready** - Basic OAuth working, data deletion endpoint configured
 
 ---
 
@@ -65,17 +67,19 @@ This document tracks compliance requirements for all OAuth integrations.
 ### App Settings
 - **App ID:** Same as Facebook (Instagram is part of Meta)
 - **Redirect URI:** `https://xelora.app/api/auth/callback/instagram`
-- **Permissions:** instagram_basic, instagram_content_publish
+- **Permissions:** email, pages_show_list, pages_manage_posts
+- **Note:** Instagram Business publishing uses Facebook Page permissions
 
 ### Compliance Requirements
 - [x] Privacy Policy URL: `https://xelora.app/privacy`
 - [x] Terms of Service URL: `https://xelora.app/terms`
 - [x] **Data Deletion Callback URL:** `https://xelora.app/api/data-deletion`
 - [x] App icon (1024x1024px)
-- [ ] App Review submission
+- [x] Instagram Business account linked to Facebook Page (required)
+- [ ] App Review submission for pages_manage_posts permission
 
 ### Status
-🟡 **Pending** - Data deletion endpoint created, needs testing
+🟡 **Testing** - Updated to use Facebook Page permissions for Instagram Business accounts
 
 ---
 
