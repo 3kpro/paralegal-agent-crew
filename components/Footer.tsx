@@ -138,9 +138,26 @@ export const Footer: React.FC = () => {
 
         <div className="border-t border-tron-grid mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-tron-text-muted">
-              &copy; 2025 XELORA. All rights reserved.
-            </p>
+            <div className="flex flex-col md:flex-row items-center gap-4">
+              <p className="text-tron-text-muted">
+                &copy; 2025 XELORA. All rights reserved.
+              </p>
+              <div className="flex gap-4 text-sm">
+                <a
+                  href="/privacy"
+                  className="text-tron-text-muted hover:text-tron-cyan transition-colors"
+                >
+                  Privacy Policy
+                </a>
+                <span className="text-tron-text-muted">•</span>
+                <a
+                  href="/terms"
+                  className="text-tron-text-muted hover:text-tron-cyan transition-colors"
+                >
+                  Terms of Service
+                </a>
+              </div>
+            </div>
 
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a
