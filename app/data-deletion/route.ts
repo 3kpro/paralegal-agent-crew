@@ -73,18 +73,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json(
-    {
-      message: "Facebook/Instagram Data Deletion Callback",
-      status: "active",
-      endpoint: "https://xelora.app/data-deletion",
+  // Return minimal response for Facebook validation
+  return new Response("OK", {
+    status: 200,
+    headers: {
+      "Content-Type": "text/plain",
     },
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control": "no-cache",
-      },
-    }
-  );
+  });
 }
