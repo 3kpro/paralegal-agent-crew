@@ -28,7 +28,8 @@
       "Bash(dir \"C:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\\\\libs\\\\capabilities\\\\social\")",
       "Bash(findstr:*)",
       "Bash(cat:*)",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(vercel ls:*)"
     ],
     "deny": [],
     "ask": []

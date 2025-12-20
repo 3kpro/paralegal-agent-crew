@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Helix AI Upgrade (Vercel AI SDK v5)
+- **Frontend Refactor**:
+  - Migrated `HelixWidget.tsx` to the headless `useChat` hook from `@ai-sdk/react`.
+  - Implemented `DefaultChatTransport` for custom body parameters (`sessionId`, `context`) and streamlined API communication.
+  - Developed a parts-based rendering engine to support `UIMessage` structures, including granular text parts and dynamic tool invocation rendering (`tool-${name}`).
+  - Added manual state management for chat input to improve control and responsiveness.
+- **Backend Enhancements**:
+  - Updated `/api/helix/chat` to use `result.toUIMessageStreamResponse()` for AI SDK v5 compatibility.
+  - Refactored `query_analytics` tool with `zodSchema` and `inputSchema` for better type safety and integration with current provider-utils.
+  - Standardized AI model usage on `gemini-1.5-flash` for high-performance streaming.
+- **Improved UX**:
+  - Enhanced tool execution feedback with "Processing..." states and inline visualizations for analyst data.
+  - Preserved subscription-based message locking for free-tier management.
+
 
 ## [2025-12-19] - Facebook & Instagram v13.0 Alignment (Waiting Pattern)
 - **Meta Platform Integration**:

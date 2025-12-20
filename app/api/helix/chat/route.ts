@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { streamText, generateText, tool, convertToModelMessages } from 'ai';
+import { streamText, generateText, tool, convertToModelMessages, zodSchema } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import { generateAnalystQuery } from '../../../../lib/ai/analyst';
@@ -117,28 +117,25 @@ Instructions:
       // This ensures we can catch auth/404 errors and fall back to Offline Mode
       // instead of crashing mid-stream.
       await generateText({
-        model: google('gemini-2.5-flash'),
+        model: google('gemini-1.5-flash'),
         messages: [{ role: 'user', content: 'Test' }],
-        // maxTokens: 1 // Temporarily removed to fix lint
       });
 
-      const result = streamText({
-        model: google('gemini-2.5-flash'),
+      const result = await streamText({
+        model: google('gemini-1.5-flash'),
         system: systemPrompt,
         messages: modelMessages,
         // @ts-ignore
         maxSteps: 5, // Required for tool execution
         tools: {
           query_analytics: tool({
-            description: 'Access the Analyst: query data, check performance, or generate charts. Use this when the user asks about stats, views, campaigns, or wants visualized data.',
-            parameters: z.object({
-              question: z.string().describe('The detailed, self-contained natural language question to ask the Analyst. If the user query is vague (e.g. "which is the oldest"), rewrite it to be specific (e.g. "Which campaign is the oldest?") based on conversation history.')
-            }),
-            execute: async ({ question }: { question: string }) => {
+        inputSchema: zodSchema(z.object({
+          question: z.string().describe('The natural language question to ask the database.')
+        })),
+        execute: async ({ question }: { question: string }) => {
                try {
                  console.log('[Helix] Invoking Analyst with:', question);
-                 const result = await generateAnalystQuery(question, user.id, supabase);
-                 return result;
+                 return await generateAnalystQuery(question, user.id, supabase);
                } catch (err: any) {
                  console.error('[Helix] Analyst Error:', err);
                  return {
@@ -163,8 +160,10 @@ Instructions:
         }
       });
 
-      return result.toTextStreamResponse({
-        headers: { 'X-Session-Id': sessionId }
+      return result.toUIMessageStreamResponse({
+        headers: {
+          'X-Session-Id': sessionId
+        }
       });
 
     } catch (aiError) {

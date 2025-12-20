@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-// useChat removed
+import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 
 import dynamic from 'next/dynamic';
 import {
@@ -18,7 +19,10 @@ import {
   Minimize2,
   Eye,
   EyeOff,
-  PanelRight
+  PanelRight,
+  ExternalLink,
+  GripHorizontal,
+  ChevronRight
 } from "lucide-react";
 
 const AnalystCharts = dynamic(() => import('../analyst/AnalystCharts'), { 
@@ -42,20 +46,31 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{startX: number, startY: number} | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
 
   // Use AI SDK
-  // Manual Input State to fix typing issues
   const [localInput, setLocalInput] = useState("");
-
-  // Use AI SDK
-  // Manual Chat State
-  const [messages, setMessages] = useState<any[]>([
+  const { 
+    messages, 
+    status,
+    error,
+    sendMessage,
+    setMessages
+  } = useChat({
+    transport: new DefaultChatTransport({
+      api: '/api/helix/chat',
+      body: {
+        sessionId,
+        context: { currentPath: pathname }
+      }
+    }),
+    messages: [
       {
         id: 'welcome',
         role: 'assistant',
-        content: `👋 Hi! I'm Helix, your AI marketing assistant.
+        parts: [{
+          type: 'text',
+          text: `👋 Hi! I'm Helix, your AI marketing assistant.
 
 I can help you:
 ✨ Navigate XELORA and learn features
@@ -69,74 +84,15 @@ Try asking me anything like:
 • "Tips for increasing engagement"
 
 What would you like to know?`
+        }]
       }
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const append = async (newMsg: { role: string, content: string }, options?: { body?: any }) => {
-    setIsLoading(true);
-    const userMsg = { ...newMsg, id: Date.now().toString() };
-    const newMessages = [...messages, userMsg];
-    setMessages(prev => [...prev, userMsg]);
-
-    try {
-      const response = await fetch('/api/helix/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages,
-          sessionId: options?.body?.sessionId || sessionId,
-          context: options?.body?.context || { currentPath: pathname }
-        })
-      });
-      
-      const sid = response.headers.get('X-Session-Id');
-      if (sid) setSessionId(sid);
-
-      const assistantMsgId = (Date.now() + 1).toString();
-      // Optimistic update
-      setMessages(prev => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Helix API Error:', response.status, errorText);
-        let niceError = "I encountered an error connecting to the server.";
-        try {
-           const json = JSON.parse(errorText);
-           if (json.error) niceError = `Error: ${json.error.message || json.error}`;
-        } catch (e) {
-           niceError = `Error ${response.status}: ${errorText.substring(0, 100)}`;
-        }
-        
-        setMessages(prev => prev.map(m => 
-            m.id === assistantMsgId ? { ...m, content: niceError } : m
-        ));
-        return;
-      }
-
-      if (!response.body) return;
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantContent = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const text = decoder.decode(value, { stream: true });
-        assistantContent += text;
-        
-        setMessages(prev => prev.map(m => 
-            m.id === assistantMsgId ? { ...m, content: assistantContent } : m
-        ));
-      }
-      return assistantMsgId;
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+    ],
+    onFinish: ({ message }) => {
+      // Logic for after message finished if needed
     }
-  };
+  });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
 
 
   // Notify parent layout about sidebar state
@@ -188,23 +144,16 @@ What would you like to know?`
     };
   }, [isDragging]);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLocked && messages.length >= 7) return; 
+    if (isLocked && messages.length >= 7) {
+      return;
+    }
     if (!localInput.trim() || isLoading) return;
 
-    const userMessage = localInput;
-    setLocalInput(""); // Clear immediately
-    
-    await append({
-      role: 'user',
-      content: userMessage
-    }, {
-      body: {
-        sessionId,
-        context: { currentPath: pathname }
-      }
-    });
+    const text = localInput;
+    setLocalInput("");
+    await sendMessage({ text });
   };
 
   // Resizing Logic
@@ -242,6 +191,8 @@ What would you like to know?`
     };
   }, [isResizing]);
 
+  if (pathname === '/helix') return null;
+
   return (
     <div 
       ref={sidebarRef}
@@ -272,21 +223,37 @@ What would you like to know?`
             drag={!isSidePanel && !isExpanded}
             dragMomentum={false}
             onMouseDown={handleMouseDown}
-            className={`pointer-events-auto border shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
-              isTransparent ? "bg-gray-900/70 backdrop-blur-xl border-gray-800/50" : "bg-gray-900 border-gray-800"
+            className={`pointer-events-auto border shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden transition-all duration-300 ${
+              isTransparent 
+                ? "bg-gray-950/40 backdrop-blur-2xl border-gray-700/30" 
+                : "bg-[#0a0a0b] border-gray-800/80"
             } ${
               isSidePanel
                 ? "w-full h-full rounded-none border-0"
                 : isExpanded
-                  ? "fixed inset-4 bottom-24 right-6 w-auto h-auto rounded-2xl mb-4"
-                  : "w-[400px] h-[600px] rounded-2xl mb-4" + (isDragging ? " cursor-move" : " cursor-grab")
+                  ? "fixed inset-4 bottom-24 right-6 w-auto h-auto rounded-3xl mb-4"
+                  : "w-[420px] h-[650px] rounded-3xl mb-4 shadow-coral-500/5" + (isDragging ? " cursor-move" : " cursor-grab")
             }`}
           >
+            {/* Ambient Background Glow */}
+            {!isTransparent && (
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-coral-500/5 blur-[100px] rounded-full" />
+                <div className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-purple-500/5 blur-[100px] rounded-full" />
+              </div>
+            )}
             {/* Header */}
-            <div className={`p-4 border-b border-gray-800 flex items-center justify-between shrink-0 ${
+            <div className={`p-4 border-b border-gray-800 flex flex-col gap-3 shrink-0 relative ${
               isTransparent ? "bg-gray-900/70 backdrop-blur" : "bg-gray-900/95 backdrop-blur"
             }`}>
-              <div className="flex items-center gap-3">
+              {/* Drag Handle Indicator */}
+              {!isSidePanel && !isExpanded && (
+                <div className="absolute top-1 left-1/2 -translate-x-1/2 opacity-20 group-hover:opacity-100 transition-opacity">
+                  <GripHorizontal className="w-4 h-4 text-white" />
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
                 <div className="w-8 h-8 flex items-center justify-center">
                   <Image 
                     src="/Helix_logo.png" 
@@ -297,14 +264,24 @@ What would you like to know?`
                   />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-sm">Helix AI</h3>
-                  <p className="text-[10px] text-gray-400 flex items-center gap-1">
-                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${isLocked ? 'bg-amber-500' : 'bg-green-500'}`} />
-                    {isLocked ? 'Trial Mode' : `Online • ${pathname}`}
+                  <h3 className="font-bold text-white text-sm tracking-tight">Helix <span className="text-coral-400">AI</span></h3>
+                  <p className="text-[10px] text-gray-400 flex items-center gap-1.5 font-medium">
+                    <span className="relative flex h-2 w-2">
+                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isLocked ? 'bg-amber-400' : 'bg-green-400'}`}></span>
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${isLocked ? 'bg-amber-500' : 'bg-green-500'}`}></span>
+                    </span>
+                    {isLocked ? 'Free Edition' : `Active Assistant`}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                <a
+                  href="/helix"
+                  className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
+                  title="Open dedicated Helix AI"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </a>
                 <button
                   onClick={() => {
                     setIsSidePanel(!isSidePanel);
@@ -351,6 +328,7 @@ What would you like to know?`
                 </button>
               </div>
             </div>
+          </div>
 
             {/* Content Area */}
             {isLocked && messages.length >= 7 ? (
@@ -371,65 +349,74 @@ What would you like to know?`
               </div>
             ) : (
               <>
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-black/20">
-                  {messages.map((msg, idx) => (
+                {/* Messages Container with Custom Scrollbar */}
+                <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-hide relative z-10">
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
+                  {messages.map((msg: any, idx) => (
                     <div 
                       key={idx} 
-                      className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                      className={`flex gap-3 ${((msg as any).role as string) === 'user' ? 'flex-row-reverse' : ''}`}
                     >
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                        msg.role === 'assistant' 
+                        ((msg as any).role as string) === 'assistant' 
                           ? 'bg-gray-800 border border-gray-700' 
                           : 'bg-coral-500'
                       }`}>
-                        {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" /> : <User className="w-4 h-4 text-white" />}
+                        {((msg as any).role as string) === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" /> : <User className="w-4 h-4 text-white" />}
                       </div>
                       
-                      <div className={`p-3 rounded-2xl max-w-[85%] text-sm whitespace-pre-wrap leading-relaxed ${
-                        msg.role === 'assistant'
-                          ? 'bg-gray-800/50 border border-gray-700/50 text-gray-300'
-                          : 'bg-coral-500 text-white shadow-lg shadow-coral-500/10'
+                      <div className={`p-3.5 rounded-2xl max-w-[85%] text-[13px] whitespace-pre-wrap leading-relaxed relative ${
+                        ((msg as any).role as string) === 'assistant'
+                          ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
+                          : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
                       }`}>
-                        {msg.content}
-                        
-                        {/* Tool Invocations (Charts) */}
-                        {msg.toolInvocations?.map((toolInvocation: any) => {
-                          const { toolName, toolCallId, state } = toolInvocation;
-                          if (state === 'result') {
-                            const { result } = toolInvocation;
+                        {(msg.parts as any[]).map((part: any, pIdx: number) => {
+                          if (part.type === 'text') {
+                            return <span key={pIdx} className="block">{part.text}</span>;
+                          }
+                          if (part.type.startsWith('tool-')) {
+                            const toolCallId = (part as any).toolCallId;
+                            const state = (part as any).state;
+                            const result = (part as any).output;
+                            const toolName = part.type.replace('tool-', '');
+
+                            if (state === 'output-available') {
+                              if (toolName === 'query_analytics' && result?.chartType && result?.chartType !== 'table') {
+                                return (
+                                  <div key={toolCallId} className="mt-4 w-full h-[250px] bg-gray-900 border border-gray-700 rounded-xl p-2 relative overflow-hidden">
+                                     <div className="absolute top-2 left-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider z-10">
+                                       {result.chartType}
+                                     </div>
+                                     <AnalystCharts data={result.data} type={result.chartType} />
+                                  </div>
+                                );
+                              }
+                            }
                             
-                            if (toolName === 'query_analytics' && result.chartType && result.chartType !== 'table') {
+                            if (state === 'output-error') {
+                               return (
+                                 <div key={toolCallId} className="mt-2 text-xs text-red-400 italic">
+                                   Error: {(part as any).errorText || 'Tool execution failed.'}
+                                 </div>
+                               );
+                            }
+
+                            if (state === 'input-streaming' || state === 'input-available') {
                               return (
-                                <div key={toolCallId} className="mt-4 w-full h-[250px] bg-gray-900 border border-gray-700 rounded-xl p-2 relative overflow-hidden">
-                                   <div className="absolute top-2 left-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider z-10">
-                                     {result.chartType}
-                                   </div>
-                                   <AnalystCharts data={result.data} type={result.chartType} />
+                                <div key={toolCallId} className="mt-2 text-xs text-gray-500 italic flex items-center gap-2">
+                                  <span className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
+                                  Processing {toolName}...
                                 </div>
                               );
                             }
-                            if (toolName === 'update_brand_dna') {
-                                return (
-                                    <div key={toolCallId} className="mt-2 p-2 bg-green-900/20 border border-green-900 rounded text-green-200 text-xs flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-green-500" />
-                                        Brand DNA Updated Successfully
-                                    </div>
-                                )
-                            }
                           }
-                          return (
-                             <div key={toolCallId} className="mt-2 text-xs text-gray-500 italic flex items-center gap-2">
-                               <span className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
-                               Processing request...
-                             </div>
-                          );
+                          return null;
                         })}
                       </div>
                     </div>
                   ))}
                   
-                  {isLoading && messages[messages.length-1].role === 'user' && (
+                  {isLoading && messages.length > 0 && (messages[messages.length-1] as any).role === 'user' && (
                     <div className="flex gap-3">
                          <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
                            <Sparkles className="w-4 h-4 text-coral-400 animate-pulse" />
@@ -444,22 +431,23 @@ What would you like to know?`
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
-                <div className={`p-4 border-t border-gray-800 shrink-0 ${
-                  isTransparent ? "bg-gray-900/70 backdrop-blur" : "bg-gray-900"
+                {/* Input Area */}
+                <div className={`p-5 border-t border-gray-800/50 shrink-0 relative z-10 ${
+                  isTransparent ? "bg-gray-950/20 backdrop-blur-md" : "bg-[#0c0c0d]"
                 }`}>
-                  <form onSubmit={onSubmit} className="relative">
+                  <form onSubmit={onFormSubmit} className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-coral-500/0 via-coral-500/20 to-coral-500/0 rounded-xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     <input
                       type="text"
                       value={localInput}
                       onChange={(e) => setLocalInput(e.target.value)}
-                      placeholder={isLocked ? "Ask Helix..." : "Ask Helix..."}
-                      className="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 pl-4 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-coral-500/50 focus:ring-1 focus:ring-coral-500/50 transition-all"
+                      placeholder="Ask Helix anything..."
+                      className="w-full bg-[#161618] border border-gray-800 rounded-xl py-3.5 pl-5 pr-14 text-[13px] text-white placeholder-gray-600 focus:outline-none focus:border-coral-500/40 focus:ring-1 focus:ring-coral-500/20 transition-all relative"
                     />
                     <button
                       type="submit"
                       disabled={!localInput.trim() || isLoading}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-colors disabled:opacity-50 disabled:hover:bg-coral-500"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-all duration-300 shadow-lg shadow-coral-500/20 disabled:opacity-30 disabled:grayscale disabled:shadow-none hover:scale-105 active:scale-95"
                     >
                       <Send className="w-4 h-4" />
                     </button>
@@ -477,21 +465,23 @@ What would you like to know?`
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(!isOpen)}
-            className={`pointer-events-auto w-16 h-16 flex items-center justify-center transition-all duration-300 ${
+            className={`pointer-events-auto w-16 h-16 flex items-center justify-center transition-all duration-500 ${
               isOpen 
-                ? "bg-gray-800 text-gray-400 hover:text-white border border-gray-700 rounded-full shadow-2xl" 
-                : "bg-transparent filter drop-shadow-[0_0_15px_rgba(255,87,34,0.6)] hover:drop-shadow-[0_0_25px_rgba(255,87,34,0.8)]"
+                ? "bg-gray-900 text-gray-400 hover:text-white border border-gray-800 rounded-full shadow-2xl scale-90" 
+                : "bg-transparent filter drop-shadow-[0_0_20px_rgba(255,87,34,0.4)] hover:drop-shadow-[0_0_30px_rgba(255,87,34,0.6)]"
             }`}
           >
             {isOpen ? (
-                <ChevronDown className="w-6 h-6" />
+                <ChevronDown className="w-6 h-6 animate-bounce-subtle" />
             ) : (
-                <div className="relative w-full h-full p-2">
+                <div className="relative w-full h-full p-2 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-coral-500/20 blur-xl rounded-full animate-pulse" />
                     <Image 
                       src="/Helix_logo.png" 
                       alt="Helix" 
-                      fill
-                      className="object-contain animate-[spin_10s_linear_infinite] filter hue-rotate-15 saturate-200" 
+                      width={48}
+                      height={48}
+                      className="object-contain animate-[spin_12s_linear_infinite] filter hue-rotate-15 saturate-200 relative z-10" 
                     />
                 </div>
             )}

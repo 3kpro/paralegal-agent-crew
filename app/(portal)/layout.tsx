@@ -7,7 +7,7 @@ import Link from "next/link";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { FloatingNav } from "@/components/ui/floating-nav";
 import SettingsModal from "@/components/SettingsModal";
-import { Settings, Sparkles, ChevronDown } from "lucide-react";
+import { Settings, Sparkles, ChevronDown, Bot } from "lucide-react";
 import HelixWidget from "@/components/helix/HelixWidget";
 import { XeloraLogo } from "@/components/XeloraLogo";
 
@@ -133,11 +133,11 @@ export default function PortalLayout({
               <span>ContentFlow</span>
             </Link>
             <Link
-              href="/ai-studio"
+              href="/helix"
               className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
             >
-              <span className="text-xl">🧠</span>
-              <span>Reactor</span>
+              <Bot className="w-5 h-5" />
+              <span>Helix AI</span>
             </Link>
             <Link
               href="/social-accounts"
@@ -430,11 +430,11 @@ export default function PortalLayout({
               <span className="text-xs text-white mt-1">Create</span>
             </Link>
             <Link
-              href="/ai-studio"
+              href="/helix"
               className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
             >
-              <span className="text-lg">🧠</span>
-              <span className="text-xs text-white mt-1">Reactor</span>
+              <Bot className="w-5 h-5 text-coral-400" />
+              <span className="text-xs text-white mt-1">Helix AI</span>
             </Link>
             <button
               onClick={() => setIsSettingsOpen(true)}

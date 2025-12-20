@@ -16,6 +16,7 @@ import {
   LogOut,
   CreditCard,
   Rocket,
+  Bot,
 } from "lucide-react"
 
 export function FloatingNav() {
@@ -67,9 +68,9 @@ export function FloatingNav() {
           label="ContentFlow"
         />
         <MenuItem
-          icon={<Sparkles size={22} strokeWidth={1.5} className="text-coral-400" />}
-          onClick={() => router.push('/ai-studio')}
-          label="Reactor"
+          icon={<Bot size={22} strokeWidth={1.5} className="text-coral-400" />}
+          onClick={() => router.push('/helix')}
+          label="Helix AI"
         />
         <MenuItem
           icon={<div className="text-coral-400"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>}
