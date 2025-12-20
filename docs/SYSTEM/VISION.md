@@ -3,7 +3,7 @@
 **Status:** ✅ CANONICAL - Approved by Founder
 **Created:** December 13, 2025
 **Approved:** December 15, 2025
-**Updated:** December 17, 2025 (Brand consolidation)
+**Updated:** December 19, 2025 (Promote v1 integration)
 **Authority:** SYSTEM Document (Source of Truth)
 **Purpose:** Define the full end-state vision for Xelora as single unified platform
 
@@ -37,9 +37,10 @@
 We're building the first **AI-native marketing intelligence platform** that:
 1. **Predicts** what will go viral before you post (Viral Score™)
 2. **Generates** optimized content across every platform
-3. **Automates** multi-channel distribution and scheduling
-4. **Learns** your brand voice and continuously improves
-5. **Proves** ROI with precision analytics and attribution
+3. **Promotes** your content by indexing and analyzing your existing media library
+4. **Automates** multi-channel distribution and scheduling
+5. **Learns** your brand voice and continuously improves
+6. **Proves** ROI with precision analytics and attribution
 
 **The difference:** We're not a social media scheduler with AI features bolted on. We're AI-first, built from the ground up to replace marketing guesswork with machine learning precision.
 
@@ -71,6 +72,7 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 - Trending topic discovery across platforms
 - AI content generation for social posts
 - Multi-platform publishing (Twitter, Instagram, LinkedIn, Facebook, TikTok)
+- Promote content intelligence (Google Drive, OneDrive integration)
 - Campaign management and tracking
 - Gemini AI assistant for strategy advice
 
@@ -316,6 +318,30 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 
 ---
 
+### 4.9 Promote (Content Intelligence from Your Media)
+**Status:** Core capability, approved for v1
+
+**What It Does:**
+- Connects to user-owned cloud storage (Google Drive primary, OneDrive secondary)
+- Indexes, analyzes, and derives intelligence from existing content libraries
+- Identifies high-performing assets and suggests repurposing strategies
+- Surfaces content opportunities based on trending topics and past performance
+- Enables "Use Xelora to promote Xelora" - dogfooding the platform's own capabilities
+
+**Design Principle:**
+- Xelora does NOT store large media assets
+- All content remains in user-owned external storage
+- Xelora indexes metadata and generates intelligence, not file copies
+- Users retain full ownership and control of their media
+
+**Why This Matters:**
+- Creators already have content libraries scattered across cloud storage
+- Promote unlocks value from existing assets without migration friction
+- Reduces content creation burden by identifying what to repurpose
+- External storage model keeps infrastructure lean and costs low
+
+---
+
 ## 5. DIFFERENTIATION (Why We Win)
 
 ### 5.1 Technical Moat
@@ -352,6 +378,7 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 - Basic AI content generation
 - Campaign management
 - Trend discovery
+- Promote (external content indexing via Google Drive, OneDrive)
 - **Active Tiers:** Free, Starter, Pro, Business
 
 ### Level 2: Intelligence Enhancement
@@ -596,4 +623,5 @@ These strategic questions emerged during analysis and need explicit decisions:
 - *December 13, 2025*: Draft completed (TASK-005)
 - *December 15, 2025*: **Approved by Founder as canonical VISION.md**
 - *December 17, 2025*: **Brand consolidation** - Simplified from two-product strategy (XELORA + CCAI) to single Xelora brand with tier progression. CCAI repositioned as optional internal descriptor.
+- *December 19, 2025*: **Promote v1 integration** - Added Promote as core capability (Section 4.9). External content model via Google Drive/OneDrive. Xelora indexes and analyzes user-owned content without storing media assets.
 - *Status*: CANONICAL - Source of Truth for Xelora platform vision

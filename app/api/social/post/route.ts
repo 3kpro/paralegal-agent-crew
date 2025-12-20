@@ -423,7 +423,7 @@ async function postToFacebook(
 ): Promise<{ postId: string; url: string }> {
   // Get user's Facebook pages
   const pagesResponse = await fetch(
-    `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`
+    `https://graph.facebook.com/v13.0/me/accounts?access_token=${accessToken}`
   );
   const pagesData = await pagesResponse.json();
   
@@ -446,7 +446,7 @@ async function postToFacebook(
 
   const endpoint = mediaUrls.length > 0 ? 'photos' : 'feed';
   const response = await fetch(
-    `https://graph.facebook.com/v18.0/${pageId}/${endpoint}`,
+    `https://graph.facebook.com/v13.0/${pageId}/${endpoint}`,
     {
       method: 'POST',
       headers: {
@@ -479,7 +479,7 @@ async function postToInstagram(
 
   // Get Instagram Business Account ID
   const meResponse = await fetch(
-    `https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`
+    `https://graph.facebook.com/v13.0/me/accounts?access_token=${accessToken}`
   );
   const meData = await meResponse.json();
   
@@ -492,7 +492,7 @@ async function postToInstagram(
 
   // Get Instagram Account ID from page
   const igResponse = await fetch(
-    `https://graph.facebook.com/v18.0/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`
+    `https://graph.facebook.com/v13.0/${pageId}?fields=instagram_business_account&access_token=${pageAccessToken}`
   );
   const igData = await igResponse.json();
   const igAccountId = igData.instagram_business_account?.id;
@@ -503,7 +503,7 @@ async function postToInstagram(
 
   // Step 1: Create media container
   const containerResponse = await fetch(
-    `https://graph.facebook.com/v18.0/${igAccountId}/media`,
+    `https://graph.facebook.com/v13.0/${igAccountId}/media`,
     {
       method: 'POST',
       headers: {
@@ -525,7 +525,7 @@ async function postToInstagram(
 
   // Step 2: Publish container
   const publishResponse = await fetch(
-    `https://graph.facebook.com/v18.0/${igAccountId}/media_publish`,
+    `https://graph.facebook.com/v13.0/${igAccountId}/media_publish`,
     {
       method: 'POST',
       headers: {

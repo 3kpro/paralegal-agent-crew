@@ -85,7 +85,7 @@ export async function publishToFacebook(
 async function getPageId(accessToken: string): Promise<string | null> {
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/me/accounts?access_token=${accessToken}`
+      `https://graph.facebook.com/v13.0/me/accounts?access_token=${accessToken}`
     )
 
     if (!response.ok) {
@@ -117,7 +117,7 @@ async function getPageAccessToken(
 ): Promise<string | null> {
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}?fields=access_token&access_token=${userAccessToken}`
+      `https://graph.facebook.com/v13.0/${pageId}?fields=access_token&access_token=${userAccessToken}`
     )
 
     if (!response.ok) {
@@ -151,7 +151,7 @@ async function publishText(
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/feed`,
+      `https://graph.facebook.com/v13.0/${pageId}/feed`,
       {
         method: "POST",
         headers: {
@@ -199,7 +199,7 @@ async function publishPhoto(
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/photos`,
+      `https://graph.facebook.com/v13.0/${pageId}/photos`,
       {
         method: "POST",
         headers: {
@@ -248,7 +248,7 @@ async function publishVideo(
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/videos`,
+      `https://graph.facebook.com/v13.0/${pageId}/videos`,
       {
         method: "POST",
         headers: {
@@ -297,7 +297,7 @@ async function publishLink(
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v21.0/${pageId}/feed`,
+      `https://graph.facebook.com/v13.0/${pageId}/feed`,
       {
         method: "POST",
         headers: {

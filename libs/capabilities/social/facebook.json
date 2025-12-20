@@ -4,13 +4,11 @@
   "description": "Post to your Facebook Page or personal timeline",
   "auth_type": "oauth",
   "tier_required": "free",
-
   "docs": {
     "setup_guide": "https://developers.facebook.com/docs/pages-api/get-started",
     "api_reference": "https://developers.facebook.com/docs/graph-api/reference/page/feed",
     "permissions": "https://developers.facebook.com/docs/permissions/reference"
   },
-
   "setup_instructions": [
     "You'll be redirected to Facebook to authorize 3K Pro Services",
     "Sign in with your Facebook account",
@@ -18,68 +16,95 @@
     "Grant the requested permissions to enable posting",
     "You'll be redirected back to complete the setup"
   ],
-
   "requirements": {
     "account_type": "Facebook Page required for posting",
     "note": "Personal timeline posting has limited API access. We recommend using a Facebook Page."
   },
-
   "oauth": {
-    "auth_url": "https://www.facebook.com/v21.0/dialog/oauth",
-    "token_url": "https://graph.facebook.com/v21.0/oauth/access_token",
+    "auth_url": "https://www.facebook.com/v13.0/dialog/oauth",
+    "token_url": "https://graph.facebook.com/v13.0/oauth/access_token",
     "user_info_url": "https://graph.facebook.com/me?fields=id,name",
     "required_scopes": [
-      "pages_manage_posts",
-      "pages_read_engagement",
-      "pages_show_list",
+      "email",
       "public_profile"
     ],
     "optional_scopes": [
+      "pages_manage_posts",
+      "pages_read_engagement",
+      "manage_pages",
       "pages_manage_metadata",
       "pages_read_user_content"
     ]
   },
-
   "capabilities": {
     "publish_text": {
       "name": "Publish Text Post",
       "description": "Post text content to Facebook Page",
-      "endpoint": "https://graph.facebook.com/v21.0/{page-id}/feed",
+      "endpoint": "https://graph.facebook.com/v13.0/{page-id}/feed",
       "method": "POST",
-      "required_fields": ["message"],
-      "optional_fields": ["link", "published"],
-      "permissions": ["pages_manage_posts"],
+      "required_fields": [
+        "message"
+      ],
+      "optional_fields": [
+        "link",
+        "published"
+      ],
+      "permissions": [
+        "pages_manage_posts"
+      ],
       "limitations": {
         "message_max_length": 63206,
         "hashtag_limit": 30
       }
     },
-
     "publish_photo": {
       "name": "Publish Photo",
       "description": "Upload a photo to Facebook Page",
-      "endpoint": "https://graph.facebook.com/v21.0/{page-id}/photos",
+      "endpoint": "https://graph.facebook.com/v13.0/{page-id}/photos",
       "method": "POST",
-      "required_fields": ["url"],
-      "optional_fields": ["caption", "published"],
-      "permissions": ["pages_manage_posts"],
+      "required_fields": [
+        "url"
+      ],
+      "optional_fields": [
+        "caption",
+        "published"
+      ],
+      "permissions": [
+        "pages_manage_posts"
+      ],
       "limitations": {
-        "image_formats": ["JPEG", "PNG", "GIF", "BMP"],
+        "image_formats": [
+          "JPEG",
+          "PNG",
+          "GIF",
+          "BMP"
+        ],
         "max_file_size": "10MB",
         "caption_max_length": 63206
       }
     },
-
     "publish_video": {
       "name": "Publish Video",
       "description": "Upload a video to Facebook Page",
-      "endpoint": "https://graph.facebook.com/v21.0/{page-id}/videos",
+      "endpoint": "https://graph.facebook.com/v13.0/{page-id}/videos",
       "method": "POST",
-      "required_fields": ["file_url"],
-      "optional_fields": ["description", "title", "published"],
-      "permissions": ["pages_manage_posts"],
+      "required_fields": [
+        "file_url"
+      ],
+      "optional_fields": [
+        "description",
+        "title",
+        "published"
+      ],
+      "permissions": [
+        "pages_manage_posts"
+      ],
       "limitations": {
-        "video_formats": ["MP4", "MOV", "AVI"],
+        "video_formats": [
+          "MP4",
+          "MOV",
+          "AVI"
+        ],
         "max_file_size": "10GB",
         "max_duration_seconds": 14400,
         "min_duration_seconds": 1,
@@ -87,21 +112,25 @@
         "title_max_length": 255
       }
     },
-
     "publish_link": {
       "name": "Share Link",
       "description": "Share a link with preview on Facebook Page",
-      "endpoint": "https://graph.facebook.com/v21.0/{page-id}/feed",
+      "endpoint": "https://graph.facebook.com/v13.0/{page-id}/feed",
       "method": "POST",
-      "required_fields": ["link"],
-      "optional_fields": ["message"],
-      "permissions": ["pages_manage_posts"],
+      "required_fields": [
+        "link"
+      ],
+      "optional_fields": [
+        "message"
+      ],
+      "permissions": [
+        "pages_manage_posts"
+      ],
       "limitations": {
         "message_max_length": 63206
       }
     }
   },
-
   "publishing_flow": {
     "steps": [
       {
@@ -127,20 +156,17 @@
       "Video uploads may take time to process before appearing"
     ]
   },
-
   "error_codes": {
     "100": "Invalid parameter",
     "190": "Access token expired or invalid",
     "200": "Permission denied",
     "368": "Temporarily blocked from posting"
   },
-
   "rate_limits": {
     "posts_per_hour": 50,
     "api_calls_per_hour": 200,
     "note": "Rate limits apply per Page"
   },
-
   "testing": {
     "test_endpoint": "https://graph.facebook.com/me/accounts",
     "test_method": "GET",
@@ -155,7 +181,6 @@
       ]
     }
   },
-
   "ui_config": {
     "color": "#1877F2",
     "icon_url": "/images/platforms/facebook.svg",

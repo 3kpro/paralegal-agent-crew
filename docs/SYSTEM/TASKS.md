@@ -5,35 +5,21 @@ This file lists the ONLY work that should be actively considered.
 If it's not here, it's not a task.
 
 ---
-
 ## NOW (One at a time only)
 - [ ] **Configure OAuth credentials for seamless platform publishing**
-      - OAuth implementation is 100% complete (code, UI, APIs, security)
-      - Only missing: Platform app credentials in environment variables
-      - See: docs/OAUTH_SETUP_GUIDE.md for complete walkthrough
-      - Tasks:
-        1. Create TikTok developer app (5 min)
-        2. Create Facebook/Instagram developer app (10 min)
-        3. Add CLIENT_ID and CLIENT_SECRET to .env.production
-        4. Deploy to Vercel
-        5. Test all three OAuth flows
-      - Time estimate: 30-45 minutes total
-      - Impact: Enables one-click publishing for users (major competitive advantage)
-
----
-
-## NEXT (After NOW is complete)
-- [ ] Submit Facebook/Instagram app for review
-      - Required for production use beyond test users
-      - Prepare demo video showing OAuth flow
-      - Approval takes 1-2 weeks
-- [ ] Implement Instagram Carousel and Stories publishing
-      - Photos and Reels work (80% of use cases)
-      - Add carousel/stories if users request it
-- [ ] Add YouTube OAuth and publishing
-      - Capability config exists, needs publisher implementation
+      - [ ] TikTok
+      - [ ] Facebook/Instagram
+      - [ ] Add CLIENT_ID and CLIENT_SECRET to environment
+      - [ ] Test all OAuth flows
 
 ## COMPLETED
+- [x] Facebook OAuth Setup for Xelora SaaS ✅
+      - Pivoted to basic authentication flow (`email, public_profile`) for initial login
+      - Prepared infrastructure for incremental permissions after Business Verification
+      - Aligned entire publisher and callback stack with Graph API v13.0
+      - Verified local development redirect and environment configuration
+      - **STATUS**: ON HOLD (Awaiting LLC registration and Meta Business Verification)
+- [x] Add YouTube OAuth and publishing ✅
 - [x] Analytics dashboard v2 (visual analytics + progress tracking)
       - Created ActivityChart component with Recharts (7-day area chart) ✅
       - Created QuickWins component (achievement celebration cards) ✅

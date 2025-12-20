@@ -1,0 +1,95 @@
+import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
+
+/**
+ * Facebook/Instagram Data Deletion Callback
+ * Required for OAuth app compliance
+ * https://developers.facebook.com/docs/development/create-an-app/app-dashboard/data-deletion-callback
+ */
+
+function parseSignedRequest(signedRequest: string, appSecret: string) {
+  const [encodedSig, payload] = signedRequest.split(".");
+
+  // Decode the payload
+  const jsonPayload = Buffer.from(payload, "base64").toString("utf8");
+  const data = JSON.parse(jsonPayload);
+
+  // Verify signature
+  const expectedSig = crypto
+    .createHmac("sha256", appSecret)
+    .update(payload)
+    .digest("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
+
+  const actualSig = encodedSig.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+
+  if (expectedSig !== actualSig) {
+    throw new Error("Invalid signature");
+  }
+
+  return data;
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.formData();
+    const signedRequest = body.get("signed_request") as string;
+
+    if (!signedRequest) {
+      return NextResponse.json(
+        { error: "Missing signed_request parameter" },
+        { status: 400 }
+      );
+    }
+
+    const appSecret = process.env.FACEBOOK_APP_SECRET;
+    if (!appSecret) {
+      console.error("FACEBOOK_APP_SECRET not configured");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
+      );
+    }
+
+    // Parse and verify the signed request
+    const data = parseSignedRequest(signedRequest, appSecret);
+    const userId = data.user_id;
+
+    console.log(`Data deletion request received for user: ${userId}`);
+
+    // TODO: Implement actual data deletion logic
+    // For now, we'll just log the request and return a confirmation
+    // In production, you should:
+    // 1. Queue the deletion request
+    // 2. Delete user data from your database
+    // 3. Delete any stored tokens for this user
+    // 4. Log the deletion for compliance records
+
+    // Generate a unique confirmation code
+    const confirmationCode = crypto.randomBytes(16).toString("hex");
+    const statusUrl = `${process.env.NEXT_PUBLIC_APP_URL}/data-deletion-status/${confirmationCode}`;
+
+    // Return the confirmation URL
+    return NextResponse.json({
+      url: statusUrl,
+      confirmation_code: confirmationCode,
+    });
+  } catch (error) {
+    console.error("Data deletion callback error:", error);
+    return NextResponse.json(
+      { error: "Failed to process data deletion request" },
+      { status: 500 }
+    );
+  }
+}
+
+// Handle GET requests (for testing)
+export async function GET() {
+  return NextResponse.json({
+    message: "Facebook/Instagram Data Deletion Callback Endpoint",
+    status: "active",
+    url: `${process.env.NEXT_PUBLIC_APP_URL}/api/data-deletion`,
+  });
+}

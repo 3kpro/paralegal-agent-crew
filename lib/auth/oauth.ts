@@ -129,7 +129,7 @@ export async function refreshAccessToken(
     facebook: {
       clientId: process.env.FACEBOOK_CLIENT_ID!,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
-      tokenUrl: 'https://graph.facebook.com/v18.0/oauth/access_token',
+      tokenUrl: 'https://graph.facebook.com/v13.0/oauth/access_token',
     },
     youtube: {
       clientId: process.env.YOUTUBE_CLIENT_ID!,

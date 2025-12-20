@@ -80,7 +80,7 @@ async function getInstagramUserId(accessToken: string): Promise<string | null> {
   try {
     // Use Graph API to get user info
     const response = await fetch(
-      `https://graph.instagram.com/me?fields=id,username&access_token=${accessToken}`
+      `https://graph.instagram.com/v13.0/me?fields=id,username&access_token=${accessToken}`
     )
 
     if (!response.ok) {
@@ -133,7 +133,7 @@ async function publishPhoto(
 
     // Step 2: Publish the container
     const publishResponse = await fetch(
-      `https://graph.facebook.com/v21.0/${igUserId}/media_publish?access_token=${accessToken}`,
+      `https://graph.facebook.com/v13.0/${igUserId}/media_publish?access_token=${accessToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -201,7 +201,7 @@ async function publishReel(
 
     // Step 2: Publish the reel
     const publishResponse = await fetch(
-      `https://graph.facebook.com/v21.0/${igUserId}/media_publish?access_token=${accessToken}`,
+      `https://graph.facebook.com/v13.0/${igUserId}/media_publish?access_token=${accessToken}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

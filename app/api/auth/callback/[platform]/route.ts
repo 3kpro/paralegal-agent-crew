@@ -181,7 +181,7 @@ async function exchangeToken(
     facebook: {
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      tokenUrl: "https://graph.facebook.com/v18.0/oauth/access_token",
+      tokenUrl: "https://graph.facebook.com/v13.0/oauth/access_token",
     },
     instagram: {
       clientId: process.env.INSTAGRAM_CLIENT_ID,
@@ -246,7 +246,38 @@ async function exchangeToken(
     throw new Error(`Token exchange failed: ${errorText}`);
   }
 
-  return response.json();
+  const data = await response.json();
+
+  // For Facebook and Instagram, exchange short-lived token for long-lived token
+  if (platform === "facebook" || platform === "instagram") {
+    console.log(`[${platform}] Exchanging short-lived token for long-lived token...`);
+    try {
+      const longLivedUrl = `https://graph.facebook.com/v13.0/oauth/access_token?` +
+        `grant_type=fb_exchange_token&` +
+        `client_id=${clientId}&` +
+        `client_secret=${clientSecret}&` +
+        `fb_exchange_token=${data.access_token}`;
+
+      const llResponse = await fetch(longLivedUrl);
+      if (llResponse.ok) {
+        const llData = await llResponse.json();
+        console.log(`[${platform}] Long-lived token received! Expiry: ${llData.expires_in}s`);
+        return {
+          ...data,
+          access_token: llData.access_token,
+          expires_in: llData.expires_in || 5184000, // Default 60 days
+        };
+      } else {
+        console.error(`[${platform}] Long-lived token exchange failed:`, await llResponse.text());
+        // Fallback to short-lived token
+      }
+    } catch (llError) {
+      console.error(`[${platform}] Error exchanging long-lived token:`, llError);
+      // Fallback to short-lived token
+    }
+  }
+
+  return data;
 }
 
 async function fetchUserProfile(platform: string, accessToken: string) {
@@ -318,7 +349,7 @@ async function fetchUserProfile(platform: string, accessToken: string) {
     };
   } else if (platform === "facebook") {
     const response = await fetch(
-      `https://graph.facebook.com/v18.0/me?fields=id,name,picture&access_token=${accessToken}`,
+      `https://graph.facebook.com/v13.0/me?fields=id,name,picture&access_token=${accessToken}`,
     );
 
     if (!response.ok) {

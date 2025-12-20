@@ -92,9 +92,9 @@ export async function GET(
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
       facebook:
-        `https://www.facebook.com/v18.0/dialog/oauth?` +
+        `https://www.facebook.com/v13.0/dialog/oauth?` +
         `client_id=${process.env.FACEBOOK_CLIENT_ID}` +
-        `&scope=public_profile,pages_show_list,pages_read_engagement,pages_manage_posts,business_management` +
+        `&scope=email,public_profile` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,

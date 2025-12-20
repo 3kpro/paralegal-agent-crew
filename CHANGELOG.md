@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2025-12-19] - Facebook & Instagram v13.0 Alignment (Waiting Pattern)
+- **Meta Platform Integration**:
+  - Aligned entire Facebook and Instagram stack to Graph API **v13.0**.
+  - Corrected OAuth scopes to use modern identifiers: `public_profile`, `pages_manage_posts`, `pages_read_engagement`, and `manage_pages`.
+  - Implemented long-lived (60-day) token exchange for persistent social connections.
+  - Updated all publisher logic (`facebook.publisher.ts`, `instagram.publisher.ts`) to use v13.0 endpoints.
+  - Synchronized platform capability configs with new API versions and scopes.
+  - Fixed local development redirect issues caused by duplicate environment variables.
+  - **Status Update**: Integration is currently in a **waiting pattern** pending LLC registration and Meta Business Verification. Basic `email, public_profile` flow is ready, advanced Page permissions will be re-enabled after verification.
+
+## [2025-12-19] - YouTube Social Connection & Publishing
+- **YouTube OAuth Integration**:
+  - Implemented full OAuth 2.0 flow for YouTube (`/api/auth/connect/youtube` and `/api/auth/callback/youtube`).
+  - Added support for `youtube.upload`, `youtube.readonly`, and `userinfo.profile` scopes.
+  - Implemented YouTube channel profile fetching (Title, Handle, Subscriber Count, Thumbnails).
+  - Added automatic token refresh logic for YouTube in `lib/auth/oauth.ts`.
+
+- **YouTube Publishing Logic**:
+  - Integrated YouTube publishing into `/api/publish` using the `youtube.publisher.ts`.
+  - Added direct YouTube video posting support in `/api/social/post/route.ts` with resumable upload support.
+  - Configured `libs/capabilities/social/youtube.json` for platform-specific limits and requirements.
+
+- **UI & Configuration**:
+  - Enabled YouTube connection in `SocialAccountSetup.tsx` component.
+  - Added `YOUTUBE_CLIENT_ID` and `YOUTUBE_CLIENT_SECRET` placeholders to `.env.example`.
+  - Updated environment templates to include YouTube OAuth credentials.
+
+### Technical
+- **Resumable Uploads**: Implemented YouTube's resumable upload protocol for better stability with large video files.
+- **Profile Sync**: Channel metadata (subscriber count, custom URLs) is now synced during connection.
+- **Token Management**: Refresh tokens are securely handled and automatically used when access tokens expire.
+
 ## [2025-12-18] - TikTok OAuth Integration & Frictionless Publishing Flow
 
 ### Added
