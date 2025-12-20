@@ -101,7 +101,7 @@ export async function GET(
       instagram:
         `https://www.facebook.com/v18.0/dialog/oauth?` +
         `client_id=${process.env.INSTAGRAM_CLIENT_ID}` +
-        `&scope=instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement` +
+        `&scope=email,public_profile,instagram_content_publish,pages_read_engagement,business_management` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
