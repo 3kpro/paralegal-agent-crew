@@ -91,9 +91,9 @@ Instructions:
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
     // Save the latest User message to the database
-    // Save the latest User message to the database
     const lastUserMessage = messages[messages.length - 1];
     if (lastUserMessage && lastUserMessage.role === 'user') {
+      /*
       const { error: msgError } = await supabase.from('helix_messages').insert({
         session_id: sessionId,
         user_id: user.id,
@@ -104,6 +104,7 @@ Instructions:
       if (msgError) {
         console.error('FAILED to save User Message:', msgError);
       }
+      */
     }
 
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
@@ -293,59 +294,33 @@ Instructions:
       }
       */
 
-      // 7. Offline Fallback using Mock Model (Standard SDK Pattern)
-      // We implement a minimal LanguageModelV1 to use with streamText
-      // This ensures correct protocol headers and chunking without manual stream hacks.
-      
-      const offlineModel = {
-        specificationVersion: 'v1',
-        provider: 'helix-offline',
-        modelId: 'offline-fallback',
-        defaultObjectGenerationMode: 'json',
-        doGenerate: async () => ({
-           text: responseText,
-           finishReason: 'stop',
-           usage: { promptTokens: 0, completionTokens: 0 },
-           rawCall: { rawPrompt: null, rawSettings: {} }
-        }),
-        doStream: async () => ({
-           stream: new ReadableStream({
-             start(controller) {
-               controller.enqueue({ type: 'text-delta', textChunk: responseText });
-               controller.enqueue({ type: 'finish', finishReason: 'stop', usage: { promptTokens: 0, completionTokens: 0 } });
-               controller.close();
-             }
-           }),
-           rawCall: { rawPrompt: null, rawSettings: {} }
-        })
-      } as any;
-
-      const result = await streamText({
-        model: offlineModel,
-        messages: modelMessages,
-        onFinish: async ({ text }) => {
-            // Persist the offline assistant response
-            const { error: offlineError } = await supabase.from('helix_messages').insert({
-              session_id: sessionId,
-              user_id: user!.id,
-              role: 'assistant',
-              content: text
-            });
-            if (offlineError) console.error('FAILED to save Offline Response:', offlineError);
+      const encoder = new TextEncoder();
+      const customStream = new ReadableStream({
+        async start(controller) {
+          const textPart = `0:${JSON.stringify(responseText)}\n`;
+          controller.enqueue(encoder.encode(textPart));
+          controller.close();
         }
       });
 
-      return result.toUIMessageStreamResponse({
-        headers: { 'X-Session-Id': sessionId || '' }
+      return new Response(customStream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Vercel-AI-Data-Stream': 'v1',
+          'X-Session-Id': sessionId || ''
+        }
       });
-
+      
     } // End of catch (aiError)
 
   } catch (error: any) {
-    console.error('Helix API Error:', error);
+    console.error('[Helix Production Error]', { error: error.message, timestamp: new Date().toISOString() });
     return new Response(
       JSON.stringify({ error: error.message || 'Internal Server Error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
     );
   }
 }

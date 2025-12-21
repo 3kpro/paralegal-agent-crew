@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+
 
 import dynamic from 'next/dynamic';
 import {
@@ -48,29 +47,13 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isLocked = subscriptionTier !== 'pro' && subscriptionTier !== 'premium';
 
-  // Use AI SDK
+  // Manual chat implementation
   const [localInput, setLocalInput] = useState("");
-  const { 
-    messages, 
-    status,
-    error,
-    sendMessage,
-    setMessages
-  } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/helix/chat',
-      body: {
-        sessionId,
-        context: { currentPath: pathname }
-      }
-    }),
-    messages: [
-      {
-        id: 'welcome',
-        role: 'assistant',
-        parts: [{
-          type: 'text',
-          text: `👋 Hi! I'm Helix, your AI marketing assistant.
+  const [messages, setMessages] = useState([
+    {
+      id: 'welcome',
+      role: 'assistant',
+      content: `👋 Hi! I'm Helix, your AI marketing assistant.
 
 I can help you:
 ✨ Navigate XELORA and learn features
@@ -84,15 +67,61 @@ Try asking me anything like:
 • "Tips for increasing engagement"
 
 What would you like to know?`
-        }]
-      }
-    ],
-    onFinish: ({ message }) => {
-      // Logic for after message finished if needed
     }
-  });
+  ]);
+  const [chatStatus, setChatStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>('ready');
+  const [chatError, setChatError] = useState<string | null>(null);
 
-  const isLoading = status === 'submitted' || status === 'streaming';
+  const sendMessage = async (text: string) => {
+    setChatStatus('submitted');
+    setChatError(null);
+    const userMessage = { id: Date.now().toString(), role: 'user', content: text };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+
+    try {
+      const response = await fetch('/api/helix/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+          sessionId,
+          context: { currentPath: pathname }
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No response reader');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let assistantMessage = '';
+      setChatStatus('streaming');
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (line.startsWith('0:')) {
+            const data = JSON.parse(line.slice(2));
+            assistantMessage += data;
+            setMessages([...newMessages, { id: (Date.now() + 1).toString(), role: 'assistant', content: assistantMessage }]);
+          }
+        }
+      }
+      setChatStatus('ready');
+    } catch (err: any) {
+      setChatError(err.message || 'An error occurred');
+      setChatStatus('error');
+    }
+  };
+
+  const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
 
 
   // Notify parent layout about sidebar state
@@ -153,7 +182,7 @@ What would you like to know?`
 
     const text = localInput;
     setLocalInput("");
-    await sendMessage({ text });
+    await sendMessage(text);
   };
 
   // Resizing Logic
@@ -352,69 +381,28 @@ What would you like to know?`
                 {/* Messages Container with Custom Scrollbar */}
                 <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-hide relative z-10">
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
-                  {messages.map((msg: any, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex gap-3 ${((msg as any).role as string) === 'user' ? 'flex-row-reverse' : ''}`}
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                        ((msg as any).role as string) === 'assistant' 
-                          ? 'bg-gray-800 border border-gray-700' 
-                          : 'bg-coral-500'
-                      }`}>
-                        {((msg as any).role as string) === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" /> : <User className="w-4 h-4 text-white" />}
-                      </div>
-                      
-                      <div className={`p-3.5 rounded-2xl max-w-[85%] text-[13px] whitespace-pre-wrap leading-relaxed relative ${
-                        ((msg as any).role as string) === 'assistant'
-                          ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
-                          : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
-                      }`}>
-                        {(msg.parts as any[]).map((part: any, pIdx: number) => {
-                          if (part.type === 'text') {
-                            return <span key={pIdx} className="block">{part.text}</span>;
-                          }
-                          if (part.type.startsWith('tool-')) {
-                            const toolCallId = (part as any).toolCallId;
-                            const state = (part as any).state;
-                            const result = (part as any).output;
-                            const toolName = part.type.replace('tool-', '');
+                   {messages.map((msg, idx) => (
+                     <div
+                       key={msg.id || idx}
+                       className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                     >
+                       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                         msg.role === 'assistant'
+                           ? 'bg-gray-800 border border-gray-700'
+                           : 'bg-coral-500'
+                       }`}>
+                         {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" /> : <User className="w-4 h-4 text-white" />}
+                       </div>
 
-                            if (state === 'output-available') {
-                              if (toolName === 'query_analytics' && result?.chartType && result?.chartType !== 'table') {
-                                return (
-                                  <div key={toolCallId} className="mt-4 w-full h-[250px] bg-gray-900 border border-gray-700 rounded-xl p-2 relative overflow-hidden">
-                                     <div className="absolute top-2 left-2 text-[10px] uppercase text-gray-500 font-bold tracking-wider z-10">
-                                       {result.chartType}
-                                     </div>
-                                     <AnalystCharts data={result.data} type={result.chartType} />
-                                  </div>
-                                );
-                              }
-                            }
-                            
-                            if (state === 'output-error') {
-                               return (
-                                 <div key={toolCallId} className="mt-2 text-xs text-red-400 italic">
-                                   Error: {(part as any).errorText || 'Tool execution failed.'}
-                                 </div>
-                               );
-                            }
-
-                            if (state === 'input-streaming' || state === 'input-available') {
-                              return (
-                                <div key={toolCallId} className="mt-2 text-xs text-gray-500 italic flex items-center gap-2">
-                                  <span className="w-3 h-3 border-2 border-gray-600 border-t-transparent rounded-full animate-spin" />
-                                  Processing {toolName}...
-                                </div>
-                              );
-                            }
-                          }
-                          return null;
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                       <div className={`p-3.5 rounded-2xl max-w-[85%] text-[13px] whitespace-pre-wrap leading-relaxed relative ${
+                         msg.role === 'assistant'
+                           ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
+                           : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
+                       }`}>
+                         <span className="block">{msg.content}</span>
+                       </div>
+                     </div>
+                   ))}
                   
                   {isLoading && messages.length > 0 && (messages[messages.length-1] as any).role === 'user' && (
                     <div className="flex gap-3">
