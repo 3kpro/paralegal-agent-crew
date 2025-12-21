@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
 import { 
   Bot, 
   Paperclip, 
@@ -36,46 +34,89 @@ export default function HelixChatInterface({
   const [hasStarted, setHasStarted] = useState(initialMessages.length > 0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [sessionId, setSessionId] = useState<string | null>(initialSessionId);
+  const [messages, setMessages] = useState<any[]>(initialMessages);
+  const [chatStatus, setChatStatus] = useState<'ready' | 'submitted' | 'streaming' | 'error'>('ready');
+  const [chatError, setChatError] = useState<string | null>(null);
 
-  const { 
-    messages, 
-    status,
-    sendMessage,
-    setMessages
-  } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/helix/chat',
-      body: {
-        sessionId,
-        context: { currentPath: pathname }
-      }
-    }),
-    // @ts-ignore
-    onResponse: (response) => {
+  // Manual sendMessage implementation matching HelixWidget
+  const sendMessage = async (text: string) => {
+    setChatStatus('submitted');
+    setChatError(null);
+    
+    // Optimistic Update
+    const userMessage = { id: Date.now().toString(), role: 'user', content: text };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+
+    try {
+      const response = await fetch('/api/helix/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+          sessionId,
+          context: { currentPath: pathname }
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to send message');
+      
+      // Update session ID if available
       const serverSessionId = response.headers.get('X-Session-Id');
       if (serverSessionId && serverSessionId !== sessionId) {
-        console.log('Helix: Updated Session ID to', serverSessionId);
         setSessionId(serverSessionId);
       }
-    },
-    onFinish: ({ message }: any) => {
-      // Session management handled internally
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No response reader');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let assistantMessage = '';
+      let currentAssistantId = (Date.now() + 1).toString();
+      
+      setChatStatus('streaming');
+
+      // Add placeholder assistant message
+      setMessages([...newMessages, { id: currentAssistantId, role: 'assistant', content: '' }]);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        
+        for (const line of lines) {
+          if (line.startsWith('0:')) {
+            try {
+              const data = JSON.parse(line.slice(2));
+              assistantMessage += data;
+              
+              // Update the last message (assistant)
+              setMessages(prev => {
+                const updated = [...prev];
+                const lastIdx = updated.length - 1;
+                if (updated[lastIdx].role === 'assistant') {
+                   updated[lastIdx] = { ...updated[lastIdx], content: assistantMessage };
+                }
+                return updated;
+              });
+            } catch (e) {
+              console.error('Failed to parse stream chunk', e);
+            }
+          }
+        }
+      }
+      setChatStatus('ready');
+    } catch (err: any) {
+      console.error(err);
+      setChatError(err.message || 'An error occurred');
+      setChatStatus('error');
     }
-  });
+  };
 
-  // Load initial history
-  useEffect(() => {
-    if (initialMessages && initialMessages.length > 0) {
-      setMessages(initialMessages);
-    }
-  }, []);
-
-  // Debug Banner
-  useEffect(() => {
-    console.log('Helix State:', { msgCount: messages.length, sessionId });
-  }, [messages, sessionId]);
-
-  const isLoading = status === 'submitted' || status === 'streaming';
+  const isLoading = chatStatus === 'submitted' || chatStatus === 'streaming';
 
   useEffect(() => {
     if (messages.length > 0 && !hasStarted) {
@@ -101,7 +142,7 @@ export default function HelixChatInterface({
 
     const text = localInput;
     setLocalInput("");
-    await sendMessage({ text });
+    await sendMessage(text);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -141,34 +182,13 @@ export default function HelixChatInterface({
                     ? 'text-gray-200'
                     : 'bg-[#252528] rounded-2xl text-white'
                 }`}>
-                  {(msg.parts || [{ type: 'text', text: msg.content }]).map((part: any, pIdx: number) => {
-                    if (part.type === 'text') {
-                      return <div key={pIdx} className="whitespace-pre-wrap">{part.text}</div>;
-                    }
-                    if (part.type.startsWith('tool-')) {
-                      const result = (part as any).output;
-                      if (part.state === 'output-available' && result?.chartType && result?.chartType !== 'table') {
-                        return (
-                          <div key={pIdx} className="mt-4 w-full h-[300px] bg-gray-900/50 border border-white/5 rounded-2xl p-4 overflow-hidden">
-                            <AnalystCharts data={result.data} type={result.chartType} />
-                          </div>
-                        );
-                      }
-                      if (part.state === 'input-streaming' || part.state === 'input-available') {
-                        return (
-                          <div key={pIdx} className="mt-2 text-xs text-gray-500 italic flex items-center gap-2">
-                            <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-                            Thinking...
-                          </div>
-                        );
-                      }
-                    }
-                    return null;
-                  })}
+                   {/* Simplified rendering for manual fetch */}
+                   <div className="whitespace-pre-wrap">{msg.content}</div>
                 </div>
               </div>
             ))}
             
+            {/* Loading Indicator */}
             {isLoading && messages.length > 0 && messages[messages.length-1].role === 'user' && (
                 <div className="flex gap-4">
                   <div className="w-8 h-8 flex items-center justify-center shrink-0">
@@ -178,7 +198,7 @@ export default function HelixChatInterface({
             )}
             
             {/* Error Message Display */}
-            {status === 'error' && (
+            {status === 'error' as any || chatStatus === 'error' && (
               <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
                  <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                  <span>Unable to connect to Helix. Please try again.</span>
