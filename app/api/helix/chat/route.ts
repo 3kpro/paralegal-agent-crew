@@ -90,6 +90,17 @@ Instructions:
     // 5. Convert UIMessages to ModelMessages and stream response
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
+    // Save the latest User message to the database
+    const lastUserMessage = messages[messages.length - 1];
+    if (lastUserMessage && lastUserMessage.role === 'user') {
+      await supabase.from('helix_messages').insert({
+        session_id: sessionId,
+        user_id: user.id,
+        role: 'user',
+        content: lastUserMessage.content
+      });
+    }
+
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
     // Handle SDK v5 parts if content is missing
     const modelMessages = messages
@@ -260,6 +271,14 @@ Instructions:
            responseText = "I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.";
         }
       }
+
+      // Persist the offline assistant response
+      await supabase.from('helix_messages').insert({
+        session_id: sessionId,
+        user_id: user.id,
+        role: 'assistant',
+        content: responseText
+      });
 
       // Revert to manual Response with explicit V1 Data Stream protocol
       // We manually construct the headers and stream because createDataStreamResponse 
