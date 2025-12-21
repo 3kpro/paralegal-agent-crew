@@ -62,6 +62,11 @@ export default function HelixChatInterface({
     }
   }, []);
 
+  // Debug Banner
+  useEffect(() => {
+    console.log('Helix State:', { msgCount: messages.length, sessionId });
+  }, [messages, sessionId]);
+
   const isLoading = status === 'submitted' || status === 'streaming';
 
   useEffect(() => {
@@ -99,7 +104,18 @@ export default function HelixChatInterface({
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex flex-col relative overflow-hidden font-sans">
+    <>
+      <div className="absolute top-0 left-0 right-0 bg-yellow-500/20 text-yellow-200 text-xs p-1 z-50 text-center pointer-events-none">
+        Debug: {messages.length} msgs | Session: {sessionId?.slice(0,8)}... | Status: {status}
+      </div>
+
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`relative flex flex-col w-full h-full bg-[#09090b] text-gray-100 font-sans overflow-hidden ${
+        hasStarted ? 'justify-between' : 'justify-center items-center'
+      }`}
+    >
       
       {/* Messages Area */}
       {hasStarted && (
@@ -248,6 +264,7 @@ export default function HelixChatInterface({
 
         </div>
       </div>
-    </div>
+    </motion.div>
+    </>
   );
 }
