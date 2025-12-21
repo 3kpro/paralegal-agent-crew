@@ -282,7 +282,9 @@ Instructions:
              return {
                stream: new ReadableStream({
                  start(controller) {
-                   controller.enqueue({ type: 'text-delta', textDelta: responseText });
+                   // Ensure compatibility with both V1 (textDelta) and V2 (delta) internal expectations
+                   const chunk = { type: 'text-delta', textDelta: responseText, delta: responseText };
+                   controller.enqueue(chunk);
                    controller.enqueue({ type: 'finish', finishReason: 'stop', usage: { promptTokens: 0, completionTokens: responseText.length } });
                    controller.close();
                  }
