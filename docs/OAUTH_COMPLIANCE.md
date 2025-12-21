@@ -67,19 +67,20 @@ This document tracks compliance requirements for all OAuth integrations.
 ### App Settings
 - **App ID:** Same as Facebook (Instagram is part of Meta)
 - **Redirect URI:** `https://xelora.app/api/auth/callback/instagram`
-- **Permissions:** email, pages_show_list, pages_manage_posts
-- **Note:** Instagram Business publishing uses Facebook Page permissions
+- **Permissions (Development):** email, public_profile
+- **Permissions (Production):** email, public_profile, pages_show_list, pages_manage_posts
+- **Note:** Publishing requires App Review approval for `pages_manage_posts`
 
 ### Compliance Requirements
 - [x] Privacy Policy URL: `https://xelora.app/privacy`
 - [x] Terms of Service URL: `https://xelora.app/terms`
 - [x] **Data Deletion Callback URL:** `https://xelora.app/api/data-deletion`
 - [x] App icon (1024x1024px)
-- [x] Instagram Business account linked to Facebook Page (required)
-- [ ] App Review submission for pages_manage_posts permission
+- [x] Instagram Business account linked to Facebook Page
+- [ ] **PENDING:** App Review submission for `pages_manage_posts` permission (required for publishing)
 
 ### Status
-🟡 **Testing** - Updated to use Facebook Page permissions for Instagram Business accounts
+🟡 **Testing** - Using basic permissions in Development Mode. Will submit `pages_manage_posts` for App Review before launch.
 
 ---
 
