@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { streamText, generateText, tool, convertToModelMessages, zodSchema } from 'ai';
+import { streamText, generateText, tool, convertToModelMessages, zodSchema, createDataStreamResponse } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import { generateAnalystQuery } from '../../../../lib/ai/analyst';
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     let sessionId = providedSessionId;
     if (!sessionId) {
       // Create a new session if none provided
-      const firstUserMessage = messages.find(m => m.role === 'user')?.content || 'New conversation';
+      const firstUserMessage = messages.find((m: any) => m.role === 'user')?.content || 'New conversation';
       const { data: session, error: sessionError } = await supabase
         .from('helix_sessions')
         .insert({
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
       supabase.from('helix_brand_dna').select('*').eq('user_id', user.id).single()
     ]);
 
-    const connectedPlatforms = connections?.map(c => c.platform).join(', ') || 'None';
+    const connectedPlatforms = connections?.map((c: any) => c.platform).join(', ') || 'None';
 
     // 4. Construct System Prompt
     const systemPrompt = `You are Helix, the AI Copilot for **XELORA**.
@@ -229,7 +229,7 @@ Instructions:
            .limit(5);
 
          if (campaigns && campaigns.length > 0) {
-           const stats = campaigns.map(c => `• **${c.name}** (${c.status})\n   👀 ${c.total_views.toLocaleString()} views | 👆 ${c.total_clicks.toLocaleString()} clicks`).join('\n\n');
+           const stats = campaigns.map((c: any) => `• **${c.name}** (${c.status})\n   👀 ${c.total_views.toLocaleString()} views | 👆 ${c.total_clicks.toLocaleString()} clicks`).join('\n\n');
            responseText = `Here is the performance of your top campaigns:\n\n${stats}\n\nWould you like to analyze a specific one?`;
          } else {
            responseText = "I found 0 campaigns in your account. Try creating one in the Campaigns tab!";
@@ -261,54 +261,34 @@ Instructions:
         }
       }
 
-      // USE STANDARD SDK streamText with a custom Mock Model
-      const result = await streamText({
-        // @ts-ignore - Mocking a V1 model to avoid strict V2 type validation issues
-        model: {
-          provider: 'helix-offline',
-          modelId: 'offline-v1',
-          specificationVersion: 'v1',
-          defaultObjectGenerationMode: 'json',
-          doGenerate: async () => { 
-            return { 
-              content: [{ type: 'text', text: responseText }], 
-              finishReason: 'stop', 
-              usage: { promptTokens: 0, completionTokens: responseText.length },
-              rawCall: { rawPrompt: null, rawSettings: {} },
-              warnings: []
-            }; 
-          },
-          doStream: async () => {
-             return {
-               stream: new ReadableStream({
-                 start(controller) {
-                   // Ensure compatibility with both V1 (textDelta) and V2 (delta) internal expectations
-                   const chunk = { type: 'text-delta', textDelta: responseText, delta: responseText };
-                   controller.enqueue(chunk);
-                   // Do NOT send finish chunk manually; streamText handles this when stream closes
-                   controller.close();
-                 }
-               }),
-               rawCall: { rawPrompt: null, rawSettings: {} },
-               warnings: []
-             };
-          }
-        },
-        messages: modelMessages,
-        onFinish: async ({ text }) => {
-           await supabase.from('helix_messages').insert({
-              session_id: sessionId,
-              user_id: user.id,
-              role: 'assistant',
-              content: text
-           });
+      // Revert to manual Response with explicit V1 Data Stream protocol
+      // because createDataStreamResponse import is failing in this environment.
+      
+      const encoder = new TextEncoder();
+      const customStream = new ReadableStream({
+        async start(controller) {
+          // Format based on Vercel AI SDK Data Protocol: 0:"text_content"
+          // We MUST ensure newlines are handled correctly in JSON
+          const textPart = `0:${JSON.stringify(responseText)}\n`;
+          controller.enqueue(encoder.encode(textPart));
+          
+          // Optional: Data part for status
+          // const dataPart = `d:${JSON.stringify({ status: 'offline' })}\n`;
+          // controller.enqueue(encoder.encode(dataPart));
+
+          controller.close();
         }
       });
 
-      return result.toUIMessageStreamResponse({
-        headers: { 'X-Session-Id': sessionId }
+      return new Response(customStream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Vercel-AI-Data-Stream': 'v1',
+          'X-Session-Id': sessionId
+        }
       });
-    }
+      
+    } // End of catch (aiError)
 
   } catch (error: any) {
     console.error('Helix API Error:', error);
