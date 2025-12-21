@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { streamText, generateText, tool, convertToModelMessages, zodSchema } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
@@ -137,6 +137,9 @@ Instructions:
     
     // 6. Attempt AI Execution with Version Fallbacks
     try {
+      // FORCE OFFLINE MODE FOR DEBUGGING
+      throw new Error('Forcing Offline Mode to test streaming');
+
       const modelsToTry = [
         'gemini-1.5-flash', 
         'gemini-1.5-pro', 
@@ -197,7 +200,7 @@ Instructions:
         execute: async ({ question }: { question: string }) => {
                try {
                  console.log('[Helix] Invoking Analyst with:', question);
-                 return await generateAnalystQuery(question, user.id, supabase);
+                 return await generateAnalystQuery(question, user!.id, supabase);
                } catch (err: any) {
                  console.error('[Helix] Analyst Error:', err,);
                  return {
@@ -214,7 +217,7 @@ Instructions:
         onFinish: async ({ text }) => {
            await supabase.from('helix_messages').insert({
               session_id: sessionId,
-              user_id: user.id,
+              user_id: user!.id,
               role: 'assistant',
               content: text
            });
@@ -313,11 +316,11 @@ Instructions:
         }
       });
 
-      return new Response(customStream, {
+      return new NextResponse(customStream, {
         headers: {
           'Content-Type': 'text/plain; charset=utf-8',
           'X-Vercel-AI-Data-Stream': 'v1',
-          'X-Session-Id': sessionId
+          'X-Session-Id': sessionId || ''
         }
       });
       
