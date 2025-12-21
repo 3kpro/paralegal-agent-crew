@@ -182,21 +182,36 @@ Instructions:
       // BLOCKING GENERATION (Replacing streamText)
       console.log('[Helix] Generating text (Blocking)...');
       
-      /*
-      // Tools disabled for isolation test
+      // Tools re-enabled
       const tools = {
           query_analytics: tool({
-             // ... schema ...
-          })
+        inputSchema: zodSchema(z.object({
+          question: z.string().describe('The natural language question to ask the database.')
+        })),
+        execute: async ({ question }: { question: string }) => {
+               try {
+                 console.log('[Helix] Invoking Analyst with:', question);
+                 return await generateAnalystQuery(question, user!.id, supabase);
+               } catch (err: any) {
+                 console.error('[Helix] Analyst Error:', err,);
+                 return {
+                   error: err.message || 'Failed to query analytics.',
+                   sql: 'N/A',
+                   explanation: 'I encountered an error while trying to access the analytics database.',
+                   chartType: 'number',
+                   data: []
+                 };
+               }
+            }
+          }) as any
       };
-      */
 
       const result = await generateText({
         model: activeGoogleProvider(activeModel),
         system: systemPrompt,
         messages: modelMessages,
-        maxSteps: 5,
-        // tools: tools, // Disabled for now
+        maxSteps: 5, // Allow multi-step tool use
+        tools: tools, 
       });
 
       console.log('[Helix] Generation Complete. Result:', result.text.substring(0, 50) + '...');
