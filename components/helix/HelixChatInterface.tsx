@@ -177,10 +177,10 @@ export default function HelixChatInterface({
                   </div>
                 )}
                 
-                <div className={`py-3 px-5 max-w-[85%] text-[15px] leading-7 ${
+                <div className={`py-3.5 px-6 max-w-[85%] text-[15px] leading-relaxed relative shadow-md ${
                   msg.role === 'assistant'
-                    ? 'text-gray-200'
-                    : 'bg-[#252528] rounded-2xl text-white'
+                    ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 backdrop-blur-sm shadow-black/20 rounded-2xl rounded-tl-sm'
+                    : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
                 }`}>
                    {/* Simplified rendering for manual fetch */}
                    <div className="whitespace-pre-wrap">{msg.content}</div>
