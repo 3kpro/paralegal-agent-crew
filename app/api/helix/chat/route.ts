@@ -207,11 +207,10 @@ Instructions:
       return result.toUIMessageStreamResponse({
         headers: { 'X-Session-Id': sessionId }
       });
-
-    } catch (aiError: any) {
-      console.warn('[Helix] AI Service Unavailable. Switching to Offline Mode.', aiError.message);
       
-      // --- OFFLINE MOCK MODE (Fallback) ---
+    } catch (aiError: any) {
+      console.warn('[Helix] AI Unavailable. Mode: Offline.', aiError.message);
+      
       // Safety check: ensure we have messages to process
       if (!modelMessages || modelMessages.length === 0) {
         return new Response('Offline mode: No valid messages to process.', { status: 400 });
@@ -262,21 +261,50 @@ Instructions:
         }
       }
 
-      // STREAM as standard text chunk (0: prefix) so useChat understands it
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        async start(controller) {
-          controller.enqueue(encoder.encode(`0:${JSON.stringify(responseText)}\n`));
-          controller.close();
+      // USE STANDARD SDK streamText with a custom Mock Model
+      const result = await streamText({
+        // @ts-ignore - Mocking a V1 model to avoid strict V2 type validation issues
+        model: {
+          provider: 'helix-offline',
+          modelId: 'offline-v1',
+          specificationVersion: 'v1',
+          defaultObjectGenerationMode: 'json',
+          doGenerate: async () => { 
+            return { 
+              content: [{ type: 'text', text: responseText }], 
+              finishReason: 'stop', 
+              usage: { promptTokens: 0, completionTokens: responseText.length },
+              rawCall: { rawPrompt: null, rawSettings: {} },
+              warnings: []
+            }; 
+          },
+          doStream: async () => {
+             return {
+               stream: new ReadableStream({
+                 start(controller) {
+                   controller.enqueue({ type: 'text-delta', textDelta: responseText });
+                   controller.enqueue({ type: 'finish', finishReason: 'stop', usage: { promptTokens: 0, completionTokens: responseText.length } });
+                   controller.close();
+                 }
+               }),
+               rawCall: { rawPrompt: null, rawSettings: {} },
+               warnings: []
+             };
+          }
+        },
+        messages: modelMessages,
+        onFinish: async ({ text }) => {
+           await supabase.from('helix_messages').insert({
+              session_id: sessionId,
+              user_id: user.id,
+              role: 'assistant',
+              content: text
+           });
         }
       });
 
-      return new Response(stream, {
-        headers: { 
-          'X-Session-Id': sessionId,
-          'Content-Type': 'text/plain; charset=utf-8',
-          'X-Vercel-AI-Data-Stream': 'v1'
-        }
+      return result.toUIMessageStreamResponse({
+        headers: { 'X-Session-Id': sessionId }
       });
     }
 
