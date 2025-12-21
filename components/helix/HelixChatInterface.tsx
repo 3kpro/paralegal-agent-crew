@@ -9,7 +9,9 @@ import {
   Command, 
   Send as SendIcon,
   Sparkles,
-  ArrowUp
+  ArrowUp,
+  Copy,
+  Check
 } from "lucide-react";
 import dynamic from 'next/dynamic';
 
@@ -23,6 +25,30 @@ interface HelixChatInterfaceProps {
   initialSessionId?: string | null;
   user?: any;
 }
+
+const CopyToClipboard = ({ text }: { text: string }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy', err);
+    }
+  };
+
+  return (
+    <button 
+      onClick={handleCopy}
+      className="absolute bottom-2 right-2 p-1.5 text-gray-400 hover:text-white bg-black/20 hover:bg-black/40 rounded-md transition-all opacity-0 group-hover:opacity-100"
+      title="Copy to clipboard"
+    >
+      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+    </button>
+  );
+};
 
 export default function HelixChatInterface({ 
   initialMessages = [], 
@@ -177,13 +203,14 @@ export default function HelixChatInterface({
                   </div>
                 )}
                 
-                <div className={`py-3.5 px-6 max-w-[85%] text-[15px] leading-relaxed relative shadow-md ${
+                 <div className={`py-3.5 px-6 max-w-[85%] text-[15px] leading-relaxed relative shadow-md group ${
                   msg.role === 'assistant'
-                    ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 backdrop-blur-sm shadow-black/20 rounded-2xl rounded-tl-sm'
+                    ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 backdrop-blur-sm shadow-black/20 rounded-2xl rounded-tl-sm pr-10'
                     : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
                 }`}>
                    {/* Simplified rendering for manual fetch */}
                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                   {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                 </div>
               </div>
             ))}
