@@ -21,7 +21,9 @@ import {
   PanelRight,
   ExternalLink,
   GripHorizontal,
-  ChevronRight
+  ChevronRight,
+  Copy,
+  Check
 } from "lucide-react";
 
 const AnalystCharts = dynamic(() => import('../analyst/AnalystCharts'), { 
@@ -33,6 +35,30 @@ interface HelixWidgetProps {
   subscriptionTier?: string;
   onSidebarChange?: (isOpen: boolean) => void;
 }
+
+const CopyToClipboard = ({ text }: { text: string }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy', err);
+    }
+  };
+
+  return (
+    <button 
+      onClick={handleCopy}
+      className="absolute bottom-2 right-2 p-1.5 text-gray-400 hover:text-white bg-black/20 hover:bg-black/40 rounded-md transition-all opacity-0 group-hover:opacity-100"
+      title="Copy to clipboard"
+    >
+      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+    </button>
+  );
+};
 
 export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange }: HelixWidgetProps) {
   const pathname = usePathname();
@@ -398,8 +424,9 @@ What would you like to know?`
                          msg.role === 'assistant'
                            ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
                            : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
-                       }`}>
+                       } group`}>
                          <span className="block">{msg.content}</span>
+                         {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                        </div>
                      </div>
                    ))}
