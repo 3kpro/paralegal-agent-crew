@@ -140,6 +140,14 @@ export default function HelixAIPage() {
                   </div>
                 </div>
             )}
+            
+            {/* Error Message Display */}
+            {status === 'error' && (
+              <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                 <span>Unable to connect to Helix. Please try again.</span>
+              </div>
+            )}
             <div ref={messagesEndRef} className="h-4" />
           </div>
         </motion.div>
