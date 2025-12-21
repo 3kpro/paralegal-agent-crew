@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { streamText, generateText, tool, convertToModelMessages, zodSchema, createDataStreamResponse } from 'ai';
+import { streamText, generateText, tool, convertToModelMessages, zodSchema } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 import { generateAnalystQuery } from '../../../../lib/ai/analyst';
@@ -262,7 +262,8 @@ Instructions:
       }
 
       // Revert to manual Response with explicit V1 Data Stream protocol
-      // because createDataStreamResponse import is failing in this environment.
+      // We manually construct the headers and stream because createDataStreamResponse 
+      // was not successfully imported in this environment.
       
       const encoder = new TextEncoder();
       const customStream = new ReadableStream({
