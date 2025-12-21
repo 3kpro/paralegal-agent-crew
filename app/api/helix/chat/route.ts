@@ -93,6 +93,7 @@ Instructions:
     // Save the latest User message to the database
     const lastUserMessage = messages[messages.length - 1];
     if (lastUserMessage && lastUserMessage.role === 'user') {
+      /*
       const { error: msgError } = await supabase.from('helix_messages').insert({
         session_id: sessionId,
         user_id: user.id,
@@ -103,6 +104,7 @@ Instructions:
       if (msgError) {
         console.error('FAILED to save User Message:', msgError);
       }
+      */
     }
 
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
@@ -277,6 +279,8 @@ Instructions:
       }
 
       // Persist the offline assistant response
+      // Persist the offline assistant response - REMOVED for debugging
+      /*
       const { error: offlineError } = await supabase.from('helix_messages').insert({
         session_id: sessionId,
         user_id: user.id,
@@ -287,6 +291,7 @@ Instructions:
       if (offlineError) {
         console.error('FAILED to save Offline Response:', offlineError);
       }
+      */
 
       // Revert to manual Response with explicit V1 Data Stream protocol
       // We manually construct the headers and stream because createDataStreamResponse 
