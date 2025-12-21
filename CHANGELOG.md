@@ -17,6 +17,23 @@ All notable changes to this project will be documented in this file.
   - Enhanced tool execution feedback with "Processing..." states and inline visualizations for analyst data.
   - Preserved subscription-based message locking for free-tier management.
 
+## [2025-12-21] - Helix Production Fixes
+- **Environment Variable Fixes**:
+  - Standardized API key handling in `lib/helix/agent-manager.ts` to check `GOOGLE_GENERATIVE_AI_API_KEY || GEMINI_API_KEY || GOOGLE_API_KEY` for consistency with chat API.
+  - Added proper imports for `HarmCategory` and `HarmBlockThreshold` enums to fix TypeScript errors in safety settings.
+- **AI Model Updates**:
+  - Replaced deprecated `gemini-2.0-flash-lite-preview-02-05` with stable `gemini-1.5-flash` in agent-manager.
+  - Updated model fallback logic in `/api/helix/chat/route.ts` to use current Gemini models.
+- **Frontend Compatibility Fixes**:
+  - Replaced problematic `useChat` hook with manual fetch implementation in `HelixWidget.tsx` to resolve AI SDK compatibility issues.
+  - Implemented custom streaming response handling for real-time chat updates.
+  - Simplified message rendering to focus on text content (tool rendering removed for stability).
+- **Production Monitoring**:
+  - Added detailed error logging with `[Helix Production Error]` format including timestamp and context for debugging.
+  - Enhanced error handling in chat API to provide better fallback to offline mode.
+- **Documentation**:
+  - Created `docs/helixFix808.md` with comprehensive fix details and verification checklist.
+
 
 ## [2025-12-19] - Facebook & Instagram v13.0 Alignment (Waiting Pattern)
 - **Meta Platform Integration**:
