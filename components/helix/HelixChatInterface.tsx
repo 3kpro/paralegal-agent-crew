@@ -104,11 +104,6 @@ export default function HelixChatInterface({
   };
 
   return (
-    <>
-      <div className="absolute top-0 left-0 right-0 bg-yellow-500/20 text-yellow-200 text-xs p-1 z-50 text-center pointer-events-none">
-        Debug: {messages.length} msgs | Session: {sessionId?.slice(0,8)}... | Status: {status}
-      </div>
-
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -265,6 +260,5 @@ export default function HelixChatInterface({
         </div>
       </div>
     </motion.div>
-    </>
   );
 }
