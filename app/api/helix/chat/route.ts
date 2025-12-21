@@ -139,24 +139,22 @@ Instructions:
     // 6. Attempt AI Execution with Version Fallbacks
     try {
       const modelsToTry = [
+        'gemini-1.5-flash-002',
         'gemini-1.5-flash', 
         'gemini-1.5-pro', 
-        'gemini-pro',
-        'gemini-1.5-flash-latest', 
-        'gemini-1.5-pro-latest',
-        'gemini-1.5-flash-8b'
+        'gemini-2.0-flash-exp',
+        'gemini-1.5-pro-002',
       ];
       
       let success = false;
       let activeModel = modelsToTry[0];
       let activeGoogleProvider = google;
+      let lastError: any = null;
 
       // Try different models and potentially different API versions
       for (const version of ['v1beta', 'v1'] as const) {
-        // The SDK handles versioning, but we can try to force different model strings 
         const currentProvider = createGoogleGenerativeAI({ 
           apiKey,
-          // Correctly pass version to the provider if supported, though usually it uses v1beta by default
         }); 
         
         for (const modelName of modelsToTry) {
@@ -164,8 +162,6 @@ Instructions:
             activeModel = modelName;
             activeGoogleProvider = currentProvider;
             
-            // NOTE: The @ai-sdk/google provider expects simple names like 'gemini-1.5-flash'
-            // It automatically prepends 'models/' and handles the endpoint.
             await generateText({
               model: activeGoogleProvider(activeModel),
               messages: [{ role: 'user', content: 'hi' }],
@@ -173,14 +169,16 @@ Instructions:
             success = true;
             break; 
           } catch (e: any) {
-             // Log the error more clearly
              console.warn(`[Helix] ${version}/${modelName} failed: ${e.message}`);
+             lastError = e;
           }
         }
         if (success) break;
       }
 
-      if (!success) throw new Error('No valid AI model configuration found for this key.');
+      if (!success) {
+        throw new Error(`AI Connection Failed. Last Error: ${lastError?.message || 'Unknown invalid configuration'}`);
+      }
       
       console.log(`[Helix] ACTIVE: ${activeModel}`);
 

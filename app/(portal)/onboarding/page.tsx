@@ -11,9 +11,12 @@ import {
   Instagram,
   Music,
   MessageCircle,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import InterestSelection, { type Interest } from "@/components/onboarding/InterestSelection";
 import TrendingTopicsPreview from "@/components/onboarding/TrendingTopicsPreview";
+import InstagramAccountSetupGuide from "@/components/onboarding/InstagramAccountSetupGuide";
 
 interface ValuePropSlide {
   text: string;
@@ -56,6 +59,9 @@ export default function OnboardingPage() {
   // Step 3: Profile
   const [companyName, setCompanyName] = useState("");
   const [industry, setIndustry] = useState("");
+
+  // Step 4: Setup Guide
+  const [showInstagramGuide, setShowInstagramGuide] = useState(false);
 
   const handleComplete = async () => {
     setLoading(true);
@@ -347,9 +353,40 @@ export default function OnboardingPage() {
                   <li>• No more switching between tabs</li>
                 </ul>
               </div>
-              <p className="text-xs text-gray-500 mb-6">
+              <p className="text-xs text-gray-500 mb-4">
                 Don't want to connect yet? No problem—you can still use XELORA to generate and copy content.
               </p>
+
+              {/* Instagram/Facebook Setup Guide */}
+              <div className="mb-6">
+                <button
+                  onClick={() => setShowInstagramGuide(!showInstagramGuide)}
+                  className="w-full bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 hover:bg-blue-500/20 transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left flex-1">
+                      <p className="text-sm text-blue-300 font-semibold mb-1">
+                        📱 Instagram & Facebook Setup Guide
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Need to set up Business/Creator account? Click here for step-by-step instructions
+                      </p>
+                    </div>
+                    {showInstagramGuide ? (
+                      <ChevronUp className="text-blue-300 flex-shrink-0 ml-3" size={20} />
+                    ) : (
+                      <ChevronDown className="text-blue-300 flex-shrink-0 ml-3" size={20} />
+                    )}
+                  </div>
+                </button>
+
+                {/* Expandable Guide Content */}
+                {showInstagramGuide && (
+                  <div className="mt-4 p-4 bg-[#0F1628] border border-gray-700 rounded-lg">
+                    <InstagramAccountSetupGuide />
+                  </div>
+                )}
+              </div>
 
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <button
