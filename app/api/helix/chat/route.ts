@@ -91,9 +91,9 @@ Instructions:
     console.log('[Helix] Incoming messages:', JSON.stringify(messages, null, 2));
     
     // Save the latest User message to the database
+    // Save the latest User message to the database
     const lastUserMessage = messages[messages.length - 1];
     if (lastUserMessage && lastUserMessage.role === 'user') {
-      /*
       const { error: msgError } = await supabase.from('helix_messages').insert({
         session_id: sessionId,
         user_id: user.id,
@@ -104,7 +104,6 @@ Instructions:
       if (msgError) {
         console.error('FAILED to save User Message:', msgError);
       }
-      */
     }
 
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
