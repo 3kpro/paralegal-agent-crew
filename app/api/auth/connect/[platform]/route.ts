@@ -94,14 +94,14 @@ export async function GET(
       facebook:
         `https://www.facebook.com/v13.0/dialog/oauth?` +
         `client_id=${process.env.FACEBOOK_CLIENT_ID}` +
-        `&scope=email,public_profile` +
+        `&scope=public_profile` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
       instagram:
         `https://www.facebook.com/v18.0/dialog/oauth?` +
         `client_id=${process.env.INSTAGRAM_CLIENT_ID}` +
-        `&scope=email,public_profile` +
+        `&scope=user_profile,user_media` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
