@@ -136,10 +136,8 @@ Instructions:
     });
     
     // 6. Attempt AI Execution with Version Fallbacks
+    // 6. Attempt AI Execution with Version Fallbacks
     try {
-      // FORCE OFFLINE MODE FOR DEBUGGING
-      throw new Error('Forcing Offline Mode to test streaming');
-
       const modelsToTry = [
         'gemini-1.5-flash', 
         'gemini-1.5-pro', 
