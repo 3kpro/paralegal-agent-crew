@@ -274,7 +274,8 @@ Instructions:
       return new Response(stream, {
         headers: { 
           'X-Session-Id': sessionId,
-          'Content-Type': 'text/plain; charset=utf-8'
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Vercel-AI-Data-Stream': 'v1'
         }
       });
     }
