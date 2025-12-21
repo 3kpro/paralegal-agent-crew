@@ -50,6 +50,14 @@ export default function HelixChatInterface({
         context: { currentPath: pathname }
       }
     }),
+    // @ts-ignore
+    onResponse: (response) => {
+      const serverSessionId = response.headers.get('X-Session-Id');
+      if (serverSessionId && serverSessionId !== sessionId) {
+        console.log('Helix: Updated Session ID to', serverSessionId);
+        setSessionId(serverSessionId);
+      }
+    },
     onFinish: ({ message }: any) => {
       // Session management handled internally
     }
