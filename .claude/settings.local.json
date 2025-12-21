@@ -37,7 +37,9 @@
       "Bash(test:*)",
       "Bash(npm run lint)",
       "Bash(docker --version:*)",
-      "Bash(docker-compose:*)"
+      "Bash(docker-compose:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []

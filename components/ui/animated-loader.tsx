@@ -13,7 +13,7 @@ const AnimatedLoader: React.FC<AnimatedLoaderProps> = ({ message }) => {
             key={i}
             className="absolute top-0 left-0 w-7 h-7 m-0.5 animate-square bg-gradient-to-br from-tron-cyan to-tron-magenta"
             style={{
-              // eslint-disable-next-line react/forbid-dom-props
+               
               animationDelay: `${-1.4285714286 * i}s`
             }}
           />

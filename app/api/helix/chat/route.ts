@@ -118,37 +118,60 @@ Instructions:
       apiKey: apiKey
     });
     
-    // 6. Attempt AI Execution
+    // 6. Attempt AI Execution with Version Fallbacks
     try {
-      let activeModel = 'gemini-1.5-flash';
-      const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-pro'];
+      const modelsToTry = [
+        'gemini-1.5-flash', 
+        'gemini-1.5-pro', 
+        'gemini-pro',
+        'gemini-1.5-flash-latest', 
+        'gemini-1.5-pro-latest',
+        'gemini-1.5-flash-8b'
+      ];
       
-      // Pre-flight check with fallback
       let success = false;
-      for (const modelName of modelsToTry) {
-        try {
-          activeModel = modelName;
-          await generateText({
-            model: google(activeModel),
-            messages: [{ role: 'user', content: 'Test' }],
-          });
-          success = true;
-          break; // Found a working model
-        } catch (e) {
-          console.warn(`[Helix] Model ${modelName} failed check...`);
+      let activeModel = modelsToTry[0];
+      let activeGoogleProvider = google;
+
+      // Try different models and potentially different API versions
+      for (const version of ['v1beta', 'v1'] as const) {
+        // The SDK handles versioning, but we can try to force different model strings 
+        const currentProvider = createGoogleGenerativeAI({ 
+          apiKey,
+          // Correctly pass version to the provider if supported, though usually it uses v1beta by default
+        }); 
+        
+        for (const modelName of modelsToTry) {
+          try {
+            activeModel = modelName;
+            activeGoogleProvider = currentProvider;
+            
+            // NOTE: The @ai-sdk/google provider expects simple names like 'gemini-1.5-flash'
+            // It automatically prepends 'models/' and handles the endpoint.
+            await generateText({
+              model: activeGoogleProvider(activeModel),
+              messages: [{ role: 'user', content: 'hi' }],
+            });
+            success = true;
+            break; 
+          } catch (e: any) {
+             // Log the error more clearly
+             console.warn(`[Helix] ${version}/${modelName} failed: ${e.message}`);
+          }
         }
+        if (success) break;
       }
 
-      if (!success) throw new Error('No supported models found for this API key');
+      if (!success) throw new Error('No valid AI model configuration found for this key.');
       
-      console.log(`[Helix] Using Model: ${activeModel}`);
+      console.log(`[Helix] ACTIVE: ${activeModel}`);
 
       const result = await streamText({
-        model: google(activeModel),
+        model: activeGoogleProvider(activeModel),
         system: systemPrompt,
         messages: modelMessages,
         // @ts-ignore
-        maxSteps: 5, // Required for tool execution
+        maxSteps: 5,
         tools: {
           query_analytics: tool({
         inputSchema: zodSchema(z.object({
@@ -172,7 +195,6 @@ Instructions:
           }) as any
         },
         onFinish: async ({ text }) => {
-           // Save assistant message to DB
            await supabase.from('helix_messages').insert({
               session_id: sessionId,
               user_id: user.id,
@@ -183,13 +205,11 @@ Instructions:
       });
 
       return result.toUIMessageStreamResponse({
-        headers: {
-          'X-Session-Id': sessionId
-        }
+        headers: { 'X-Session-Id': sessionId }
       });
 
-    } catch (aiError) {
-      console.warn('[Helix] AI Service Unavailable (Invalid Key or Model Error). Switching to Offline Mode.', aiError);
+    } catch (aiError: any) {
+      console.warn('[Helix] AI Service Unavailable. Switching to Offline Mode.', aiError.message);
       
       // --- OFFLINE MOCK MODE (Fallback) ---
       // Safety check: ensure we have messages to process
@@ -198,12 +218,10 @@ Instructions:
       }
 
       const lastMsg = modelMessages[modelMessages.length - 1].content.toString().toLowerCase();
-      
       let responseText = "I'm Helix (Offline Mode). I can help you with your analytics and campaigns. Try asking 'Show me performance' or 'How many campaigns?'.";
       
       // 1. Check general keywords (more flexible regex)
       if (lastMsg.match(/campaign|performance|stats|data|analytics/i)) {
-         // Mock "query_analytics" execution
          const { data: campaigns } = await supabase
            .from('campaigns')
            .select('name, total_views, total_clicks, status')
@@ -236,30 +254,24 @@ Instructions:
              `❤️ **Engagement:** ${specificCampaign.total_engagement.toLocaleString()}\n` +
              `📅 **Created:** ${new Date(specificCampaign.created_at).toLocaleDateString()}`;
         }
-        // 3. Conversational Fallbacks
         else if (lastMsg.match(/^(hi|hello|hey|yo|greetings)/)) {
            responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
-        }
-        else if (lastMsg.match(/^(ok|thanks|thank you|cool|great|awesome)/)) {
-           responseText = "You're welcome! Let me know if you want to see more stats.";
         }
         else {
            responseText = "I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.";
         }
       }
 
-      // Simulate streaming delay for realism (Offline Mode)
+      // STREAM as standard text chunk (0: prefix) so useChat understands it
       const encoder = new TextEncoder();
-      const readable = new ReadableStream({
+      const stream = new ReadableStream({
         async start(controller) {
-          // Small delay to make it feel "thinking"
-          await new Promise(resolve => setTimeout(resolve, 300));
-          controller.enqueue(encoder.encode(responseText));
+          controller.enqueue(encoder.encode(`0:${JSON.stringify(responseText)}\n`));
           controller.close();
         }
       });
 
-      return new Response(readable, {
+      return new Response(stream, {
         headers: { 
           'X-Session-Id': sessionId,
           'Content-Type': 'text/plain; charset=utf-8'
