@@ -29,7 +29,15 @@
       "Bash(findstr:*)",
       "Bash(cat:*)",
       "Bash(printf:*)",
-      "Bash(vercel ls:*)"
+      "Bash(vercel ls:*)",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(git --version:*)",
+      "Bash(vercel --version:*)",
+      "Bash(test:*)",
+      "Bash(npm run lint)",
+      "Bash(docker --version:*)",
+      "Bash(docker-compose:*)"
     ],
     "deny": [],
     "ask": []

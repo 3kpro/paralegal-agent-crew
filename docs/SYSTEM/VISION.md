@@ -268,6 +268,7 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 - 24/7 support for complex questions
 - Strategy consultant for agencies
 
+
 ---
 
 ### 4.7 Team Collaboration & Workflow
@@ -467,6 +468,9 @@ To maintain focus, we explicitly **will not**:
 - Limited features, full Viral Score™ access
 - No credit card required
 - Converts to paid when users see results
+
+**Helix Dedicated Page (Future):
+A full-screen conversational interface that mirrors the floating Helix assistant, providing expanded workspace without altering core functionality.
 
 **Starter/Pro Tiers ($9-$29)** - Scale content creation:
 - For serious creators and freelancers

@@ -121,32 +121,25 @@ Instructions:
     // 6. Attempt AI Execution
     try {
       let activeModel = 'gemini-1.5-flash';
+      const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-pro'];
       
       // Pre-flight check with fallback
-      try {
-        await generateText({
-          model: google(activeModel),
-          messages: [{ role: 'user', content: 'Test' }],
-        });
-      } catch (e: any) {
-        // If flash fails (e.g. 404), try fallback to pro or stable
-        console.warn(`[Helix] Model ${activeModel} failed check, trying fallback...`);
+      let success = false;
+      for (const modelName of modelsToTry) {
         try {
-          activeModel = 'gemini-1.5-pro';
+          activeModel = modelName;
           await generateText({
             model: google(activeModel),
             messages: [{ role: 'user', content: 'Test' }],
           });
-        } catch (e2) {
-           console.warn(`[Helix] Model ${activeModel} failed check, trying gemini-pro...`);
-           activeModel = 'gemini-pro';
-           // If this fails, it goes to offline mode
-           await generateText({
-            model: google(activeModel),
-            messages: [{ role: 'user', content: 'Test' }],
-          });
+          success = true;
+          break; // Found a working model
+        } catch (e) {
+          console.warn(`[Helix] Model ${modelName} failed check...`);
         }
       }
+
+      if (!success) throw new Error('No supported models found for this API key');
       
       console.log(`[Helix] Using Model: ${activeModel}`);
 
@@ -166,7 +159,7 @@ Instructions:
                  console.log('[Helix] Invoking Analyst with:', question);
                  return await generateAnalystQuery(question, user.id, supabase);
                } catch (err: any) {
-                 console.error('[Helix] Analyst Error:', err);
+                 console.error('[Helix] Analyst Error:', err,);
                  return {
                    error: err.message || 'Failed to query analytics.',
                    sql: 'N/A',
@@ -208,26 +201,8 @@ Instructions:
       
       let responseText = "I'm Helix (Offline Mode). I can help you with your analytics and campaigns. Try asking 'Show me performance' or 'How many campaigns?'.";
       
-      // 1. Check for specific campaign names first
-      const { data: specificCampaign } = await supabase
-        .from('campaigns')
-        .select('name, total_views, total_clicks, total_engagement, status, created_at')
-        .eq('user_id', user.id)
-        .ilike('name', `%${lastMsg.replace(/yes|analyze/g, '').trim()}%`)
-        .limit(1)
-        .single();
-
-      if (specificCampaign) {
-         responseText = `Here is the detailed analysis for **${specificCampaign.name}**:\n\n` +
-           `📊 **Status:** ${specificCampaign.status}\n` +
-           `👀 **Views:** ${specificCampaign.total_views.toLocaleString()}\n` +
-           `👆 **Clicks:** ${specificCampaign.total_clicks.toLocaleString()}\n` +
-           `❤️ **Engagement:** ${specificCampaign.total_engagement.toLocaleString()}\n` +
-           `📅 **Created:** ${new Date(specificCampaign.created_at).toLocaleDateString()}\n\n` +
-           `Insight: This campaign is performing well. Consider reposting top content.`;
-      } 
-      // 2. Check general keywords
-      else if (lastMsg.includes('performance') || lastMsg.includes('campaigns') || lastMsg.includes('stats')) {
+      // 1. Check general keywords (more flexible regex)
+      if (lastMsg.match(/campaign|performance|stats|data|analytics/i)) {
          // Mock "query_analytics" execution
          const { data: campaigns } = await supabase
            .from('campaigns')
@@ -240,31 +215,37 @@ Instructions:
            const stats = campaigns.map(c => `• **${c.name}** (${c.status})\n   👀 ${c.total_views.toLocaleString()} views | 👆 ${c.total_clicks.toLocaleString()} clicks`).join('\n\n');
            responseText = `Here is the performance of your top campaigns:\n\n${stats}\n\nWould you like to analyze a specific one?`;
          } else {
-           responseText = "I found 0 campaigns. You haven't created any campaigns yet.";
+           responseText = "I found 0 campaigns in your account. Try creating one in the Campaigns tab!";
          }
       } 
-      // 3. Conversational Fallbacks
-      else if (lastMsg.match(/^(hi|hello|hey|yo|greetings)/)) {
-         responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
-      }
-      else if (lastMsg.match(/^(ok|thanks|thank you|cool|great|awesome)/)) {
-         responseText = "You're welcome! Let me know if you want to see more stats.";
-      }
-      // 4. Actionable Advice
-      else if (lastMsg.includes('how') || lastMsg.includes('repost') || lastMsg.includes('optimize') || lastMsg.includes('do that')) {
-         if (lastMsg.includes('repost') || lastMsg.includes('content') || lastMsg.includes('do that')) {
-            responseText = "To repost content:\n1. Go to **ContentFlow**.\n2. Find your top post.\n3. Click 'Duplicate' or use the **Reactor** to generate fresh variations based on the successful data.";
-         } else if (lastMsg.includes('create') || lastMsg.includes('new')) {
-            responseText = "You can start a new initiative by clicking the **+ New Campaign** button on individual pages or the main Dashboard.";
-         } else {
-            responseText = "I can guide you! Are you trying to **create** content, **repost** a winner, or **analyze** more data?";
-         }
-      }
-      else if (lastMsg.length < 10 && !lastMsg.includes('?')) {
-         responseText = "Could you be a bit more specific? I'm listening.";
-      }
+      // 2. Exact match for campaign name in text
       else {
-         responseText = "I'm running in **Offline Mode** right now 🤖, so I can't answer general questions yet.\n\nBut I *can* analyze your data! Try typing a specific campaign name (like 'Tech Demo Series') or ask 'Show me performance'.";
+        const { data: specificCampaign } = await supabase
+          .from('campaigns')
+          .select('name, total_views, total_clicks, total_engagement, status, created_at')
+          .eq('user_id', user.id)
+          .ilike('name', `%${lastMsg.replace(/yes|analyze|show|me/g, '').trim()}%`)
+          .limit(1)
+          .single();
+
+        if (specificCampaign && lastMsg.length > 3) {
+           responseText = `Detailed analysis for **${specificCampaign.name}**:\n\n` +
+             `📊 **Status:** ${specificCampaign.status}\n` +
+             `👀 **Views:** ${specificCampaign.total_views.toLocaleString()}\n` +
+             `👆 **Clicks:** ${specificCampaign.total_clicks.toLocaleString()}\n` +
+             `❤️ **Engagement:** ${specificCampaign.total_engagement.toLocaleString()}\n` +
+             `📅 **Created:** ${new Date(specificCampaign.created_at).toLocaleDateString()}`;
+        }
+        // 3. Conversational Fallbacks
+        else if (lastMsg.match(/^(hi|hello|hey|yo|greetings)/)) {
+           responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
+        }
+        else if (lastMsg.match(/^(ok|thanks|thank you|cool|great|awesome)/)) {
+           responseText = "You're welcome! Let me know if you want to see more stats.";
+        }
+        else {
+           responseText = "I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.";
+        }
       }
 
       // Simulate streaming delay for realism (Offline Mode)
