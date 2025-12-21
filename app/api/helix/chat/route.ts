@@ -296,42 +296,21 @@ Instructions:
       }
       */
 
-      // Use a Mock Model to generate the stream via the SDK
-      // This ensures correct protocol headers and chunking
-      const mockModel = {
-        specificationVersion: 'v1',
-        provider: 'helix-offline',
-        modelId: 'offline-fallback',
-        defaultObjectGenerationMode: 'json',
-        doStream: async () => ({
-          stream: new ReadableStream({
-            start(controller) {
-              controller.enqueue({ type: 'text-delta', textChunk: responseText });
-              controller.enqueue({ type: 'finish', finishReason: 'stop', usage: { promptTokens: 0, completionTokens: 0 } });
-              controller.close();
-            }
-          }),
-          rawCall: { rawPrompt: null, rawSettings: {} },
-        }),
-      } as any; // Cast to any to avoid full LanguageModelV1 implementation boilerplate
-
-      const result = await streamText({
-        model: mockModel,
-        messages: modelMessages, // harmless here
-        onFinish: async ({ text }) => {
-            // Also save the offline response to DB (re-enabled via onFinish)
-             const { error: offlineError } = await supabase.from('helix_messages').insert({
-                session_id: sessionId,
-                user_id: user!.id,
-                role: 'assistant',
-                content: text
-             });
-             if (offlineError) console.error('FAILED to save Offline Response:', offlineError);
+      const encoder = new TextEncoder();
+      const customStream = new ReadableStream({
+        async start(controller) {
+          const textPart = `0:${JSON.stringify(responseText)}\n`;
+          controller.enqueue(encoder.encode(textPart));
+          controller.close();
         }
       });
 
-      return result.toUIMessageStreamResponse({
-        headers: { 'X-Session-Id': sessionId || '' }
+      return new Response(customStream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Vercel-AI-Data-Stream': 'v1',
+          'X-Session-Id': sessionId || ''
+        }
       });
       
     } // End of catch (aiError)
