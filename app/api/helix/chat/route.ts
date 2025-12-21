@@ -93,7 +93,6 @@ Instructions:
     // Save the latest User message to the database
     const lastUserMessage = messages[messages.length - 1];
     if (lastUserMessage && lastUserMessage.role === 'user') {
-      /*
       const { error: msgError } = await supabase.from('helix_messages').insert({
         session_id: sessionId,
         user_id: user.id,
@@ -104,7 +103,6 @@ Instructions:
       if (msgError) {
         console.error('FAILED to save User Message:', msgError);
       }
-      */
     }
 
     // Explicitly safe map to avoid "undefined map" errors in SDK utilities
@@ -135,7 +133,6 @@ Instructions:
       apiKey: apiKey
     });
     
-    // 6. Attempt AI Execution with Version Fallbacks
     // 6. Attempt AI Execution with Version Fallbacks
     try {
       const modelsToTry = [
@@ -182,48 +179,57 @@ Instructions:
       
       console.log(`[Helix] ACTIVE: ${activeModel}`);
 
-      const result = await streamText({
+      // BLOCKING GENERATION (Replacing streamText)
+      console.log('[Helix] Generating text (Blocking)...');
+      
+      /*
+      // Tools disabled for isolation test
+      const tools = {
+          query_analytics: tool({
+             // ... schema ...
+          })
+      };
+      */
+
+      const result = await generateText({
         model: activeGoogleProvider(activeModel),
         system: systemPrompt,
         messages: modelMessages,
-        // @ts-ignore
         maxSteps: 5,
-        /*
-        tools: {
-          query_analytics: tool({
-        inputSchema: zodSchema(z.object({
-          question: z.string().describe('The natural language question to ask the database.')
-        })),
-        execute: async ({ question }: { question: string }) => {
-               try {
-                 console.log('[Helix] Invoking Analyst with:', question);
-                 return await generateAnalystQuery(question, user!.id, supabase);
-               } catch (err: any) {
-                 console.error('[Helix] Analyst Error:', err,);
-                 return {
-                   error: err.message || 'Failed to query analytics.',
-                   sql: 'N/A',
-                   explanation: 'I encountered an error while trying to access the analytics database.',
-                   chartType: 'number',
-                   data: []
-                 };
-               }
-            }
-          }) as any
-        },
-        */
-        onFinish: async ({ text }) => {
-           await supabase.from('helix_messages').insert({
-              session_id: sessionId,
-              user_id: user!.id,
-              role: 'assistant',
-              content: text
-           });
+        // tools: tools, // Disabled for now
+      });
+
+      console.log('[Helix] Generation Complete. Result:', result.text.substring(0, 50) + '...');
+
+      // Save Assistant Message (Synchronous)
+      const { error: asstError } = await supabase.from('helix_messages').insert({
+          session_id: sessionId,
+          user_id: user.id,
+          role: 'assistant',
+          content: result.text || ""
+      });
+
+      if (asstError) {
+          console.error('[Helix] Error saving assistant message:', asstError);
+      }
+
+      // Manual Stream Response Wrapper
+      const encoder = new TextEncoder();
+      const customStream = new ReadableStream({
+        async start(controller) {
+          // Format: 0:"content"\n
+          const textPart = `0:${JSON.stringify(result.text)}\n`;
+          controller.enqueue(encoder.encode(textPart));
+          controller.close();
         }
       });
 
-      return result.toUIMessageStreamResponse({
-        headers: { 'X-Session-Id': sessionId }
+      return new Response(customStream, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'X-Vercel-AI-Data-Stream': 'v1',
+          'X-Session-Id': sessionId || ''
+        }
       });
       
     } catch (aiError: any) {
@@ -255,6 +261,7 @@ Instructions:
       } 
       // 2. Exact match for campaign name in text
       else {
+        // ... (Offline logic retained for fallback)
         const { data: specificCampaign } = await supabase
           .from('campaigns')
           .select('name, total_views, total_clicks, total_engagement, status, created_at')
@@ -275,25 +282,18 @@ Instructions:
            responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
         }
         else {
-           // INCLUDE ERROR MESSAGE FOR DEBUGGING
            responseText = `I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\n**Error Details:** ${aiError.message}\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.`;
         }
       }
 
-      // Persist the offline assistant response
-      // Persist the offline assistant response - REMOVED for debugging
-      /*
+       // Save Offline Assistant Message (Synchronous)
       const { error: offlineError } = await supabase.from('helix_messages').insert({
-        session_id: sessionId,
-        user_id: user.id,
-        role: 'assistant',
-        content: responseText
+          session_id: sessionId,
+          user_id: user.id,
+          role: 'assistant',
+          content: responseText
       });
-      
-      if (offlineError) {
-        console.error('FAILED to save Offline Response:', offlineError);
-      }
-      */
+      if (offlineError) console.error('FAILED to save Offline Response:', offlineError);
 
       const encoder = new TextEncoder();
       const customStream = new ReadableStream({
@@ -312,7 +312,7 @@ Instructions:
         }
       });
       
-    } // End of catch (aiError)
+    } 
 
   } catch (error: any) {
     console.error('[Helix Production Error]', { error: error.message, timestamp: new Date().toISOString() });
