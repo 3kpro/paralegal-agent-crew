@@ -4,6 +4,14 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Twitter,
+  Linkedin,
+  Facebook,
+  Instagram,
+  Music,
+  MessageCircle,
+} from "lucide-react";
 import InterestSelection, { type Interest } from "@/components/onboarding/InterestSelection";
 import TrendingTopicsPreview from "@/components/onboarding/TrendingTopicsPreview";
 
@@ -348,7 +356,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/twitter")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">🐦</span>
+                  <Twitter size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     Twitter
                   </span>
@@ -357,7 +365,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/linkedin")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">💼</span>
+                  <Linkedin size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     LinkedIn
                   </span>
@@ -366,7 +374,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/facebook")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">📘</span>
+                  <Facebook size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     Facebook
                   </span>
@@ -375,7 +383,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/instagram")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">📸</span>
+                  <Instagram size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     Instagram
                   </span>
@@ -384,7 +392,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/tiktok")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">🎵</span>
+                  <Music size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     TikTok
                   </span>
@@ -393,7 +401,7 @@ export default function OnboardingPage() {
                   onClick={() => router.push("/api/auth/connect/reddit")}
                   className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
                 >
-                  <span className="text-2xl">🤖</span>
+                  <MessageCircle size={24} className="text-gray-300" />
                   <span className="font-medium text-gray-300">
                     Reddit
                   </span>
