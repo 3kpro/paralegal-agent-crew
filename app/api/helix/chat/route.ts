@@ -188,6 +188,7 @@ Instructions:
         messages: modelMessages,
         // @ts-ignore
         maxSteps: 5,
+        /*
         tools: {
           query_analytics: tool({
         inputSchema: zodSchema(z.object({
@@ -210,6 +211,7 @@ Instructions:
             }
           }) as any
         },
+        */
         onFinish: async ({ text }) => {
            await supabase.from('helix_messages').insert({
               session_id: sessionId,
