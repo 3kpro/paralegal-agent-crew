@@ -120,16 +120,38 @@ Instructions:
     
     // 6. Attempt AI Execution
     try {
-      // Pre-flight check: Verify API Key and Model access before streaming
-      // This ensures we can catch auth/404 errors and fall back to Offline Mode
-      // instead of crashing mid-stream.
-      await generateText({
-        model: google('gemini-1.5-flash'),
-        messages: [{ role: 'user', content: 'Test' }],
-      });
+      let activeModel = 'gemini-1.5-flash';
+      
+      // Pre-flight check with fallback
+      try {
+        await generateText({
+          model: google(activeModel),
+          messages: [{ role: 'user', content: 'Test' }],
+        });
+      } catch (e: any) {
+        // If flash fails (e.g. 404), try fallback to pro or stable
+        console.warn(`[Helix] Model ${activeModel} failed check, trying fallback...`);
+        try {
+          activeModel = 'gemini-1.5-pro';
+          await generateText({
+            model: google(activeModel),
+            messages: [{ role: 'user', content: 'Test' }],
+          });
+        } catch (e2) {
+           console.warn(`[Helix] Model ${activeModel} failed check, trying gemini-pro...`);
+           activeModel = 'gemini-pro';
+           // If this fails, it goes to offline mode
+           await generateText({
+            model: google(activeModel),
+            messages: [{ role: 'user', content: 'Test' }],
+          });
+        }
+      }
+      
+      console.log(`[Helix] Using Model: ${activeModel}`);
 
       const result = await streamText({
-        model: google('gemini-1.5-flash'),
+        model: google(activeModel),
         system: systemPrompt,
         messages: modelMessages,
         // @ts-ignore
@@ -249,13 +271,18 @@ Instructions:
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
         async start(controller) {
+          // Small delay to make it feel "thinking"
+          await new Promise(resolve => setTimeout(resolve, 300));
           controller.enqueue(encoder.encode(responseText));
           controller.close();
         }
       });
 
       return new Response(readable, {
-        headers: { 'X-Session-Id': sessionId }
+        headers: { 
+          'X-Session-Id': sessionId,
+          'Content-Type': 'text/plain; charset=utf-8'
+        }
       });
     }
 
