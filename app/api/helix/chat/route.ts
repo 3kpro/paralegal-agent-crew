@@ -275,7 +275,8 @@ Instructions:
            responseText = "Hello! I'm ready to analyze your brand performance. Ask me anything about your campaigns.";
         }
         else {
-           responseText = "I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.";
+           // INCLUDE ERROR MESSAGE FOR DEBUGGING
+           responseText = `I'm running in **Offline Mode** right now 🤖 because the AI service is unreachable.\n\n**Error Details:** ${aiError.message}\n\nBut I *can* analyze your data! Try asking 'Show me my campaigns' or 'How is my performance?'.`;
         }
       }
 
