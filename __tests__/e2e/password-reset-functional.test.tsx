@@ -5,6 +5,7 @@
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { jest } from '@jest/globals';
+import Link from 'next/link';
 
 // Mock components that simulate the password reset functionality
 const MockForgotPasswordPage = () => {
@@ -12,12 +13,12 @@ const MockForgotPasswordPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <a href="/" className="inline-flex items-center space-x-2 mb-4">
+          <Link href="/" className="inline-flex items-center space-x-2 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">Content Cascade AI</span>
-          </a>
+          </Link>
           <p className="text-gray-600 mt-2">Reset your password</p>
         </div>
 
@@ -68,12 +69,12 @@ const MockResetPasswordPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <a href="/" className="inline-flex items-center space-x-2 mb-4">
+          <Link href="/" className="inline-flex items-center space-x-2 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
               <span className="text-white font-bold text-xl">3K</span>
             </div>
             <span className="text-2xl font-bold text-gray-900">Content Cascade AI</span>
-          </a>
+          </Link>
           <p className="text-gray-600 mt-2">Set your new password</p>
         </div>
 

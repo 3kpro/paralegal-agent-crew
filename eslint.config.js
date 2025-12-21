@@ -5,7 +5,7 @@ const typescriptParser = require("@typescript-eslint/parser");
 
 module.exports = [
     {
-        ignores: ["node_modules/", ".next/", "playwright-report/", "coverage/", "*.js", "*.mjs", ".eslintignore", "dist/", "build/"],
+        ignores: ["node_modules/", ".next/", ".vercel/", "playwright-report/", "coverage/", "*.js", "*.mjs", ".eslintignore", "dist/", "build/"],
     },
     {
         files: ["**/*.{js,jsx,ts,tsx}"],
