@@ -76,7 +76,7 @@ export async function GET(
 
     const oauthURLs: Record<string, string> = {
       tiktok:
-        `https://www.tiktok.com/v1/oauth/authorize/?` +
+        `https://www.tiktok.com/oauth/authorize?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
         `&scope=${encodeURIComponent("user.info.basic video.publish")}` +
         `&response_type=code` +
