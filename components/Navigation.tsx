@@ -45,6 +45,12 @@ export const Navigation: React.FC<NavigationProps> = () => {
             <NavItem id="services" label="Features" />
             <NavItem id="pricing" label="Pricing" />
             <NavItem id="contact" label="Contact" />
+            <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors font-medium">
+              Privacy
+            </Link>
+            <Link href="/terms" className="text-gray-300 hover:text-white transition-colors font-medium">
+              Terms
+            </Link>
             <Link href="/login">
               <Button variant="primary">Sign In / Sign Up</Button>
             </Link>
@@ -100,6 +106,20 @@ export const Navigation: React.FC<NavigationProps> = () => {
               >
                 Contact
               </button>
+              <Link
+                href="/privacy"
+                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Terms of Service
+              </Link>
               <div className="px-4">
                 <Link href="/login">
                   <Button

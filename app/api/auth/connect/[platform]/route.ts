@@ -41,8 +41,15 @@ export async function GET(
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-    // Store code_verifier AND redirect path in cookies for callback (expires in 10 minutes)
+    // Store state, code_verifier, and redirect path in cookies for callback (expires in 10 minutes)
     const cookieStore = await cookies();
+    cookieStore.set(`oauth_state_${platform}`, state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 600, // 10 minutes
+      path: "/",
+    });
     cookieStore.set(`oauth_verifier_${platform}`, codeVerifier, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -69,9 +76,9 @@ export async function GET(
 
     const oauthURLs: Record<string, string> = {
       tiktok:
-        `https://open-api.tiktok.com/platform/oauth/connect?` +
+        `https://www.tiktok.com/oauth/authorize?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
-        `&scope=user.info.basic,video.publish` +
+        `&scope=${encodeURIComponent("user.info.basic video.publish")}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,

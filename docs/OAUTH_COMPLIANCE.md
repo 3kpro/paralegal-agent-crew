@@ -94,15 +94,20 @@ This document tracks compliance requirements for all OAuth integrations.
 ### Compliance Requirements
 - [x] Privacy Policy URL: `https://xelora.app/privacy`
 - [x] Terms of Service URL: `https://xelora.app/terms`
-- [x] **Footer links visible from homepage** ⚠️ (just fixed)
+- [x] **Header navigation links** ✅ (immediately visible, no scrolling needed)
+- [x] **Footer links** ✅ (secondary location)
 - [x] App icon
 
 ### Status
-🔴 **Rejected** - Resubmitting after footer links fix
+🟢 **APPROVED** - TikTok OAuth permissions active!
 
-**Rejection Reason:** Missing Privacy Policy and Terms links from homepage
-**Fix Applied:** Added footer links (commit 431aae8)
-**Next Step:** Wait for Vercel deployment, then resubmit
+**Approval Date:** Dec 22, 2024
+**Previous Rejection:** Privacy Policy and Terms links not easily accessible from homepage
+**Fix Applied:**
+- PRIMARY: Added Privacy and Terms links to header navigation ✅ Immediately visible
+- SECONDARY: Footer links also present ✅
+**Result:** Approved on resubmission ✅
+**Next Step:** Test TikTok integration with real user accounts
 
 ---
 

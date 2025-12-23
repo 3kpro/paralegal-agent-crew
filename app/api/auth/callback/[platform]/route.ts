@@ -16,18 +16,31 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
     const error = searchParams.get("error");
+    const state = searchParams.get("state");
 
-    // Get redirect path from cookie
+    // Get redirect path and validate state from cookies
     const cookieStore = await cookies();
     const redirect =
       cookieStore.get(`oauth_redirect_${platform}`)?.value || "/onboarding";
+    const storedState = cookieStore.get(`oauth_state_${platform}`)?.value;
 
     console.log(`[${platform}] Code received:`, code ? "Yes" : "No");
     console.log(`[${platform}] Error param:`, error || "None");
+    console.log(`[${platform}] State validation:`, state === storedState ? "✓ Valid" : "✗ Invalid");
     console.log(`[${platform}] Redirect path:`, redirect);
+
+    // Validate state parameter (CSRF protection)
+    if (state !== storedState) {
+      console.error(`[${platform}] State mismatch! Expected: ${storedState}, Got: ${state}`);
+      cookieStore.delete(`oauth_state_${platform}`);
+      cookieStore.delete(`oauth_redirect_${platform}`);
+      cookieStore.delete(`oauth_verifier_${platform}`);
+      return NextResponse.redirect(`${origin}${redirect}?error=state_mismatch`);
+    }
 
     if (error || !code) {
       console.error("OAuth error:", error);
+      cookieStore.delete(`oauth_state_${platform}`);
       cookieStore.delete(`oauth_redirect_${platform}`);
       cookieStore.delete(`oauth_verifier_${platform}`);
       return NextResponse.redirect(`${origin}${redirect}?error=auth_failed`);
@@ -63,6 +76,7 @@ export async function GET(
     );
 
     // Clear the cookies
+    cookieStore.delete(`oauth_state_${platform}`);
     cookieStore.delete(`oauth_verifier_${platform}`);
     cookieStore.delete(`oauth_redirect_${platform}`);
 

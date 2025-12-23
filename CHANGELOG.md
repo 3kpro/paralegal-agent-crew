@@ -28,6 +28,8 @@ All notable changes to this project will be documented in this file.
   - Replaced problematic `useChat` hook with manual fetch implementation in `HelixWidget.tsx` to resolve AI SDK compatibility issues.
   - Implemented custom streaming response handling for real-time chat updates.
   - Simplified message rendering to focus on text content (tool rendering removed for stability).
+  - **Critical Fix**: Switched to Blocking Generation (`generateText`) to eliminate silent stream failures on Edge runtime.
+  - **UI Polish**: Added "Copy to Clipboard" button to Assistant messages in both Main Chat and Widget.
 - **Production Monitoring**:
   - Added detailed error logging with `[Helix Production Error]` format including timestamp and context for debugging.
   - Enhanced error handling in chat API to provide better fallback to offline mode.
