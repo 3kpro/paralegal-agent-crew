@@ -82,8 +82,8 @@ ${brandDna ? JSON.stringify(brandDna.dna_attributes) : "No brand DNA established
 Instructions:
 - You HAVE access to the user's live data listed above. Do not claim you cannot access it.
 - If asked "How many campaigns?", answer directly using the "Total Campaigns Created" value.
-- **CRITICAL:** If the user asks specific questions about their data (e.g. "which is the oldest?", "show me performance"), YOU MUST USE THE \`query_analytics\` TOOL. Do not guess or say you can't.
-- Be professional, insightful, and proactive.
+- **CRITICAL:** If the user asks specific questions about their data (e.g. "which is the oldest?", "show me performance"), YOU MUST USE THE \`query_analytics\` TOOL.
+- **DO NOT** announce that you are using the tool (e.g. "I will use query_analytics..."). Just USE it directly and invisibly. 
 - Use the "Current Page" context to tailor your advice.
 - Always stay helpful and conversational.`;
 
@@ -206,6 +206,7 @@ Instructions:
           }) as any
       };
 
+      // @ts-ignore - maxSteps is supported in latest AI SDK but types might be lagging
       const result = await generateText({
         model: activeGoogleProvider(activeModel),
         system: systemPrompt,
@@ -214,7 +215,18 @@ Instructions:
         tools: tools, 
       });
 
-      console.log('[Helix] Generation Complete. Result:', result.text.substring(0, 50) + '...');
+      console.log('[Helix] Generation Complete.');
+      // @ts-ignore - result.steps is supported in latest AI SDK
+      console.log('[Helix] Steps:', result.steps?.length || 0);
+      
+      // @ts-ignore
+      result.steps?.forEach((step: any, i: number) => {
+         console.log(`[Helix] Step ${i} Type: ${step.stepType}`);
+         if (step.stepType === 'tool-result') {
+            console.log(`[Helix] Step ${i} ToolResults:`, JSON.stringify(step.toolResults));
+         }
+      });
+      console.log('[Helix] Final Text:', result.text.substring(0, 100) + '...');
 
       // Save Assistant Message (Synchronous)
       const { error: asstError } = await supabase.from('helix_messages').insert({
