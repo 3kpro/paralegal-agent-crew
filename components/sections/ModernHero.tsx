@@ -3,12 +3,15 @@
 import { motion } from "framer-motion";
 import { Zap, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 export default function ModernHero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#2b2b2b] pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a] pt-20">
+      <BGPattern variant="dots" mask="fade-center" size={30} fill="#333" className="-z-10" />
+      
       {/* Minimal cyan accents background */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-20 left-20 w-72 h-72 bg-[#00C7F2]/5 rounded-full filter blur-3xl"
           animate={{
@@ -22,17 +25,17 @@ export default function ModernHero() {
           }}
         />
         <motion.div
-          className="absolute top-40 right-20 w-72 h-72 bg-coral-500/5 rounded-full filter blur-3xl"
-          animate={{
-            x: [0, -100, 0],
-            y: [0, 100, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
+           className="absolute top-40 right-20 w-72 h-72 bg-coral-500/5 rounded-full filter blur-3xl"
+           animate={{
+             x: [0, -100, 0], 
+             y: [0, 100, 0],
+           }}
+           transition={{
+             duration: 25,
+             repeat: Infinity,
+             ease: "linear",
+           }}
+         />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-20">
