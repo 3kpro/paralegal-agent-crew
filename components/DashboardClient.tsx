@@ -146,7 +146,7 @@ export default function DashboardClient() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#2b2b2b] p-8">
+    <div className="min-h-screen bg-transparent p-0 md:p-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header */}
           <motion.div

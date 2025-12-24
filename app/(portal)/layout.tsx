@@ -191,9 +191,9 @@ export default function PortalLayout({
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1">
+        <div className="flex-1 relative z-10">
           {/* Top Bar */}
-          <header className="bg-[#343a40] border-b border-gray-700/50 px-4 md:px-8 py-3 md:pl-32">
+          <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 md:pl-32 relative z-20">
             <div className="flex items-center justify-between">
                <div className="flex items-center gap-3">
                  <span className="text-lg md:text-xl font-bold text-white uppercase tracking-wide">
@@ -205,7 +205,7 @@ export default function PortalLayout({
                 {/* What's New Button */}
                 <button
                   onClick={() => setShowWhatsNew(true)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span className="hidden md:inline">What's New</span>
