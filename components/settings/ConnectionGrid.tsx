@@ -36,11 +36,17 @@ export default function ConnectionGrid({
   onAddConnection,
   onRefresh,
 }: ConnectionGridProps) {
-  // Listen for OAuth success messages from popup
+  // Listen for OAuth success/error messages from popup
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
       if (event.data.type === "oauth-success") {
+        console.log("OAuth success message received")
         // Refresh connections when popup notifies success
+        onRefresh()
+      } else if (event.data.type === "oauth-error") {
+        console.error("OAuth error message received:", event.data.error)
+        alert(`Connection failed: ${event.data.error}`)
+        // Still refresh to update any partial connection state
         onRefresh()
       }
     }
@@ -64,7 +70,7 @@ export default function ConnectionGrid({
       const top = window.screenY + (window.outerHeight - height) / 2
 
       const popup = window.open(
-        `/api/auth/connect/${provider.provider_key}`,
+        `/api/auth/connect/${provider.provider_key}?redirect=/settings`,
         `oauth-${provider.provider_key}`,
         `width=${width},height=${height},left=${left},top=${top},popup=true`
       )

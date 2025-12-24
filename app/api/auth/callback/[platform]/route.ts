@@ -35,7 +35,7 @@ export async function GET(
       cookieStore.delete(`oauth_state_${platform}`);
       cookieStore.delete(`oauth_redirect_${platform}`);
       cookieStore.delete(`oauth_verifier_${platform}`);
-      return NextResponse.redirect(`${origin}${redirect}?error=state_mismatch`);
+      return NextResponse.redirect(`${origin}/oauth-success?error=state_mismatch&details=Security validation failed. Please try again.`);
     }
 
     if (error || !code) {
@@ -43,7 +43,7 @@ export async function GET(
       cookieStore.delete(`oauth_state_${platform}`);
       cookieStore.delete(`oauth_redirect_${platform}`);
       cookieStore.delete(`oauth_verifier_${platform}`);
-      return NextResponse.redirect(`${origin}${redirect}?error=auth_failed`);
+      return NextResponse.redirect(`${origin}/oauth-success?error=auth_failed&details=${encodeURIComponent(error || "Authorization failed")}`);
     }
 
     // Get current user
@@ -102,7 +102,7 @@ export async function GET(
     if (providerError || !provider) {
       console.error(`[${platform}] Provider not found:`, providerError);
       return NextResponse.redirect(
-        `${origin}${redirect}?error=provider_not_found`,
+        `${origin}/oauth-success?error=provider_not_found&details=Platform configuration error. Please contact support.`,
       );
     }
 
@@ -116,17 +116,19 @@ export async function GET(
 
     // Store in user_social_connections with encrypted tokens
     console.log(`[${platform}] Saving to user_social_connections...`);
+    console.log(`[${platform}] Profile data:`, JSON.stringify(profile, null, 2));
 
-    // Safely construct connection_name
+    // Safely construct connection_name - handle empty/null username for TikTok
+    const displayUsername = profile.username || profile.id || 'user';
     const connectionName = profile.name
-      ? `${profile.name} (@${profile.username})`
-      : profile.username;
+      ? `${profile.name} (@${displayUsername})`
+      : displayUsername;
 
     const connectionData = {
       user_id: user.id,
       provider_id: provider.id,
       connection_name: connectionName,
-      account_username: profile.username,
+      account_username: displayUsername,
       account_id: profile.id,
       access_token_encrypted: encryptedAccessToken,
       refresh_token_encrypted: encryptedRefreshToken,
@@ -163,11 +165,10 @@ export async function GET(
       console.error(`[${platform}] Failed to save connection:`, {
         message: insertError.message,
         code: insertError.code,
-        status: insertError.status,
         details: insertError.details,
       });
       return NextResponse.redirect(
-        `${origin}${redirect}?error=save_failed&details=${encodeURIComponent(insertError.message)}`,
+        `${origin}/oauth-success?error=save_failed&details=${encodeURIComponent(insertError.message)}`,
       );
     }
 
@@ -198,7 +199,7 @@ export async function GET(
     console.error("Error stack:", error?.stack);
     console.error("========================================");
     return NextResponse.redirect(
-      `${origin}/onboarding?error=connection_failed&details=${encodeURIComponent(error?.message || "Unknown error")}`,
+      `${origin}/oauth-success?error=connection_failed&details=${encodeURIComponent(error?.message || "Unknown error")}`,
     );
   }
 }
@@ -262,7 +263,7 @@ async function exchangeToken(
 
   // Platform-specific authentication
   if (platform === "tiktok") {
-    params.client_id = clientId!;
+    params.client_key = clientId!;  // TikTok v2 uses client_key, not client_id
     params.client_secret = clientSecret!;
   } else if (platform === "twitter") {
     // Twitter requires Basic Authentication header (NOT in body)
@@ -295,11 +296,26 @@ async function exchangeToken(
   if (!response.ok) {
     const errorText = await response.text();
     console.error(`[${platform}] Token exchange failed (${response.status}):`, errorText);
+    console.error(`[${platform}] Request body was:`, JSON.stringify(params, null, 2));
+
+    // Provide specific error messages for common issues
+    if (platform === "tiktok") {
+      if (response.status === 400) {
+        throw new Error(`TikTok OAuth error (400): Invalid request. Check redirect URI matches TikTok app settings exactly.`);
+      } else if (response.status === 401) {
+        throw new Error(`TikTok OAuth error (401): Unauthorized. Check TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET.`);
+      } else if (response.status === 403) {
+        throw new Error(`TikTok OAuth error (403): Forbidden. Your TikTok app may not have OAuth permissions enabled.`);
+      }
+    }
+
     throw new Error(`Token exchange failed (${response.status}): ${errorText}`);
   }
 
   const data = await response.json();
   console.log(`[${platform}] Token exchange success. Has refresh token:`, !!data.refresh_token);
+  console.log(`[${platform}] Token expires_in:`, data.expires_in);
+  console.log(`[${platform}] Token expires_in:`, data.expires_in);
 
   // For Facebook and Instagram, exchange short-lived token for long-lived token
   if (platform === "facebook" || platform === "instagram") {
@@ -357,7 +373,8 @@ async function fetchUserProfile(platform: string, accessToken: string) {
       followers_count: data.data.public_metrics?.followers_count || 0,
     };
   } else if (platform === "tiktok") {
-    const userInfoUrl = "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url,follower_count";
+    // Only request fields available with user.info.basic scope (no follower_count - requires user.info.stats)
+    const userInfoUrl = "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url";
     console.log("[tiktok] Fetching profile from:", userInfoUrl);
 
     const response = await fetch(
@@ -380,12 +397,14 @@ async function fetchUserProfile(platform: string, accessToken: string) {
     const data = await response.json();
     console.log("[tiktok] Profile data received:", JSON.stringify(data, null, 2));
 
+    // TikTok API returns data nested under data.user
+    const user = data.data?.user || data.data;
     return {
-      id: data.data.open_id,
-      name: data.data.display_name,
-      username: data.data.username,
-      profile_image_url: data.data.avatar_url,
-      followers_count: data.data.follower_count || 0,
+      id: user.open_id,
+      name: user.display_name,
+      username: user.username || user.display_name, // TikTok may not return username
+      profile_image_url: user.avatar_url,
+      followers_count: 0, // Requires user.info.stats scope - can add later if needed
     };
   } else if (platform === "linkedin") {
     const response = await fetch(

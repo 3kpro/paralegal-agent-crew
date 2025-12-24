@@ -83,7 +83,7 @@ export async function exchangeCodeForTokens(
 
   const tokenUrl =
     platform === "tiktok"
-      ? "https://open-api.tiktok.com/oauth/access_token/"
+      ? "https://open.tiktokapis.com/v2/oauth/token/"
       : "https://api.twitter.com/2/oauth2/token";
 
   const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;

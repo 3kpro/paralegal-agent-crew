@@ -81,7 +81,8 @@ export async function GET(
         `&scope=${encodeURIComponent("user.info.basic,video.publish")}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
-        `&state=${state}`,
+        `&state=${state}` +
+        `&rid=${encodeURIComponent(Date.now().toString())}`,
       twitter:
         `https://twitter.com/i/oauth2/authorize?` +
         `client_id=${process.env.TWITTER_CLIENT_ID}` +
@@ -137,10 +138,23 @@ export async function GET(
 
     // Check if required OAuth credentials are configured
     if (oauthUrl.includes('undefined')) {
+      console.error(`[${platform}] Missing credentials`);
       return NextResponse.json(
         {
           error: `${platform} OAuth credentials not configured`,
-          message: `Please add ${platform.toUpperCase()}_CLIENT_ID to environment variables.`
+          message: `Missing ${platform.toUpperCase()}_CLIENT_KEY or ${platform.toUpperCase()}_CLIENT_SECRET. Please add these to environment variables.`
+        },
+        { status: 500 },
+      );
+    }
+
+    // Verify client credentials are not empty strings
+    if (platform === 'tiktok' && (!process.env.TIKTOK_CLIENT_KEY || !process.env.TIKTOK_CLIENT_SECRET)) {
+      console.error('[tiktok] Client credentials missing or empty');
+      return NextResponse.json(
+        {
+          error: 'TikTok OAuth credentials not configured',
+          message: 'TIKTOK_CLIENT_KEY and TIKTOK_CLIENT_SECRET must be set in environment variables.'
         },
         { status: 500 },
       );
