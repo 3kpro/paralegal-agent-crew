@@ -71,6 +71,7 @@ All notable changes to this project will be documented in this file.
   - Added "History" Sidebar to Helix Widget (Clock Icon).
   - Implemented Session Persistence and Context Awareness (Helix now remembers previous messages in a session).
   - Added "New Chat" functionality to start fresh contexts.
+  - Fixed Analyst tool crash by correcting backend model configuration (`gemini-1.5-flash`).
 - **Global Background Standardization**:
   - Implemented unified `BGPattern` (transparent with dots mask) across the entire application.
   - Removed hardcoded gradients/opaque colors from:

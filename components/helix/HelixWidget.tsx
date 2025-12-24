@@ -555,7 +555,7 @@ What would you like to know?`
                            ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
                            : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
                        } group`}>
-                         {(msg as any).toolData && (
+                         {(msg as any).toolData && (msg as any).toolData.data && (msg as any).toolData.data.length > 0 && (
                             <div className="mb-3 h-48 w-full bg-black/30 rounded-lg p-2 border border-white/5">
                               <AnalystCharts data={(msg as any).toolData.data} type={(msg as any).toolData.chartType || 'bar'} />
                             </div>

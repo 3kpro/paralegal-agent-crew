@@ -224,7 +224,7 @@ export default function HelixChatInterface({
                     : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
                 }`}>
                    {/* Simplified rendering for manual fetch */}
-                   {msg.toolData && (
+                   {msg.toolData && msg.toolData.data && msg.toolData.data.length > 0 && (
                       <div className="mb-4 h-64 w-full bg-black/20 rounded-lg p-2 border border-white/5">
                          <AnalystCharts data={msg.toolData.data} type={msg.toolData.chartType || 'bar'} />
                       </div>

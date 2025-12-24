@@ -49,7 +49,7 @@ export async function generateAnalystQuery(
   if (!apiKey) throw new Error("Missing Google AI API Key");
   
   const google = createGoogleGenerativeAI({ apiKey });
-  const model = google('gemini-2.5-flash');
+  const model = google('gemini-1.5-flash');
 
   const { object } = await generateObject({
     model,
