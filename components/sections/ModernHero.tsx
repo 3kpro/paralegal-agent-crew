@@ -8,7 +8,14 @@ import { BGPattern } from "@/components/ui/bg-pattern";
 export default function ModernHero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a] pt-20">
-      <BGPattern variant="dots" mask="fade-center" size={30} fill="#333" className="-z-10" />
+      {/* Background Pattern: z-0 to sit above background color but below content */}
+      <BGPattern 
+        variant="dots" 
+        mask="fade-center" 
+        size={24} 
+        fill="rgba(255,255,255,0.1)" 
+        className="z-0" 
+      />
       
       {/* Minimal cyan accents background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
