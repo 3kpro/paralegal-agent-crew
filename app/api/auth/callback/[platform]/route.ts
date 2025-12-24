@@ -248,19 +248,25 @@ async function exchangeToken(
     params.client_secret = clientSecret!;
   }
 
+  console.log(`[${platform}] Token exchange request to:`, tokenUrl);
+  console.log(`[${platform}] Request params:`, Object.keys(params).join(", "));
+
   const response = await fetch(tokenUrl, {
     method: "POST",
     headers,
     body: new URLSearchParams(params),
   });
 
+  console.log(`[${platform}] Token exchange response status:`, response.status);
+
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Token exchange failed:", errorText);
-    throw new Error(`Token exchange failed: ${errorText}`);
+    console.error(`[${platform}] Token exchange failed (${response.status}):`, errorText);
+    throw new Error(`Token exchange failed (${response.status}): ${errorText}`);
   }
 
   const data = await response.json();
+  console.log(`[${platform}] Token exchange success. Has refresh token:`, !!data.refresh_token);
 
   // For Facebook and Instagram, exchange short-lived token for long-lived token
   if (platform === "facebook" || platform === "instagram") {
@@ -318,8 +324,11 @@ async function fetchUserProfile(platform: string, accessToken: string) {
       followers_count: data.data.public_metrics?.followers_count || 0,
     };
   } else if (platform === "tiktok") {
+    const userInfoUrl = "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url,follower_count";
+    console.log("[tiktok] Fetching profile from:", userInfoUrl);
+
     const response = await fetch(
-      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url,follower_count",
+      userInfoUrl,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -327,11 +336,17 @@ async function fetchUserProfile(platform: string, accessToken: string) {
       },
     );
 
+    console.log("[tiktok] Profile response status:", response.status);
+
     if (!response.ok) {
-      throw new Error("Failed to fetch TikTok profile");
+      const errorText = await response.text();
+      console.error("[tiktok] Profile fetch failed:", errorText);
+      throw new Error(`Failed to fetch TikTok profile (${response.status}): ${errorText}`);
     }
 
     const data = await response.json();
+    console.log("[tiktok] Profile data received:", JSON.stringify(data, null, 2));
+
     return {
       id: data.data.open_id,
       name: data.data.display_name,

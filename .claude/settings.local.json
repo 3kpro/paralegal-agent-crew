@@ -39,7 +39,8 @@
       "Bash(docker --version:*)",
       "Bash(docker-compose:*)",
       "Bash(npx eslint:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(vercel logs:*)"
     ],
     "deny": [],
     "ask": []
