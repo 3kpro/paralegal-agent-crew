@@ -78,7 +78,7 @@ export async function GET(
       tiktok:
         `https://www.tiktok.com/v2/auth/authorize/?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
-        `&scope=${encodeURIComponent("user.info.basic,video.publish")}` +
+        `&scope=${encodeURIComponent("user.info.basic video.publish")}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}` +

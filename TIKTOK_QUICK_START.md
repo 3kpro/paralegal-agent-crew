@@ -15,9 +15,10 @@ All the code is ready! TikTok OAuth and posting are already implemented:
 - ✅ UI components (ConnectionCard, PublishButton)
 
 **OAuth Scopes Requested:**
-- `user.info.basic` - Get user profile info
-- `video.list` - List user's videos
-- `video.upload` - Upload and publish videos
+- `user.info.basic` - Get user profile info (open_id, display_name, username, avatar_url)
+- `video.publish` - Publish videos directly
+
+**Important: Scopes must be space-separated in OAuth URL**
 
 ## 🔧 Configuration Needed
 

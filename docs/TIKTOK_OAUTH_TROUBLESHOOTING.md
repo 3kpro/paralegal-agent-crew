@@ -61,7 +61,19 @@ npm run diagnose:tiktok
 - Check TikTok API status: https://developers.tiktok.com/status/
 - Try reconnecting TikTok account
 
-### 7. Connection shows "Pending Test"
+### 7. "scope_not_authorized" error
+**Symptom**: OAuth succeeds but profile fetch fails with 401 error and scope_not_authorized
+
+**Solution**:
+- Go to TikTok Developer Portal > Your App > Scopes
+- Ensure these scopes are added and approved:
+  - `user.info.basic` - Required for fetching user profile
+  - `video.publish` - Required for publishing videos
+- If scopes are missing, click "Add Scopes" and add them
+- Wait for approval (some scopes require manual approval)
+- Reconnect TikTok after scopes are approved
+
+### 8. Connection shows "Pending Test"
 **Symptom**: Connection saved but shows "Pending Test" status
 
 **Solution**:
