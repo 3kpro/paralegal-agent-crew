@@ -19,6 +19,7 @@
     "restart": "docker-compose restart",
     "healthcheck": "curl -f http://content-cascade-ai:3000/api/health || exit 1",
     "diagnose:tiktok": "node scripts/diagnose-tiktok-oauth.js",
+    "check:tiktok": "node scripts/check-tiktok-app-config.js",
     "prepare": "husky"
   },
   "dependencies": {

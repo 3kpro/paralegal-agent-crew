@@ -34,10 +34,15 @@ export default function PublishButton({
   };
 
   const handlePublish = async () => {
+    // TEMPORARY DEBUG ALERT
+    // alert(`DEBUG: Publish clicked.\nLength: ${content?.length}\nIDs: ${JSON.stringify(socialAccountIds)}`);
+    
     console.log("PublishButton clicked. Content present:", !!content, "Length:", content?.length);
     console.log("Social Account IDs:", socialAccountIds);
 
     if (!content) {
+       console.error("No content to publish.");
+       alert("Error: No content to publish found.");
        onPublishError?.("No content to publish.");
        return; 
     }
@@ -45,6 +50,7 @@ export default function PublishButton({
     // Auto-detect social accounts if not provided
     if (!socialAccountIds || socialAccountIds.length === 0) {
         console.error("No social accounts selected.");
+        alert("Error: No social accounts matched. Debug: " + JSON.stringify(socialAccountIds));
         onPublishError?.("No connected social accounts found matching the target platforms.");
         return;
     }

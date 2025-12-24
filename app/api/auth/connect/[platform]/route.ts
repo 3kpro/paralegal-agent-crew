@@ -78,11 +78,10 @@ export async function GET(
       tiktok:
         `https://www.tiktok.com/v2/auth/authorize/?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
-        `&scope=${encodeURIComponent("user.info.basic video.publish")}` +
+        `&scope=${encodeURIComponent("user.info.basic")}` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
-        `&state=${state}` +
-        `&rid=${encodeURIComponent(Date.now().toString())}`,
+        `&state=${state}`,
       twitter:
         `https://twitter.com/i/oauth2/authorize?` +
         `client_id=${process.env.TWITTER_CLIENT_ID}` +

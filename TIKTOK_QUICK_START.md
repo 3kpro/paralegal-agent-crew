@@ -16,9 +16,8 @@ All the code is ready! TikTok OAuth and posting are already implemented:
 
 **OAuth Scopes Requested:**
 - `user.info.basic` - Get user profile info (open_id, display_name, username, avatar_url)
-- `video.publish` - Publish videos directly
 
-**Important: Scopes must be space-separated in OAuth URL**
+**Note:** Video publishing (`video.publish` scope) requires Content Posting API approval (3-7 days). For now, we only request basic profile info to establish the connection.
 
 ## 🔧 Configuration Needed
 
