@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2 } from "lucide-react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 interface Platform {
   id: string;
@@ -220,13 +220,14 @@ export function PublishSettings({
           data-testid="publish-button"
         >
           {publishing ? (
-            <>
-              <Loader2
+            <div className="flex items-center gap-2">
+              <BouncingDots
+                dots={3}
+                className="w-2 h-2 bg-current"
                 data-testid="loading-spinner"
-                className="w-4 h-4 animate-spin mr-2"
               />
-              Publishing...
-            </>
+              <span>Publishing...</span>
+            </div>
           ) : (
             "Publish Now"
           )}

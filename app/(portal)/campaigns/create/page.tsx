@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
@@ -2310,8 +2311,14 @@ export default function NewCampaignPage() {
                         className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         aria-label="Save campaign as draft"
                       >
-                        <Check className="w-5 h-5" />
-                        {loading ? "Saving..." : campaignSaved ? "Saved" : "Save for Later"}
+                        {loading ? (
+                          <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                        ) : (
+                          <>
+                            <Check className="w-5 h-5" />
+                            {campaignSaved ? "Saved" : "Save for Later"}
+                          </>
+                        )}
                       </motion.button>
                       <PublishButton
                         content={(() => {
@@ -3019,8 +3026,14 @@ export default function NewCampaignPage() {
                       className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                       aria-label="Save campaign as draft"
                     >
-                      <Check className="w-5 h-5" />
-                      {loading ? "Saving..." : "Save for Later"}
+                      {loading ? (
+                        <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                      ) : (
+                        <>
+                          <Check className="w-5 h-5" />
+                          Save for Later
+                        </>
+                      )}
                     </motion.button>
                     <div className="flex items-center justify-center">
                       <PublishButton
