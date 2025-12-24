@@ -127,7 +127,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
   const someSelected = selectedCampaigns.size > 0 && !allSelected;
 
   return (
-    <div className="p-8 bg-[#2b2b2b] min-h-screen">
+    <div className="p-8 bg-transparent min-h-screen">
       {/* Toast Notification */}
       <AnimatePresence>
         {toast.show && (
