@@ -335,7 +335,7 @@ What would you like to know?`
                   className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
                   title="Open dedicated Helix AI"
                 >
-                  <Maximize2 className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" />
                 </a>
                 <button
                   onClick={() => {
