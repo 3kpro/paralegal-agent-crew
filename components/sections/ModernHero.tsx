@@ -14,7 +14,8 @@ export default function ModernHero() {
         mask="fade-center" 
         size={24} 
         fill="rgba(255,255,255,0.1)" 
-        className="z-0" 
+        className="z-0"
+        style={{ zIndex: 0 }}
       />
       
       {/* Minimal cyan accents background */}

@@ -82,7 +82,7 @@ export default function PortalLayout({
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
-        <BGPattern variant="dots" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" />
+        <BGPattern variant="dots" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" style={{ zIndex: 0 }} />
         <div className="text-white z-10 relative">Loading...</div>
       </div>
     );
@@ -97,6 +97,7 @@ export default function PortalLayout({
             size={24} 
             fill="rgba(255,255,255,0.05)" 
             className="z-0 fixed inset-0 pointer-events-none" 
+            style={{ zIndex: 0 }}
         />
         {/* New Floating Navigation */}
         <FloatingNav />
