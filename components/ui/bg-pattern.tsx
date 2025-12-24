@@ -35,7 +35,7 @@ const maskClasses: Record<BGMaskType, string> = {
 function geBgImage(variant: BGVariantType, fill: string, size: number) {
 	switch (variant) {
 		case 'dots':
-			return `radial-gradient(${fill} 1px, transparent 1px)`;
+			return `radial-gradient(${fill} 1.5px, transparent 1.5px)`;
 		case 'grid':
 			return `linear-gradient(to right, ${fill} 1px, transparent 1px), linear-gradient(to bottom, ${fill} 1px, transparent 1px)`;
 		case 'diagonal-stripes':

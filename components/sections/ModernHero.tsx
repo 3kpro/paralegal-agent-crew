@@ -13,7 +13,7 @@ export default function ModernHero() {
         variant="dots" 
         mask="fade-center" 
         size={24} 
-        fill="rgba(255,255,255,0.1)" 
+        fill="rgba(255,255,255,0.2)" 
         className="z-0"
         style={{ zIndex: 0 }}
       />
