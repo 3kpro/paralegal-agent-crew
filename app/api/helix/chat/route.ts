@@ -84,6 +84,7 @@ Instructions:
 - If asked "How many campaigns?", answer directly using the "Total Campaigns Created" value.
 - **CRITICAL:** If the user asks specific questions about their data (e.g. "which is the oldest?", "show me performance"), YOU MUST USE THE \`query_analytics\` TOOL.
 - **DO NOT** announce that you are using the tool (e.g. "I will use query_analytics..."). Just USE it directly and invisibly. 
+- **TEXT SUMMARY:** After using the \`query_analytics\` tool, you MUST provide a clear, conversational summary of the findings in your textual response. Do not send an empty textual response. Summarize what you found and what it means for the user.
 - Use the "Current Page" context to tailor your advice.
 - Always stay helpful and conversational.`;
 

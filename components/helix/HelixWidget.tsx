@@ -560,7 +560,19 @@ What would you like to know?`
                               <AnalystCharts data={(msg as any).toolData.data} type={(msg as any).toolData.chartType || 'bar'} />
                             </div>
                          )}
-                         <span className="block">{msg.content}</span>
+                         <span className="block">
+                           {msg.content || ((msg as any).toolData?.explanation && !(msg as any).toolData?.data?.length ? (msg as any).toolData.explanation : '')}
+                           {!msg.content && !(msg as any).toolData && (
+                             <span className="flex items-center gap-2 text-gray-500 italic animate-pulse">
+                               Helix is analyzing...
+                             </span>
+                           )}
+                           {!msg.content && (msg as any).toolData?.explanation && (msg as any).toolData?.data?.length === 0 && (
+                            <div className="mt-2 text-gray-400 italic">
+                               (No matching records found in database)
+                            </div>
+                           )}
+                         </span>
                          {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                        </div>
                      </div>

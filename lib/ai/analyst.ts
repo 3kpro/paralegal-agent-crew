@@ -12,9 +12,9 @@ Columns:
 - name (text)
 - status (text): 'draft', 'scheduled', 'published', 'archived'
 - created_at (timestamp)
-- total_views (int)
-- total_clicks (int)
-- total_engagement (int)
+- total_views (int) -- Use this for overall 'views' or 'impressions'
+- total_clicks (int) -- Use this for overall 'clicks'
+- total_engagement (int) -- Use this for overall 'engagement'
 
 Table: campaign_analytics
 Columns:
@@ -22,8 +22,8 @@ Columns:
 - campaign_id (uuid)
 - user_id (uuid)
 - platform (text): 'twitter', 'linkedin', etc.
-- tracked_at (timestamp) -- use this for date filtering
-- impressions (int) -- use this for 'views'
+- tracked_at (timestamp) -- Use this for date/time trends
+- impressions (int) -- Detailed view count for a specific date
 - clicks (int)
 - likes (int)
 - shares (int)
@@ -67,12 +67,14 @@ export async function generateAnalystQuery(
       RULES:
       1. ALWAYS include "WHERE user_id = '${userId}'" to filter data. Security is critical.
       2. Use only SELECT statements. No UPDATE, DELETE, INSERT.
-      3. For time series, group by date_trunc('day', tracked_at) and order by date.
-      4. For 'impressions', sum(impressions) as "views".
-      5. For 'tracked_at', cast as date (e.g. tracked_at::date as "date").
-      6. For "oldest" or "newest" queries, ORDER BY created_at ASC/DESC per need and LIMIT 1.
-      7. For specific single records (top performing, oldest, etc), SELECT name and the relevant metric/date.
-      8. Return valid JSON with 'sql', 'explanation' and 'chartType'.
+      3. For aggregate questions (e.g. "which is best?", "total views"), prefer the 'campaigns' table (total_views, total_clicks).
+      4. For time-series trends (e.g. "by day", "this week") or platform-specific info, use the 'campaign_analytics' table.
+      5. For time series, group by date_trunc('day', tracked_at) and order by date.
+      6. For 'impressions', use "total_views" in 'campaigns' or "sum(impressions)" in 'campaign_analytics'.
+      7. For 'tracked_at', cast as date (e.g. tracked_at::date as "date").
+      8. For "oldest" or "newest" queries, ORDER BY created_at ASC/DESC and LIMIT 1.
+      9. For specific single records (top performing, oldest, etc), SELECT name and the relevant metric/date.
+      10. Return valid JSON with 'sql', 'explanation' and 'chartType'.
     `,
     prompt: question
   });

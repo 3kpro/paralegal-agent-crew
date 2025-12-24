@@ -229,7 +229,21 @@ export default function HelixChatInterface({
                          <AnalystCharts data={msg.toolData.data} type={msg.toolData.chartType || 'bar'} />
                       </div>
                    )}
-                   <div className="whitespace-pre-wrap">{msg.content}</div>
+                   <div className="whitespace-pre-wrap">
+                      {msg.content || (msg.toolData?.explanation && !msg.toolData?.data?.length ? msg.toolData.explanation : '')}
+                      {!msg.content && !msg.toolData && (
+                        <span className="flex items-center gap-2 text-gray-400 italic animate-pulse">
+                          Thinking...
+                        </span>
+                      )}
+                      {!msg.content && msg.toolData?.explanation && msg.toolData?.data?.length === 0 && (
+                        <div className="mt-2 p-3 bg-white/5 rounded-lg border border-white/5 text-sm text-gray-400">
+                          <p className="font-medium text-gray-300 mb-1">Analysis Result:</p>
+                          {msg.toolData.explanation}
+                          <p className="mt-2 text-xs opacity-60">No matching database records found for this specific query.</p>
+                        </div>
+                      )}
+                   </div>
                    {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                 </div>
               </div>
