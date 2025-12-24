@@ -111,7 +111,7 @@ export default function ContentFlowPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#2b2b2b] p-6">
+    <div className="min-h-screen bg-transparent p-6">
       {/* Toast Notification */}
       <AnimatePresence>
         {toast.show && (

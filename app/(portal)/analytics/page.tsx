@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
   // ];
 
   return (
-    <div className="min-h-screen bg-tron-dark p-6">
+    <div className="min-h-screen bg-transparent p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

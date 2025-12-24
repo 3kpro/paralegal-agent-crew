@@ -453,7 +453,7 @@ export default function SettingsPage() {
         tier={selectedTier}
       />
 
-      <div className="p-8 bg-tron-dark min-h-screen">
+      <div className="p-8 bg-transparent min-h-screen">
         <h1 className="text-3xl font-bold text-tron-text mb-8">Settings</h1>
 
         {/* Tabs */}
