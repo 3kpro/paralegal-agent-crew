@@ -43,6 +43,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
 import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { BGPattern } from "@/components/ui/bg-pattern";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
@@ -1285,8 +1286,16 @@ export default function NewCampaignPage() {
         }
       `}</style>
       
-    <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark p-4 md:p-8">
-      <div className="w-full max-w-7xl mx-auto">
+    <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden p-4 md:p-8">
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.15)"
+        className="absolute inset-0 z-0 h-full w-full opacity-100"
+        style={{ zIndex: 0 }}
+      />
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
         {/* Card-based navigation - single focused card at a time */}
         <AnimatePresence mode="wait" custom={cardDirection}>
           
