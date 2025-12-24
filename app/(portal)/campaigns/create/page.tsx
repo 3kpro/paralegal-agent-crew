@@ -70,6 +70,7 @@ interface AIProvider {
 
 // Interface for connected account data
 interface ConnectedAccount {
+  id: string;
   platform: string;
   platformUsername?: string;
 }
@@ -106,6 +107,7 @@ export default function NewCampaignPage() {
   const [campaignName, setCampaignName] = useState("");
   const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
   const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
+  const [connectedAccountObjects, setConnectedAccountObjects] = useState<ConnectedAccount[]>([]);
 
   // Step 2: Trend Discovery
   const [searchQuery, setSearchQuery] = useState("");
@@ -622,6 +624,7 @@ export default function NewCampaignPage() {
         const response = await fetch("/api/social-accounts");
         const data = await response.json();
         if (data.success && data.accounts) {
+          setConnectedAccountObjects(data.accounts);
           const connected = data.accounts.map(
             (account: ConnectedAccount) => account.platform,
           );
@@ -3057,6 +3060,9 @@ export default function NewCampaignPage() {
                           return platformContent?.content || "";
                         })()}
                         campaignId={editId || undefined}
+                        socialAccountIds={connectedAccountObjects
+                          .filter((acc) => targetPlatforms.includes(acc.platform))
+                          .map((acc) => acc.id)}
                         onPublishSuccess={(data) => {
                           console.log("✅ Content posted!", data);
 

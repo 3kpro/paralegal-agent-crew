@@ -21,7 +21,9 @@ async function publishToSocialMedia(
       .select(`
         id,
         user_id,
+        user_id,
         account_username,
+        account_id,
         access_token_encrypted,
         refresh_token_encrypted,
         token_expires_at,
@@ -80,6 +82,38 @@ async function publishToSocialMedia(
         `✅ Successfully posted to Twitter (${connection.account_username}):`,
         platformPostId,
       );
+    } else if (platform === "facebook") {
+      console.log(`[Publishing] Posting to Facebook Graph API...`);
+
+      // Using account_id which serves as Page ID or User ID (for test users)
+      const targetId = connection.account_id; 
+      if (!targetId) throw new Error("No Facebook Account ID found for this connection");
+
+      const fbUrl = `https://graph.facebook.com/v19.0/${targetId}/feed`;
+      
+      // Basic text post
+      const response = await fetch(fbUrl, {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              message: content,
+              access_token: accessToken
+          })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`[Publishing] Facebook API error:`, errorData);
+        throw new Error(`Facebook API error: ${JSON.stringify(errorData)}`);
+      }
+      
+      const data = await response.json();
+      platformPostId = data.id;
+      
+      console.log(`✅ Successfully posted to Facebook: ${platformPostId}`);
+
     } else {
       throw new Error(`Platform ${platform} not yet supported for publishing`);
     }
