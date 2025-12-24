@@ -10,6 +10,7 @@ import SettingsModal from "@/components/SettingsModal";
 import { Settings, Sparkles, ChevronDown, Bot } from "lucide-react";
 import HelixWidget from "@/components/helix/HelixWidget";
 import { XeloraLogo } from "@/components/XeloraLogo";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 interface Profile {
   email?: string;
@@ -80,15 +81,23 @@ export default function PortalLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center">
-        <div className="text-white">Loading...</div>
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
+        <BGPattern variant="dots" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" />
+        <div className="text-white z-10 relative">Loading...</div>
       </div>
     );
   }
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#2b2b2b] flex">
+      <div className="min-h-screen bg-[#0a0a0a] flex relative">
+        <BGPattern 
+            variant="dots" 
+            mask="fade-center" 
+            size={24} 
+            fill="rgba(255,255,255,0.05)" 
+            className="z-0 fixed inset-0 pointer-events-none" 
+        />
         {/* New Floating Navigation */}
         <FloatingNav />
         
