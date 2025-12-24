@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import ConnectionCard from "./ConnectionCard"
 
 interface SocialProvider {
@@ -35,6 +36,19 @@ export default function ConnectionGrid({
   onAddConnection,
   onRefresh,
 }: ConnectionGridProps) {
+  // Listen for OAuth success messages from popup
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      if (event.data.type === "oauth-success") {
+        // Refresh connections when popup notifies success
+        onRefresh()
+      }
+    }
+
+    window.addEventListener("message", handleMessage)
+    return () => window.removeEventListener("message", handleMessage)
+  }, [onRefresh])
+
   // Helper function to find user's connection for a provider
   function getUserConnection(providerId: string) {
     return connections.find((conn) => conn.provider_id === providerId)

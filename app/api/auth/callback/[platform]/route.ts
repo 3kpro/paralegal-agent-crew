@@ -189,8 +189,8 @@ export async function GET(
       },
     });
 
-    // Redirect back with success - always go to Settings > Connections tab
-    return NextResponse.redirect(`${origin}/settings?tab=connections&connected=${platform}`);
+    // Redirect to success page that closes the popup and notifies parent
+    return NextResponse.redirect(`${origin}/oauth-success`);
   } catch (error: any) {
     console.error("========================================");
     console.error("OAuth callback error:", error);
