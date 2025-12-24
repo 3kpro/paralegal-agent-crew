@@ -101,7 +101,7 @@ export default function ContentFlowPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-300">Loading ContentFlow...</p>
