@@ -81,6 +81,7 @@ export default function PublishButton({
 
     } catch (error) {
       console.error("Publish error:", error);
+      alert("Publish Failed: " + (error instanceof Error ? error.message : String(error)));
       onPublishError?.(error instanceof Error ? error.message : "Failed to publish");
     } finally {
       setLoading(false);
