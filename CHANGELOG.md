@@ -17,7 +17,11 @@ All notable changes to this project will be documented in this file.
   - Enhanced tool execution feedback with "Processing..." states and inline visualizations for analyst data.
   - Preserved subscription-based message locking for free-tier management.
 
-## [2025-12-23] - Global UI Polish & Background consistency
+## [2025-12-23] - Global UI Polish, Background Consistency & Helix Analyst Integration
+- **Helix Analyst Integration**:
+  - Restored chart visualization in Helix Chat by implementing currently pending "Visual Gap" fix.
+  - Implemented custom stream protocol (`2:JSON`) to pass chart data from backend to frontend.
+  - Re-enabled `AnalystCharts` rendering in both `HelixChatInterface` and `HelixWidget`.
 - **Global Background Standardization**:
   - Implemented unified `BGPattern` (transparent with dots mask) across the entire application.
   - Removed hardcoded gradients/opaque colors from:

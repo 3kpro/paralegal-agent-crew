@@ -244,6 +244,25 @@ Instructions:
       const encoder = new TextEncoder();
       const customStream = new ReadableStream({
         async start(controller) {
+          // 1. Send Tool Results (Chart Data) if available
+          // @ts-ignore
+          if (result.steps) {
+             // @ts-ignore
+             const toolSteps = result.steps.filter((s:any) => s.stepType === 'tool-result');
+             for (const step of toolSteps) {
+                // @ts-ignore
+                for (const toolRes of step.toolResults) {
+                   if (toolRes.toolName === 'query_analytics') {
+                      // Found the data! Send as protocol 2:JSON
+                      const payload = (toolRes as any).result; 
+                      const dataPart = `2:${JSON.stringify(payload)}\n`;
+                      controller.enqueue(encoder.encode(dataPart));
+                   }
+                }
+             }
+          }
+
+          // 2. Send Text Response
           // Format: 0:"content"\n
           const textPart = `0:${JSON.stringify(result.text)}\n`;
           controller.enqueue(encoder.encode(textPart));

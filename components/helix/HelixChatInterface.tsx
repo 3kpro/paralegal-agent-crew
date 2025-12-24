@@ -131,6 +131,21 @@ export default function HelixChatInterface({
             } catch (e) {
               console.error('Failed to parse stream chunk', e);
             }
+          } else if (line.startsWith('2:')) {
+             try {
+               const toolPayload = JSON.parse(line.slice(2));
+               setMessages(prev => {
+                 const updated = [...prev];
+                 const lastIdx = updated.length - 1;
+                 if (updated[lastIdx].role === 'assistant') {
+                    // Merge toolData
+                    updated[lastIdx] = { ...updated[lastIdx], toolData: toolPayload };
+                 }
+                 return updated;
+               });
+             } catch (e) {
+               console.error('Failed to parse tool data chunk', e);
+             }
           }
         }
       }
@@ -209,6 +224,11 @@ export default function HelixChatInterface({
                     : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
                 }`}>
                    {/* Simplified rendering for manual fetch */}
+                   {msg.toolData && (
+                      <div className="mb-4 h-64 w-full bg-black/20 rounded-lg p-2 border border-white/5">
+                         <AnalystCharts data={msg.toolData.data} type={msg.toolData.chartType || 'bar'} />
+                      </div>
+                   )}
                    <div className="whitespace-pre-wrap">{msg.content}</div>
                    {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                 </div>

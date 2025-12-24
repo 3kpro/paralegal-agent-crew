@@ -75,7 +75,7 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
 
   // Manual chat implementation
   const [localInput, setLocalInput] = useState("");
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<Array<{id: string, role: string, content: string, toolData?: any}>>([
     {
       id: 'welcome',
       role: 'assistant',
@@ -124,6 +124,7 @@ What would you like to know?`
       const decoder = new TextDecoder();
       let buffer = '';
       let assistantMessage = '';
+      let pendingToolData: any = null;
       setChatStatus('streaming');
 
       while (true) {
@@ -136,9 +137,18 @@ What would you like to know?`
           if (line.startsWith('0:')) {
             const data = JSON.parse(line.slice(2));
             assistantMessage += data;
-            setMessages([...newMessages, { id: (Date.now() + 1).toString(), role: 'assistant', content: assistantMessage }]);
+            setMessages([...newMessages, { 
+                id: (Date.now() + 1).toString(), 
+                role: 'assistant', 
+                content: assistantMessage,
+                toolData: pendingToolData
+            }]);
+          } else if (line.startsWith('2:')) {
+            try {
+               pendingToolData = JSON.parse(line.slice(2));
+            } catch (e) { console.error(e); }
           }
-        }
+      }
       }
       setChatStatus('ready');
     } catch (err: any) {
@@ -425,6 +435,11 @@ What would you like to know?`
                            ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
                            : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-lg shadow-coral-500/20 border border-coral-400/20'
                        } group`}>
+                         {(msg as any).toolData && (
+                            <div className="mb-3 h-48 w-full bg-black/30 rounded-lg p-2 border border-white/5">
+                              <AnalystCharts data={(msg as any).toolData.data} type={(msg as any).toolData.chartType || 'bar'} />
+                            </div>
+                         )}
                          <span className="block">{msg.content}</span>
                          {msg.role === 'assistant' && <CopyToClipboard text={msg.content} />}
                        </div>
