@@ -17,6 +17,22 @@ All notable changes to this project will be documented in this file.
   - Enhanced tool execution feedback with "Processing..." states and inline visualizations for analyst data.
   - Preserved subscription-based message locking for free-tier management.
 
+## [2025-12-23] - Global UI Polish & Background consistency
+- **Global Background Standardization**:
+  - Implemented unified `BGPattern` (transparent with dots mask) across the entire application.
+  - Removed hardcoded gradients/opaque colors from:
+    - Campaign Wizard (`/campaigns/create`)
+    - Campaign Detail & Edit pages
+    - Pricing Page
+    - Login & Signup Pages
+    - Settings, Analytics, and ContentFlow
+  - Ensured consistent `#0a0a0a` base background with correct z-indexing for visual depth.
+- **Campaign Creation Wizard**:
+  - Replaced legacy gradient background with standard global pattern.
+  - Fixed visual consistency for multi-step wizard cards.
+- **Auth Pages**:
+  - Updated Login and Signup pages to match the pro-portal aesthetic (dark theme + dots).
+
 ## [2025-12-21] - Helix Production Fixes
 - **Environment Variable Fixes**:
   - Standardized API key handling in `lib/helix/agent-manager.ts` to check `GOOGLE_GENERATIVE_AI_API_KEY || GEMINI_API_KEY || GOOGLE_API_KEY` for consistency with chat API.
