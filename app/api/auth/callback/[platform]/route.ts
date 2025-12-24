@@ -180,7 +180,7 @@ async function exchangeToken(
     tiktok: {
       clientId: process.env.TIKTOK_CLIENT_KEY,
       clientSecret: process.env.TIKTOK_CLIENT_SECRET,
-      tokenUrl: "https://open-api.tiktok.com/oauth/access_token/",
+      tokenUrl: "https://open.tiktokapis.com/v2/oauth/token/",
     },
     twitter: {
       clientId: process.env.TWITTER_CLIENT_ID,
@@ -319,7 +319,7 @@ async function fetchUserProfile(platform: string, accessToken: string) {
     };
   } else if (platform === "tiktok") {
     const response = await fetch(
-      "https://open-api.tiktok.com/oauth/userinfo/",
+      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url,follower_count",
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
