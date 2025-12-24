@@ -21,9 +21,12 @@ import {
   PanelRight,
   ExternalLink,
   GripHorizontal,
-  ChevronRight,
   Copy,
-  Check
+  Check,
+  Clock,
+  Plus,
+  MessageSquare,
+  Trash2
 } from "lucide-react";
 
 const AnalystCharts = dynamic(() => import('../analyst/AnalystCharts'), { 
@@ -68,6 +71,62 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
   const [isTransparent, setIsTransparent] = useState(false); 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  
+  // History State
+  const [showHistory, setShowHistory] = useState(false);
+  const [sessions, setSessions] = useState<any[]>([]);
+
+  // Initialize Session
+  useEffect(() => {
+    if (!sessionId) {
+      setSessionId(Date.now().toString());
+    }
+  }, []);
+
+  const fetchSessions = async () => {
+    try {
+      const res = await fetch('/api/helix/sessions');
+      const data = await res.json();
+      if (data.sessions) setSessions(data.sessions);
+    } catch (e) {
+      console.error("Failed to fetch sessions", e);
+    }
+  };
+
+  const loadSession = async (id: string) => {
+    try {
+      setChatStatus('submitted'); // Show loading
+      const res = await fetch(`/api/helix/history?sessionId=${id}`);
+      const data = await res.json();
+      if (data.messages) {
+        // Map DB messages to UI messages
+        // DB: { role, content, ... }
+        // UI: { id, role, content, toolData? }
+        const uiMessages = data.messages.map((m: any) => ({
+           id: m.id || Math.random().toString(),
+           role: m.role,
+           content: m.content
+        }));
+        setMessages(uiMessages);
+        setSessionId(id);
+        setShowHistory(false);
+        setChatStatus('ready');
+      }
+    } catch (e) {
+      console.error("Failed to load session", e);
+      setChatStatus('ready');
+    }
+  };
+
+  const startNewChat = () => {
+    setSessionId(Date.now().toString());
+    setMessages([{
+      id: 'welcome',
+      role: 'assistant',
+      content: "👋 Hi! I'm Helix. Ready for a new task?"
+    }]);
+    setShowHistory(false);
+  };
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{startX: number, startY: number} | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -349,6 +408,18 @@ What would you like to know?`
                 </a>
                 <button
                   onClick={() => {
+                    if (!showHistory) fetchSessions();
+                    setShowHistory(!showHistory);
+                  }}
+                  className={`p-2 hover:bg-gray-800 rounded-lg transition-colors ${
+                    showHistory ? "text-coral-500" : "text-gray-400 hover:text-white"
+                  }`}
+                  title="Chat History"
+                >
+                  <Clock className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
                     setIsSidePanel(!isSidePanel);
                     if (!isSidePanel) {
                       setIsExpanded(false);
@@ -394,6 +465,55 @@ What would you like to know?`
               </div>
             </div>
           </div>
+
+            {/* History Overlay */}
+            <AnimatePresence>
+            {showHistory && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute inset-0 top-[60px] z-20 bg-[#0c0c0d]/95 backdrop-blur-md p-4 flex flex-col"
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-white font-bold flex items-center gap-2"><Clock className="w-4 h-4 text-coral-500"/> History</h3>
+                  <button 
+                     onClick={startNewChat}
+                     className="px-3 py-1.5 bg-coral-500 hover:bg-coral-600 text-white text-xs rounded-lg flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" /> New Chat
+                  </button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+                  {sessions.length === 0 ? (
+                    <div className="text-center text-gray-500 text-sm py-8">
+                       <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                       No history found
+                    </div>
+                  ) : (
+                    sessions.map((s: any) => (
+                      <button
+                        key={s.id}
+                        onClick={() => loadSession(s.id)}
+                        className={`w-full text-left p-3 rounded-xl border transition-all ${
+                          sessionId === s.id 
+                            ? 'bg-coral-500/10 border-coral-500/30 text-white' 
+                            : 'bg-gray-800/20 border-gray-800 hover:bg-gray-800/50 text-gray-400 hover:text-white'
+                        }`}
+                      >
+                        <div className="text-xs font-medium truncate mb-1">{s.snippet || 'New Conversation'}</div>
+                        <div className="text-[10px] opacity-60 flex justify-between">
+                            <span>{new Date(s.updatedAt).toLocaleDateString()}</span>
+                            <span>{new Date(s.updatedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+            </AnimatePresence>
 
             {/* Content Area */}
             {isLocked && messages.length >= 7 ? (

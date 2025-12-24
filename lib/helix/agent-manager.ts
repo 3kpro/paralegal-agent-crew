@@ -132,9 +132,23 @@ export class HelixAgentManager {
       - Use the "Current Page" context to tailor your advice.
     `;
 
-    // 3. Call Gemini
+    // 3. Load Conversation History
+    // Fetch last 20 messages for context
+    const { data: dbHistory } = await supabase
+      .from('helix_messages')
+      .select('role, content')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: true })
+      .limit(20);
+
+    const history = (dbHistory || []).map((msg: any) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }]
+    }));
+
+    // 4. Call Gemini
     const chat = this.model.startChat({
-      history: [], // TODO: Load recent history from DB
+      history: history,
       generationConfig: {
         maxOutputTokens: 8000,
       },
@@ -143,7 +157,7 @@ export class HelixAgentManager {
     let result = await chat.sendMessage(systemPrompt + "\n\nUser: " + message);
     let responseText = result.response.text();
 
-    // 4. Check for Tool Calls (JSON parsing)
+    // 5. Check for Tool Calls (JSON parsing)
     try {
       // Attempt to find JSON in the response (it might be wrapped in markdown code blocks)
       const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/) || responseText.match(/\{[\s\S]*\}/);

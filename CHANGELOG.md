@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-12-23] - TikTok OAuth Fixes & BouncingDots Spinner Implementation
+
+### Added
+- **BouncingDots Component**:
+  - Created new bouncing dots animation component using motion/react
+  - Replaced old Loader2 and LumaSpin spinners across the application
+  - Customizable dots count, size, and color
+  - Smooth bounce animations for modern loading UX
+  - Component located at `components/ui/bouncing-dots.tsx`
+
+### Fixed
+- **TikTok OAuth Integration**:
+  - Updated to TikTok OAuth v2 API endpoints (`https://www.tiktok.com/v2/auth/authorize/`)
+  - Fixed scope format from space-separated to comma-separated (`user.info.basic,video.publish`)
+  - Updated token exchange endpoint to v2: `https://open.tiktokapis.com/v2/oauth/token/`
+  - Updated user info endpoint to v2: `https://open.tiktokapis.com/v2/user/info/`
+  - Added proper field parameters to user info requests
+
+- **OAuth Flow UX**:
+  - Replaced full-page redirect with popup window for OAuth (matches industry standard)
+  - Created `/oauth-success` page that auto-closes popup and refreshes parent window
+  - Implemented postMessage communication between popup and parent window
+  - Popup automatically refreshes connections list when OAuth completes
+  - Fixed issue where dashboard loaded inside popup window
+
+- **Loading Spinners**:
+  - Updated LoadingState component to use BouncingDots in default variant
+  - Updated LumaSpin component to use BouncingDots (fixes "Finding trends..." spinner)
+  - Updated campaign save/publish buttons to show BouncingDots during saving
+  - Consistent loading animations across entire application
+
+### Changed
+- **OAuth Security**:
+  - Added CSRF protection with state parameter validation
+  - State stored in httpOnly cookies with 10-minute expiry
+  - Proper cookie cleanup after OAuth flow completes
+  - Enhanced error logging for OAuth callback debugging
+
+### Technical
+- Installed `class-variance-authority` dependency for component styling
+- BouncingDots uses motion/react for smooth animations
+- OAuth popup pattern improves UX by maintaining page context
+- Comprehensive logging added for debugging OAuth callback flow
+- Fixed HelixWidget.tsx syntax errors that were blocking production builds
+
 ## [Unreleased]
 ### Helix AI Upgrade (Vercel AI SDK v5)
 - **Frontend Refactor**:
@@ -22,6 +67,10 @@ All notable changes to this project will be documented in this file.
   - Restored chart visualization in Helix Chat by implementing currently pending "Visual Gap" fix.
   - Implemented custom stream protocol (`2:JSON`) to pass chart data from backend to frontend.
   - Re-enabled `AnalystCharts` rendering in both `HelixChatInterface` and `HelixWidget`.
+- **Helix Chat History & Context**:
+  - Added "History" Sidebar to Helix Widget (Clock Icon).
+  - Implemented Session Persistence and Context Awareness (Helix now remembers previous messages in a session).
+  - Added "New Chat" functionality to start fresh contexts.
 - **Global Background Standardization**:
   - Implemented unified `BGPattern` (transparent with dots mask) across the entire application.
   - Removed hardcoded gradients/opaque colors from:
