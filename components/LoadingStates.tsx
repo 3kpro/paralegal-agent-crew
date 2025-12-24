@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import { LumaSpin } from "@/components/ui/luma-spin";
 
 interface LoadingStateProps {
@@ -35,7 +35,10 @@ export function LoadingState({
 
   const content = (
     <div className="flex flex-col items-center justify-center gap-4">
-      <Loader2 className={`${sizeClasses[size]} text-tron-cyan animate-spin`} />
+      <BouncingDots
+        dots={3}
+        className={`${size === "sm" ? "w-2 h-2" : size === "lg" ? "w-4 h-4" : "w-3 h-3"} bg-tron-cyan`}
+      />
       {message && (
         <p className="text-tron-text-muted text-sm animate-pulse">{message}</p>
       )}
