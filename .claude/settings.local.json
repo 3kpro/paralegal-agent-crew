@@ -41,7 +41,9 @@
       "Bash(npx eslint:*)",
       "Bash(npm run:*)",
       "Bash(vercel logs:*)",
-      "Bash(timeout 30 vercel logs:*)"
+      "Bash(timeout 30 vercel logs:*)",
+      "Bash(timeout 120 vercel logs:*)",
+      "Bash(timeout 60 vercel logs:*)"
     ],
     "deny": [],
     "ask": []

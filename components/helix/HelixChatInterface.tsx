@@ -278,6 +278,7 @@ export default function HelixChatInterface({
             {/* Action Bar inside Input */}
             <div className="px-3 pb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
+                {/* Icons disabled until functional
                 <button 
                   className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   title="Attach"
@@ -290,6 +291,7 @@ export default function HelixChatInterface({
                 >
                   <Command className="w-4 h-4" />
                 </button>
+                */}
               </div>
               
               <button
