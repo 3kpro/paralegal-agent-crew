@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { trackLogin } from "@/lib/analytics";
 
+import { BGPattern } from "@/components/ui/bg-pattern";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -74,8 +76,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#2b2b2b] flex items-center justify-center px-4">
-      <div className="max-w-md w-full">
+    <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden flex items-center justify-center px-4">
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.15)"
+        className="absolute inset-0 z-0 h-full w-full opacity-100"
+        style={{ zIndex: 0 }}
+      />
+      <div className="relative z-10 max-w-md w-full">
         {/* Logo & Tagline */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center justify-center mb-4">
