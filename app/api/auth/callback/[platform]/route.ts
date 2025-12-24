@@ -83,7 +83,13 @@ export async function GET(
     // Fetch user profile from platform
     console.log(`[${platform}] Fetching user profile...`);
     const profile = await fetchUserProfile(platform, tokens.access_token);
-    console.log(`[${platform}] Profile fetched:`, profile.username);
+    console.log(`[${platform}] Profile fetched:`, {
+      id: profile.id,
+      name: profile.name,
+      username: profile.username,
+      followers_count: profile.followers_count,
+      profile_image_url: profile.profile_image_url,
+    });
 
     // Get provider_id from social_providers table
     console.log(`[${platform}] Getting provider ID...`);
@@ -100,6 +106,8 @@ export async function GET(
       );
     }
 
+    console.log(`[${platform}] Provider ID:`, provider.id);
+
     // Encrypt tokens
     console.log(`[${platform}] Encrypting tokens...`);
     const { encryptAPIKey } = await import('@/lib/encryption');
@@ -108,10 +116,16 @@ export async function GET(
 
     // Store in user_social_connections with encrypted tokens
     console.log(`[${platform}] Saving to user_social_connections...`);
+
+    // Safely construct connection_name
+    const connectionName = profile.name
+      ? `${profile.name} (@${profile.username})`
+      : profile.username;
+
     const connectionData = {
       user_id: user.id,
       provider_id: provider.id,
-      connection_name: `${profile.name} (@${profile.username})`,
+      connection_name: connectionName,
       account_username: profile.username,
       account_id: profile.id,
       access_token_encrypted: encryptedAccessToken,
@@ -129,20 +143,39 @@ export async function GET(
       },
     };
 
-    const { error: insertError } = await supabase
+    console.log(`[${platform}] Connection data to save:`, {
+      user_id: connectionData.user_id,
+      provider_id: connectionData.provider_id,
+      connection_name: connectionData.connection_name,
+      account_username: connectionData.account_username,
+      is_active: connectionData.is_active,
+    });
+
+    console.log(`[${platform}] Upserting connection data...`);
+    const { data: upsertData, error: insertError } = await supabase
       .from("user_social_connections")
       .upsert(connectionData, {
         onConflict: 'user_id,provider_id,connection_name',
-      });
+      })
+      .select();
 
     if (insertError) {
-      console.error(`[${platform}] Failed to save connection:`, insertError);
+      console.error(`[${platform}] Failed to save connection:`, {
+        message: insertError.message,
+        code: insertError.code,
+        status: insertError.status,
+        details: insertError.details,
+      });
       return NextResponse.redirect(
         `${origin}${redirect}?error=save_failed&details=${encodeURIComponent(insertError.message)}`,
       );
     }
 
-    console.log(`[${platform}] ✅ Connection saved successfully with encrypted tokens!`);
+    console.log(`[${platform}] ✅ Connection saved successfully!`, {
+      id: upsertData?.[0]?.id,
+      connection_name: upsertData?.[0]?.connection_name,
+      is_active: upsertData?.[0]?.is_active,
+    });
 
     // Track platform connection event
     await supabase.from("analytics_events").insert({
