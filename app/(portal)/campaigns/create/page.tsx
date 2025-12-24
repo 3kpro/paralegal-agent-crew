@@ -3050,19 +3050,23 @@ export default function NewCampaignPage() {
                     <div className="flex items-center justify-center">
                       <PublishButton
                         content={(() => {
-                          // Get content from the first available platform
-                          if (!generatedContent) return "";
-                          const platforms = Object.keys(generatedContent).filter(k => k !== 'hashtags');
-                          if (platforms.length === 0) return "";
+                          const platforms = generatedContent ? Object.keys(generatedContent).filter(k => k !== 'hashtags') : [];
                           const firstPlatform = platforms[0];
-                          const platformContent = generatedContent[firstPlatform];
-                          if (typeof platformContent === 'string') return platformContent;
-                          return platformContent?.content || "";
+                          const platformContent = firstPlatform ? generatedContent?.[firstPlatform] : "";
+                          const finalContent = typeof platformContent === 'string' ? platformContent : (platformContent as ContentData)?.content || "";
+                          
+                          // Debug Log
+                          console.log("[DEBUG] Publish Content Check:", { platforms, firstPlatform, finalContent });
+                          return finalContent;
                         })()}
                         campaignId={editId || undefined}
-                        socialAccountIds={connectedAccountObjects
-                          .filter((acc) => targetPlatforms.includes(acc.platform))
-                          .map((acc) => acc.id)}
+                        socialAccountIds={(() => {
+                           const ids = connectedAccountObjects
+                             .filter((acc) => targetPlatforms.map(p => p.toLowerCase()).includes(acc.platform.toLowerCase()))
+                             .map((acc) => acc.id);
+                           console.log("[DEBUG] Publish Account Check:", { available: connectedAccountObjects, targets: targetPlatforms, matches: ids });
+                           return ids;
+                        })()}
                         onPublishSuccess={(data) => {
                           console.log("✅ Content posted!", data);
 

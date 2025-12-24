@@ -34,24 +34,24 @@ export default function PublishButton({
   };
 
   const handlePublish = async () => {
-    if (!content) return;
+    console.log("PublishButton clicked. Content present:", !!content, "Length:", content?.length);
+    console.log("Social Account IDs:", socialAccountIds);
+
+    if (!content) {
+       onPublishError?.("No content to publish.");
+       return; 
+    }
     
     // Auto-detect social accounts if not provided
-    // Ideally, these should be passed. If not, we can't publish safely.
-    // For now, if no accounts passed, we might error or try to fetch? 
-    // Trying to fetch active accounts here is too complex. 
-    // We will assume they are passed or validation happens server-side (if server infers).
-    // API requires social_account_ids.
-    
     if (!socialAccountIds || socialAccountIds.length === 0) {
-        // Fallback: This allows Testing if the parent didn't implement selection yet.
-        // We'll let the user know.
-        onPublishError?.("No social accounts selected for publishing.");
+        console.error("No social accounts selected.");
+        onPublishError?.("No connected social accounts found matching the target platforms.");
         return;
     }
 
     setLoading(true);
     try {
+      console.log("Sending publish request...");
       const response = await fetch("/api/social-publishing", {
         method: "POST",
         headers: {
@@ -65,6 +65,7 @@ export default function PublishButton({
       });
       
       const data = await response.json();
+      console.log("Publish response:", data);
       
       if (!response.ok) {
         throw new Error(data.error || "Failed to publish");
@@ -73,6 +74,7 @@ export default function PublishButton({
       onPublishSuccess?.(data);
 
     } catch (error) {
+      console.error("Publish error:", error);
       onPublishError?.(error instanceof Error ? error.message : "Failed to publish");
     } finally {
       setLoading(false);
