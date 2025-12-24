@@ -40,11 +40,31 @@ export default function ConnectionGrid({
     return connections.find((conn) => conn.provider_id === providerId)
   }
 
-  // Handle connection - OAuth platforms redirect directly, custom apps show modal
+  // Handle connection - OAuth platforms use popup window, custom apps show modal
   function handleConnect(provider: SocialProvider) {
     if (provider.auth_type === 'oauth') {
-      // Direct redirect to OAuth flow - no modal, no friction
-      window.location.href = `/api/auth/connect/${provider.provider_key}`
+      // Open OAuth flow in popup window
+      const width = 500
+      const height = 600
+      const left = window.screenX + (window.outerWidth - width) / 2
+      const top = window.screenY + (window.outerHeight - height) / 2
+
+      const popup = window.open(
+        `/api/auth/connect/${provider.provider_key}`,
+        `oauth-${provider.provider_key}`,
+        `width=${width},height=${height},left=${left},top=${top},popup=true`
+      )
+
+      // Monitor popup and refresh connections when it closes
+      if (popup) {
+        const checkPopup = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(checkPopup)
+            // Refresh connections list after OAuth completes
+            onRefresh()
+          }
+        }, 500)
+      }
     } else {
       // Custom app setup - show modal with instructions
       onAddConnection(provider)
