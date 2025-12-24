@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Copy } from "lucide-react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 interface Campaign {
   id: string;
@@ -93,7 +94,16 @@ export default function CampaignDetailClient({
   }
 
   return (
-    <div className="p-8 bg-tron-dark min-h-screen">
+    <div className="relative p-8 bg-[#0a0a0a] min-h-screen overflow-hidden">
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.15)"
+        className="absolute inset-0 z-0 h-full w-full opacity-100"
+        style={{ zIndex: 0 }}
+      />
+      <div className="relative z-10 w-full">
       {/* Toast Notification */}
       <AnimatePresence>
         {toast.show && (
@@ -341,6 +351,7 @@ export default function CampaignDetailClient({
             </p>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
