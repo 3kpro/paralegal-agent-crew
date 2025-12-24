@@ -136,6 +136,7 @@ Instructions:
     // 6. Attempt AI Execution with Version Fallbacks
     try {
       const modelsToTry = [
+        'gemini-2.0-flash',
         'gemini-1.5-flash-002',
         'gemini-1.5-flash', 
         'gemini-1.5-pro', 
