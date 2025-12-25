@@ -175,6 +175,11 @@ const AI_CAPABILITIES = [
   }
 ];
 
+import { BGPattern } from "@/components/ui/bg-pattern";
+// ... imports ...
+
+// ... (providers array)
+
 export default function AIStudioPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -203,8 +208,16 @@ export default function AIStudioPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-tron-dark flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
+        <BGPattern
+            variant="dots"
+            mask="fade-center"
+            size={24}
+            fill="rgba(255,255,255,0.15)"
+            className="absolute inset-0 z-0 h-full w-full opacity-100"
+            style={{ zIndex: 0 }}
+        />
+        <div className="text-center relative z-10">
           <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-tron-text-muted">Loading Reactor...</p>
         </div>
@@ -213,8 +226,16 @@ export default function AIStudioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-tron-dark p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#0a0a0a] p-6 relative overflow-hidden">
+        <BGPattern
+            variant="dots"
+            mask="fade-center"
+            size={24}
+            fill="rgba(255,255,255,0.15)"
+            className="absolute inset-0 z-0 h-full w-full opacity-100"
+            style={{ zIndex: 0 }}
+        />
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

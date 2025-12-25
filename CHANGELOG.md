@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-12-25] - Facebook Publishing & AI Studio Polish
+
+### Added
+- **Facebook Publishing**:
+  - Enabled Facebook Graph API integration in `/api/social-publishing`.
+  - Content posted to Facebook Pages now works with proper user-scoped tokens.
+- **Helix Demo Asset**:
+  - Created `campaign_creation_demo_final.webp` showcasing the end-to-end campaign wizard and publishing flow.
+
+### Fixed
+- **Publish Button**:
+  - Resolved "silent failure" issue where clicking Publish did nothing.
+  - Added robust error alerts (Toast/Alert) for missing content or account selection.
+  - Refactored `Campaigns/Create/Page.tsx` to explicitly pass `socialAccountIds` matching valid connected platforms (case-insensitive fix).
+- **AI Studio UI**:
+  - Replaced opaque `bg-tron-dark` background with the global `BGPattern` (dots).
+  - Aligned loading state visualization with the application standard.
+
+### Improved
+- **Video Processing**:
+  - Added `ffmpeg` conversion pipeline example for turning WebP recordings into MP4 (Note: Browser recordings are natively WebP).
+
 ## [2025-12-23] - TikTok OAuth Fixes & BouncingDots Spinner Implementation
 
 ### Added
