@@ -35,7 +35,7 @@ export interface StepConfig {
  */
 export interface ToastState {
   show: boolean;
-  message: string;
+  message: string | React.ReactNode;
   type: "success" | "error";
 }
 

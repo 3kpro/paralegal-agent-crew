@@ -181,7 +181,7 @@ export default function NewCampaignPage() {
    * Fixed: Added useRef to track and clear previous timeouts, preventing toast stacking
    */
   const showToast = useCallback(
-    (message: string, type: "success" | "error" = "success") => {
+    (message: string | React.ReactNode, type: "success" | "error" = "success") => {
       // Clear previous timeout if one exists
       if (toastTimeoutRef.current) {
         clearTimeout(toastTimeoutRef.current);
@@ -2186,7 +2186,7 @@ export default function NewCampaignPage() {
               className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
             >
               {generatingContent ? (
-                <div className="flex items-center justify-center min-h-[600px]">
+                <div className="flex items-center justify-center min-h-[600px] pt-20">
                    <LoadingState variant="luma" message="Generating high-viral content..." />
                 </div>
               ) : (
