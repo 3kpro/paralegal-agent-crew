@@ -3047,26 +3047,26 @@ export default function NewCampaignPage() {
                         </>
                       )}
                     </motion.button>
-                    <div className="flex items-center justify-center">
-                      <PublishButton
-                        content={(() => {
-                          const platforms = generatedContent ? Object.keys(generatedContent).filter(k => k !== 'hashtags') : [];
-                          const firstPlatform = platforms[0];
-                          const platformContent = firstPlatform ? generatedContent?.[firstPlatform] : "";
-                          const finalContent = typeof platformContent === 'string' ? platformContent : (platformContent as ContentData)?.content || "";
-                          
-                          // Debug Log
-                          console.log("[DEBUG] Publish Content Check:", { platforms, firstPlatform, finalContent });
-                          return finalContent;
-                        })()}
-                        campaignId={editId || undefined}
-                        socialAccountIds={(() => {
-                           const ids = connectedAccountObjects
+                    
+                    {/* Calculate publish props explicitly */}
+                    {(() => {
+                        const platforms = generatedContent ? Object.keys(generatedContent).filter(k => k !== 'hashtags') : [];
+                        const firstPlatform = platforms[0];
+                        const platformContent = firstPlatform ? generatedContent?.[firstPlatform] : "";
+                        const finalPublishContent = typeof platformContent === 'string' ? platformContent : (platformContent as ContentData)?.content || "";
+                        
+                        const finalAccountIds = connectedAccountObjects
                              .filter((acc) => targetPlatforms.map(p => p.toLowerCase()).includes(acc.platform.toLowerCase()))
                              .map((acc) => acc.id);
-                           console.log("[DEBUG] Publish Account Check:", { available: connectedAccountObjects, targets: targetPlatforms, matches: ids });
-                           return ids;
-                        })()}
+                        
+                        console.log("[DEBUG] Render PublishButton Props:", { finalPublishContent, finalAccountIds, connectedCount: connectedAccountObjects.length });
+
+                    return (
+                    <div className="flex items-center justify-center">
+                      <PublishButton
+                        content={finalPublishContent}
+                        campaignId={editId || undefined}
+                        socialAccountIds={finalAccountIds}
                         onPublishSuccess={(data) => {
                           console.log("✅ Content posted!", data);
 
@@ -3154,6 +3154,8 @@ export default function NewCampaignPage() {
                         size="lg"
                       />
                     </div>
+                    );
+                    })()}
                   </div>
                 </motion.div>
               )}
