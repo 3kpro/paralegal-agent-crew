@@ -315,6 +315,21 @@ async function exchangeToken(
   const data = await response.json();
   console.log(`[${platform}] Token exchange success. Has refresh token:`, !!data.refresh_token);
   console.log(`[${platform}] Token expires_in:`, data.expires_in);
+
+  // Log scopes that TikTok actually granted
+  if (data.scope) {
+    console.log(`[${platform}] Granted scopes:`, data.scope);
+    console.log(`[${platform}] Requested scope: user.info.basic`);
+    console.log(`[${platform}] Scope match: ${data.scope.includes('user.info.basic') ? '✅' : '❌'}`);
+
+    if (!data.scope.includes('user.info.basic')) {
+      console.error(`[${platform}] CRITICAL: user.info.basic scope NOT granted by TikTok!`);
+      console.error(`[${platform}] This means the user or TikTok denied the scope.`);
+      throw new Error(`TikTok did not grant user.info.basic scope. Granted scopes: ${data.scope}. Please verify your TikTok app has user.info.basic scope approved.`);
+    }
+  } else {
+    console.warn(`[${platform}] Warning: No scopes returned in token response`);
+  }
   console.log(`[${platform}] Token expires_in:`, data.expires_in);
 
   // For Facebook and Instagram, exchange short-lived token for long-lived token
@@ -376,6 +391,7 @@ async function fetchUserProfile(platform: string, accessToken: string) {
     // Only request fields available with user.info.basic scope (no follower_count - requires user.info.stats)
     const userInfoUrl = "https://open.tiktokapis.com/v2/user/info/?fields=open_id,display_name,username,avatar_url";
     console.log("[tiktok] Fetching profile from:", userInfoUrl);
+    console.log("[tiktok] Using access token (first 10 chars):", accessToken.substring(0, 10) + "...");
 
     const response = await fetch(
       userInfoUrl,
@@ -391,7 +407,29 @@ async function fetchUserProfile(platform: string, accessToken: string) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("[tiktok] Profile fetch failed:", errorText);
-      throw new Error(`Failed to fetch TikTok profile (${response.status}): ${errorText}`);
+
+      // Parse TikTok error for better message
+      let errorMessage = `Failed to fetch TikTok profile (${response.status})`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        console.error("[tiktok] TikTok error JSON:", JSON.stringify(errorJson, null, 2));
+
+        if (errorJson.error?.code === 'scope_not_authorized') {
+          errorMessage = `TikTok scope not authorized. This means the access token doesn't have user.info.basic scope. ` +
+            `Possible causes:\n` +
+            `1. User denied the permission on consent screen\n` +
+            `2. Your TikTok app doesn't have user.info.basic scope approved\n` +
+            `3. TikTok didn't grant the requested scope\n\n` +
+            `Please check:\n` +
+            `- TikTok Developer Portal → Your App → Scopes (ensure user.info.basic is approved)\n` +
+            `- Try connecting with a different TikTok account\n` +
+            `- Verify app is in "Live" mode (not Development)`;
+        }
+      } catch (e) {
+        // JSON parse failed, use raw error
+      }
+
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();

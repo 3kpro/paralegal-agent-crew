@@ -72,13 +72,18 @@ export async function GET(
     console.log(`  Origin: ${origin}`);
     console.log(`  Callback URL: ${callbackUrl}`);
     console.log(`  Client ID: ${platform === 'twitter' ? process.env.TWITTER_CLIENT_ID?.substring(0, 10) + '...' : 'N/A'}`);
+    if (platform === 'tiktok') {
+      console.log(`  TikTok Client Key: ${process.env.TIKTOK_CLIENT_KEY?.substring(0, 10) + '...'}`);
+      console.log(`  TikTok Client Key defined: ${!!process.env.TIKTOK_CLIENT_KEY}`);
+      console.log(`  Requested scope: user.info.basic`);
+    }
     console.log(`  Code Challenge: ${codeChallenge.substring(0, 20)}...`);
 
     const oauthURLs: Record<string, string> = {
       tiktok:
         `https://www.tiktok.com/v2/auth/authorize/?` +
         `client_key=${process.env.TIKTOK_CLIENT_KEY}` +
-        `&scope=${encodeURIComponent("user.info.basic")}` +
+        `&scope=user.info.basic` +
         `&response_type=code` +
         `&redirect_uri=${encodeURIComponent(callbackUrl)}` +
         `&state=${state}`,
