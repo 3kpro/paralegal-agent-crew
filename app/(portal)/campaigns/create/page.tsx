@@ -2344,6 +2344,9 @@ export default function NewCampaignPage() {
                           return platformContent?.content || "";
                         })()}
                         campaignId={editId || undefined}
+                        socialAccountIds={connectedAccountObjects
+                          .filter((acc) => targetPlatforms.map(p => p.toLowerCase()).includes(acc.platform.toLowerCase()))
+                          .map((acc) => acc.id)}
                         onPublishSuccess={(data) => {
                           console.log("✅ Content posted!", data);
 
