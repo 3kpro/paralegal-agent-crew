@@ -316,20 +316,27 @@ async function exchangeToken(
   console.log(`[${platform}] Token exchange success. Has refresh token:`, !!data.refresh_token);
   console.log(`[${platform}] Token expires_in:`, data.expires_in);
 
-  // Log scopes that TikTok actually granted
+  // Log granted scopes
   if (data.scope) {
     console.log(`[${platform}] Granted scopes:`, data.scope);
-    console.log(`[${platform}] Requested scope: user.info.basic`);
-    console.log(`[${platform}] Scope match: ${data.scope.includes('user.info.basic') ? '✅' : '❌'}`);
-
-    if (!data.scope.includes('user.info.basic')) {
-      console.error(`[${platform}] CRITICAL: user.info.basic scope NOT granted by TikTok!`);
-      console.error(`[${platform}] This means the user or TikTok denied the scope.`);
-      throw new Error(`TikTok did not grant user.info.basic scope. Granted scopes: ${data.scope}. Please verify your TikTok app has user.info.basic scope approved.`);
-    }
-  } else {
-    console.warn(`[${platform}] Warning: No scopes returned in token response`);
   }
+
+  // TikTok-specific scope validation
+  if (platform === "tiktok") {
+    if (data.scope) {
+      console.log(`[tiktok] Requested scope: user.info.basic`);
+      console.log(`[tiktok] Scope match: ${data.scope.includes('user.info.basic') ? '✅' : '❌'}`);
+
+      if (!data.scope.includes('user.info.basic')) {
+        console.error(`[tiktok] CRITICAL: user.info.basic scope NOT granted by TikTok!`);
+        console.error(`[tiktok] This means the user or TikTok denied the scope.`);
+        throw new Error(`TikTok did not grant user.info.basic scope. Granted scopes: ${data.scope}. Please verify your TikTok app has user.info.basic scope approved.`);
+      }
+    } else {
+      console.warn(`[tiktok] Warning: No scopes returned in token response`);
+    }
+  }
+
   console.log(`[${platform}] Token expires_in:`, data.expires_in);
 
   // For Facebook and Instagram, exchange short-lived token for long-lived token
