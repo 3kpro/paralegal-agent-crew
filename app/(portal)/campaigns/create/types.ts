@@ -103,6 +103,7 @@ export interface CampaignPayload {
     trend?: Trend;
     query: string;
     controls: Partial<ContentControls>;
+    selectedAudiences?: string[];
   };
   ai_provider: string;
   tone: string;
