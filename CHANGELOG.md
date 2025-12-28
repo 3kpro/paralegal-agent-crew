@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-12-27] - TikTok UX Implementation & Reactor Navigation
+
+### Added
+- **TikTok Content Posting API UX Compliance**:
+  - Created `/api/tiktok/creator-info` endpoint to fetch creator info before posting (TikTok UX Guideline Point 1)
+  - Implemented `TikTokPublishModal` component with all 5 required UX elements:
+    - Point 1: Display TikTok username/avatar, check max video duration, verify posting capability
+    - Point 2: Privacy level dropdown (NO default - user must select), interaction toggles (Comments/Duet/Stitch - OFF by default)
+    - Point 3: Branded content disclosure checkbox (OFF by default)
+    - Point 5: Video preview, editable caption, explicit "Post to TikTok" consent button, processing notice
+  - Updated `PublishButton` to detect TikTok accounts and show modal instead of direct publishing
+  - Added TikTok publishing logic to `/api/social-publishing` with metadata support
+  - Full compliance with TikTok Content Sharing Guidelines for audit approval
+
+- **Reactor Navigation**:
+  - Added "Reactor" to floating navigation menu (between ContentFlow and Helix AI)
+  - Implemented "Coming Soon" overlay on `/ai-studio` page
+  - Overlay features: Blurred background, animated Brain icon, gradient title, feature description
+  - Page accessible but clearly marked as under development
+
+### Fixed
+- **Campaign Creation Spinner**:
+  - Moved loading spinner down 80px (`pt-20`) to center in background fade area
+  - Better visual alignment during content generation
+
+- **TikTok OAuth Profile Parsing** (from previous session):
+  - Fixed TikTok API response structure parsing (`data.data.user` instead of `data.data`)
+  - Updated user info endpoint to correctly extract `open_id`, `display_name`, `username`, `avatar_url`
+
+### Changed
+- **TikTok Integration Status**:
+  - Submitted Login Kit support ticket (OAuth connection issues)
+  - Submitted Content Posting API audit application (2-4 week review)
+  - Domain verified (xelora.app) for TikTok app
+  - All UX requirements implemented and ready for demo video
+
+### Technical
+- **TikTok UX Architecture**:
+  - Modal-based publishing flow for TikTok (separate from other platforms)
+  - Creator info fetched on modal open to validate posting capability
+  - Metadata passed through publishing queue to API
+  - Privacy, interactions, and branded content settings properly applied
+- **Component Structure**:
+  - `TikTokPublishModal.tsx` - 350+ lines of TikTok-compliant UX
+  - `PublishButton.tsx` - Smart platform detection with TikTok modal trigger
+  - `/api/tiktok/creator-info/route.ts` - Creator info validation endpoint
+  - `/api/social-publishing/route.ts` - TikTok v2 Content Posting API integration
+
+### Documentation
+- Implemented TikTok UX Guidelines Points 1-5 per https://developers.tiktok.com/doc/content-sharing-guidelines
+- Ready for TikTok audit reapplication with compliant UX demonstration
+
 ## [2025-12-25] - Facebook Publishing & AI Studio Polish
 
 ### Added

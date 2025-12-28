@@ -9,6 +9,7 @@ async function publishToSocialMedia(
   queueId: string,
   content: string,
   mediaUrls: string[],
+  tiktokMetadata?: any,
 ) {
   const supabase = await createClient();
 
@@ -113,6 +114,66 @@ async function publishToSocialMedia(
       platformPostId = data.id;
       
       console.log(`✅ Successfully posted to Facebook: ${platformPostId}`);
+
+    } else if (platform === "tiktok") {
+      console.log(`[Publishing] Posting to TikTok Content Posting API...`);
+
+      // TikTok requires video URL from verified domain
+      if (!mediaUrls || mediaUrls.length === 0) {
+        throw new Error("TikTok requires a video URL. Please provide media_urls.");
+      }
+
+      const videoUrl = mediaUrls[0];
+      console.log(`[Publishing] Video URL: ${videoUrl}`);
+
+      // Initialize video upload
+      const initUrl = "https://open.tiktokapis.com/v2/post/publish/video/init/";
+
+      const postInfo: any = {
+        title: content,
+        privacy_level: tiktokMetadata?.privacy_level || "PUBLIC_TO_EVERYONE",
+        disable_comment: tiktokMetadata?.disable_comment || false,
+        disable_duet: tiktokMetadata?.disable_duet || false,
+        disable_stitch: tiktokMetadata?.disable_stitch || false,
+        video_cover_timestamp_ms: 1000,
+      };
+
+      // Apply branded content settings if provided
+      if (tiktokMetadata?.brand_content_toggle) {
+        postInfo.brand_content_toggle = true;
+        postInfo.brand_organic_toggle = tiktokMetadata.brand_organic_toggle || false;
+      }
+
+      console.log(`[Publishing] TikTok post info:`, JSON.stringify(postInfo, null, 2));
+
+      const initResponse = await fetch(initUrl, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          post_info: postInfo,
+          source_info: {
+            source: "FILE_URL",
+            video_url: videoUrl,
+          }
+        }),
+      });
+
+      if (!initResponse.ok) {
+        const errorData = await initResponse.json();
+        console.error(`[Publishing] TikTok API error:`, errorData);
+        throw new Error(`TikTok API error: ${JSON.stringify(errorData)}`);
+      }
+
+      const initData = await initResponse.json();
+      platformPostId = initData.data?.publish_id;
+
+      console.log(
+        `✅ Successfully initiated TikTok upload (${connection.account_username}):`,
+        platformPostId,
+      );
 
     } else {
       throw new Error(`Platform ${platform} not yet supported for publishing`);
@@ -219,6 +280,7 @@ export async function POST(request: NextRequest) {
       media_urls = [],
       scheduled_for,
       campaign_id,
+      tiktok_metadata,
     } = body;
 
     if (
@@ -286,6 +348,17 @@ export async function POST(request: NextRequest) {
 
       console.log(`[API] Creating queue entry for connection ${connection.id} (${platform})`);
 
+      const queueMetadata: any = {
+        platform: platform,
+        content_length: content.length,
+        has_media: media_urls.length > 0,
+      };
+
+      // Include TikTok metadata if platform is TikTok
+      if (platform === "tiktok" && tiktok_metadata) {
+        queueMetadata.tiktok_metadata = tiktok_metadata;
+      }
+
       const { data: queueEntry, error: queueError } = await supabase
         .from("social_publishing_queue")
         .insert({
@@ -296,11 +369,7 @@ export async function POST(request: NextRequest) {
           media_urls,
           scheduled_for: scheduled_for || null,
           status: isScheduled ? "scheduled" : "publishing",
-          metadata: {
-            platform: platform,
-            content_length: content.length,
-            has_media: media_urls.length > 0,
-          },
+          metadata: queueMetadata,
         })
         .select()
         .single();
@@ -327,6 +396,7 @@ export async function POST(request: NextRequest) {
           queueEntry.id,
           content,
           media_urls,
+          tiktok_metadata, // Pass TikTok metadata
         ).catch((error) =>
           console.error(`Failed to publish to ${platform}:`, error),
         );

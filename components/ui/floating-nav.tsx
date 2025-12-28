@@ -68,6 +68,11 @@ export function FloatingNav() {
           label="ContentFlow"
         />
         <MenuItem
+          icon={<Sparkles size={22} strokeWidth={1.5} className="text-coral-400" />}
+          onClick={() => router.push('/ai-studio')}
+          label="Reactor"
+        />
+        <MenuItem
           icon={<Bot size={22} strokeWidth={1.5} className="text-coral-400" />}
           onClick={() => router.push('/helix')}
           label="Helix AI"

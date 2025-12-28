@@ -235,6 +235,30 @@ export default function AIStudioPage() {
             className="absolute inset-0 z-0 h-full w-full opacity-100"
             style={{ zIndex: 0 }}
         />
+
+        {/* Coming Soon Overlay */}
+        <div className="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
+          >
+            <Brain className="w-24 h-24 text-coral-400 mx-auto mb-6 animate-pulse" />
+            <h2 className="text-6xl font-bold bg-gradient-to-r from-coral-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+              Reactor
+            </h2>
+            <div className="inline-block px-6 py-3 bg-coral-500/20 border-2 border-coral-500/50 rounded-full mb-6">
+              <p className="text-2xl font-semibold text-coral-300">Coming Soon</p>
+            </div>
+            <p className="text-gray-300 text-xl max-w-2xl mx-auto">
+              50+ AI models. One powerful interface. Unlimited creativity.
+            </p>
+            <p className="text-gray-500 text-sm mt-4">
+              We're working hard to bring you the ultimate AI model switching experience
+            </p>
+          </motion.div>
+        </div>
+
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hero Header */}
         <motion.div
