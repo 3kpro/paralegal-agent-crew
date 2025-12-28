@@ -104,6 +104,7 @@ export interface CampaignPayload {
     query: string;
     controls: Partial<ContentControls>;
     selectedAudiences?: string[];
+    generatedContent?: GeneratedContent;
   };
   ai_provider: string;
   tone: string;
