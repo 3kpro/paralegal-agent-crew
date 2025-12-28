@@ -1,6 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { decryptAPIKey } from "@/lib/encryption";
+import { decryptAPIKey, encryptAPIKey } from "@/lib/encryption";
+
+// Helper function to refresh Twitter OAuth2 token
+async function refreshTwitterToken(refreshToken: string): Promise<{
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+}> {
+  const clientId = process.env.TWITTER_CLIENT_ID;
+  const clientSecret = process.env.TWITTER_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    throw new Error("Twitter OAuth credentials not configured");
+  }
+
+  const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+
+  const response = await fetch("https://api.twitter.com/2/oauth2/token", {
+    method: "POST",
+    headers: {
+      "Authorization": `Basic ${basicAuth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`[Publishing] Twitter token refresh failed:`, errorText);
+    throw new Error(`Failed to refresh Twitter token: ${errorText}`);
+  }
+
+  return response.json();
+}
 
 // Helper function to publish to social media platforms
 async function publishToSocialMedia(
@@ -45,8 +81,50 @@ async function publishToSocialMedia(
       throw new Error("No access token found for this connection");
     }
 
-    const accessToken = await decryptAPIKey(connection.access_token_encrypted);
+    let accessToken = await decryptAPIKey(connection.access_token_encrypted);
     console.log(`[Publishing] Decrypted access token (length: ${accessToken.length})`);
+
+    // Check if token is expired and refresh if needed (for Twitter)
+    if (platform === "twitter" && connection.token_expires_at) {
+      const expiresAt = new Date(connection.token_expires_at);
+      const now = new Date();
+      // Refresh if token expires in less than 5 minutes
+      const fiveMinutesFromNow = new Date(now.getTime() + 5 * 60 * 1000);
+
+      console.log(`[Publishing] Token expires at: ${expiresAt.toISOString()}`);
+      console.log(`[Publishing] Current time: ${now.toISOString()}`);
+
+      if (expiresAt < fiveMinutesFromNow) {
+        console.log(`[Publishing] Token expired or expiring soon, refreshing...`);
+
+        if (!connection.refresh_token_encrypted) {
+          throw new Error("Token expired and no refresh token available. Please reconnect your Twitter account.");
+        }
+
+        const refreshToken = await decryptAPIKey(connection.refresh_token_encrypted);
+        const newTokens = await refreshTwitterToken(refreshToken);
+
+        // Update the access token for this request
+        accessToken = newTokens.access_token;
+        console.log(`[Publishing] Token refreshed successfully`);
+
+        // Save the new tokens to the database
+        const encryptedAccessToken = encryptAPIKey(newTokens.access_token);
+        const encryptedRefreshToken = encryptAPIKey(newTokens.refresh_token);
+        const newExpiresAt = new Date(Date.now() + newTokens.expires_in * 1000).toISOString();
+
+        await supabase
+          .from("user_social_connections")
+          .update({
+            access_token_encrypted: encryptedAccessToken,
+            refresh_token_encrypted: encryptedRefreshToken,
+            token_expires_at: newExpiresAt,
+          })
+          .eq("id", accountId);
+
+        console.log(`[Publishing] Updated tokens in database, new expiry: ${newExpiresAt}`);
+      }
+    }
 
     let platformPostId: string | null = null;
 
