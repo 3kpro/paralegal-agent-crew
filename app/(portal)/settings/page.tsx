@@ -1247,82 +1247,94 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {/* Plan Options */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-tron-text mb-4">
-                Available Plans
-              </h3>
+            {/* Plan Options - Only show if not on Premium (highest tier) */}
+            {usageData?.currentTier !== "premium" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-tron-text mb-4">
+                  Available Plans
+                </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pro Plan */}
-                <div className="border border-tron-cyan/30 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-bold text-tron-text">
-                      Pro Plan
-                    </h3>
-                    <div className="text-2xl font-bold text-tron-text">
-                      $29
-                      <span className="text-sm font-normal text-tron-text-muted">
-                        /mo
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Pro Plan - Only show if on Free tier */}
+                  {usageData?.currentTier === "free" && (
+                    <div className="border border-tron-cyan/30 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-lg font-bold text-tron-text">
+                          Pro Plan
+                        </h3>
+                        <div className="text-2xl font-bold text-tron-text">
+                          $29
+                          <span className="text-sm font-normal text-tron-text-muted">
+                            /mo
+                          </span>
+                        </div>
+                      </div>
+                       <div className="text-sm text-tron-text-muted mb-4 space-y-1">
+                        <p>• Unlimited campaigns</p>
+                        <p>• Up to 3 AI tools</p>
+                        <p>• All social platforms</p>
+                        <p>• 10GB storage</p>
+                        <p>• Priority support</p>
+                      </div>
+                      <LoadingButton
+                        onClick={() => handleUpgrade("pro", "monthly")}
+                        loading={loading}
+                        loadingText="Processing..."
+                        disabled={loading}
+                        className="w-full"
+                      >
+                        Upgrade to Pro
+                      </LoadingButton>
+                    </div>
+                  )}
+
+                  {/* Premium Plan - Show for Free and Pro users */}
+                  <div className={`border border-tron-cyan/40 rounded-lg p-6 bg-gradient-to-br from-tron-cyan/10 to-tron-magenta/10 relative ${usageData?.currentTier === "pro" ? "md:col-span-2 max-w-md mx-auto" : ""}`}>
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark text-white px-4 py-1 rounded-full text-xs font-semibold">
+                        {usageData?.currentTier === "pro" ? "Recommended Upgrade" : "Most Popular"}
                       </span>
                     </div>
-                  </div>
-                   <div className="text-sm text-tron-text-muted mb-4 space-y-1">
-                    <p>• ✅ Unlimited campaigns</p>
-                    <p>• ✅ Up to 3 AI tools</p>
-                    <p>• ✅ All social platforms</p>
-                    <p>• ✅ 10GB storage</p>
-                    <p>• ✅ Priority support</p>
-                  </div>
-                  <LoadingButton
-                    onClick={() => handleUpgrade("pro", "monthly")}
-                    loading={loading}
-                    loadingText="Processing..."
-                    disabled={loading}
-                    className="w-full"
-                  >
-                    Upgrade to Pro
-                  </LoadingButton>
-                </div>
-
-                {/* Premium Plan */}
-                <div className="border border-tron-cyan/40 rounded-lg p-6 bg-gradient-to-br from-tron-cyan/10 to-tron-magenta/10 relative">
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-tron-grid border-2 border-tron-cyan text-tron-cyan hover:bg-tron-cyan hover:text-tron-dark text-white px-4 py-1 rounded-full text-xs font-semibold">
-                      Most Popular
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-bold text-tron-text">
-                      Premium Plan
-                    </h3>
-                    <div className="text-2xl font-bold text-tron-text">
-                      $79
-                      <span className="text-sm font-normal text-tron-text-muted">
-                        /mo
-                      </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-bold text-tron-text">
+                        Premium Plan
+                      </h3>
+                      <div className="text-2xl font-bold text-tron-text">
+                        $79
+                        <span className="text-sm font-normal text-tron-text-muted">
+                          /mo
+                        </span>
+                      </div>
                     </div>
+                    <div className="text-sm text-tron-text-muted mb-4 space-y-1">
+                      <p>• Everything in Pro</p>
+                      <p>• Unlimited AI tools</p>
+                      <p>• White-label options</p>
+                      <p>• 100GB storage</p>
+                      <p>• Custom integrations</p>
+                      <p>• Dedicated support</p>
+                    </div>
+                    <LoadingButton
+                      onClick={() => handleUpgrade("premium", "monthly")}
+                      loading={loading}
+                      loadingText="Processing..."
+                      disabled={loading}
+                      className="w-full bg-gradient-to-r from-tron-cyan to-tron-magenta hover:from-tron-cyan/80 hover:to-tron-magenta/80"
+                    >
+                      Upgrade to Premium
+                    </LoadingButton>
                   </div>
-                  <div className="text-sm text-tron-text-muted mb-4 space-y-1">
-                    <p>• ✅ Everything in Pro</p>
-                    <p>• ✅ Unlimited AI tools</p>
-                    <p>• ✅ White-label options</p>
-                    <p>• ✅ 100GB storage</p>
-                    <p>• ✅ Custom integrations</p>
-                    <p>• ✅ Dedicated support</p>
-                  </div>
-                  <LoadingButton
-                    onClick={() => handleUpgrade("premium", "monthly")}
-                    loading={loading}
-                    loadingText="Processing..."
-                    disabled={loading}
-                    className="w-full bg-gradient-to-r from-tron-cyan to-tron-magenta hover:from-tron-cyan/80 hover:to-tron-magenta/80"
-                  >
-                    Upgrade to Premium
-                  </LoadingButton>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Message for Premium users */}
+            {usageData?.currentTier === "premium" && (
+              <div className="bg-gradient-to-r from-tron-cyan/10 to-tron-magenta/10 border border-tron-cyan/30 rounded-lg p-6 text-center">
+                <p className="text-tron-text font-semibold">You're on the highest tier!</p>
+                <p className="text-tron-text-muted text-sm mt-1">Enjoy all Premium features.</p>
+              </div>
+            )}
           </div>
         )}
       </div>
