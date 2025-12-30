@@ -125,18 +125,29 @@ export default function SettingsPage() {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([loadUserData(), loadUsageData(), handleStripeSuccess()]).finally(() => {
+    async function initPage() {
+      // CRITICAL: Handle Stripe success FIRST before any redirects
+      await handleStripeSuccess();
+      // Then load user data (which may redirect to login if not authenticated)
+      await Promise.all([loadUserData(), loadUsageData()]);
       setInitialLoading(false);
-    });
+    }
+    initPage();
   }, []);
 
   async function handleStripeSuccess() {
     // Check if redirected from Stripe checkout
+    console.log('[handleStripeSuccess] Starting...');
+    console.log('[handleStripeSuccess] Current URL:', window.location.href);
+
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
     const sessionId = urlParams.get('session_id');
 
+    console.log('[handleStripeSuccess] Parsed params:', { success, sessionId });
+
     if (success === 'true' && sessionId) {
+      console.log('[handleStripeSuccess] Conditions met, calling sync-session API...');
       try {
         // Retrieve session from Stripe to sync subscription
         const response = await fetch('/api/stripe/sync-session', {
@@ -145,21 +156,27 @@ export default function SettingsPage() {
           body: JSON.stringify({ sessionId }),
         });
 
+        console.log('[handleStripeSuccess] API response status:', response.status);
+
         const data = await response.json();
+        console.log('[handleStripeSuccess] API response data:', data);
 
         if (data.success) {
           setMessage('🎉 Subscription activated successfully! Tier upgraded.');
           // Reload usage data to show new tier
           await loadUsageData();
         } else {
-          setMessage('⚠️ Subscription created but tier update pending. Refresh page in a moment.');
+          setMessage(`⚠️ Sync failed: ${data.error || 'Unknown error'}. Check console for details.`);
         }
       } catch (error) {
-        console.error('Error syncing session:', error);
+        console.error('[handleStripeSuccess] Error syncing session:', error);
+        setMessage('⚠️ Error syncing subscription. Check console for details.');
       }
 
       // Clean URL
       window.history.replaceState({}, '', '/settings');
+    } else {
+      console.log('[handleStripeSuccess] Conditions NOT met (no success=true or session_id)');
     }
   }
 
