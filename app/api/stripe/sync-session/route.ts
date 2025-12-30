@@ -81,12 +81,12 @@ export async function POST(req: NextRequest) {
       : session.subscription?.id;
 
     // Update user profile in Supabase
-    const updatePayload = {
+    // NOTE: Only include columns that exist in the profiles table
+    const updatePayload: Record<string, any> = {
       subscription_tier: tier,
       subscription_status: "active",
       stripe_customer_id: customerId,
       stripe_subscription_id: subscriptionId,
-      subscription_started_at: new Date().toISOString(),
       ai_tools_limit: tier === "pro" ? 3 : 999,
     };
     console.log("[sync-session] Updating profile for user:", user.id);

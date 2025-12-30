@@ -43,6 +43,7 @@ export async function POST(request: Request) {
         const customerId = session.customer;
 
         // Update user profile with subscription
+        // NOTE: Only include columns that exist in the profiles table
         const { error: profileError } = await supabase
           .from("profiles")
           .update({
@@ -50,7 +51,6 @@ export async function POST(request: Request) {
             subscription_status: "active",
             stripe_customer_id: customerId,
             stripe_subscription_id: subscriptionId,
-            subscription_started_at: new Date().toISOString(),
             // Set AI tools limit based on tier
             ai_tools_limit: tier === "pro" ? 3 : 999,
           })
@@ -98,7 +98,6 @@ export async function POST(request: Request) {
               ? {
                   subscription_tier: "free",
                   ai_tools_limit: 1,
-                  subscription_ended_at: new Date().toISOString(),
                 }
               : {}),
           })
@@ -138,7 +137,6 @@ export async function POST(request: Request) {
             subscription_status: "canceled",
             ai_tools_limit: 1,
             stripe_subscription_id: null,
-            subscription_ended_at: new Date().toISOString(),
           })
           .eq("id", profile.id);
 
