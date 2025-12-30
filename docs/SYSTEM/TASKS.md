@@ -1,5 +1,5 @@
 # TASKS.md
-Last Updated: 2025-12-29
+Last Updated: 2025-12-30
 
 This file lists the ONLY work that should be actively considered.
 If it's not here, it's not a task.
@@ -7,7 +7,14 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-- [x] **Standardize Spinner: Use BouncingDots Everywhere**
+- [x] **Stripe Payment Integration Testing** ✅
+      - **Problem:** Subscription sync failing after successful Stripe checkout
+      - **Root Cause:** `profiles` table was missing `subscription_started_at` column
+      - **Fix:** Removed references to non-existent columns in sync-session and webhook routes
+      - **Status:** WORKING - Test payments now successfully upgrade user tier
+      - **Reference:** See `docs/SYSTEM/STRIPE_TESTING.md` for full details
+
+- [x] **Standardize Spinner: Use BouncingDots Everywhere** ✅
       - **Problem:** Multiple spinner styles exist (rotating circles with fire, etc.). Inconsistent UX.
       - **Solution:** Replace ALL loading spinners with the BouncingDots component (three bouncing dots)
       - **Component:** `components/ui/bouncing-dots.tsx`

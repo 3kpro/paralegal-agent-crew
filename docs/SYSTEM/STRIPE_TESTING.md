@@ -1,6 +1,6 @@
 # STRIPE_TESTING.md
 
-**Status:** IN PROGRESS
+**Status:** RESOLVED ✅
 **Updated:** December 30, 2025
 **Purpose:** Document Stripe payment integration testing status and debug info
 
@@ -23,13 +23,21 @@
 
 ---
 
-## Known Issue: Subscription Sync Failing
+## RESOLVED: Subscription Sync Was Failing
 
-### Symptom
-After successful Stripe checkout (payment succeeds), user is redirected to `/settings?success=true&session_id=xxx` but sees:
+### Root Cause
+The `profiles` table was missing the `subscription_started_at` column that the code was trying to update.
+
+### Fix Applied
+Removed references to non-existent columns (`subscription_started_at`, `subscription_ended_at`) from:
+- `app/api/stripe/sync-session/route.ts`
+- `app/api/stripe/webhook/route.ts`
+
+### Original Symptom
+After successful Stripe checkout (payment succeeds), user was redirected to `/settings?success=true&session_id=xxx` but saw:
 > "Subscription created but tier update pending. Refresh page in a moment."
 
-The profile `subscription_tier` is not being updated from "free" to "pro".
+The profile `subscription_tier` was not being updated from "free" to "pro".
 
 ### Debug Info Added
 
