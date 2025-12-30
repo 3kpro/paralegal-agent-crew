@@ -5,18 +5,18 @@ import { useState } from "react";
 import {
   Briefcase,
   Heart,
-  TrendingUp,
-  Gamepad2,
-  Utensils,
-  Plane,
+  TrendUp as TrendingUp,
+  GameController as Gamepad2,
+  ForkKnife as Utensils,
+  Airplane as Plane,
   GraduationCap,
-  Dumbbell,
+  Barbell as Dumbbell,
   Code,
-  DollarSign,
+  CurrencyDollar as DollarSign,
   Baby,
   Palette,
   Check,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 export interface Interest {
   id: string;
@@ -179,11 +179,12 @@ export default function InterestSelection({
             >
               {isSelected && (
                 <div className="absolute top-2 right-2 w-5 h-5 bg-coral-500 rounded-full flex items-center justify-center">
-                  <Check className="w-3 h-3 text-white" />
+                  <Check className="w-3 h-3 text-white" weight="duotone" />
                 </div>
               )}
               <Icon
                 className={`w-6 h-6 ${isSelected ? "text-coral-400" : "text-gray-400"}`}
+                weight="duotone"
               />
               <span
                 className={`text-sm font-medium ${isSelected ? "text-white" : "text-gray-300"}`}

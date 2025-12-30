@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { ChevronDown } from "lucide-react"
+import { CaretDown as ChevronDown } from "@phosphor-icons/react"
 
 interface MenuProps {
   trigger: React.ReactNode
@@ -31,7 +31,7 @@ export function Menu({ trigger, children, align = "left", showChevron = true }: 
       >
         {trigger}
         {showChevron && (
-          <ChevronDown className="ml-2 -mr-1 h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" />
+          <ChevronDown className="ml-2 -mr-1 h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" weight="duotone" />
         )}
       </div>
 

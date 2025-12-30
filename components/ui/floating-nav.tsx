@@ -3,21 +3,21 @@
 import { useRouter } from "next/navigation"
 import { MenuItem, MenuContainer } from "./fluid-menu"
 import {
-  Menu as MenuIcon,
+  List as MenuIcon,
   X,
-  LayoutDashboard,
-  Zap,
+  SquaresFour as LayoutDashboard,
+  Lightning as Zap,
   Palette,
   FileText,
-  Sparkles,
+  Sparkle as Sparkles,
   Users,
-  BarChart3,
-  Settings,
-  LogOut,
+  ChartBar as BarChart3,
+  Gear as Settings,
+  SignOut as LogOut,
   CreditCard,
-  Rocket,
-  Bot,
-} from "lucide-react"
+  RocketLaunch as Rocket,
+  Robot as Bot,
+} from "@phosphor-icons/react"
 
 export function FloatingNav() {
   const router = useRouter()
@@ -42,63 +42,58 @@ export function FloatingNav() {
           icon={
             <div className="relative w-6 h-6">
               <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-100 scale-100 rotate-0 [div[data-expanded=true]_&]:opacity-0 [div[data-expanded=true]_&]:scale-0 [div[data-expanded=true]_&]:rotate-180">
-                <MenuIcon size={24} strokeWidth={1.5} className="text-coral-400" />
+                <MenuIcon size={24} strokeWidth={1.5} className="text-coral-400" weight="duotone" />
               </div>
               <div className="absolute inset-0 transition-all duration-300 ease-in-out origin-center opacity-0 scale-0 -rotate-180 [div[data-expanded=true]_&]:opacity-100 [div[data-expanded=true]_&]:scale-100 [div[data-expanded=true]_&]:rotate-0">
-                <X size={24} strokeWidth={1.5} className="text-coral-400" />
+                <X size={24} strokeWidth={1.5} className="text-coral-400" weight="duotone" />
               </div>
             </div>
           }
           label="Menu"
         />
         <MenuItem
-          icon={<LayoutDashboard size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<LayoutDashboard size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/dashboard')}
           label="Dashboard"
         />
         <MenuItem
-          icon={<Zap size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<Zap size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/campaigns')}
           label="Campaigns"
         />
 
         <MenuItem
-          icon={<FileText size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<FileText size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/contentflow')}
           label="ContentFlow"
         />
         <MenuItem
-          icon={<Sparkles size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<Sparkles size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/ai-studio')}
           label="Reactor"
         />
         <MenuItem
-          icon={<Bot size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<Bot size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/helix')}
           label="Helix AI"
         />
         <MenuItem
-          icon={<div className="text-coral-400"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>}
-          onClick={() => router.push('/analyst')}
-          label="Analyst"
-        />
-        <MenuItem
-          icon={<BarChart3 size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<BarChart3 size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/analytics')}
           label="Analytics"
         />
         <MenuItem
-          icon={<Settings size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<Settings size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/settings')}
           label="Settings"
         />
         <MenuItem
-          icon={<CreditCard size={22} strokeWidth={1.5} className="text-coral-400" />}
+          icon={<CreditCard size={22} strokeWidth={1.5} className="text-coral-400" weight="duotone" />}
           onClick={() => router.push('/pricing')}
           label="Upgrade"
         />
         <MenuItem
-          icon={<LogOut size={22} strokeWidth={1.5} className="text-red-400" />}
+          icon={<LogOut size={22} strokeWidth={1.5} className="text-red-400" weight="duotone" />}
           onClick={handleLogout}
           label="Logout"
         />

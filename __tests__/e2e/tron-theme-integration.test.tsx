@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Skeleton } from '@/components/SkeletonLoader'
+import { BouncingDots } from '@/components/ui/bouncing-dots'
 import './test-components.css'
 
 // Mock components to test theme consistency
@@ -356,21 +357,21 @@ describe('Tron Theme Integration E2E Tests', () => {
   })
 
   describe('Theme Integration with Loading States', () => {
-    test('loading spinners use Tron theme colors', () => {
+    test('loading spinners (BouncingDots) use Tron theme colors', () => {
       const mockLoadingComponent = () => (
         <div className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-tron-cyan/30 border-t-tron-cyan"></div>
+          <BouncingDots className="bg-tron-cyan" />
           <span className="ml-3 text-tron-text">Loading...</span>
         </div>
       )
 
       render(mockLoadingComponent())
 
-      const spinner = document.querySelector('.animate-spin')
-      expect(spinner).toBeInTheDocument()
-      expect(spinner).toHaveClass('border-tron-cyan/30')
-      expect(spinner).toHaveClass('border-t-tron-cyan')
-
+      // BouncingDots renders 3 dots by default, all should have the theme color
+      const dots = document.querySelectorAll('.bg-tron-cyan')
+      expect(dots.length).toBe(3)
+      
+      // Verify parent container structure if needed, but primary check is the color application
       expect(screen.getByText('Loading...')).toHaveClass('text-tron-text')
     })
 

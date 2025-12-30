@@ -6,8 +6,21 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { SchedulePostDialog } from "@/components/SchedulePostDialog";
-import { Send, RotateCcw, Check } from "lucide-react";
+import {
+  PaperPlaneRight as Send,
+  ArrowCounterClockwise as RotateCcw,
+  Check,
+  Airplane,
+  CalendarBlank,
+  Clock,
+  FileText,
+  ChartBar,
+  Target,
+  Lightning,
+  ShareNetwork
+} from "@phosphor-icons/react";
 import { ScheduledPost, ContentTemplate } from "../campaigns/create/types";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 export default function ContentFlowPage() {
   const router = useRouter();
@@ -103,7 +116,7 @@ export default function ContentFlowPage() {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-coral-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <BouncingDots className="bg-coral-500" />
           <p className="text-gray-300">Loading ContentFlow...</p>
         </div>
       </div>
@@ -153,7 +166,7 @@ export default function ContentFlowPage() {
             className="mb-6 p-4 bg-gradient-to-r from-coral-500/10 via-purple-500/10 to-coral-500/10 border-2 border-coral-500/30 rounded-xl"
           >
             <div className="flex items-center gap-3">
-              <span className="text-3xl">🚀</span>
+              <Airplane className="w-8 h-8 text-coral-400" weight="duotone" />
               <div>
                 <h3 className="text-coral-300 font-bold text-lg">Coming Soon: Full Auto-Pilot</h3>
                 <p className="text-coral-200/80 text-sm">
@@ -166,7 +179,7 @@ export default function ContentFlowPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                <span className="text-2xl">📅</span>
+                <CalendarBlank className="w-8 h-8 text-coral-400" weight="duotone" />
                 ContentFlow
               </h1>
               <p className="text-gray-300 mt-2">
@@ -187,24 +200,39 @@ export default function ContentFlowPage() {
 
           {/* Navigation Tabs */}
           <div className="flex gap-2 bg-[#343a40] rounded-lg p-1 border-2 border-gray-700/50">
-            {[
-              { key: "calendar", label: "Calendar View", icon: "📅" },
-              { key: "queue", label: "Publishing Queue", icon: "⏰" },
-              { key: "templates", label: "Templates", icon: "📝" },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setView(tab.key as any)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
-                  view === tab.key
-                    ? "bg-coral-500 text-white font-semibold"
-                    : "text-gray-300 hover:text-white hover:bg-[#2b2b2b]"
-                }`}
-              >
-                <span>{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
+            <button
+              onClick={() => setView("calendar")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
+                view === "calendar"
+                  ? "bg-coral-500 text-white font-semibold"
+                  : "text-gray-300 hover:text-white hover:bg-[#2b2b2b]"
+              }`}
+            >
+              <CalendarBlank className="w-5 h-5" weight="duotone" />
+              Calendar View
+            </button>
+            <button
+              onClick={() => setView("queue")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
+                view === "queue"
+                  ? "bg-coral-500 text-white font-semibold"
+                  : "text-gray-300 hover:text-white hover:bg-[#2b2b2b]"
+              }`}
+            >
+              <Clock className="w-5 h-5" weight="duotone" />
+              Publishing Queue
+            </button>
+            <button
+              onClick={() => setView("templates")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${
+                view === "templates"
+                  ? "bg-coral-500 text-white font-semibold"
+                  : "text-gray-300 hover:text-white hover:bg-[#2b2b2b]"
+              }`}
+            >
+              <FileText className="w-5 h-5" weight="duotone" />
+              Templates
+            </button>
           </div>
         </motion.div>
 
@@ -263,7 +291,7 @@ function CalendarView({
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
-          <div className="text-2xl text-tron-cyan mb-2">📅</div>
+          <CalendarBlank className="w-7 h-7 text-tron-cyan mb-2" weight="duotone" />
           <div className="text-2xl font-bold text-tron-text">
             {upcomingPosts.length}
           </div>
@@ -271,7 +299,7 @@ function CalendarView({
         </div>
 
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
-          <div className="text-2xl text-tron-cyan mb-2">📊</div>
+          <ChartBar className="w-7 h-7 text-tron-cyan mb-2" weight="duotone" />
           <div className="text-2xl font-bold text-tron-text">
             {posts.filter((p) => p.status === "published").length}
           </div>
@@ -279,7 +307,7 @@ function CalendarView({
         </div>
 
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
-          <div className="text-2xl text-tron-cyan mb-2">🎯</div>
+          <Target className="w-7 h-7 text-tron-cyan mb-2" weight="duotone" />
           <div className="text-2xl font-bold text-tron-text">
             {[...new Set(upcomingPosts.map((p) => p.platform))].length}
           </div>
@@ -287,7 +315,7 @@ function CalendarView({
         </div>
 
         <div className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4">
-          <div className="text-2xl text-tron-cyan mb-2">⚡</div>
+          <Lightning className="w-7 h-7 text-orange-400 mb-2" weight="duotone" />
           <div className="text-2xl font-bold text-tron-text">
             {posts.filter((p) => p.status === "failed").length}
           </div>
@@ -303,7 +331,7 @@ function CalendarView({
 
         {upcomingPosts.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-6xl mb-4">📅</div>
+            <CalendarBlank className="w-16 h-16 text-gray-500 mx-auto mb-4" weight="duotone" />
             <h4 className="text-lg font-semibold text-tron-text mb-2">
               No scheduled posts
             </h4>
@@ -416,7 +444,7 @@ function QueueView({
                     whileTap={{ scale: 0.95 }}
                     className="w-full flex items-center justify-center gap-2 px-3 py-1.5 bg-coral-500/20 hover:bg-coral-500/30 text-coral-400 text-xs font-medium rounded transition-colors"
                   >
-                    <Send className="w-3 h-3" />
+                    <Send className="w-4 h-4" weight="duotone" />
                     Connect Account
                   </motion.button>
                 </Link>
@@ -565,7 +593,7 @@ function TemplatesView({
 
       {templates.length === 0 && (
         <div className="text-center py-12">
-          <div className="text-6xl mb-4">📝</div>
+          <FileText className="w-16 h-16 text-gray-500 mx-auto mb-4" weight="duotone" />
           <h4 className="text-lg font-semibold text-tron-text mb-2">
             No templates yet
           </h4>

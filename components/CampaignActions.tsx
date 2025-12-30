@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Pencil, Trash2, Archive, ArchiveRestore } from "lucide-react";
+import { PencilSimple as Pencil, Trash as Trash2, Archive, ArrowCounterClockwise as ArchiveRestore } from "@phosphor-icons/react";
 
 interface CampaignActionsProps {
   campaignId: string;
@@ -97,7 +97,7 @@ export function CampaignActions({
           className="p-2 text-tron-cyan hover:bg-tron-cyan/10 rounded-lg transition-colors"
           title="Edit campaign"
         >
-          <Pencil className="w-4 h-4" />
+          <Pencil className="w-4 h-4" weight="duotone" />
         </button>
       )}
       <button
@@ -107,9 +107,9 @@ export function CampaignActions({
         title={archived ? "Restore campaign" : "Archive campaign"}
       >
         {archived ? (
-          <ArchiveRestore className="w-4 h-4" />
+          <ArchiveRestore className="w-4 h-4" weight="duotone" />
         ) : (
-          <Archive className="w-4 h-4" />
+          <Archive className="w-4 h-4" weight="duotone" />
         )}
       </button>
       <button
@@ -118,7 +118,7 @@ export function CampaignActions({
         className="p-2 text-tron-magenta hover:bg-tron-magenta/10 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Delete campaign"
       >
-        <Trash2 className="w-4 h-4" />
+        <Trash2 className="w-4 h-4" weight="duotone" />
       </button>
     </div>
   );

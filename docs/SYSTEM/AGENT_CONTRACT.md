@@ -4,9 +4,15 @@ This contract governs all AI agents, tools, and automated processes interacting 
 
 ## ENTRY REQUIREMENTS
 An agent MUST, before performing any work:
-- Read SYSTEM/STATEMENT_OF_TRUTH.md
+- Read SYSTEM/VISION.md (canonical source of truth)
 - Read SYSTEM/TASKS.md
 - Confirm the task exists and is marked OPEN
+
+## DEVELOPMENT ENVIRONMENT
+When running the dev server or testing:
+- **Port:** Always use port 3000 (run `restart-dev.bat` to start/restart)
+- **Test Credentials:** Username and password are saved in Chrome browser (no need to ask)
+- **Dev Server:** `restart-dev.bat` kills existing processes and starts fresh on port 3000
 
 ## SCOPE OF ACTION
 An agent MAY:
@@ -16,13 +22,17 @@ An agent MAY:
 
 An agent MAY NOT:
 - Invent new tasks
-- Modify SYSTEM files unless explicitly authorized
-- Perform speculative, exploratory, or “nice-to-have” changes
+- Modify SYSTEM files (except TASKS.md and CHANGELOG.md as required below)
+- Perform speculative, exploratory, or "nice-to-have" changes
 
-## EXIT REQUIREMENTS
-Before terminating, an agent MUST:
-- Update SYSTEM/CHANGELOG.md with a clear summary of actions taken
-- Mark the task in SYSTEM/TASKS.md as COMPLETE or BLOCKED
-- Stop execution
+## EXIT REQUIREMENTS (MANDATORY)
+**Before ending your session, you MUST complete ALL of these steps:**
+
+1. **Update CHANGELOG.md** - Add entry in SYSTEM/CHANGELOG.md summarizing what was done
+2. **Mark task COMPLETE** - Change `- [ ]` to `- [x]` in SYSTEM/TASKS.md and add ✅
+3. **Move to COMPLETED section** - Move the task from NOW to COMPLETED section
+4. **Verify** - Confirm both files are updated before stopping
+
+**CRITICAL: Do not end session without completing steps 1-4.**
 
 Failure to comply with this contract constitutes an invalid run.

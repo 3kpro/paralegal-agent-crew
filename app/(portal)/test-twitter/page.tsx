@@ -3,7 +3,8 @@
 import { useState } from "react";
 import PublishButton from "@/components/PublishButton";
 import { motion } from "framer-motion";
-import { Sparkles, RefreshCw } from "lucide-react";
+import { Sparkle as Sparkles, ArrowsClockwise as RefreshCw } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 const mockContent = [
   "🚀 Just discovered the secret to viral content: AI + trending topics = engagement gold! Who else is using XELORA? #ContentMarketing #AI",
@@ -107,7 +108,7 @@ export default function TestTwitterPage() {
                   onClick={randomizeMockContent}
                   className="px-3 py-1.5 bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan text-sm rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <RefreshCw className="w-4 h-4" />
+                  <BouncingDots className="bg-tron-cyan w-1.5 h-1.5" />
                   Randomize
                 </button>
               </div>
@@ -263,7 +264,7 @@ export default function TestTwitterPage() {
                     rel="noopener noreferrer"
                     className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark font-semibold rounded-lg transition-colors"
                   >
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4" weight="duotone" />
                     View Post
                   </a>
                 )}

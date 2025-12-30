@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, TrendingUp, Users, Clock, Sparkles, Lightbulb } from "lucide-react";
+import { CaretDown as ChevronDown, TrendUp as TrendingUp, Users, Clock, MagicWand, Lightbulb } from "@phosphor-icons/react";
 import { useState } from "react";
 
 interface ViralScoreBreakdownProps {
@@ -41,14 +41,14 @@ export function ViralScoreBreakdown({
         className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-tron-grid/30 transition-colors text-sm"
       >
         <span className="text-tron-text-muted flex items-center gap-2">
-          <Lightbulb className="w-4 h-4" />
+          <Lightbulb className="w-4 h-4" weight="duotone" />
           {isExpanded ? "Hide" : "Show"} Score Breakdown
         </span>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-4 h-4 text-tron-text-muted" />
+          <ChevronDown className="w-4 h-4 text-tron-text-muted" weight="duotone" />
         </motion.div>
       </button>
 
@@ -68,7 +68,7 @@ export function ViralScoreBreakdown({
               {insights.working.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold text-green-400 mb-2 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4" />
+                    <TrendingUp className="w-4 h-4" weight="duotone" />
                     What's Working
                   </h4>
                   <ul className="space-y-1.5">
@@ -86,7 +86,7 @@ export function ViralScoreBreakdown({
               {insights.improvements.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold text-yellow-400 mb-2 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
+                    <MagicWand className="w-4 h-4" weight="duotone" />
                     Could Boost Score
                   </h4>
                   <ul className="space-y-1.5">
@@ -105,35 +105,35 @@ export function ViralScoreBreakdown({
                 <h4 className="text-xs font-semibold text-tron-text-muted mb-3">Score Components</h4>
                 <div className="space-y-2">
                   <FactorBar
-                    icon={<Users className="w-3 h-3" />}
+                    icon={<Users className="w-3 h-3" weight="duotone" />}
                     label="Audience Volume"
                     score={factors.volume}
                     max={10}
                     color="blue"
                   />
                   <FactorBar
-                    icon={<TrendingUp className="w-3 h-3" />}
+                    icon={<TrendingUp className="w-3 h-3" weight="duotone" />}
                     label="Multi-Platform"
                     score={factors.multiSource}
                     max={10}
                     color="purple"
                   />
                   <FactorBar
-                    icon={<Clock className="w-3 h-3" />}
+                    icon={<Clock className="w-3 h-3" weight="duotone" />}
                     label="Trend Freshness"
                     score={factors.freshness}
                     max={10}
                     color="cyan"
                   />
                   <FactorBar
-                    icon={<Sparkles className="w-3 h-3" />}
+                    icon={<MagicWand className="w-3 h-3" weight="duotone" />}
                     label="Hot Keywords"
                     score={factors.keywordBoost}
                     max={15}
                     color="yellow"
                   />
                   <FactorBar
-                    icon={<Lightbulb className="w-3 h-3" />}
+                    icon={<Lightbulb className="w-3 h-3" weight="duotone" />}
                     label="AI Content Analysis"
                     score={factors.aiAnalysis}
                     max={70}

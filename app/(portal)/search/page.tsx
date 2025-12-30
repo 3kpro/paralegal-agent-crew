@@ -2,13 +2,13 @@
 
 import { motion } from "framer-motion";
 import { TrendingTopics } from "@/components/ui/TrendingTopics";
-import { Search } from "lucide-react";
+import { MagnifyingGlass as Search } from "@phosphor-icons/react";
 import { useState } from "react";
 
 const TRENDING_TOPICS = [
   {
     title: "First-Party Data Strategy Now",
-    searches: "140K",
+    searches: "Recently added",
     relatedTopics: 3
   },
   {
@@ -53,7 +53,7 @@ export default function SearchPage() {
               whileTap={{ scale: 0.95 }}
               className="absolute right-3 top-1/2 -translate-y-1/2 p-3 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-xl text-white shadow-lg shadow-tron-cyan/30"
             >
-              <Search className="w-5 h-5" />
+              <Search className="h-4 w-4 mr-2" weight="duotone" />
             </motion.button>
           </div>
         </section>

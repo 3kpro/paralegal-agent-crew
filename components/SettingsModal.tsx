@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -161,7 +161,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             className="absolute top-4 left-4 p-2 hover:bg-gray-200 rounded-lg transition-colors"
             aria-label="Close settings"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-5 h-5 text-gray-600" weight="duotone" />
           </button>
 
           {/* User info */}

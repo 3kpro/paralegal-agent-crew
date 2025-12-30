@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState("");
@@ -232,7 +233,7 @@ export default function ResetPasswordPage() {
       fallback={
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <BouncingDots className="bg-indigo-600 mb-4" />
             <p className="mt-4 text-gray-600">Loading...</p>
           </div>
         </div>

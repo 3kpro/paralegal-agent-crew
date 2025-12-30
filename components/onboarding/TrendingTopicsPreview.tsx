@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { TrendingUp, Loader2, AlertCircle, Sparkles } from "lucide-react";
+import { TrendUp as TrendingUp, WarningCircle as AlertCircle, MagicWand } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import type { Interest } from "./InterestSelection";
 import { getViralScoreEmoji, formatViralScore } from "@/lib/viral-score";
 
@@ -115,7 +116,7 @@ export default function TrendingTopicsPreview({
               {/* Interest Header */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 bg-coral-500/20 rounded-lg flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-coral-400" />
+                  <Icon className="w-5 h-5 text-coral-400" weight="duotone" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">
@@ -130,7 +131,7 @@ export default function TrendingTopicsPreview({
               {/* Loading State */}
               {interestTrend.loading && (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 text-coral-400 animate-spin" />
+                  <BouncingDots className="bg-coral-400" />
                   <span className="ml-2 text-gray-400">
                     Finding trending topics...
                   </span>
@@ -140,7 +141,7 @@ export default function TrendingTopicsPreview({
               {/* Error State */}
               {interestTrend.error && (
                 <div className="flex items-center gap-2 py-4 text-amber-400">
-                  <AlertCircle className="w-5 h-5" />
+                  <AlertCircle className="w-5 h-5" weight="duotone" />
                   <span className="text-sm">{interestTrend.error}</span>
                 </div>
               )}
@@ -159,7 +160,7 @@ export default function TrendingTopicsPreview({
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <TrendingUp className="w-4 h-4 text-coral-400 group-hover:scale-110 transition-transform" />
+                            <TrendingUp className="w-4 h-4 text-coral-400 group-hover:scale-110 transition-transform" weight="duotone" />
                             <h4 className="text-white font-medium group-hover:text-coral-400 transition-colors">
                               {trend.title}
                             </h4>
@@ -206,7 +207,7 @@ export default function TrendingTopicsPreview({
           className="bg-coral-500/10 border border-coral-500/30 rounded-xl p-4"
         >
           <div className="flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-coral-400 mt-0.5 flex-shrink-0" />
+            <MagicWand className="w-5 h-5 text-coral-400 mt-0.5 flex-shrink-0" weight="duotone" />
             <div>
               <h4 className="text-sm font-semibold text-coral-400 mb-1">
                 What is Viral Score™?

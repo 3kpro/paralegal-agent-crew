@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Send, Lock } from "lucide-react";
+import { PaperPlaneRight as Send, Lock } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import TikTokPublishModal, { TikTokPublishMetadata } from "./TikTokPublishModal";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 interface PublishButtonProps {
   content?: string;
@@ -154,9 +155,9 @@ export default function PublishButton({
         `}
       >
         {loading ? (
-          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <BouncingDots className="bg-white w-1.5 h-1.5" />
         ) : (
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4" weight="duotone" />
         )}
         {loading ? 'Publishing...' : 'Publish Now'}
       </motion.button>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Circle, Rocket } from "lucide-react";
+import { CheckCircle as CheckCircle2, Circle, RocketLaunch as Rocket } from "@phosphor-icons/react";
 
 interface ProgressTrackerProps {
   progress: {
@@ -51,7 +51,7 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-3">
             <div className="p-2 bg-blue-500/10 rounded-xl">
-              <Rocket className="w-5 h-5 text-blue-500" />
+              <Rocket className="w-5 h-5 text-blue-500" weight="duotone" />
             </div>
             Your Progress
           </h2>
@@ -94,9 +94,9 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
               }`}
             >
               {isCompleted ? (
-                <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" weight="duotone" />
               ) : (
-                <Circle className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+                <Circle className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" weight="duotone" />
               )}
               <div className="flex-1">
                 <p

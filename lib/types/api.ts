@@ -11,6 +11,7 @@ export interface APIResponse<T = any> {
   }>;
   requiresSetup?: boolean;
   limit_reached?: boolean;
+  errorType?: string;
   data?: T;
 }
 

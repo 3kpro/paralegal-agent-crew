@@ -1,3 +1,142 @@
+## 2025-12-29 — Landing Page Copy Refresh: Honest Features
+
+**Content Update: Aligned landing page copy with current product capabilities (Creation vs Publishing).**
+
+Summary of Actions:
+- **Honesty Update**:
+    - Replaced "100% Automated Publishing" with "Automated Creation" in Stats.
+    - Clarified FAQ answers to emphasize *generation* now, *scheduling/publishing* later (Q2 2025).
+    - Updated feature descriptions to reflect "Coming Soon" status for direct social API integration.
+- **Feature Highlights**:
+    - Added "Promote Engine" and "AI Media Analysis" to Hero section pills.
+    - Ensuring new high-value features are visible immediately.
+
+Files Modified:
+- `components/sections/StatsSection.tsx`
+- `components/sections/FAQSection.tsx`
+- `components/sections/ModernFeatures.tsx`
+- `components/sections/ModernHero.tsx`
+
+Status: **Copy Aligned & Verified**
+
+---
+
+## 2025-12-29 — Promote UX: Target Audience Preset Options
+
+**UX Enhancement: Added "Quick Select" preset chips for Target Audience.**
+
+Summary of Actions:
+- **Preset Integration**:
+    - Added 10+ clickable audience presets (Professionals, Entrepreneurs, Gamers, etc.) to Step 5.
+    - Implemented toggle logic to add/remove presets from the comma-separated text field.
+    - Preserved manual input capability for custom audiences.
+- **Visual Polish**:
+    - Modeled chips after the specific "content focus" angle chips but smaller/compact.
+    - Active state uses Tron Cyan theme for clear feedback.
+
+Files Modified:
+- `app/(portal)/campaigns/create/components/PromoteInput.tsx`
+
+Status: **Implemented & Verified**
+
+---
+
+## 2025-12-29 — Promote UX: Content Focus Remastered
+
+**UX Enhancement: Replaced generic content focus options with specific promotion angles.**
+
+Summary of Actions:
+- **New Campaign Angle Step**:
+    - Added dedicated wizard step "What's the angle?" (Step 2).
+    - Implemented 8 promotion-specific options (Product Launch, Feature Highlight, Customer Success, etc.).
+    - Created rich chip selection UI with icons and descriptions.
+- **Workflow Integration**:
+    - Integrated smoothly into the 6-step wizard flow.
+    - Updated `PromoteData` schema to include `contentFocus`.
+    - Validated selection before allowing progress.
+
+Files Modified:
+- `app/(portal)/campaigns/create/components/PromoteInput.tsx` (Added new step and UI)
+- `app/(portal)/campaigns/create/types.ts` (Added `contentFocus` field)
+
+Status: **Implemented & Verified**
+
+---
+
+## 2025-12-28 — Promote UX: Multi-Step Wizard Flow
+**Major UX Upgrade: Replaced "long form" with step-by-step wizard for Promote workflow.**
+
+Summary of Actions:
+- **Wizard Implementation**:
+    - Converted `PromoteInput.tsx` from single form to 6-step wizard.
+    - Steps: Product Info → Landing Page → Value Prop → Key Features → Audience → Media Assets.
+    - Added smooth animations and progress tracking ("Step X of 6").
+- **State Persistence**:
+    - Lifted wizard state to parent `create/page.tsx`.
+    - Fixed issue where "Back" from generation screen reset wizard to Step 1.
+    - Users now return to the exact step they left (Media Assets).
+- **Navigation Flow**:
+    - Integrated internal navigation (Back/Next) within the wizard component.
+    - Removed duplicate/external buttons from parent page.
+    - Smart validation: "Next" disabled until required fields filled.
+
+Files Modified:
+- `app/(portal)/campaigns/create/components/PromoteInput.tsx` (Complete refactor)
+- `app/(portal)/campaigns/create/page.tsx` (State management updates)
+
+Status: **UX Upgrade Complete & Verified**
+
+---
+
+## 2025-12-28 — OAuth Configuration Verification
+
+**Verified and finalized OAuth configuration for social platforms.**
+
+Summary of Actions:
+- **Credential Verification**: Confirmed presence of `TIKTOK`, `FACEBOOK`, and `INSTAGRAM` client keys and secrets in `.env.local`.
+- **Route Validation**: Verified `api/auth/connect` and `api/auth/callback` endpoints implement correct OAuth flows for all platforms.
+- **UI Integration**: Confirmed Onboarding flow (Step 4) correctly links to connection endpoints.
+- **Functional Testing**: Verified TikTok connection endpoint is active and redirects to login (as expected in unauthenticated state), confirming the route is operational.
+
+Status: **OAuth Configuration Verified**
+
+---
+
+## 2025-12-28 — Promote Feature Phase 1 & 2 Implementation
+
+**Successfully implemented the "Promote Product/Service" workflow as a primary feature.**
+
+Summary of Actions:
+- **Phase 1 (Core Logic)**:
+    - Enabled `Promote Product`/`Trend` selection in Campaign Wizard.
+    - Implemented `PromoteInput` form (Product Name, Product Type, Description, USP).
+    - Added `saas` as a supported Product Type.
+    - Updated backend AI context to incorporate product details in generation.
+
+- **Phase 2 (Media Integration - Local)**:
+    - Enabled "Media Assets" section in `PromoteInput`.
+    - Added **Google Drive Link** input for referencing external assets.
+    - Added direct **File Upload** UI (visual state only for Phase 2).
+    - Added user guidance banner and privacy notes ("Zero Storage Policy").
+    - Included Google Drive links in AI generation context.
+
+- **UI/UX Refinements**:
+    - **Publishing Pivot**: Replaced "Publish" button with "Save Campaign" and "Copy Content" actions (Social API publishing deferred).
+    - **Legacy Code Removal**: Deleted ~1100 lines of legacy "Card-based" navigation code from `create/page.tsx` to fix caching and lint issues.
+    - **Copy Functionality**: Added "Copy" buttons to generated content cards.
+
+Files Modified:
+- `app/(portal)/campaigns/create/page.tsx` (Major refactor: Step-based flow, legacy removal)
+- `app/(portal)/campaigns/create/components/PromoteInput.tsx` (Phase 2 UI, Guidance)
+- `app/(portal)/campaigns/create/components/GeneratedContentCard.tsx` (Copy buttons)
+- `app/(portal)/campaigns/create/types.ts` (PromoteData types)
+- `lib/validations.ts` (Zod schema updates)
+- `app/api/generate/route.ts` (AI Context updates)
+
+Status: **Promote Feature Active (Local Verification Ready)**
+
+---
+
 ## 2025-12-17 — Analytics Dashboard V2 + Unified Onboarding SHIPPED
 
 **Major UX Transformation: Visual Analytics and Strategic Onboarding Flow**

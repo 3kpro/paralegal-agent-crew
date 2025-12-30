@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import ConnectionCard from "./ConnectionCard"
 
-interface SocialProvider {
+export interface SocialProvider {
   id: string
   provider_key: string
   name: string
@@ -11,9 +11,11 @@ interface SocialProvider {
   logo_url: string | null
   auth_type: string
   required_tier: string
+  is_active?: boolean
+  docs_url?: string | null
 }
 
-interface UserConnection {
+export interface UserConnection {
   id: string
   provider_id: string
   connection_name: string

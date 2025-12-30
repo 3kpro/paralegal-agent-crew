@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { CaretRight as ChevronRight } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface TrendingTopic {
@@ -69,7 +69,7 @@ export const TrendingTopics = ({
               selectedTopic?.title === topic.title
                 ? "text-tron-cyan"
                 : "text-tron-text-muted"
-            )} />
+            )} weight="duotone" />
           </div>
         </motion.button>
       ))}

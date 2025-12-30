@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
 
+import { TiktokLogo, TwitterLogo } from "@phosphor-icons/react";
+
 interface Platform {
   id: string;
   name: string;
-  icon: string;
+  icon: React.ElementType;
   connectUrl: string;
 }
 
@@ -13,13 +15,13 @@ const platforms: Platform[] = [
   {
     id: "tiktok",
     name: "TikTok",
-    icon: "🎵",
+    icon: TiktokLogo,
     connectUrl: "https://open-api.tiktok.com/platform/oauth/connect",
   },
   {
     id: "twitter",
     name: "Twitter",
-    icon: "𝕏",
+    icon: TwitterLogo,
     connectUrl: "https://twitter.com/i/oauth2/authorize",
   },
 ];
@@ -84,7 +86,7 @@ export function CampaignPublishStep({ campaignId }: { campaignId: string }) {
             className="h-24 flex flex-col items-center justify-center gap-2"
             variant={selectedPlatform === platform.id ? "primary" : "outline"}
           >
-            <span className="text-2xl">{platform.icon}</span>
+            <platform.icon className="w-8 h-8" weight="duotone" />
             <span>{platform.name}</span>
           </Button>
         ))}

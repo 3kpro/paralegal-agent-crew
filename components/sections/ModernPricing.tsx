@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Sparkles, Zap, Crown, ArrowRight } from "lucide-react";
+import { Check, MagicWand, Lightning as Zap, Crown, ArrowRight } from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 const plans = [
   {
@@ -9,7 +10,7 @@ const plans = [
     price: "Free",
     period: "forever",
     description: "Perfect for content creators getting started",
-    icon: Sparkles,
+    icon: MagicWand,
     gradient: "from-green-400 to-blue-500",
     features: [
       "5 trend campaigns per month",
@@ -68,7 +69,16 @@ export default function ModernPricing() {
       id="pricing"
       className="py-24 bg-[#343a40] relative overflow-hidden"
     >
-      <div className="container mx-auto px-4">
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-edges"
+        size={24}
+        fill="rgba(0,199,242,0.1)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -117,7 +127,7 @@ export default function ModernPricing() {
                   <div
                     className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-sm`}
                   >
-                    <Icon className="w-6 h-6 text-white" />
+                    <Icon className="w-6 h-6 text-white" weight="duotone" />
                   </div>
 
                   {/* Plan Name */}
@@ -169,7 +179,7 @@ export default function ModernPricing() {
                     }`}
                   >
                     {plan.cta}
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" weight="duotone" />
                   </button>
 
                   {/* Features List */}
@@ -182,7 +192,7 @@ export default function ModernPricing() {
                         <div
                           className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center mt-0.5`}
                         >
-                          <Check className="w-3 h-3 text-white" />
+                          <Check className="w-3 h-3 text-white" weight="duotone" />
                         </div>
                         <span className="text-gray-300">{feature}</span>
                       </div>

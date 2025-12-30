@@ -2,18 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { X, ExternalLink, Loader2, CheckCircle2 } from "lucide-react"
-
-interface SocialProvider {
-  id: string
-  provider_key: string
-  name: string
-  description: string
-  logo_url: string | null
-  auth_type: string
-  required_tier: string
-  docs_url: string | null
-}
+import { X, ArrowSquareOut as ExternalLink, CheckCircle as CheckCircle2 } from "@phosphor-icons/react"
+import { BouncingDots } from "@/components/ui/bouncing-dots"
+import { SocialProvider } from "./ConnectionGrid"
 
 interface AddConnectionModalProps {
   provider: SocialProvider
@@ -128,7 +119,7 @@ export default function AddConnectionModal({
       <div className="space-y-4">
         <div className="flex items-start gap-3 p-4 rounded-lg bg-tron-cyan/10 border border-tron-cyan/20">
           <div className="mt-0.5">
-            <ExternalLink className="w-5 h-5 text-tron-cyan" />
+            <ExternalLink className="w-5 h-5 text-tron-cyan" weight="duotone" />
           </div>
           <div className="flex-1 space-y-2">
             <h4 className="font-semibold text-tron-text">Setup Instructions</h4>
@@ -170,7 +161,7 @@ export default function AddConnectionModal({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm text-tron-cyan hover:underline"
           >
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-4 h-4" weight="duotone" />
             View Official Documentation
           </a>
         )}
@@ -260,12 +251,12 @@ export default function AddConnectionModal({
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BouncingDots className="bg-current w-1.5 h-1.5" />
                 <span>Saving...</span>
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 className="w-4 h-4" weight="duotone" />
                 <span>Save Connection</span>
               </>
             )}
@@ -311,12 +302,12 @@ export default function AddConnectionModal({
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BouncingDots className="bg-current w-1.5 h-1.5" />
                 <span>Redirecting...</span>
               </>
             ) : (
               <>
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4" weight="duotone" />
                 <span>Continue to {provider.name}</span>
               </>
             )}
@@ -350,7 +341,7 @@ export default function AddConnectionModal({
             onClick={onClose}
             className="text-tron-text-muted hover:text-tron-text transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" weight="duotone" />
           </button>
         </div>
 

@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Users, Zap, Clock, Star } from "lucide-react";
+import { Users, Lightning as Zap, Clock, Star } from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 interface StatItem {
   value: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ElementType;
   color: string;
   animatedValue?: number;
 }
@@ -29,7 +30,7 @@ const stats: StatItem[] = [
   },
   {
     value: "100%",
-    label: "Automated Publishing",
+    label: "Automated Creation",
     icon: Clock,
     color: "text-coral-600",
     animatedValue: 100,
@@ -95,9 +96,18 @@ const Counter = ({
 export const StatsSection: React.FC = () => {
   return (
     <section className="py-20 bg-[#2b2b2b] relative overflow-hidden">
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.15)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-r from-coral-500/5 to-transparent opacity-50" />
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-gradient-to-r from-coral-500/5 to-transparent opacity-50 z-0" />
+      <div className="absolute inset-0 z-0">
         <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-coral-500/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-coral-500/5 rounded-full blur-2xl" />
       </div>
@@ -111,7 +121,7 @@ export const StatsSection: React.FC = () => {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
-            <Star className="w-4 h-4 text-coral-400" fill="currentColor" />
+            <Star className="w-4 h-4 text-coral-400" fill="currentColor" weight="duotone" />
             <span className="text-sm font-semibold text-coral-400">
               XELORA™ Platform
             </span>
@@ -147,7 +157,7 @@ export const StatsSection: React.FC = () => {
                   transition={{ duration: 0.6 }}
                   className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-coral-500/10 to-transparent rounded-2xl flex items-center justify-center border border-gray-700/30 group-hover:border-coral-500/30 group-hover:shadow-sm transition-all duration-300`}
                 >
-                  <Icon className="w-8 h-8" />
+                  <Icon className="w-8 h-8" weight="duotone" />
                 </motion.div>
 
                 {/* Counter Value */}

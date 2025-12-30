@@ -3,7 +3,7 @@
 **Status:** ✅ CANONICAL - Approved by Founder
 **Created:** December 13, 2025
 **Approved:** December 15, 2025
-**Updated:** December 19, 2025 (Promote v1 integration)
+**Updated:** December 28, 2025 (Post-level analytics metrics)
 **Authority:** SYSTEM Document (Source of Truth)
 **Purpose:** Define the full end-state vision for Xelora as single unified platform
 
@@ -223,6 +223,16 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 - Audience segmentation and demographic insights
 - Engagement trend analysis
 
+**Post-Level Metrics Dashboard (Customer.io-style):**
+- Delivered: Total posts successfully published across platforms
+- Opened: Views/impressions for each piece of content
+- Clicked: Link clicks and engagement actions
+- Converted: Goal completions and conversion events
+- Sparkline mini-charts for quick trend visualization
+- Campaign status indicators (Active, Paused, Completed, Draft)
+- Date range filtering and comparison views
+- Per-platform breakdown with side-by-side metrics
+
 **Predictive Analytics:**
 - Campaign performance forecasts (based on historical data)
 - Budget optimization recommendations
@@ -319,27 +329,42 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 
 ---
 
-### 4.9 Promote (Content Intelligence from Your Media)
+### 4.9 Promote (Product/Service Promotion Campaigns)
 **Status:** Core capability, approved for v1
 
 **What It Does:**
-- Connects to user-owned cloud storage (Google Drive primary, OneDrive secondary)
-- Indexes, analyzes, and derives intelligence from existing content libraries
-- Identifies high-performing assets and suggests repurposing strategies
-- Surfaces content opportunities based on trending topics and past performance
-- Enables "Use Xelora to promote Xelora" - dogfooding the platform's own capabilities
+- Alternative campaign type in campaign creation flow
+- Users promote something they have: a product, service, or offering
+- Upload supporting media (MP4s, PDFs, images, documents) about what they're promoting
+- AI analyzes uploaded content to generate optimized promotional campaigns
+- Creates platform-specific content variations based on uploaded materials
 
-**Design Principle:**
-- Xelora does NOT store large media assets
+**Implementation Phases:**
+
+**Phase 1: Product Promotion Component**
+- Add "Promote" as campaign type option (alongside trend-based campaigns)
+- Product/service description input
+- Media upload interface (MP4, PDF, images)
+- AI content generation from uploaded materials
+- Campaign preview and editing
+
+**Phase 2: Google Drive Integration**
+- Connect user's Google Drive for media storage
+- Xelora does NOT store large media assets (keeps infrastructure lean)
 - All content remains in user-owned external storage
 - Xelora indexes metadata and generates intelligence, not file copies
 - Users retain full ownership and control of their media
 
+**Design Principle:**
+- Free tier storage constraints require external storage model
+- Google Drive primary, OneDrive secondary
+- Reduces infrastructure costs while enabling rich media campaigns
+
 **Why This Matters:**
-- Creators already have content libraries scattered across cloud storage
-- Promote unlocks value from existing assets without migration friction
-- Reduces content creation burden by identifying what to repurpose
+- Creators have products/services to promote, not just trends to follow
+- Rich media (videos, PDFs) provides AI with more context for better content
 - External storage model keeps infrastructure lean and costs low
+- Enables "Use Xelora to promote Xelora" - dogfooding the platform
 
 ---
 
@@ -379,7 +404,7 @@ Creator Tools → Team Features → Multi-Channel → White-Label → Custom AI
 - Basic AI content generation
 - Campaign management
 - Trend discovery
-- Promote (external content indexing via Google Drive, OneDrive)
+- Promote v1 (product/service promotion campaigns with media upload)
 - **Active Tiers:** Free, Starter, Pro, Business
 
 ### Level 2: Intelligence Enhancement
@@ -628,4 +653,5 @@ These strategic questions emerged during analysis and need explicit decisions:
 - *December 15, 2025*: **Approved by Founder as canonical VISION.md**
 - *December 17, 2025*: **Brand consolidation** - Simplified from two-product strategy (XELORA + CCAI) to single Xelora brand with tier progression. CCAI repositioned as optional internal descriptor.
 - *December 19, 2025*: **Promote v1 integration** - Added Promote as core capability (Section 4.9). External content model via Google Drive/OneDrive. Xelora indexes and analyzes user-owned content without storing media assets.
+- *December 27, 2025*: **Promote clarification** - Refined Promote as campaign type for product/service promotion. Phase 1: Product promotion component with media upload. Phase 2: Google Drive integration for storage. Implementation sequence clarified.
 - *Status*: CANONICAL - Source of Truth for Xelora platform vision

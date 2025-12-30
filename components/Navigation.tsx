@@ -2,6 +2,7 @@ import { Button } from "./ui/Button";
 import Link from "next/link";
 import { useState } from "react";
 import { XeloraLogo } from "./XeloraLogo";
+import { List, X } from "@phosphor-icons/react";
 
 interface NavigationProps {
   onContactClick?: () => void;
@@ -63,23 +64,11 @@ export const Navigation: React.FC<NavigationProps> = () => {
               className="text-gray-300 hover:text-white transition-colors p-2"
               aria-label="Toggle menu"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  d={
-                    mobileMenuOpen
-                      ? "M6 18L18 6M6 6l12 12"
-                      : "M4 6h16M4 12h16M4 18h16"
-                  }
-                ></path>
-              </svg>
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" weight="duotone" />
+              ) : (
+                <List className="w-6 h-6" weight="duotone" />
+              )}
             </button>
           </div>
         </div>

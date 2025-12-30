@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react";
 
 export default function DemoPage() {
   return (
@@ -77,7 +77,7 @@ export default function DemoPage() {
                 className="inline-flex items-center gap-2 px-8 py-4 bg-coral-500 hover:bg-coral-600 text-white rounded-lg font-semibold text-lg transition-colors"
               >
                 Start Free Trial
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5" weight="duotone" />
               </Link>
               <Link
                 href="/"

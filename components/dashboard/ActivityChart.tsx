@@ -10,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { TrendingUp } from "lucide-react";
+import { TrendUp as TrendingUp } from "@phosphor-icons/react";
 
 interface ActivityChartProps {
   data?: Array<{
@@ -53,7 +53,7 @@ export default function ActivityChart({ data }: ActivityChartProps) {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-3">
             <div className="p-2 bg-coral-500/10 rounded-xl">
-              <TrendingUp className="w-5 h-5 text-coral-500" />
+              <TrendingUp className="w-5 h-5 text-coral-500" weight="duotone" />
             </div>
             Activity This Week
           </h2>

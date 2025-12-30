@@ -5,15 +5,15 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Twitter,
-  Linkedin,
-  Facebook,
-  Instagram,
-  Music,
-  MessageCircle,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+  TwitterLogo as Twitter,
+  LinkedinLogo as Linkedin,
+  FacebookLogo as Facebook,
+  InstagramLogo as Instagram,
+  MusicNote as Music,
+  ChatCircle as MessageCircle,
+  CaretDown as ChevronDown,
+  CaretUp as ChevronUp,
+} from "@phosphor-icons/react";
 import InterestSelection, { type Interest } from "@/components/onboarding/InterestSelection";
 import TrendingTopicsPreview from "@/components/onboarding/TrendingTopicsPreview";
 import InstagramAccountSetupGuide from "@/components/onboarding/InstagramAccountSetupGuide";
@@ -373,9 +373,9 @@ export default function OnboardingPage() {
                       </p>
                     </div>
                     {showInstagramGuide ? (
-                      <ChevronUp className="text-blue-300 flex-shrink-0 ml-3" size={20} />
+                      <ChevronUp className="text-blue-300 flex-shrink-0 ml-3" size={20} weight="duotone" />
                     ) : (
-                      <ChevronDown className="text-blue-300 flex-shrink-0 ml-3" size={20} />
+                      <ChevronDown className="text-blue-300 flex-shrink-0 ml-3" size={20} weight="duotone" />
                     )}
                   </div>
                 </button>

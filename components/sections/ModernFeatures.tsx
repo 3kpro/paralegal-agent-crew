@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion";
 import {
-  TrendingUp,
-  Sparkles,
+  TrendUp as TrendingUp,
+  Sparkle as Sparkles,
   Layout,
   Clock,
   Shield,
-  BarChart3,
-} from "lucide-react";
+  ChartBar as BarChart3,
+} from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 const features = [
   {
@@ -32,9 +33,9 @@ const features = [
   {
     icon: Layout,
     title: "ContentFlow™ Automation",
-    subtitle: "6-Platform Publishing",
+    subtitle: "Multi-Platform Formats",
     description:
-      "One-click publishing to Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Smart formatting, optimal timing, and engagement tracking.",
+      "Generates optimized content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. One-click publishing and smart scheduling coming soon.",
     gradient: "from-orange-500 to-red-500",
     status: "coming-soon" as const,
   },
@@ -73,8 +74,15 @@ export default function ModernFeatures() {
       id="features"
       className="py-24 bg-[#0A0F1F] relative overflow-hidden"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-gray-900 [mask-image:linear-gradient(0deg,transparent,rgba(255,255,255,0.05))] -z-10" />
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-edges"
+        size={24}
+        fill="rgba(0,199,242,0.12)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -139,7 +147,7 @@ export default function ModernFeatures() {
                     <div
                       className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${feature.gradient} shadow-sm group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-white" weight="duotone" />
                     </div>
 
                     {/* Status Badge - Cleaner Design */}
@@ -192,7 +200,7 @@ export default function ModernFeatures() {
               href="/signup"
               className="inline-flex items-center gap-2 px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200"
             >
-              <Sparkles className="w-5 h-5" />
+              <Sparkles className="w-5 h-5" weight="duotone" />
               Join XELORA™ Beta
             </a>
             <span className="text-sm text-gray-400">

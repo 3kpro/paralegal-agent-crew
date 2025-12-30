@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, PlayCircle, Clock, Eye, Zap } from "lucide-react";
+import { Play, PlayCircle, Clock, Eye, Lightning as Zap } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 export default function DemoVideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -25,7 +26,7 @@ export default function DemoVideoSection() {
             className="text-center mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-tron-grid rounded-full mb-6 border border-tron-cyan">
-              <Eye className="w-4 h-4 text-tron-cyan" />
+              <Eye className="w-4 h-4 text-tron-cyan" weight="duotone" />
               <span className="text-sm font-semibold text-tron-cyan">
                 See it in action
               </span>
@@ -69,6 +70,7 @@ export default function DemoVideoSection() {
                         <Play
                           className="w-12 h-12 text-tron-dark ml-1"
                           fill="currentColor"
+                          weight="duotone"
                         />
                       </div>
                       <div className="absolute inset-0 bg-tron-cyan/20 rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
@@ -77,7 +79,7 @@ export default function DemoVideoSection() {
                     {/* Video Info Overlay */}
                     <div className="absolute bottom-6 left-6 flex items-center gap-4 text-white">
                       <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1 backdrop-blur-sm">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4" weight="duotone" />
                         <span className="text-sm font-medium">2:34</span>
                       </div>
                       <div className="text-sm bg-black/50 rounded-full px-3 py-1 backdrop-blur-sm">
@@ -95,7 +97,7 @@ export default function DemoVideoSection() {
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="text-white text-center">
-                      <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                      <BouncingDots className="bg-white mb-4" />
                       <p className="text-lg">Loading demo video...</p>
                       <p className="text-sm opacity-75">
                         In production, this would be a real video player
@@ -114,7 +116,7 @@ export default function DemoVideoSection() {
                       aria-label="Pause video"
                       title="Pause video"
                     >
-                      <PlayCircle className="w-6 h-6" />
+                      <PlayCircle className="w-6 h-6" weight="duotone" />
                     </button>
                     <div className="flex-1 bg-tron-cyan h-2 rounded-full">
                       <div className="bg-purple-500 h-2 rounded-full w-1/3"></div>
@@ -139,7 +141,7 @@ export default function DemoVideoSection() {
           >
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-white" />
+                <Zap className="w-8 h-8 text-white" weight="duotone" />
               </div>
               <h3 className="text-xl font-semibold text-tron-text mb-2">
                 XELORA™ Discovery
@@ -152,7 +154,7 @@ export default function DemoVideoSection() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Play className="w-8 h-8 text-white" fill="currentColor" />
+                <Play className="w-8 h-8 text-white" fill="currentColor" weight="duotone" />
               </div>
               <h3 className="text-xl font-semibold text-tron-text mb-2">
                 AI Cascade™ Generation
@@ -165,7 +167,7 @@ export default function DemoVideoSection() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <PlayCircle className="w-8 h-8 text-white" />
+                <PlayCircle className="w-8 h-8 text-white" weight="duotone" />
               </div>
               <h3 className="text-xl font-semibold text-tron-text mb-2">
                 OmniFormat™ Publishing

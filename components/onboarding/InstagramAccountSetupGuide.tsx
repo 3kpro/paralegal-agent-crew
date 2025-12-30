@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, CheckCircle, Circle, AlertCircle } from "lucide-react";
+import { CaretDown as ChevronDown, CaretUp as ChevronUp, CheckCircle, Circle, WarningCircle as AlertCircle } from "@phosphor-icons/react";
 
 interface SetupStep {
   id: string;
@@ -100,7 +100,7 @@ export default function InstagramAccountSetupGuide() {
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg p-4">
         <div className="flex items-start gap-3">
-          <AlertCircle className="text-purple-400 mt-0.5 flex-shrink-0" size={20} />
+          <AlertCircle className="text-purple-400 mt-0.5 flex-shrink-0" size={20} weight="duotone" />
           <div>
             <h3 className="text-sm font-semibold text-purple-300 mb-1">
               Instagram Publishing Requirements
@@ -141,9 +141,9 @@ export default function InstagramAccountSetupGuide() {
                     className="mt-0.5 flex-shrink-0"
                   >
                     {isCompleted ? (
-                      <CheckCircle className="text-green-400" size={20} />
+                      <CheckCircle className="text-green-400" size={20} weight="duotone" />
                     ) : (
-                      <Circle className="text-gray-500" size={20} />
+                      <Circle className="text-gray-500" size={20} weight="duotone" />
                     )}
                   </button>
                   <div className="flex-1">
@@ -156,9 +156,9 @@ export default function InstagramAccountSetupGuide() {
                   </div>
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="text-gray-400 flex-shrink-0" size={20} />
+                  <ChevronUp className="text-gray-400 flex-shrink-0" size={20} weight="duotone" />
                 ) : (
-                  <ChevronDown className="text-gray-400 flex-shrink-0" size={20} />
+                  <ChevronDown className="text-gray-400 flex-shrink-0" size={20} weight="duotone" />
                 )}
               </button>
 
@@ -193,7 +193,7 @@ export default function InstagramAccountSetupGuide() {
       {allStepsCompleted && (
         <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
           <div className="flex items-center gap-3">
-            <CheckCircle className="text-green-400 flex-shrink-0" size={24} />
+            <CheckCircle className="text-green-400 flex-shrink-0" size={24} weight="duotone" />
             <div>
               <p className="text-sm font-semibold text-green-300">
                 All Steps Completed! 🎉

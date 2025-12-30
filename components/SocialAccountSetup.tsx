@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
-import { Plus, Check, X, Loader2, Users, Trash2, Twitter, Linkedin, Facebook, Instagram, Music, Youtube } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Plus, Check, X, Users, Trash as Trash2, TwitterLogo as Twitter, LinkedinLogo as Linkedin, FacebookLogo as Facebook, InstagramLogo as Instagram, MusicNotes as Music, YoutubeLogo as Youtube } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 interface SocialAccount {
   id: string;
@@ -20,7 +20,7 @@ interface SocialAccount {
 interface SocialPlatform {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
   color: string;
   description: string;
   features: string[];
@@ -204,7 +204,7 @@ export function SocialAccountSetup({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-tron-cyan" />
+          <BouncingDots className="bg-tron-cyan" />
           <p className="text-tron-text-muted">Loading social accounts...</p>
         </div>
       </div>
@@ -217,7 +217,7 @@ export function SocialAccountSetup({
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-tron-text flex items-center gap-3">
-              <Users className="w-6 h-6 text-tron-cyan" />
+              <Users className="w-6 h-6 text-tron-cyan" weight="duotone" />
               Social Accounts
             </h2>
             <p className="text-tron-text-muted mt-2">
@@ -235,10 +235,10 @@ export function SocialAccountSetup({
                 disabled={connecting === platform.id}
                 className={`${platform.color} hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed`}
               >
-                <platform.icon className="w-4 h-4" />
+                <platform.icon className="w-4 h-4" weight="duotone" />
                 Connect {platform.name}
                 {connecting === platform.id && (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <BouncingDots className="bg-white w-1.5 h-1.5" />
                 )}
               </motion.button>
             ))}
@@ -294,7 +294,7 @@ export function SocialAccountSetup({
 
                   {/* Platform Icon */}
                   <div className="relative z-10">
-                    <platform.icon className="w-20 h-20 text-white" />
+                    <platform.icon className="w-20 h-20 text-white" weight="duotone" />
                   </div>
 
                   {/* Platform Name */}
@@ -314,7 +314,7 @@ export function SocialAccountSetup({
                   >
                     {connecting === platform.id ? (
                       <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full">
-                        <Loader2 className="w-5 h-5 animate-spin text-white" />
+                        <BouncingDots className="bg-white w-1.5 h-1.5" />
                       </div>
                     ) : (
                       <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-white font-medium hover:bg-white/30 transition-colors">
@@ -360,7 +360,7 @@ export function SocialAccountSetup({
                       />
                     ) : (
                       <div className={`w-full h-full ${platform.color} flex items-center justify-center`}>
-                        <platform.icon className="w-6 h-6 text-white" />
+                        <platform.icon className="w-6 h-6 text-white" weight="duotone" />
                       </div>
                     )}
                   </div>
@@ -390,7 +390,7 @@ export function SocialAccountSetup({
                   {/* Platform Icon & Actions */}
                   <div className="flex items-center gap-3">
                     <div className={`${platform.color} w-8 h-8 rounded-lg flex items-center justify-center`}>
-                      <platform.icon className="w-4 h-4 text-white" />
+                      <platform.icon className="w-4 h-4 text-white" weight="duotone" />
                     </div>
                     
                     <div className="flex items-center gap-2">
@@ -403,7 +403,7 @@ export function SocialAccountSetup({
                         }`}
                         title={account.is_active ? 'Deactivate account' : 'Activate account'}
                       >
-                        {account.is_active ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                        {account.is_active ? <Check className="w-4 h-4" weight="duotone" /> : <X className="w-4 h-4" weight="duotone" />}
                       </button>
                       
                       <button
@@ -411,7 +411,7 @@ export function SocialAccountSetup({
                         className="p-1.5 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg transition-colors"
                         title="Disconnect account"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" weight="duotone" />
                       </button>
                     </div>
                   </div>
@@ -448,7 +448,7 @@ export function SocialAccountSetup({
                 title="Close dialog"
                 aria-label="Close social account connection dialog"
               >
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6" weight="duotone" />
               </button>
             </div>
 
@@ -466,7 +466,7 @@ export function SocialAccountSetup({
                     <div
                       className={`w-10 h-10 ${platform.color} rounded-lg flex items-center justify-center text-white shadow-lg flex-shrink-0`}
                     >
-                      <platform.icon className="w-5 h-5" />
+                      <platform.icon className="w-5 h-5" weight="duotone" />
                     </div>
 
                     <div className="flex-1">
@@ -475,7 +475,7 @@ export function SocialAccountSetup({
                           {platform.name}
                         </h4>
                         {connecting === platform.id && (
-                          <Loader2 className="w-4 h-4 animate-spin text-tron-cyan" />
+                          <BouncingDots className="bg-tron-cyan w-1.5 h-1.5" />
                         )}
                       </div>
 
@@ -501,7 +501,7 @@ export function SocialAccountSetup({
 
             {availablePlatforms.length === 0 && (
               <div className="text-center py-8">
-                <Check className="w-16 h-16 text-green-400 mx-auto mb-4" />
+                <Check className="w-16 h-16 text-green-400 mx-auto mb-4" weight="duotone" />
                 <h4 className="text-lg font-semibold text-tron-text mb-2">
                   All Available Platforms Connected
                 </h4>

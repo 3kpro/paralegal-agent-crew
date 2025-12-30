@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BarChart3, TrendingUp, Target, Download, Loader2 } from "lucide-react";
+import { ChartBar as BarChart3, TrendUp as TrendingUp, Target, DownloadSimple as Download } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import type { ViralScoreAnalytics } from "@/types/feedback";
 import { formatEngagement, formatAccuracy } from "@/lib/feedback-tracking";
 
@@ -70,7 +71,7 @@ export default function ViralScoreAnalyticsComponent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-tron-cyan animate-spin" />
+        <BouncingDots className="bg-tron-cyan" />
       </div>
     );
   }
@@ -106,12 +107,12 @@ export default function ViralScoreAnalyticsComponent() {
           >
             {exporting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BouncingDots className="bg-tron-dark w-1.5 h-1.5" />
                 Exporting...
               </>
             ) : (
               <>
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4" weight="duotone" />
                 Export ML Data
               </>
             )}
@@ -124,7 +125,7 @@ export default function ViralScoreAnalyticsComponent() {
         {/* Total Predictions */}
         <div className="p-6 bg-tron-dark/50 border border-tron-grid rounded-xl">
           <div className="flex items-center gap-3 mb-2">
-            <BarChart3 className="w-5 h-5 text-tron-cyan" />
+            <BarChart3 className="w-5 h-5 text-tron-cyan" weight="duotone" />
             <p className="text-sm text-tron-text-muted">Total Predictions</p>
           </div>
           <p className="text-3xl font-bold text-tron-text">{analytics.total_predictions}</p>
@@ -136,7 +137,7 @@ export default function ViralScoreAnalyticsComponent() {
         {/* Prediction Accuracy */}
         <div className="p-6 bg-tron-dark/50 border border-tron-grid rounded-xl">
           <div className="flex items-center gap-3 mb-2">
-            <Target className="w-5 h-5 text-green-400" />
+            <Target className="w-5 h-5 text-green-400" weight="duotone" />
             <p className="text-sm text-tron-text-muted">Avg Accuracy</p>
           </div>
           <p className="text-3xl font-bold text-tron-text">
@@ -150,7 +151,7 @@ export default function ViralScoreAnalyticsComponent() {
         {/* Training Data Ready */}
         <div className="p-6 bg-tron-dark/50 border border-tron-grid rounded-xl">
           <div className="flex items-center gap-3 mb-2">
-            <TrendingUp className="w-5 h-5 text-tron-magenta" />
+            <TrendingUp className="w-5 h-5 text-tron-magenta" weight="duotone" />
             <p className="text-sm text-tron-text-muted">Training Data</p>
           </div>
           <p className="text-3xl font-bold text-tron-text">{analytics.training_data_ready}</p>

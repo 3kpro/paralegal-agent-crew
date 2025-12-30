@@ -4,15 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Bot, 
+  Robot as Bot, 
   Paperclip, 
   Command, 
-  Send as SendIcon,
-  Sparkles,
+  PaperPlaneRight as SendIcon,
+  MagicWand,
   ArrowUp,
   Copy,
   Check
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import dynamic from 'next/dynamic';
 
 const AnalystCharts = dynamic(() => import('@/components/analyst/AnalystCharts'), { 
@@ -45,7 +45,7 @@ const CopyToClipboard = ({ text }: { text: string }) => {
       className="absolute bottom-2 right-2 p-1.5 text-gray-400 hover:text-white bg-black/20 hover:bg-black/40 rounded-md transition-all opacity-0 group-hover:opacity-100"
       title="Copy to clipboard"
     >
-      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" weight="duotone" /> : <Copy className="w-3.5 h-3.5" weight="duotone" />}
     </button>
   );
 };
@@ -197,7 +197,7 @@ export default function HelixChatInterface({
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative flex flex-col w-full h-full bg-[#09090b] text-gray-100 font-sans overflow-hidden ${
+      className={`relative flex flex-col w-full h-full bg-transparent text-gray-100 font-sans overflow-hidden ${
         hasStarted ? 'justify-between' : 'justify-center items-center'
       }`}
     >
@@ -214,14 +214,14 @@ export default function HelixChatInterface({
               <div key={msg.id || idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                 {msg.role === 'assistant' && (
                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
-                    <Bot className="w-5 h-5 text-white" />
+                    <Bot className="w-5 h-5 text-white" weight="duotone" />
                   </div>
                 )}
                 
-                 <div className={`py-3.5 px-6 max-w-[85%] text-[15px] leading-relaxed relative shadow-md group ${
+                 <div className={`py-3.5 px-6 max-w-[85%] text-[15px] leading-relaxed relative group ${
                   msg.role === 'assistant'
-                    ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 backdrop-blur-sm shadow-black/20 rounded-2xl rounded-tl-sm pr-10'
-                    : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
+                    ? 'text-gray-200 pr-10'
+                    : 'bg-gradient-to-br from-coral-500 to-coral-600 text-white shadow-md shadow-coral-500/20 border border-coral-400/20 rounded-2xl rounded-tr-sm'
                 }`}>
                    {/* Simplified rendering for manual fetch */}
                    {msg.toolData && msg.toolData.data && msg.toolData.data.length > 0 && (
@@ -253,7 +253,7 @@ export default function HelixChatInterface({
             {isLoading && messages.length > 0 && messages[messages.length-1].role === 'user' && (
                 <div className="flex gap-4">
                   <div className="w-8 h-8 flex items-center justify-center shrink-0">
-                      <Bot className="w-5 h-5 text-gray-500 animate-pulse" />
+                      <Bot className="w-5 h-5 text-gray-500 animate-pulse" weight="duotone" />
                   </div>
                 </div>
             )}
@@ -317,13 +317,13 @@ export default function HelixChatInterface({
                   className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   title="Attach"
                 >
-                  <Paperclip className="w-4 h-4" />
+                  <Paperclip className="w-4 h-4" weight="duotone" />
                 </button>
                 <button 
                   className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   title="Commands"
                 >
-                  <Command className="w-4 h-4" />
+                  <Command className="w-4 h-4" weight="duotone" />
                 </button>
                 */}
               </div>
@@ -337,7 +337,7 @@ export default function HelixChatInterface({
                     : "bg-white/5 text-gray-500 cursor-not-allowed"
                 }`}
               >
-                <SendIcon className="w-3.5 h-3.5" />
+                <SendIcon className="w-3.5 h-3.5" weight="duotone" />
                 <span>Send</span>
               </button>
             </div>

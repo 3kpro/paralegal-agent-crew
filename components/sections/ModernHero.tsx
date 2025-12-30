@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Zap, ArrowRight } from "lucide-react";
+import { Lightning as Zap, ArrowRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { BGPattern } from "@/components/ui/bg-pattern";
 
@@ -55,7 +55,7 @@ export default function ModernHero() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030] backdrop-blur-sm rounded-full shadow-lg mb-8 border-2 border-[#00C7F2]/30 hover:border-[#00C7F2]/60 transition-all duration-300"
           >
-            <Zap className="w-5 h-5 text-[#00C7F2]" />
+            <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
             <span className="text-sm font-semibold text-[#F5F7FA] uppercase tracking-wide">
               XELORA • Predictive Intelligence
             </span>
@@ -104,9 +104,9 @@ export default function ModernHero() {
                 href="/signup"
                 className="group relative px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2 uppercase tracking-wide"
               >
-                <Zap className="w-5 h-5" />
+                <Zap className="w-5 h-5" weight="duotone" />
                 Get Early Access
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" weight="duotone" />
               </Link>
             </div>
 
@@ -131,21 +131,21 @@ export default function ModernHero() {
             className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400 mt-16"
           >
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#00C7F2]" />
+              <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
               <span>
                 <strong className="text-[#F5F7FA]">Real-time</strong> signal analysis
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#A17CF9]" />
+              <Zap className="w-5 h-5 text-[#A17CF9]" weight="duotone" />
               <span>
                 <strong className="text-[#F5F7FA]">Predictive</strong> momentum detection
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-[#00C7F2]" />
+              <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
               <span>
                 <strong className="text-[#F5F7FA]">6+ platforms</strong> engineered
               </span>
@@ -165,8 +165,8 @@ export default function ModernHero() {
               "Multi-Platform Engineering",
               "Real-Time Analysis",
               "Trend Forecasting",
-              "Content Optimization",
-              "Virality Prediction",
+              "Promote Engine",
+              "AI Media Analysis",
               "Audience Intelligence",
             ].map((feature, index) => (
               <motion.div

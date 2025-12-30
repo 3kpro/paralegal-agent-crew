@@ -3,6 +3,7 @@
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 const platformConfig = {
   twitter: { name: "Twitter", icon: "🐦", color: "bg-blue-500" },
@@ -92,7 +93,7 @@ export default function ConnectPlatformPage() {
                 >
                   {loading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <BouncingDots className="bg-white w-1.5 h-1.5" />
                       <span>Connecting...</span>
                     </>
                   ) : (

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Calendar, Send, Loader2, X } from "lucide-react";
+import { CalendarBlank as Calendar, PaperPlaneRight as Send, X } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SchedulePostDialogProps {
@@ -155,7 +156,7 @@ export function SchedulePostDialog({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-tron-cyan" />
+              <Calendar className="w-5 h-5 text-tron-cyan" weight="duotone" />
               <h2 className="text-xl font-bold text-tron-text">
                 Schedule New Post
               </h2>
@@ -166,7 +167,7 @@ export function SchedulePostDialog({
               className="text-tron-text-muted hover:text-tron-text"
               aria-label="Close dialog"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" weight="duotone" />
             </Button>
           </div>
 
@@ -357,12 +358,12 @@ export function SchedulePostDialog({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <BouncingDots className="bg-tron-dark w-1.5 h-1.5" />
                     Scheduling...
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 mr-2" />
+                    <Send className="w-4 h-4 mr-2" weight="duotone" />
                     Schedule Post
                   </>
                 )}

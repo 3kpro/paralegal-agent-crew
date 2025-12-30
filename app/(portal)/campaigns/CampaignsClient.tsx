@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Trash2, Plus, Archive } from "lucide-react";
+import { Check, Trash as Trash2, Plus, Archive } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import { CampaignActions } from "@/components/CampaignActions";
 
@@ -145,7 +145,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
               }`}
             >
               {toast.type === "success" ? (
-                <Check className="w-5 h-5 text-green-400" />
+                <Check className="w-5 h-5 text-green-400" weight="duotone" />
               ) : (
                 <span className="text-red-400 text-xl">⚠️</span>
               )}
@@ -169,7 +169,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
               disabled={isDeleting}
               className="flex items-center gap-2 px-4 py-2 bg-red-900/20 border-2 border-red-500 text-red-400 hover:bg-red-900/30 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" weight="duotone" />
               {isDeleting
                 ? "Deleting..."
                 : `Delete ${selectedCampaigns.size} ${selectedCampaigns.size === 1 ? "Campaign" : "Campaigns"}`}
@@ -183,7 +183,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
               onClick={() => setShowArchived(!showArchived)}
               className="flex items-center gap-2 px-4 py-2 bg-amber-900/20 border-2 border-amber-500/50 text-amber-400 hover:bg-amber-900/30 font-semibold rounded-lg transition-colors"
             >
-              <Archive className="w-4 h-4" />
+              <Archive className="w-4 h-4" weight="duotone" />
               {showArchived ? "Show Active" : `Show Archived (${archivedCount})`}
             </button>
           )}
@@ -191,7 +191,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
             href="/campaigns/create"
             className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
           >
-            <Plus className="w-6 h-6" />
+            <Plus className="w-6 h-6" weight="duotone" />
             New Campaign
           </Link>
         </div>

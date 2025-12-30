@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Zap, BarChart3, TrendingUp, Loader2, Search } from "lucide-react";
+import { Fire as Flame, Lightning as Zap, ChartBar as BarChart3, TrendUp as TrendingUp, MagnifyingGlass as Search } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import { LoadingState } from "@/components/LoadingStates";
 
 interface TrendingTopic {
@@ -190,12 +191,12 @@ export default function TrendDiscovery() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <BouncingDots className="bg-white w-1.5 h-1.5" />
                   Searching...
                 </>
               ) : (
                 <>
-                  <Search className="w-4 h-4" />
+                  <Search className="w-4 h-4" weight="duotone" />
                   Search
                 </>
               )}
@@ -207,12 +208,12 @@ export default function TrendDiscovery() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <BouncingDots className="bg-white w-1.5 h-1.5" />
                   Loading...
                 </>
               ) : (
                 <>
-                  <TrendingUp className="w-4 h-4" />
+                  <TrendingUp className="w-4 h-4" weight="duotone" />
                   Daily Trends
                 </>
               )}
@@ -272,11 +273,11 @@ export default function TrendDiscovery() {
                           }`}
                         >
                           {trend.viralPotential === 'high' ? (
-                            <Flame className="w-3 h-3" />
+                            <Flame className="w-3 h-3" weight="duotone" />
                           ) : trend.viralPotential === 'medium' ? (
-                            <Zap className="w-3 h-3" />
+                            <Zap className="w-3 h-3" weight="duotone" />
                           ) : (
-                            <BarChart3 className="w-3 h-3" />
+                            <BarChart3 className="w-3 h-3" weight="duotone" />
                           )}
                           {trend.viralScore}
                         </div>

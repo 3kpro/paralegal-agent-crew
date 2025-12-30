@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus, HelpCircle } from "lucide-react";
+import { Plus, Minus, Question as HelpCircle } from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
 
 const faqs = [
   {
@@ -11,7 +12,7 @@ const faqs = [
       {
         question: "How does XELORA work?",
         answer:
-          "XELORA uses our XELORA™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ publishes or schedules across all your channels. The entire process takes under 60 seconds.",
+          "XELORA uses our XELORA™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ formats it perfectly for all your channels. The entire process takes under 60 seconds.",
       },
       {
         question: "Do I need any technical skills to use it?",
@@ -21,7 +22,7 @@ const faqs = [
       {
         question: "Which platforms does it support?",
         answer:
-          "Currently, we support Twitter, LinkedIn, and email marketing platforms. We're adding Instagram, Facebook, TikTok, and YouTube in Q2 2025. You can also export content to any platform manually.",
+          "We generate optimized content for Twitter, LinkedIn, and Email. We are adding support for Instagram, Facebook, TikTok, and YouTube formats in Q2 2025. Direct publishing and scheduling integrations are coming soon.",
       },
     ],
   },
@@ -76,7 +77,7 @@ const faqs = [
       {
         question: "Is my data safe and secure?",
         answer:
-          "Security is our top priority. We use enterprise-grade encryption, SOC 2 compliance, and never store your social media passwords. We only access the minimum permissions needed to post content on your behalf.",
+          "Security is our top priority. We use enterprise-grade encryption, SOC 2 compliance, and never store your social media passwords. We only access the minimum permissions needed to analyze trends and generate content.",
       },
       {
         question: "Do you store my content?",
@@ -86,7 +87,7 @@ const faqs = [
       {
         question: "Can I disconnect my accounts anytime?",
         answer:
-          "Yes, you can disconnect any connected account with one click. This immediately revokes our access to post on your behalf. Your content history remains in your dashboard for reference.",
+          "Yes, you can disconnect any connected account with one click. This immediately revokes our access. Your content history remains in your dashboard for reference.",
       },
     ],
   },
@@ -101,7 +102,7 @@ const faqs = [
       {
         question: "Can I schedule content in advance?",
         answer:
-          "Yes! Our SmartScheduler™ can schedule content weeks or months in advance. It even suggests optimal posting times based on your audience engagement patterns.",
+          "SmartScheduler™ is coming soon! Currently, you can generate and export content instantly. We are building direct scheduling integration for Q2 2025 to let you plan weeks in advance.",
       },
       {
         question: "Do you provide analytics?",
@@ -121,8 +122,17 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-[#2b2b2b]">
-      <div className="container mx-auto px-4">
+    <section id="faq" className="py-24 bg-[#2b2b2b] relative overflow-hidden">
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.12)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Section Header */}
           <motion.div
@@ -132,7 +142,7 @@ export default function FAQSection() {
             className="text-center mb-16"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 rounded-full mb-6 border border-coral-500/30">
-              <HelpCircle className="w-4 h-4 text-coral-400" />
+              <HelpCircle className="w-4 h-4 text-coral-400" weight="duotone" />
               <span className="text-sm font-semibold text-coral-400">
                 Frequently Asked Questions
               </span>
@@ -190,9 +200,9 @@ export default function FAQSection() {
                           </span>
                           <div className="flex-shrink-0">
                             {isOpen ? (
-                              <Minus className="w-6 h-6 text-coral-500" />
+                              <Minus className="w-6 h-6 text-coral-500" weight="duotone" />
                             ) : (
-                              <Plus className="w-6 h-6 text-gray-400" />
+                              <Plus className="w-6 h-6 text-gray-400" weight="duotone" />
                             )}
                           </div>
                         </button>

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 interface InteractiveHoverButtonProps
@@ -41,7 +41,7 @@ const InteractiveHoverButton = React.forwardRef<
       </span>
       <div className="absolute top-0 left-0 z-10 flex h-full w-full translate-x-full items-center justify-center gap-2 text-white opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
         <span>{text}</span>
-        {Icon ? <Icon className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+        {Icon ? <Icon className="w-4 h-4" weight="duotone" /> : <ArrowRight className="w-4 h-4" weight="duotone" />}
       </div>
       <div className={cn(
         "absolute left-[20%] top-[40%] h-2 w-2 rounded-lg transition-all duration-300 group-hover:left-0 group-hover:top-0 group-hover:h-full group-hover:w-full group-hover:scale-150",

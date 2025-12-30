@@ -59,7 +59,9 @@ import {
   ContentControls,
   CampaignPayload,
   ScheduledPost,
+  PromoteData,
 } from "./types";
+import PromoteInput from "./components/PromoteInput";
 
 // Interface for AI provider data
 interface AIProvider {
@@ -108,6 +110,20 @@ export default function NewCampaignPage() {
   const [targetPlatforms, setTargetPlatforms] = useState<string[]>([]);
   const [connectedPlatforms, setConnectedPlatforms] = useState<string[]>([]);
   const [connectedAccountObjects, setConnectedAccountObjects] = useState<ConnectedAccount[]>([]);
+
+  // Campaign Type Selection: trending (viral/search), promote (product/service)
+  const [campaignType, setCampaignType] = useState<"trending" | "promote">("trending");
+  const [promoteData, setPromoteData] = useState<PromoteData>({
+    productName: "",
+    productType: "product",
+    description: "",
+    keyFeatures: [],
+    targetAudience: "",
+    uniqueSellingPoints: [],
+    websiteUrl: "",
+    uploadedFiles: []
+  });
+  const [promoteWizardStep, setPromoteWizardStep] = useState(0);
 
   // Step 2: Trend Discovery
   const [searchQuery, setSearchQuery] = useState("");
@@ -812,8 +828,14 @@ export default function NewCampaignPage() {
    * Generate content for selected platforms
    */
   const generateContent = useCallback(async () => {
-    if (selectedTrends.length === 0) {
+    // Validation based on campaign type
+    if (campaignType === "trending" && selectedTrends.length === 0 && !selectedTrend) {
       showToast("Please select at least one trend before generating content", "error");
+      return;
+    }
+
+    if (campaignType === "promote" && (!promoteData.productName || !promoteData.description)) {
+      showToast("Please provide product name and description", "error");
       return;
     }
 
@@ -832,7 +854,12 @@ export default function NewCampaignPage() {
       };
 
       const requestBody = {
-        topic: selectedTrends.map(t => t.title).join(", "),
+        campaignType,
+        promoteData: campaignType === 'promote' ? promoteData : undefined,
+        // Fallback topic for compatibility
+        topic: campaignType === 'promote'
+          ? `${promoteData.productName} - ${promoteData.productType}`
+          : (selectedTrend?.title || selectedTrends.map(t => t.title).join(", ")),
         formats: targetPlatforms,
         preferredProvider: aiProvider,
         // Pass content controls to API (map values to API format)
@@ -1057,11 +1084,12 @@ export default function NewCampaignPage() {
           name: campaignName,
           target_platforms: targetPlatforms,
           status: publishNow ? "scheduled" : "draft",
-          campaign_type: "trending",
-          source_type: "trending",
+          campaign_type: campaignType,
+          source_type: campaignType,
           source_data: {
-            trend: selectedTrend || selectedTrends[0] || null,
-            trends: selectedTrends,
+            trend: campaignType === "trending" ? (selectedTrend || selectedTrends[0] || undefined) : undefined,
+            trends: campaignType === "trending" ? selectedTrends : [],
+            promoteData: campaignType === "promote" ? promoteData : undefined,
             query: searchQuery,
             controls: {
               temperature: controls.temperature,
@@ -1212,6 +1240,11 @@ export default function NewCampaignPage() {
    * Copy platform content to clipboard
    */
   const copyContent = useCallback((platform: string) => {
+    if (!generatedContent) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
     const content = editedContent[platform] ||
       (typeof generatedContent[platform] === 'string'
         ? generatedContent[platform]
@@ -1546,6 +1579,34 @@ export default function NewCampaignPage() {
                   </div>
                 </motion.button>
 
+                {/* Promote Button */}
+                <motion.button
+                  onClick={() => {
+                    setCampaignType("promote");
+                    setCurrentCard(8); // Card 8 is the Promote wizard
+                  }}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full p-8 bg-gradient-to-br from-tron-magenta/20 to-purple-500/20 backdrop-blur-xl border-2 border-tron-magenta rounded-2xl hover:shadow-xl hover:shadow-tron-magenta/30 transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-magenta to-purple-500 flex items-center justify-center">
+                        <Zap className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-2xl font-bold text-tron-text mb-1">
+                          Promote
+                        </h3>
+                        <p className="text-tron-text-muted">
+                          Promote your product or service
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-8 h-8 text-tron-magenta group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </motion.button>
+
                 {/* Back Button */}
                 <motion.button
                   onClick={goToPrevCard}
@@ -1861,36 +1922,44 @@ export default function NewCampaignPage() {
                   </button>
                 </div>
 
-                {/* Platform Presets */}
-                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
-                  <div className="text-sm text-tron-text-muted mb-3 font-semibold">Quick Presets</div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => applyPlatformPreset("twitter")}
-                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
-                    >
-                      <Twitter className="w-4 h-4" />
-                      Twitter Best Practices
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => applyPlatformPreset("tiktok")}
-                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
-                    >
-                      <Music className="w-4 h-4" />
-                      TikTok Viral
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => applyPlatformPreset("linkedin")}
-                      className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
-                    >
-                      <Linkedin className="w-4 h-4" />
-                      LinkedIn Authority
-                    </button>
+                {/* Platform Presets - Only show for selected platforms */}
+                {(targetPlatforms.includes("twitter") || targetPlatforms.includes("tiktok") || targetPlatforms.includes("linkedin")) && (
+                  <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                    <div className="text-sm text-tron-text-muted mb-3 font-semibold">Quick Presets</div>
+                    <div className="flex flex-wrap gap-2">
+                      {targetPlatforms.includes("twitter") && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("twitter")}
+                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                        >
+                          <Twitter className="w-4 h-4" />
+                          Twitter Best Practices
+                        </button>
+                      )}
+                      {targetPlatforms.includes("tiktok") && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("tiktok")}
+                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                        >
+                          <Music className="w-4 h-4" />
+                          TikTok Viral
+                        </button>
+                      )}
+                      {targetPlatforms.includes("linkedin") && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("linkedin")}
+                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                          LinkedIn Authority
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Validation Warnings */}
                 {selectedAudiences.length === 0 && (
@@ -2440,17 +2509,32 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* Keep existing steps temporarily for testing - we'll convert them next */}
-          {currentCard > 7 && (
-            <div className="text-center text-tron-text">
-              <p className="text-2xl mb-4">Card {currentCard} - Coming soon!</p>
-              <button
-                onClick={goToPrevCard}
-                className="px-6 py-3 bg-tron-cyan/20 border-2 border-tron-cyan rounded-xl text-tron-cyan hover:bg-tron-cyan/30 transition-all"
-              >
-                ← Back
-              </button>
-            </div>
+          {/* CARD 8: Promote Wizard */}
+          {currentCard === 8 && (
+            <motion.div
+              key="card-8"
+              custom={cardDirection}
+              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-magenta/30 rounded-3xl p-8 shadow-2xl"
+            >
+              <PromoteInput
+                data={promoteData}
+                onChange={setPromoteData}
+                currentStep={promoteWizardStep}
+                onStepChange={setPromoteWizardStep}
+                onBack={() => {
+                  setCampaignType("trending");
+                  setCurrentCard(3);
+                }}
+                onComplete={() => {
+                  // Go to Shape Your Content (Card 6) after Promote wizard
+                  setCurrentCard(6);
+                }}
+              />
+            </motion.div>
           )}
 
         </AnimatePresence>
@@ -3026,6 +3110,7 @@ export default function NewCampaignPage() {
                           onEditToggle={toggleEdit}
                           onSaveEdit={saveEdit}
                           onContentChange={handleContentChange}
+                          onCopy={copyContent}
                         />
                       );
                     })}
@@ -3100,7 +3185,7 @@ export default function NewCampaignPage() {
                                 <div>
                                   <p>✅ Posted to {successfulPosts.length} platforms!</p>
                                   <div className="mt-2 space-y-1">
-                                    {successfulPosts.map((post, idx) => (
+                                    {successfulPosts.map((post: { platform: string; url: string }, idx: number) => (
                                       <a
                                         key={idx}
                                         href={post.url}

@@ -7,7 +7,7 @@
  */
 
 import React, { memo, useMemo, useCallback, useRef, useEffect } from "react";
-import { Settings, Settings2, Sparkles, Target, Users, MessageSquare } from "lucide-react";
+import { Gear as Settings, Faders as Settings2, MagicWand, Target, Users, Chat as MessageSquare } from "@phosphor-icons/react";
 import CreativitySlider from "./CreativitySlider";
 import ControlOptionButton from "./ControlOptionButton";
 import { ControlOption, ContentControls } from "../types";
@@ -138,7 +138,7 @@ const ContentSettings = memo<ContentSettingsProps>(
       <div className="space-y-5 p-6 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-3xl">
         {/* Header */}
         <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2 mb-4">
-          <Settings className="w-5 h-5 text-tron-cyan" />
+          <Settings className="w-5 h-5 text-tron-cyan" weight="duotone" />
           Content Settings
         </h3>
 
@@ -155,7 +155,7 @@ const ContentSettings = memo<ContentSettingsProps>(
             {/* Content Length - Compact */}
             <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
               <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-                <Settings2 className="w-4 h-4 text-tron-cyan" />
+                <Settings2 className="w-4 h-4 text-tron-cyan" weight="duotone" />
                 Content Length
               </legend>
               <div className="grid grid-cols-3 gap-2">
@@ -176,7 +176,7 @@ const ContentSettings = memo<ContentSettingsProps>(
           {/* Right Column: Tone */}
           <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
             <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <Sparkles className="w-4 h-4 text-tron-cyan" />
+              <MagicWand className="w-4 h-4 text-tron-cyan" weight="duotone" />
               Content Tone
             </legend>
             <div className="grid grid-cols-3 gap-2">
@@ -195,7 +195,7 @@ const ContentSettings = memo<ContentSettingsProps>(
           {/* Target Audience - Full Width, Compact */}
           <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
             <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <Users className="w-4 h-4 text-tron-cyan" />
+              <Users className="w-4 h-4 text-tron-cyan" weight="duotone" />
               Target Audience
             </legend>
             <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
@@ -214,7 +214,7 @@ const ContentSettings = memo<ContentSettingsProps>(
           {/* Content Focus - Full Width, Compact */}
           <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
             <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <MessageSquare className="w-4 h-4 text-tron-cyan" />
+              <MessageSquare className="w-4 h-4 text-tron-cyan" weight="duotone" />
               Content Focus
             </legend>
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
@@ -233,7 +233,7 @@ const ContentSettings = memo<ContentSettingsProps>(
           {/* Call to Action - Full Width, Compact */}
           <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
             <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <Target className="w-4 h-4 text-tron-cyan" />
+              <Target className="w-4 h-4 text-tron-cyan" weight="duotone" />
               Call to Action
             </legend>
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">

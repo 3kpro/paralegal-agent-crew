@@ -1,7 +1,7 @@
 "use client";
 
 import Tooltip from "./ui/Tooltip";
-import { Sparkles, TrendingUp, Zap, Target } from "lucide-react";
+import { MagicWand, TrendUp as TrendingUp, Lightning as Zap, Target, Question as HelpCircle } from "@phosphor-icons/react";
 
 /**
  * Pre-configured tooltips for first-time users
@@ -34,7 +34,7 @@ export function ViralScoreTooltip({ children }: { children?: React.ReactNode }) 
           </p>
         </div>
       }
-      icon={<Sparkles className="w-4 h-4" />}
+      icon={<MagicWand className="w-4 h-4" weight="duotone" />}
       storageKey="viral_score"
       dismissible={true}
     >
@@ -69,7 +69,7 @@ export function TrendingTopicsTooltip({ children }: { children?: React.ReactNode
           </p>
         </div>
       }
-      icon={<TrendingUp className="w-4 h-4" />}
+      icon={<TrendingUp className="w-4 h-4" weight="duotone" />}
       storageKey="trending_topics"
       dismissible={true}
     >
@@ -96,7 +96,7 @@ export function AIContentGeneratorTooltip({ children }: { children?: React.React
           </p>
         </div>
       }
-      icon={<Zap className="w-4 h-4" />}
+      icon={<Zap className="w-4 h-4" weight="duotone" />}
       storageKey="ai_content_generator"
       dismissible={true}
     >
@@ -121,7 +121,7 @@ export function PlatformTargetingTooltip({ children }: { children?: React.ReactN
           </p>
         </div>
       }
-      icon={<Target className="w-4 h-4" />}
+      icon={<Target className="w-4 h-4" weight="duotone" />}
       storageKey="platform_targeting"
       dismissible={true}
     >
@@ -178,7 +178,7 @@ export function FirstTimeHelpBanner() {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-5 h-5 text-tron-cyan" />
+            <MagicWand className="w-5 h-5 text-tron-cyan" weight="duotone" />
             <h3 className="font-bold text-white">New to XELORA?</h3>
           </div>
           <p className="text-sm text-gray-300 mb-3">
@@ -202,5 +202,4 @@ export function FirstTimeHelpBanner() {
   );
 }
 
-// Import for the help icon used in the banner
-import { HelpCircle } from "lucide-react";
+

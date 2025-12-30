@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ErrorInfo, ReactNode } from "react";
-import { AlertCircle, RefreshCw, Home } from "lucide-react";
+import { WarningCircle as AlertCircle, ArrowsClockwise as RefreshCw, House as Home } from "@phosphor-icons/react";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -72,7 +72,7 @@ class ErrorBoundary extends React.Component<
         <div className="min-h-screen bg-tron-dark flex items-center justify-center p-4">
           <div className="max-w-2xl w-full bg-tron-grid border border-red-500/30 rounded-xl p-8">
             <div className="flex items-center gap-3 mb-6">
-              <AlertCircle className="w-8 h-8 text-red-400" />
+              <AlertCircle className="w-8 h-8 text-red-400" weight="duotone" />
               <h1 className="text-2xl font-bold text-tron-text">
                 Something went wrong
               </h1>
@@ -110,14 +110,14 @@ class ErrorBoundary extends React.Component<
                 onClick={this.handleReset}
                 className="flex items-center gap-2 px-4 py-2 bg-tron-cyan hover:bg-tron-cyan/80 text-tron-dark rounded-lg font-semibold transition-colors"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4" weight="duotone" />
                 Try Again
               </button>
               <button
                 onClick={() => (window.location.href = "/")}
                 className="flex items-center gap-2 px-4 py-2 bg-tron-grid hover:bg-tron-dark border border-tron-cyan/30 text-tron-text rounded-lg font-semibold transition-colors"
               >
-                <Home className="w-4 h-4" />
+                <Home className="w-4 h-4" weight="duotone" />
                 Go Home
               </button>
             </div>

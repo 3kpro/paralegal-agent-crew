@@ -2,7 +2,7 @@
  * TypeScript types and interfaces for the campaign creation flow
  */
 
-import { LucideIcon } from "lucide-react";
+import { ElementType } from "react";
 
 /**
  * Platform configuration
@@ -10,7 +10,7 @@ import { LucideIcon } from "lucide-react";
 export interface Platform {
   id: string;
   name: string;
-  icon: LucideIcon;
+  icon: ElementType;
   color: string;
 }
 
@@ -27,7 +27,7 @@ export interface ControlOption {
  */
 export interface StepConfig {
   number: number;
-  icon: LucideIcon;
+  icon: ElementType;
 }
 
 /**
@@ -96,11 +96,12 @@ export interface CampaignPayload {
   name: string;
   target_platforms: string[];
   status: "draft" | "scheduled" | "published";
-  campaign_type: "trending" | "custom";
-  source_type: "trending" | "custom";
+  campaign_type: "trending" | "promote";
+  source_type: "trending" | "promote";
   source_data: {
     trends?: Trend[];
     trend?: Trend;
+    promoteData?: PromoteData;
     query: string;
     controls: Partial<ContentControls>;
     selectedAudiences?: string[];
@@ -114,6 +115,7 @@ export interface CampaignPayload {
  * Scheduled post payload
  */
 export interface ScheduledPost {
+  id?: string;
   user_id: string;
   campaign_id: string;
   title: string;
@@ -121,7 +123,9 @@ export interface ScheduledPost {
   platform: string;
   post_type: "text" | "image" | "video";
   scheduled_at: string;
-  status: "draft" | "scheduled" | "published";
+  published_at?: string;
+  status: "draft" | "scheduled" | "published" | "failed";
+  failed_reason?: string;
 }
 
 /**
@@ -144,4 +148,36 @@ export interface ProductDetails {
   customDescription?: string;
   generatedDescription?: string;
   campaignImages?: CampaignImage[];
+}
+
+/**
+ * Promote Campaign Data
+ */
+export interface PromoteData {
+  productName: string;
+  productType: "product" | "service" | "content" | "saas" | "other";
+  description: string;
+  keyFeatures: string[];
+  targetAudience: string;
+  uniqueSellingPoints: string[];
+  websiteUrl?: string;
+  driveLink?: string;
+  contentFocus?: string;
+  uploadedFiles?: File[]; // For UI state only
+}
+
+
+/**
+ * Content Template for reusable content
+ */
+export interface ContentTemplate {
+  id: string;
+  user_id: string;
+  name: string;
+  category: string;
+  description?: string;
+  template_content: string;
+  platforms: string[];
+  usage_count: number;
+  created_at: string;
 }

@@ -6,19 +6,20 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import ViralScoreAnalytics from "@/components/ViralScoreAnalytics";
 import {
-  BarChart3,
-  TrendingUp,
+  ChartBar as BarChart3,
+  TrendUp as TrendingUp,
   Users,
   Eye,
-  Share2,
+  ShareNetwork as Share2,
   Target,
-  Activity,
-  Rocket,
-  Twitter,
-  Linkedin,
-  Instagram,
-  Music,
-} from "lucide-react";
+  Pulse as Activity,
+  RocketLaunch as Rocket,
+  TwitterLogo as Twitter,
+  LinkedinLogo as Linkedin,
+  InstagramLogo as Instagram,
+  MusicNote as Music,
+} from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 export default function AnalyticsPage() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen bg-tron-dark flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <BouncingDots className="bg-tron-cyan" />
           <p className="text-tron-text-muted">Loading Analytics...</p>
         </div>
       </div>
@@ -77,7 +78,7 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold text-tron-text flex items-center gap-3">
-                <BarChart3 className="w-8 h-8 text-tron-cyan" />
+                <BarChart3 className="w-8 h-8 text-tron-cyan" weight="duotone" />
                 Analytics Hub
               </h1>
               <p className="text-tron-text-muted mt-2">
@@ -106,7 +107,7 @@ export default function AnalyticsPage() {
               }}
               className="p-6 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-full"
             >
-              <Rocket className="w-16 h-16 text-tron-cyan" />
+              <Rocket className="w-16 h-16 text-tron-cyan" weight="duotone" />
             </motion.div>
           </div>
           <h2 className="text-2xl font-bold text-tron-text mb-3">
@@ -172,7 +173,7 @@ export default function AnalyticsPage() {
               className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
             >
               <div className="flex items-center justify-between mb-4">
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                <stat.icon className={`w-6 h-6 ${stat.color}`} weight="duotone" />
                 <span className="text-xs text-tron-text-muted">PREVIEW</span>
               </div>
               <div className="text-2xl font-bold text-tron-text mb-1">
@@ -194,7 +195,7 @@ export default function AnalyticsPage() {
             className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
           >
             <div className="flex items-center gap-3 mb-4">
-              <BarChart3 className="w-5 h-5 text-tron-cyan" />
+              <BarChart3 className="w-5 h-5 text-tron-cyan" weight="duotone" />
               <h3 className="text-lg font-semibold text-tron-text">
                 Campaign Analytics
               </h3>
@@ -202,7 +203,7 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               <div className="h-32 bg-tron-dark/50 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <TrendingUp className="w-8 h-8 text-tron-cyan/50 mx-auto mb-2" />
+                  <TrendingUp className="w-8 h-8 text-tron-cyan/50 mx-auto mb-2" weight="duotone" />
                   <p className="text-sm text-tron-text-muted">
                     Interactive charts coming soon
                   </p>
@@ -227,7 +228,7 @@ export default function AnalyticsPage() {
             className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
           >
             <div className="flex items-center gap-3 mb-4">
-              <Target className="w-5 h-5 text-tron-cyan" />
+              <Target className="w-5 h-5 text-tron-cyan" weight="duotone" />
               <h3 className="text-lg font-semibold text-tron-text">
                 Platform Performance
               </h3>
@@ -247,7 +248,7 @@ export default function AnalyticsPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-tron-dark/50 rounded-full flex items-center justify-center">
-                        <Icon className="w-4 h-4 text-tron-cyan" />
+                        <Icon className="w-4 h-4 text-tron-cyan" weight="duotone" />
                       </div>
                       <span className="text-sm text-tron-text">
                         {platform.name}
@@ -276,7 +277,7 @@ export default function AnalyticsPage() {
           className="mt-8 bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
         >
           <h3 className="text-lg font-semibold text-tron-text mb-4 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-tron-cyan" />
+            <Activity className="w-5 h-5 text-tron-cyan" weight="duotone" />
             Planned Analytics Features
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

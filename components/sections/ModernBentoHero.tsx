@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, Zap, TrendingUp, ArrowRight, Play, Users, BarChart3, Twitter, Linkedin, Instagram, Video } from "lucide-react";
+import { MagicWand, Lightning as Zap, TrendUp as TrendingUp, ArrowRight, Play, Users, ChartBar as BarChart3, TwitterLogo as Twitter, LinkedinLogo as Linkedin, InstagramLogo as Instagram, VideoCamera as Video } from "@phosphor-icons/react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -52,10 +52,10 @@ export default function ModernBentoHero() {
             <div className="flex flex-wrap gap-4">
               <Link href="/signup" className="btn-primary flex items-center gap-2 group">
                 Start Creating Free
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" weight="duotone" />
               </Link>
               <button onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })} className="btn-secondary flex items-center gap-2">
-                <Play className="w-4 h-4 fill-current" />
+                <Play className="w-4 h-4 fill-current" weight="duotone" />
                 Watch Demo
               </button>
             </div>
@@ -84,7 +84,7 @@ export default function ModernBentoHero() {
               className="col-span-2 glass-panel p-6 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
-                <Sparkles className="w-6 h-6 text-coral-400" />
+                <MagicWand className="w-6 h-6 text-coral-400" weight="duotone" />
               </div>
               <h3 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Viral Prediction</h3>
               
@@ -120,7 +120,7 @@ export default function ModernBentoHero() {
               transition={{ delay: 0.4 }}
               className="glass-panel p-5 flex flex-col justify-between group hover:border-blue-500/30 transition-colors"
             >
-              <BarChart3 className="w-8 h-8 text-blue-400 mb-2 group-hover:scale-110 transition-transform" />
+              <BarChart3 className="w-8 h-8 text-blue-400 mb-2 group-hover:scale-110 transition-transform" weight="duotone" />
               <div>
                 <div className="text-2xl font-bold text-white">2.4M</div>
                 <div className="text-xs text-gray-400">Views Tracked</div>
@@ -134,7 +134,7 @@ export default function ModernBentoHero() {
               transition={{ delay: 0.5 }}
               className="glass-panel p-5 flex flex-col justify-between group hover:border-yellow-500/30 transition-colors"
             >
-              <Zap className="w-8 h-8 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" />
+              <Zap className="w-8 h-8 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" weight="duotone" />
               <div>
                 <div className="text-2xl font-bold text-white">10x</div>
                 <div className="text-xs text-gray-400">Faster Workflow</div>
@@ -156,7 +156,7 @@ export default function ModernBentoHero() {
                    { Icon: Video, color: "text-white" }
                  ].map(({ Icon, color }, i) => (
                    <div key={i} className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center z-10 hover:z-20 hover:scale-110 transition-all">
-                     <Icon className={`w-5 h-5 ${color}`} />
+                     <Icon className={`w-5 h-5 ${color}`} weight="duotone" />
                    </div>
                  ))}
               </div>

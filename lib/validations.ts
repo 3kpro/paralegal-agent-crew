@@ -34,6 +34,17 @@ export const contentControlsSchema = z.object({
 
 export const generateContentSchema = z.object({
   topic: z.string().min(1, "Topic is required").max(500, "Topic too long"),
+  campaignType: z.enum(["trending", "promote"]).optional(),
+  promoteData: z.object({
+    productName: z.string().optional(),
+    productType: z.enum(["product", "service", "content", "saas", "other"]).optional(),
+    description: z.string().optional(),
+    keyFeatures: z.array(z.string()).optional(),
+    targetAudience: z.string().optional(),
+    uniqueSellingPoints: z.array(z.string()).optional(),
+    websiteUrl: z.string().optional(),
+    driveLink: z.string().optional(),
+  }).optional(),
   formats: z.array(z.enum(["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit", "email"])).min(1, "Select at least one format"),
   preferredProvider: z.enum(["openai", "anthropic", "google", "lmstudio"]).optional(),
   temperature: z.number().min(0).max(1).optional(),

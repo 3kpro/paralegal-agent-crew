@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Sparkles, Flame, Twitter, TrendingUp } from "lucide-react";
+import { CaretDown as ChevronDown, MagicWand, Fire as Flame, TwitterLogo as Twitter, TrendUp as TrendingUp } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface TrendSourceSelectorProps {
@@ -15,7 +15,7 @@ const trendSources = [
     id: "mixed",
     label: "Mixed Sources",
     description: "Combines all trending data sources",
-    icon: Sparkles,
+    icon: MagicWand,
     color: "from-tron-cyan to-tron-magenta",
   },
   {
@@ -49,7 +49,7 @@ export function TrendSourceSelector({
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedSource = trendSources.find((s) => s.id === value);
-  const SelectedIcon = selectedSource?.icon || Sparkles;
+  const SelectedIcon = selectedSource?.icon || MagicWand;
 
   return (
     <div className="relative">
@@ -73,7 +73,7 @@ export function TrendSourceSelector({
           <div
             className={`p-2 rounded-lg bg-gradient-to-br ${'$'}{selectedSource?.color || "from-tron-cyan to-tron-magenta"}`}
           >
-            <SelectedIcon className="w-4 h-4 text-white" />
+            <SelectedIcon className="w-4 h-4 text-white" weight="duotone" />
           </div>
           <div className="text-left">
             <div className="text-sm font-semibold text-tron-cyan">
@@ -89,6 +89,7 @@ export function TrendSourceSelector({
           className={`w-5 h-5 text-tron-cyan transition-transform duration-300 ${'$'}{
             isOpen ? "rotate-180" : ""
           }`}
+          weight="duotone"
         />
       </motion.button>
 
@@ -128,7 +129,7 @@ export function TrendSourceSelector({
                     <div
                       className={`p-2 rounded-lg bg-gradient-to-br ${'$'}{source.color}`}
                     >
-                      <SourceIcon className="w-4 h-4 text-white" />
+                      <SourceIcon className="w-4 h-4 text-white" weight="duotone" />
                     </div>
 
                     <div className="flex-1 text-left">

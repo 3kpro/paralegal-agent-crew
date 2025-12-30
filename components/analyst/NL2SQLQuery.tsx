@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Database, BarChart2, AlertCircle, Code, ChevronDown, ChevronUp } from 'lucide-react';
+import { MagnifyingGlass as Search, Database, ChartBar as BarChart2, WarningCircle as AlertCircle, Code, CaretDown as ChevronDown, CaretUp as ChevronUp } from '@phosphor-icons/react';
 import { LoadingState } from "@/components/LoadingStates";
 import dynamic from 'next/dynamic';
 
@@ -135,7 +135,7 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
         <form onSubmit={handleSearch} className="relative z-10">
           <div className="relative flex items-center bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden focus-within:border-coral-500/50 transition-colors">
             <div className="pl-4 text-gray-500">
-              <Search className="w-5 h-5" />
+              <Search className="w-5 h-5" weight="duotone" />
             </div>
             <input
               type="text"
@@ -177,7 +177,7 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
           animate={{ opacity: 1, y: 0 }}
           className="p-4 bg-red-900/20 border border-red-800 rounded-xl flex items-start gap-3 text-red-200"
         >
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" weight="duotone" />
           <div>
             <h4 className="font-medium">Analysis Failed</h4>
             <p className="text-sm opacity-80 mt-1">{error}</p>
@@ -197,7 +197,7 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
-                  <BarChart2 className="w-5 h-5 text-coral-500" />
+                  <BarChart2 className="w-5 h-5 text-coral-500" weight="duotone" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Analysis Result</h3>
@@ -208,9 +208,9 @@ export default function NL2SQLQuery({ campaignId }: NL2SQLQueryProps) {
                 onClick={() => setShowSql(!showSql)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/40 border border-gray-800 text-xs text-gray-400 hover:text-white transition-colors"
               >
-                <Code className="w-3 h-3" />
+                <Code className="w-3 h-3" weight="duotone" />
                 {showSql ? 'Hide Query' : 'View SQL'}
-                {showSql ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                {showSql ? <ChevronUp className="w-3 h-3" weight="duotone" /> : <ChevronDown className="w-3 h-3" weight="duotone" />}
               </button>
             </div>
 

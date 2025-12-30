@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, AlertCircle, Play, Lock, Users, MessageSquare, Copy, Scissors, DollarSign } from "lucide-react";
+import { X, WarningCircle as AlertCircle, Play, Lock, Users, Chat as MessageSquare, Copy, Scissors, CurrencyDollar as DollarSign, TiktokLogo } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 interface TikTokCreatorInfo {
   creator_avatar_url: string;
@@ -121,29 +122,27 @@ export default function TikTokPublishModal({
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" fill="currentColor"/>
-                </svg>
+                <TiktokLogo className="w-8 h-8" weight="duotone" />
                 Post to TikTok
               </h2>
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                <X size={24} />
+                <X size={24} weight="duotone" />
               </button>
             </div>
 
             {loading && (
               <div className="text-center py-8">
-                <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <BouncingDots className="bg-tron-cyan" />
                 <p className="text-gray-400">Loading creator info...</p>
               </div>
             )}
 
             {error && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" weight="duotone" />
                 <div>
                   <p className="text-red-400 font-semibold">Error</p>
                   <p className="text-red-300 text-sm">{error}</p>
@@ -177,7 +176,7 @@ export default function TikTokPublishModal({
                 {videoUrl && (
                   <div className="bg-tron-grid/50 border border-tron-cyan/20 rounded-lg p-4">
                     <p className="text-white font-semibold mb-2 flex items-center gap-2">
-                      <Play size={16} />
+                      <Play size={16} weight="duotone" />
                       Video Preview
                     </p>
                     <video
@@ -208,7 +207,7 @@ export default function TikTokPublishModal({
                 {/* Point 2: Privacy Level (NO DEFAULT - User must select) */}
                 <div>
                   <label className="text-white font-semibold mb-2 block flex items-center gap-2">
-                    <Lock size={16} />
+                    <Lock size={16} weight="duotone" />
                     Privacy Level <span className="text-red-400">*</span>
                   </label>
                   <select
@@ -234,7 +233,7 @@ export default function TikTokPublishModal({
                 {/* Point 2: Interaction Settings (OFF by default, disabled if app settings disabled) */}
                 <div className="space-y-3">
                   <p className="text-white font-semibold mb-2 flex items-center gap-2">
-                    <Users size={16} />
+                    <Users size={16} weight="duotone" />
                     Allow Interactions
                   </p>
 
@@ -252,7 +251,7 @@ export default function TikTokPublishModal({
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <MessageSquare size={16} className="text-tron-cyan" />
+                        <MessageSquare size={16} className="text-tron-cyan" weight="duotone" />
                         <span className="text-white">Comments</span>
                       </div>
                       {creatorInfo.comment_disabled && (
@@ -275,7 +274,7 @@ export default function TikTokPublishModal({
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Copy size={16} className="text-tron-cyan" />
+                        <Copy size={16} className="text-tron-cyan" weight="duotone" />
                         <span className="text-white">Duet</span>
                       </div>
                       {creatorInfo.duet_disabled && (
@@ -298,7 +297,7 @@ export default function TikTokPublishModal({
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Scissors size={16} className="text-tron-cyan" />
+                        <Scissors size={16} className="text-tron-cyan" weight="duotone" />
                         <span className="text-white">Stitch</span>
                       </div>
                       {creatorInfo.stitch_disabled && (
@@ -323,7 +322,7 @@ export default function TikTokPublishModal({
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <DollarSign size={16} className="text-yellow-400" />
+                        <DollarSign size={16} className="text-yellow-400" weight="duotone" />
                         <span className="text-white font-semibold">Branded Content</span>
                       </div>
                       <p className="text-gray-400 text-sm">

@@ -1,16 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import {
-  CheckCircle2,
+  CheckCircle as CheckCircle2,
   XCircle,
   Clock,
-  Trash2,
-  RotateCw,
-  TestTube2,
-  Loader2,
-} from "lucide-react"
+  Trash as Trash2,
+  ArrowsClockwise as RotateCw,
+  Flask as TestTube2,
+  TwitterLogo,
+  LinkedinLogo,
+  FacebookLogo,
+  InstagramLogo,
+  YoutubeLogo,
+  TiktokLogo,
+  RedditLogo,
+  Globe,
+} from "@phosphor-icons/react"
+import { BouncingDots } from "@/components/ui/bouncing-dots"
 
 interface SocialProvider {
   id: string
@@ -39,6 +47,34 @@ interface ConnectionCardProps {
   onRefresh: () => Promise<void>
 }
 
+// Map provider_key to Phosphor brand icon
+function getPlatformIcon(providerKey: string) {
+  const iconMap: Record<string, React.ElementType> = {
+    twitter: TwitterLogo,
+    linkedin: LinkedinLogo,
+    facebook: FacebookLogo,
+    instagram: InstagramLogo,
+    youtube: YoutubeLogo,
+    tiktok: TiktokLogo,
+    reddit: RedditLogo,
+  }
+  return iconMap[providerKey.toLowerCase()] || Globe
+}
+
+// Platform brand colors
+function getPlatformColor(providerKey: string) {
+  const colorMap: Record<string, string> = {
+    twitter: "bg-black",
+    linkedin: "bg-[#0A66C2]",
+    facebook: "bg-[#1877F2]",
+    instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]",
+    youtube: "bg-[#FF0000]",
+    tiktok: "bg-black",
+    reddit: "bg-[#FF4500]",
+  }
+  return colorMap[providerKey.toLowerCase()] || "bg-tron-cyan/20"
+}
+
 export default function ConnectionCard({
   provider,
   connection,
@@ -50,7 +86,8 @@ export default function ConnectionCard({
 
   const supabase = createClient()
   const isConnected = !!connection
-  // OAuth platforms are ready - removed hardcoded "coming soon" list
+  const PlatformIcon = getPlatformIcon(provider.provider_key)
+  const platformColor = getPlatformColor(provider.provider_key)
 
   async function handleTest() {
     if (!connection) return
@@ -109,7 +146,7 @@ export default function ConnectionCard({
     if (!connection) {
       return (
         <div className="flex items-center gap-2 text-sm text-tron-text-muted">
-          <Clock className="w-4 h-4" />
+          <Clock className="w-4 h-4" weight="duotone" />
           <span>Not Connected</span>
         </div>
       )
@@ -118,7 +155,7 @@ export default function ConnectionCard({
     if (connection.test_status === "success") {
       return (
         <div className="flex items-center gap-2 text-sm text-green-400">
-          <CheckCircle2 className="w-4 h-4" />
+          <CheckCircle2 className="w-4 h-4" weight="duotone" />
           <span>Connected</span>
         </div>
       )
@@ -127,7 +164,7 @@ export default function ConnectionCard({
     if (connection.test_status === "failed") {
       return (
         <div className="flex items-center gap-2 text-sm text-red-400">
-          <XCircle className="w-4 h-4" />
+          <XCircle className="w-4 h-4" weight="duotone" />
           <span>Connection Failed</span>
         </div>
       )
@@ -135,7 +172,7 @@ export default function ConnectionCard({
 
     return (
       <div className="flex items-center gap-2 text-sm text-yellow-400">
-        <Clock className="w-4 h-4" />
+        <Clock className="w-4 h-4" weight="duotone" />
         <span>Pending Test</span>
       </div>
     )
@@ -165,11 +202,9 @@ export default function ConnectionCard({
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          {/* Platform Icon Placeholder */}
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 flex items-center justify-center">
-            <span className="text-2xl font-bold text-tron-text">
-              {provider.name.charAt(0)}
-            </span>
+          {/* Platform Brand Icon */}
+          <div className={`w-12 h-12 rounded-lg ${platformColor} flex items-center justify-center`}>
+            <PlatformIcon className="w-6 h-6 text-white" weight="fill" />
           </div>
 
           <div>
@@ -224,12 +259,12 @@ export default function ConnectionCard({
             >
               {testing ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <BouncingDots className="bg-current w-1.5 h-1.5" />
                   <span>Testing...</span>
                 </>
               ) : (
                 <>
-                  <TestTube2 className="w-4 h-4" />
+                  <TestTube2 className="w-4 h-4" weight="duotone" />
                   <span>Test</span>
                 </>
               )}
@@ -239,7 +274,7 @@ export default function ConnectionCard({
               onClick={onConnect}
               className="flex-1 px-3 py-2 rounded-lg bg-tron-magenta/10 hover:bg-tron-magenta/20 text-tron-magenta text-sm font-medium transition-colors flex items-center justify-center gap-2"
             >
-              <RotateCw className="w-4 h-4" />
+              <RotateCw className="w-4 h-4" weight="duotone" />
               <span>Reconnect</span>
             </button>
 
@@ -250,9 +285,9 @@ export default function ConnectionCard({
               title="Remove connection"
             >
               {deleting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BouncingDots className="bg-current w-1.5 h-1.5" />
               ) : (
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="w-4 h-4" weight="duotone" />
               )}
             </button>
           </>

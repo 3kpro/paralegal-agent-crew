@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InteractiveHoverButton } from "@/components/ui";
 import {
-  LayoutDashboard,
-  Zap,
+  SquaresFour as LayoutDashboard,
+  Lightning as Zap,
   Palette,
   Calendar,
   Brain,
   Link as LinkIcon,
-  BarChart3,
-  Settings,
-} from "lucide-react";
+  ChartBar as BarChart3,
+  Gear as Settings,
+} from "@phosphor-icons/react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

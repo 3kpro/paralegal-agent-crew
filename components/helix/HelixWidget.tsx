@@ -8,26 +8,26 @@ import Image from "next/image";
 
 import dynamic from 'next/dynamic';
 import {
-  Sparkles,
-  Send,
+  MagicWand,
+  PaperPlaneRight as Send,
   User,
-  Bot,
+  Robot as Bot,
   X,
-  ChevronDown,
-  Maximize2,
-  Minimize2,
+  CaretDown as ChevronDown,
+  CornersOut as Maximize2,
+  CornersIn as Minimize2,
   Eye,
-  EyeOff,
-  PanelRight,
-  ExternalLink,
-  GripHorizontal,
+  EyeSlash as EyeOff,
+  SidebarSimple as PanelRight,
+  ArrowSquareOut as ExternalLink,
+  DotsSix as GripHorizontal,
   Copy,
   Check,
   Clock,
   Plus,
-  MessageSquare,
-  Trash2
-} from "lucide-react";
+  Chat as MessageSquare,
+  Trash as Trash2
+} from "@phosphor-icons/react";
 
 const AnalystCharts = dynamic(() => import('../analyst/AnalystCharts'), { 
   loading: () => <div className="h-40 w-full flex items-center justify-center text-xs text-gray-500">Loading chart...</div>,
@@ -58,7 +58,7 @@ const CopyToClipboard = ({ text }: { text: string }) => {
       className="absolute bottom-2 right-2 p-1.5 text-gray-400 hover:text-white bg-black/20 hover:bg-black/40 rounded-md transition-all opacity-0 group-hover:opacity-100"
       title="Copy to clipboard"
     >
-      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+      {isCopied ? <Check className="w-3.5 h-3.5 text-green-400" weight="duotone" /> : <Copy className="w-3.5 h-3.5" weight="duotone" />}
     </button>
   );
 };
@@ -76,12 +76,8 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
   const [showHistory, setShowHistory] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
 
-  // Initialize Session
-  useEffect(() => {
-    if (!sessionId) {
-      setSessionId(Date.now().toString());
-    }
-  }, []);
+  // Session is created by the server on first message
+  // No need to initialize with a timestamp
 
   const fetchSessions = async () => {
     try {
@@ -119,7 +115,7 @@ export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange
   };
 
   const startNewChat = () => {
-    setSessionId(Date.now().toString());
+    setSessionId(null); // Server will create new session on first message
     setMessages([{
       id: 'welcome',
       role: 'assistant',
@@ -176,6 +172,12 @@ What would you like to know?`
       });
 
       if (!response.ok) throw new Error('Failed to send message');
+
+      // Capture session ID from server response
+      const serverSessionId = response.headers.get('X-Session-Id');
+      if (serverSessionId && serverSessionId !== sessionId) {
+        setSessionId(serverSessionId);
+      }
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error('No response reader');
@@ -373,7 +375,7 @@ What would you like to know?`
               {/* Drag Handle Indicator */}
               {!isSidePanel && !isExpanded && (
                 <div className="absolute top-1 left-1/2 -translate-x-1/2 opacity-20 group-hover:opacity-100 transition-opacity">
-                  <GripHorizontal className="w-4 h-4 text-white" />
+                  <GripHorizontal className="w-4 h-4 text-white" weight="duotone" />
                 </div>
               )}
               <div className="flex items-center justify-between">
@@ -404,7 +406,7 @@ What would you like to know?`
                   className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
                   title="Open dedicated Helix AI"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-4 h-4" weight="duotone" />
                 </a>
                 <button
                   onClick={() => {
@@ -416,7 +418,7 @@ What would you like to know?`
                   }`}
                   title="Chat History"
                 >
-                  <Clock className="w-4 h-4" />
+                  <Clock className="w-4 h-4" weight="duotone" />
                 </button>
                 <button
                   onClick={() => {
@@ -431,7 +433,7 @@ What would you like to know?`
                   }`}
                   title="Toggle side panel"
                 >
-                  <PanelRight className="w-4 h-4" />
+                  <PanelRight className="w-4 h-4" weight="duotone" />
                 </button>
                 <button
                   onClick={() => setIsTransparent(!isTransparent)}
@@ -440,7 +442,7 @@ What would you like to know?`
                   }`}
                   title="Toggle transparency"
                 >
-                  {isTransparent ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  {isTransparent ? <Eye className="w-4 h-4" weight="duotone" /> : <EyeOff className="w-4 h-4" weight="duotone" />}
                 </button>
                 <button
                   onClick={() => {
@@ -453,14 +455,14 @@ What would you like to know?`
                   className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
                   title="Toggle fullscreen"
                 >
-                  {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                  {isExpanded ? <Minimize2 className="w-4 h-4" weight="duotone" /> : <Maximize2 className="w-4 h-4" weight="duotone" />}
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
                   title="Close"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4" weight="duotone" />
                 </button>
               </div>
             </div>
@@ -476,19 +478,19 @@ What would you like to know?`
                 className="absolute inset-0 top-[60px] z-20 bg-[#0c0c0d]/95 backdrop-blur-md p-4 flex flex-col"
               >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-white font-bold flex items-center gap-2"><Clock className="w-4 h-4 text-coral-500"/> History</h3>
+                  <h3 className="text-white font-bold flex items-center gap-2"><Clock className="w-4 h-4 text-coral-500" weight="duotone"/> History</h3>
                   <button 
                      onClick={startNewChat}
                      className="px-3 py-1.5 bg-coral-500 hover:bg-coral-600 text-white text-xs rounded-lg flex items-center gap-1 transition-colors"
                   >
-                    <Plus className="w-3 h-3" /> New Chat
+                    <Plus className="w-3 h-3" weight="duotone" /> New Chat
                   </button>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                   {sessions.length === 0 ? (
                     <div className="text-center text-gray-500 text-sm py-8">
-                       <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                       <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-20" weight="duotone" />
                        No history found
                     </div>
                   ) : (
@@ -519,7 +521,7 @@ What would you like to know?`
             {isLocked && messages.length >= 7 ? (
               <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-black/20">
                 <div className="w-16 h-16 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
-                  <Bot className="w-8 h-8 text-gray-500" />
+                  <Bot className="w-8 h-8 text-gray-500" weight="duotone" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">Session Limit Reached</h3>
                 <p className="text-gray-400 text-sm mb-6 max-w-[280px]">
@@ -547,7 +549,7 @@ What would you like to know?`
                            ? 'bg-gray-800 border border-gray-700'
                            : 'bg-coral-500'
                        }`}>
-                         {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" /> : <User className="w-4 h-4 text-white" />}
+                         {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" weight="duotone" /> : <User className="w-4 h-4 text-white" weight="duotone" />}
                        </div>
 
                        <div className={`p-3.5 rounded-2xl max-w-[85%] text-[13px] whitespace-pre-wrap leading-relaxed relative ${
@@ -581,7 +583,7 @@ What would you like to know?`
                   {isLoading && messages.length > 0 && (messages[messages.length-1] as any).role === 'user' && (
                     <div className="flex gap-3">
                          <div className="w-8 h-8 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center shrink-0">
-                           <Sparkles className="w-4 h-4 text-coral-400 animate-pulse" />
+                           <MagicWand className="w-4 h-4 text-coral-400 animate-pulse" weight="duotone" />
                          </div>
                          <div className="bg-gray-800/50 border border-gray-700/50 p-3 rounded-2xl flex items-center gap-2 text-gray-400 text-sm">
                            <span className="w-1.5 h-1.5 bg-coral-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -611,7 +613,7 @@ What would you like to know?`
                       disabled={!localInput.trim() || isLoading}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-coral-500 hover:bg-coral-400 text-white rounded-lg transition-all duration-300 shadow-lg shadow-coral-500/20 disabled:opacity-30 disabled:grayscale disabled:shadow-none hover:scale-105 active:scale-95"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="w-4 h-4" weight="duotone" />
                     </button>
                   </form>
                 </div>
@@ -634,7 +636,7 @@ What would you like to know?`
             }`}
           >
             {isOpen ? (
-                <ChevronDown className="w-6 h-6 animate-bounce-subtle" />
+                <ChevronDown className="w-6 h-6 animate-bounce-subtle" weight="duotone" />
             ) : (
                 <div className="relative w-full h-full p-2 flex items-center justify-center">
                     <div className="absolute inset-0 bg-coral-500/20 blur-xl rounded-full animate-pulse" />

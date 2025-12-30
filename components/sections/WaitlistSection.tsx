@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, CheckCircle, ArrowRight, Users } from "lucide-react";
+import { Envelope as Mail, CheckCircle, ArrowRight, Users } from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 
 export default function WaitlistSection() {
   const [email, setEmail] = useState("");
@@ -30,14 +32,22 @@ export default function WaitlistSection() {
 
   if (isSubmitted) {
     return (
-      <section className="py-24 bg-[#343a40]">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-[#343a40] relative overflow-hidden">
+        <BGPattern
+          variant="dots"
+          mask="fade-edges"
+          size={24}
+          fill="rgba(0,199,242,0.1)"
+          className="z-0"
+          style={{ zIndex: 0 }}
+        />
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-2xl mx-auto text-center"
           >
-            <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" />
+            <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-6" weight="duotone" />
             <h2 className="text-3xl font-bold text-white mb-4">
               🎉 You're on the list!
             </h2>
@@ -56,8 +66,17 @@ export default function WaitlistSection() {
       id="waitlist"
       className="py-24 bg-[#343a40] relative overflow-hidden"
     >
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-edges"
+        size={24}
+        fill="rgba(0,199,242,0.1)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
       {/* Background decoration */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 z-0">
         <div className="absolute top-10 left-10 w-32 h-32 bg-coral-500 rounded-full opacity-20"></div>
         <div className="absolute bottom-10 right-10 w-24 h-24 bg-coral-500 rounded-full opacity-20"></div>
         <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-coral-500 rounded-full opacity-20"></div>
@@ -72,7 +91,7 @@ export default function WaitlistSection() {
         >
           {/* Enhanced Beta Badge */}
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-coral-500/20 rounded-full backdrop-blur-sm mb-8 border border-coral-500/30 shadow-xl">
-            <Users className="w-5 h-5 text-coral-400" />
+            <Users className="w-5 h-5 text-coral-400" weight="duotone" />
             <span className="text-sm font-bold text-coral-400">
               🎯 2,500+ Beta Creators Already Inside
             </span>
@@ -104,7 +123,7 @@ export default function WaitlistSection() {
           <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-8">
             <div className="flex gap-3">
               <div className="flex-1 relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" weight="duotone" />
                 <input
                   type="email"
                   value={email}
@@ -121,13 +140,13 @@ export default function WaitlistSection() {
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <BouncingDots className="bg-white w-1.5 h-1.5" />
                     Joining...
                   </>
                 ) : (
                   <>
                     Get Beta Access
-                    <ArrowRight className="w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" weight="duotone" />
                   </>
                 )}
               </button>

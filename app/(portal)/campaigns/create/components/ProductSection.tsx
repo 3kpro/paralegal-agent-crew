@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Package, Link, Sparkles, X, ChevronDown, Image as ImageIcon } from 'lucide-react';
+import { Package, Link, MagicWand, X, CaretDown as ChevronDown, Image as ImageIcon } from "@phosphor-icons/react";
 import { ProductDetails } from '../types';
 import React from 'react';
 import Image from 'next/image';
@@ -112,7 +112,7 @@ export default function ProductSection({
       >
         <div className="flex items-center gap-3">
           <div className="p-2 bg-tron-cyan/10 rounded-xl">
-            <Package className="w-6 h-6 text-tron-cyan" aria-hidden="true" />
+            <Package className="w-6 h-6 text-tron-cyan" aria-hidden="true" weight="duotone" />
           </div>
           <h3 className="text-lg font-semibold text-tron-text">
             Product Details
@@ -123,6 +123,7 @@ export default function ProductSection({
             isExpanded ? 'rotate-180' : ''
           }`}
           aria-hidden="true"
+          weight="duotone"
         />
       </div>
 
@@ -161,7 +162,7 @@ export default function ProductSection({
                   className="w-full px-4 py-2 pl-10 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan transition-all"
                   placeholder="https://..."
                 />
-                <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tron-text-muted" />
+                <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-tron-text-muted" weight="duotone" />
               </div>
             </div>
           </div>
@@ -270,13 +271,13 @@ export default function ProductSection({
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       >
-                        <Sparkles className="w-4 h-4" />
+                        <MagicWand className="w-4 h-4" weight="duotone" />
                       </motion.div>
                       Generating...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4" />
+                      <MagicWand className="w-4 h-4" weight="duotone" />
                       Generate Description
                     </>
                   )}
@@ -294,7 +295,7 @@ export default function ProductSection({
                     title="Clear generated description"
                     aria-label="Clear generated description"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" weight="duotone" />
                   </button>
                 </div>
               )}
@@ -375,13 +376,13 @@ export default function ProductSection({
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   >
-                    <ImageIcon className="w-4 h-4" />
+                    <ImageIcon className="w-4 h-4" weight="duotone" />
                   </motion.div>
                   Generating...
                 </>
               ) : (
                 <>
-                  <ImageIcon className="w-4 h-4" />
+                  <ImageIcon className="w-4 h-4" weight="duotone" />
                   Generate Image
                 </>
               )}

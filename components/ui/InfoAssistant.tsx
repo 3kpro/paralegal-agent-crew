@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
-  Sparkles,
-  TrendingUp,
-  Zap,
+  Sparkle as Sparkles,
+  TrendUp as TrendingUp,
+  Lightning as Zap,
   Target,
   Brain,
-  ChevronRight,
-} from "lucide-react";
+  CaretRight as ChevronRight,
+} from "@phosphor-icons/react";
 
 interface InfoAssistantProps {
   step: number;
@@ -40,14 +40,14 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
         title: "Choose Your Platforms",
         content:
           "Select the social platforms where you want to publish. You can pick multiple platforms - the AI will optimize content for each one.",
-        icon: <Zap className="w-5 h-5" />,
+        icon: <Zap className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
       {
         title: "Platform Optimization",
         content:
           "Each platform has unique requirements. We automatically adjust character limits, tone, and formatting for Twitter, LinkedIn, Instagram, and more.",
-        icon: <Brain className="w-5 h-5" />,
+        icon: <Brain className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
     ],
@@ -56,14 +56,14 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
         title: "Find Trending Topics",
         content:
           "Use the search bar to discover what's trending in your niche. The AI analyzes real-time data to surface relevant topics your audience cares about.",
-        icon: <TrendingUp className="w-5 h-5" />,
+        icon: <TrendingUp className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
       {
         title: "Select Multiple Trends",
         content:
           "Click on multiple trending topics to give the AI more context. This helps generate more relevant and engaging content for your campaign.",
-        icon: <Target className="w-5 h-5" />,
+        icon: <Target className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
     ],
@@ -72,14 +72,14 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
         title: "Customize Your Content",
         content:
           "Adjust the temperature slider to control creativity. Higher values = more creative, lower values = more focused and professional.",
-        icon: <Sparkles className="w-5 h-5" />,
+        icon: <Sparkles className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
       {
         title: "Set Your Preferences",
         content:
           "Choose your target audience, content tone, and focus areas. These settings help the AI match your brand voice and messaging goals.",
-        icon: <Brain className="w-5 h-5" />,
+        icon: <Brain className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
     ],
@@ -88,7 +88,7 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
         title: "Review & Publish",
         content:
           "Review the generated content, make any final edits, and schedule your posts. You can publish immediately or schedule for optimal times.",
-        icon: <ChevronRight className="w-5 h-5" />,
+        icon: <ChevronRight className="w-5 h-5" weight="duotone" />,
         type: "tip",
       },
     ],
@@ -175,7 +175,7 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
               className="absolute top-4 right-4 p-1 hover:bg-white/10 rounded-full transition-all cursor-pointer z-50"
               aria-label="Minimize assistant"
             >
-              <X className="w-4 h-4 text-tron-text-muted hover:text-tron-text" />
+              <X className="w-4 h-4 text-tron-text-muted hover:text-tron-text" weight="duotone" />
             </button>
 
             {/* Icon Badge */}
@@ -250,7 +250,7 @@ const InfoAssistant: React.FC<InfoAssistantProps> = ({
           className="fixed left-4 bottom-24 z-40 p-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-full shadow-2xl hover:scale-110 transition-transform"
           aria-label="Show assistant"
         >
-          <Sparkles className="w-6 h-6 text-white" />
+          <Sparkles className="w-6 h-6 text-white" weight="duotone" />
         </motion.button>
       )}
     </AnimatePresence>

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { TwitterLogo, TiktokLogo } from "@phosphor-icons/react";
 
 interface SocialConnectButtonProps {
   platform: "twitter" | "tiktok";
@@ -7,11 +8,11 @@ interface SocialConnectButtonProps {
 
 const platformConfig = {
   twitter: {
-    icon: "𝕏",
+    icon: TwitterLogo,
     name: "Twitter",
   },
   tiktok: {
-    icon: "🎵",
+    icon: TiktokLogo,
     name: "TikTok",
   },
 };
@@ -33,7 +34,7 @@ export function SocialConnectButton({
       className={`flex items-center gap-2 ${className}`}
       variant="outline"
     >
-      <span className="text-lg">{config.icon}</span>
+      <config.icon className="w-5 h-5" weight="duotone" />
       <span>Connect {config.name}</span>
     </Button>
   );

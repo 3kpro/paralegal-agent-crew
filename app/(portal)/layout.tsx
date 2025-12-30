@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import { FloatingNav } from "@/components/ui/floating-nav";
+import { Sidebar, MobileNav } from "@/components/Sidebar";
 import SettingsModal from "@/components/SettingsModal";
-import { Settings, Sparkles, ChevronDown, Bot } from "lucide-react";
+import { Gear as Settings, Bell, CaretDown as ChevronDown } from "@phosphor-icons/react";
 import HelixWidget from "@/components/helix/HelixWidget";
 import { XeloraLogo } from "@/components/XeloraLogo";
 import { BGPattern } from "@/components/ui/bg-pattern";
@@ -99,115 +98,30 @@ export default function PortalLayout({
             className="z-0 fixed inset-0 pointer-events-none" 
             style={{ zIndex: 0 }}
         />
-        {/* New Floating Navigation */}
-        <FloatingNav />
-        
-        {/* Old Sidebar - Hidden */}
-        <aside className="w-64 bg-[#343a40] text-white fixed h-full border-r border-gray-700/50 hidden">
-          <div className="p-6">
-            <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-coral-500 rounded-lg flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold">3K</span>
-              </div>
-              <span className="font-bold text-lg">Xelora</span>
-            </Link>
-          </div>
-
-          <nav className="mt-6">
-            <Link
-              href="/dashboard"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">📊</span>
-              <span>Dashboard</span>
-            </Link>
-            <Link
-              href="/campaigns"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">⚡</span>
-              <span>Campaigns</span>
-            </Link>
-            <Link
-              href="/campaigns/create"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-xl">🎨</span>
-              <span>Create</span>
-            </Link>
-            <Link
-              href="/contentflow"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">📅</span>
-              <span>ContentFlow</span>
-            </Link>
-            <Link
-              href="/helix"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <Bot className="w-5 h-5" />
-              <span>Helix AI</span>
-            </Link>
-            <Link
-              href="/social-accounts"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">🔗</span>
-              <span>Social Accounts</span>
-            </Link>
-            <Link
-              href="/analytics"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">📈</span>
-              <span>Analytics</span>
-            </Link>
-            <Link
-              href="/settings"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 hover:border-l-4 hover:border-coral-500 transition-all"
-            >
-              <span className="text-xl">🔧</span>
-              <span>Settings</span>
-            </Link>
-          </nav>
-
-          <div className="absolute bottom-0 w-64 border-t border-gray-700/50">
-            <Link
-              href="/help"
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-xl">💡</span>
-              <span>Help</span>
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-3 px-6 py-3 hover:bg-red-500/20 transition-colors w-full text-left"
-            >
-              <span className="text-xl">🚪</span>
-              <span>Logout</span>
-            </button>
-          </div>
-        </aside>
+        {/* Desktop Sidebar */}
+        <Sidebar onLogout={handleLogout} />
 
         {/* Main Content */}
         <div className="flex-1 relative z-10">
           {/* Top Bar */}
-          <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 md:pl-32 relative z-20">
+          <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 relative z-20">
             <div className="flex items-center justify-between">
-               <div className="flex items-center gap-3">
-                 <span className="text-lg md:text-xl font-bold text-white uppercase tracking-wide">
+               {/* Logo - only show on mobile since desktop has sidebar */}
+               <div className="flex items-center gap-3 md:hidden">
+                 <span className="text-lg font-bold text-white uppercase tracking-wide">
                    XELORA
                  </span>
-                 <XeloraLogo className="w-9 h-9" />
+                 <XeloraLogo className="w-8 h-8" />
                </div>
+               {/* Spacer for desktop to push right items */}
+               <div className="hidden md:block" />
               <div className="flex items-center space-x-2 md:space-x-3">
                 {/* What's New Button */}
                 <button
                   onClick={() => setShowWhatsNew(true)}
                   className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Bell className="w-4 h-4" weight="duotone" />
                   <span className="hidden md:inline">What's New</span>
                 </button>
 
@@ -225,7 +139,7 @@ export default function PortalLayout({
                         {profile?.full_name || "J Lawson"}
                       </div>
                     </div>
-                    <ChevronDown className="w-4 h-4 text-gray-400 hidden md:block" />
+                    <ChevronDown className="w-4 h-4 text-gray-400 hidden md:block" weight="duotone" />
                   </button>
 
                   {/* User Dropdown Menu */}
@@ -253,7 +167,7 @@ export default function PortalLayout({
                         }}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-2"
                       >
-                        <Settings className="w-4 h-4" />
+                        <Settings className="w-4 h-4" weight="duotone" />
                         Settings
                       </button>
                       <button
@@ -292,7 +206,7 @@ export default function PortalLayout({
                 <div className="bg-gradient-to-r from-coral-500/20 to-purple-500/20 border-b border-coral-500/30 p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Sparkles className="w-6 h-6 text-coral-400" />
+                      <Bell className="w-6 h-6 text-coral-400" weight="duotone" />
                       <h2 className="text-2xl font-bold text-white">What's New</h2>
                       <span className="text-xs px-2 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300">
                         November 5, 2025
@@ -409,52 +323,13 @@ export default function PortalLayout({
           )}
 
           {/* Page Content */}
-          <main className="min-h-[calc(100vh-73px)] pb-16 md:pb-0 md:pl-32">
+          <main className="min-h-[calc(100vh-73px)] pb-20 md:pb-0">
             <ErrorBoundary>{children}</ErrorBoundary>
           </main>
         </div>
 
         {/* Mobile Bottom Navigation */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#343a40] border-t border-gray-700/50 px-2 py-2">
-          {/* ... existing mobile nav ... */}
-          <div className="grid grid-cols-5 gap-1">
-            <Link
-              href="/dashboard"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-lg">📊</span>
-              <span className="text-xs text-white mt-1">Dashboard</span>
-            </Link>
-            <Link
-              href="/campaigns"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-lg">⚡</span>
-              <span className="text-xs text-white mt-1">Campaigns</span>
-            </Link>
-            <Link
-              href="/campaigns/create"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-lg">🎨</span>
-              <span className="text-xs text-white mt-1">Create</span>
-            </Link>
-            <Link
-              href="/helix"
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <Bot className="w-5 h-5 text-coral-400" />
-              <span className="text-xs text-white mt-1">Helix AI</span>
-            </Link>
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="flex flex-col items-center py-2 px-1 rounded-lg hover:bg-coral-500/20 transition-colors"
-            >
-              <span className="text-lg">🔧</span>
-              <span className="text-xs text-white mt-1">Settings</span>
-            </button>
-          </div>
-        </div>
+        <MobileNav onLogout={handleLogout} />
         
         {/* Helix AI Global Widget */}
         <HelixWidget subscriptionTier={profile?.subscription_tier || 'free'} />

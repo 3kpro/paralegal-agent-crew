@@ -7,7 +7,7 @@
 
 import React, { memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check } from "@phosphor-icons/react";
 import { ToastState } from "../types";
 
 interface ToastProps {
@@ -38,7 +38,7 @@ const Toast = memo<ToastProps>(({ toast }) => {
             }`}
           >
             {toast.type === "success" ? (
-              <Check className="w-5 h-5 text-green-400" aria-hidden="true" />
+              <Check className="w-5 h-5 text-green-400" aria-hidden="true" weight="duotone" />
             ) : (
               <span className="text-red-400 text-xl" aria-hidden="true">
                 ⚠️

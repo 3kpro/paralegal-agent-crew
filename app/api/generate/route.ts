@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction } = validatedData;
+    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction, promoteData } = validatedData;
 
     // Set defaults for content controls
     const contentTemperature = temperature ?? 0.7;
@@ -99,7 +99,8 @@ export async function POST(request: Request) {
     const contentCallToAction = callToAction || "engage";
 
     // Generate cache key based on input parameters (include controls for unique cache)
-    const cacheKey = `generate:${user.id}:${topic}:${formats.sort().join(",")}:${preferredProvider || "default"}:${contentTemperature}:${contentTone}:${contentLength}`;
+    const promoteHash = promoteData ? JSON.stringify(promoteData) : "";
+    const cacheKey = `generate:${user.id}:${topic}:${formats.sort().join(",")}:${preferredProvider || "default"}:${contentTemperature}:${contentTone}:${contentLength}:${promoteHash}`;
 
     // Try to get from cache first
     const cachedResult = await withCache(cacheKey, CACHE_TTL, async () => {
@@ -132,6 +133,7 @@ export async function POST(request: Request) {
           contentAudience,
           contentContentFocus,
           contentCallToAction,
+          promoteData,
         );
         content = geminiResult.content;
         tokensUsed = geminiResult.tokensUsed;
@@ -388,6 +390,7 @@ async function generateWithGemini(
   audience: string,
   focus: string,
   cta: string,
+  promoteData?: any,
 ) {
   const model = config.model || "gemini-2.0-flash";
 
@@ -397,7 +400,7 @@ async function generateWithGemini(
   // 🚀 OPTIMIZATION: Parallelize all format requests
   const results = await Promise.all(
     formats.map(async (format) => {
-      const prompt = getPromptForFormat(format, topic, tone, length, audience, focus, cta);
+      const prompt = getPromptForFormat(format, topic, tone, length, audience, focus, cta, promoteData);
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`,
@@ -514,6 +517,7 @@ function getPromptForFormat(
   audience: string = "general",
   focus: string = "informative", 
   cta: string = "engage",
+  promoteData?: any,
 ): string {
   // Map tone to descriptive words
   const toneDescriptions: Record<string, string> = {
@@ -573,8 +577,25 @@ function getPromptForFormat(
   const focusDesc = focusDescriptions[focus] || focusDescriptions.informative;
   const ctaDesc = ctaDescriptions[cta] || ctaDescriptions.engage;
 
+  const promoteContext = promoteData ? `
+CONTEXT - PRODUCT/SERVICE DETAILS:
+Name: ${promoteData.productName}
+Type: ${promoteData.productType}
+Description: ${promoteData.description}
+Key Features: ${promoteData.keyFeatures?.join(', ') || ''}
+Unique Selling Points: ${promoteData.uniqueSellingPoints?.join(', ') || ''}
+Target Audience: ${promoteData.targetAudience}
+Website: ${promoteData.websiteUrl || ''}
+Drive Link: ${promoteData.driveLink || ''}
+` : "";
+
+  const promptSubject = promoteData ? `"${promoteData.productName}"` : `"${topic}"`;
+  const actionVerb = promoteData ? "promoting" : "about";
+
   const prompts: Record<string, string> = {
-    twitter: `Create a ${toneDesc} Twitter/X post about "${topic}". Requirements:
+    twitter: `Create a ${toneDesc} Twitter/X post ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - STRICT LIMIT: Maximum ${limits.twitter} characters total (including spaces and hashtags)
 - Include 2-3 relevant hashtags (these count toward the ${limits.twitter} character limit)
 - ${tone === "humorous" ? "Be witty and clever" : tone === "inspirational" ? "Be uplifting and motivational" : "Be engaging and compelling"}
@@ -585,28 +606,34 @@ function getPromptForFormat(
 
 Return only the tweet text that can be posted directly, nothing else.`,
 
-    linkedin: `Create a ${toneDesc} LinkedIn post about "${topic}". Requirements:
+    linkedin: `Create a ${toneDesc} LinkedIn post ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - STRICT LIMIT: Maximum 3000 characters (LinkedIn's limit)
 - ${limits.words}
 - Include relevant hashtags (3-5)
-- Structure: Attention-grabbing hook → Valuable insight → Clear call-to-action
+- Structure: Attention-grabbing hook → Valuable insight/Problem → Solution (${promoteData?.productName || 'Topic'}) → Clear call-to-action
 - Add paragraph breaks for readability
 - ${tone === "professional" ? "Maintain executive-level professionalism" : tone === "casual" ? "Be approachable and relatable" : tone === "educational" ? "Provide actionable insights" : tone === "inspirational" ? "Include a powerful message" : "Be engaging"}
 - This should be publishable content ready to post directly to LinkedIn
 
 Return only the LinkedIn post text that can be posted directly, nothing else.`,
 
-    email: `Create a ${toneDesc} email about "${topic}". Requirements:
+    email: `Create a ${toneDesc} promotional email ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - Subject line: Compelling and clear (50 chars max)
 - Body: ${limits.words}
-- Clear call-to-action at the end
+- Clear call-to-action at the end (Link to: ${promoteData?.websiteUrl || 'website'})
 - ${tone === "professional" ? "Professional greeting and sign-off" : tone === "casual" ? "Friendly greeting and warm sign-off" : tone === "humorous" ? "Light-hearted but appropriate" : "Appropriate greeting and sign-off"}
 
 Return in format:
 SUBJECT: [subject line]
 BODY: [email body]`,
 
-    facebook: `Create a ${toneDesc} Facebook post about "${topic}". Requirements:
+    facebook: `Create a ${toneDesc} Facebook post ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - STRICT LIMIT: Maximum 63,206 characters (but keep it under ${limits.other} for engagement)
 - ${limits.words}
 - Include relevant hashtags (2-4)
@@ -617,7 +644,8 @@ BODY: [email body]`,
 
 Return only the Facebook post text that can be posted directly, nothing else.`,
 
-    instagram: `Create a ${toneDesc} Instagram caption for ${audienceDesc} about "${topic}". 
+    instagram: `Create a ${toneDesc} Instagram caption for ${audienceDesc} ${actionVerb} ${promptSubject}. 
+${promoteContext}
 
 Purpose: ${focusDesc} "${topic}" 
 Audience: ${audienceDesc}
@@ -626,29 +654,31 @@ Goal: ${ctaDesc}
 Requirements:
 - STRICT LIMIT: Maximum 2,200 characters (Instagram's limit)
 - ${limits.words}
-- Write ONLY about the topic "${topic}" - no product promotion or service mentions
-- ${focusDesc} the topic itself, not any company or product
-- Include relevant hashtags (5-10) related to "${topic}"
-- First line must immediately grab attention about "${topic}"
-- ${tone === "inspirational" ? "Be motivational about the topic" : tone === "humorous" ? "Be funny about the topic" : tone === "educational" ? "Teach something about the topic" : tone === "casual" ? "Be conversational about the topic" : "Be professional about the topic"}
+- ${focusDesc} the topic itself
+- Include relevant hashtags (5-10)
+- First line must immediately grab attention
+- ${tone === "inspirational" ? "Be motivational" : tone === "humorous" ? "Be funny" : tone === "educational" ? "Teach something" : tone === "casual" ? "Be conversational" : "Be professional"}
 - ${tone === "casual" || tone === "humorous" ? "Include emojis naturally" : "Use emojis sparingly if appropriate"}
 - End goal: ${ctaDesc}
-- FOCUS: The content should be about "${topic}" itself, not about any services, products, or companies
 
 Return only the Instagram caption that can be posted directly, nothing else.`,
 
-    reddit: `Create a ${toneDesc} Reddit post about "${topic}". Requirements:
+    reddit: `Create a ${toneDesc} Reddit post ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - STRICT LIMIT: Maximum 40,000 characters (Reddit's limit for text posts)
 - ${limits.words}
 - ${tone === "casual" ? "Use authentic, conversational Reddit voice" : tone === "educational" ? "Provide detailed, well-researched information" : tone === "humorous" ? "Be clever and witty" : "Be genuine and valuable"}
 - No hashtags (Reddit doesn't use them)
 - Structure: Engaging title → valuable content → discussion prompt
-- Be authentic and avoid corporate speak
+- Be authentic and avoid corporate speak (Avoid "Please buy", "Check this out" unless native to subreddit style)
 - This should be publishable content ready to post directly to Reddit
 
 Return only the Reddit post text that can be posted directly, nothing else.`,
 
-    tiktok: `Create a ${toneDesc} TikTok caption/text post about "${topic}". Requirements:
+    tiktok: `Create a ${toneDesc} TikTok caption/text post ${actionVerb} ${promptSubject}. 
+${promoteContext}
+Requirements:
 - STRICT LIMIT: Maximum 2,200 characters (TikTok's caption limit)
 - ${limits.words} for caption text
 - ${tone === "humorous" ? "Be entertaining and trendy" : tone === "educational" ? "Make it quick and digestible" : tone === "inspirational" ? "Be energetic and motivational" : "Be attention-grabbing"}

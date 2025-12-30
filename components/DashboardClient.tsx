@@ -7,14 +7,14 @@ import { DashboardSkeleton } from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import UsageMeter from "./UsageMeter";
 import {
-  Zap,
-  TrendingUp,
+  Lightning as Zap,
+  TrendUp as TrendingUp,
   Target,
-  DollarSign,
+  CurrencyDollar as DollarSign,
   Plus,
   ArrowRight,
-  Sparkles,
-} from "lucide-react";
+  Sparkle as Sparkles,
+} from "@phosphor-icons/react";
 import { FirstTimeHelpBanner } from "./FirstTimeTooltips";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ActivityChart from "./dashboard/ActivityChart";
@@ -160,7 +160,7 @@ export default function DashboardClient() {
                 {profile?.full_name || "Welcome Back"}
               </h1>
               <p className="text-gray-300 text-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-coral-500" />
+                <Sparkles className="w-4 h-4 text-coral-500" weight="duotone" />
                 {campaigns.length === 0 ? (
                   "Ready to create your first campaign?"
                 ) : campaigns.length === 1 ? (
@@ -177,7 +177,7 @@ export default function DashboardClient() {
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
               >
-                <Plus className="w-6 h-6" />
+                <Plus className="w-6 h-6" weight="duotone" />
                 New Campaign
               </motion.button>
             </Link>
@@ -207,7 +207,7 @@ export default function DashboardClient() {
                       <div
                         className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-xl shadow-lg`}
                       >
-                        <Icon className="w-6 h-6 text-white" />
+                        <Icon className="w-6 h-6 text-white" weight="duotone" />
                       </div>
                       {/* Trend indicator */}
                       <motion.div
@@ -216,7 +216,7 @@ export default function DashboardClient() {
                         transition={{ delay: index * 0.1 + 0.3 }}
                         className="text-xs text-green-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <TrendingUp className="w-3 h-3" />
+                        <TrendingUp className="w-3 h-3" weight="duotone" />
                         <span>+0%</span>
                       </motion.div>
                     </div>
@@ -259,7 +259,7 @@ export default function DashboardClient() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                 <div className="p-2 bg-coral-500/10 rounded-xl">
-                  <Sparkles className="w-6 h-6 text-coral-500" />
+                  <Sparkles className="w-6 h-6 text-coral-500" weight="duotone" />
                 </div>
                 Recent Campaigns
               </h2>
@@ -271,7 +271,7 @@ export default function DashboardClient() {
                     className="text-sm text-coral-500 hover:text-coral-400 transition-colors flex items-center gap-2"
                   >
                     View All
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" weight="duotone" />
                   </motion.button>
                 </Link>
               )}
@@ -302,7 +302,7 @@ export default function DashboardClient() {
                               <>
                                 <span className="text-gray-600">•</span>
                                 <span className="flex items-center gap-1">
-                                  <Target className="w-3 h-3" />
+                                  <Target className="w-3 h-3" weight="duotone" />
                                   {campaign.target_platforms.length} {campaign.target_platforms.length === 1 ? 'platform' : 'platforms'}
                                 </span>
                               </>
@@ -322,7 +322,7 @@ export default function DashboardClient() {
                           whileHover={{ x: 0, opacity: 1 }}
                           className="p-2 bg-coral-500/10 rounded-full"
                         >
-                          <ArrowRight className="w-5 h-5 text-coral-500" />
+                          <ArrowRight className="w-5 h-5 text-coral-500" weight="duotone" />
                         </motion.div>
                       </div>
                     </Link>
@@ -349,7 +349,7 @@ export default function DashboardClient() {
                     }}
                     className="p-6 bg-coral-500/20 rounded-full"
                   >
-                    <Sparkles className="w-16 h-16 text-coral-500" />
+                    <Sparkles className="w-16 h-16 text-coral-500" weight="duotone" />
                   </motion.div>
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">
@@ -365,7 +365,7 @@ export default function DashboardClient() {
                     whileTap={{ scale: 0.95 }}
                     className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
                   >
-                    <Plus className="w-6 h-6" />
+                    <Plus className="w-6 h-6" weight="duotone" />
                     Create First Campaign
                   </motion.button>
                 </Link>

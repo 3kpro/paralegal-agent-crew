@@ -44,7 +44,10 @@
       "Bash(timeout 30 vercel logs:*)",
       "Bash(timeout 120 vercel logs:*)",
       "Bash(timeout 60 vercel logs:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(timeout 20 vercel logs:*)",
+      "Bash(git fetch:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

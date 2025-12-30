@@ -6,7 +6,7 @@
  */
 
 import React, { memo, useCallback } from "react";
-import { Zap } from "lucide-react";
+import { Lightning as Zap } from "@phosphor-icons/react";
 
 interface CreativitySliderProps {
   value: number;
@@ -43,7 +43,7 @@ const CreativitySlider = memo<CreativitySliderProps>(
         {/* Header with label and value display */}
         <div className="flex items-center justify-between mb-4">
           <label htmlFor="temperature-slider" className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-tron-cyan" />
+            <Zap className="w-5 h-5 text-tron-cyan" weight="duotone" />
             <span className="font-semibold text-tron-text">{label}</span>
           </label>
           <span

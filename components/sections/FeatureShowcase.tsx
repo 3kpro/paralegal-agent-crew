@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star, Quote, Twitter, Linkedin, MessageSquare } from "lucide-react";
+import { Star, Quotes as Quote, TwitterLogo as Twitter, LinkedinLogo as Linkedin, Chat as MessageSquare } from "@phosphor-icons/react";
 
 const features = [
   {
@@ -85,7 +85,7 @@ export default function FeatureShowcase() {
             className="text-center mb-20"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-full mb-6 shadow-lg">
-              <Star className="w-4 h-4 text-white" fill="currentColor" />
+              <Star className="w-4 h-4 text-white" fill="currentColor" weight="duotone" />
               <span className="text-sm font-bold text-white">
                 Powered by Advanced AI Technology
               </span>

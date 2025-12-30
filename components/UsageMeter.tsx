@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { TrendingUp, Zap, Crown } from "lucide-react";
+import { TrendUp as TrendingUp, Lightning as Zap, Crown } from "@phosphor-icons/react";
 
 interface UsageData {
   tier: string;
@@ -79,12 +79,12 @@ export default function UsageMeter() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Zap className="w-5 h-5 text-tron-cyan" />
+          <Zap className="w-5 h-5 text-tron-cyan" weight="duotone" />
           <h3 className="font-semibold text-tron-text">Daily Generations</h3>
         </div>
         <div className="flex items-center gap-2">
           {usageData.tier === "premium" && (
-            <Crown className="w-4 h-4 text-amber-400" />
+            <Crown className="w-4 h-4 text-amber-400" weight="duotone" />
           )}
           <span className="text-xs px-2 py-1 bg-tron-cyan/20 text-tron-cyan rounded-full capitalize">
             {usageData.tier}
@@ -143,7 +143,7 @@ export default function UsageMeter() {
                 href="/settings?tab=membership"
                 className="inline-flex items-center gap-1 text-sm text-red-400 hover:text-red-300 font-medium"
               >
-                Upgrade for more <TrendingUp className="w-3 h-3" />
+                Upgrade for more <TrendingUp className="w-3 h-3" weight="duotone" />
               </Link>
             </div>
           ) : isNearLimit ? (
@@ -155,7 +155,7 @@ export default function UsageMeter() {
                 href="/settings?tab=membership"
                 className="inline-flex items-center gap-1 text-sm text-amber-400 hover:text-amber-300 font-medium"
               >
-                Upgrade now <TrendingUp className="w-3 h-3" />
+                Upgrade now <TrendingUp className="w-3 h-3" weight="duotone" />
               </Link>
             </div>
           ) : isFree ? (

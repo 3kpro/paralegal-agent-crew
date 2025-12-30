@@ -2,6 +2,88 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-12-29] - Campaign Wizard Restoration & UX Improvements
+
+### Fixed
+- **Restored 7-Card Campaign Wizard**:
+  - Restored production card-based wizard flow that was accidentally simplified
+  - Card 1: Campaign Name
+  - Card 2: Choose Content Formats (platform selection with char limits)
+  - Card 3: "Which direction do you want to go?" (Trending Now / Your Trend / Promote)
+  - Card 4: Custom Trend Search
+  - Card 5: Trend Results with ViralScoreBreakdown expandables
+  - Card 6: Shape Your Content
+  - Card 7: Generated Content Display
+  - Card 8: Promote Wizard (new)
+
+### Added
+- **Promote Campaign Type**: Added "Promote" as 3rd option on Card 3 for product/service promotion campaigns
+- **Card 8 - Promote Wizard**: Full PromoteInput wizard integrated into card-based flow
+
+### Improved
+- **Dynamic Quick Presets**: Platform presets (Twitter Best Practices, TikTok Viral, LinkedIn Authority) now only show for platforms the user has selected
+  - Previously: All 3 presets always shown regardless of platform selection
+  - Now: Only relevant presets appear based on user's chosen platforms
+
+### Technical
+- Fixed TypeScript errors from production code restoration
+- Updated `generateContent()` and `saveCampaign()` to handle both trending and promote campaign types
+- Added null checks for generatedContent in copyContent function
+
+---
+
+## [2025-12-29] - Navigation Overhaul & Helix Polish
+
+### Added
+- **New Sidebar Navigation**:
+  - Replaced floating navigation with traditional fixed sidebar
+  - Collapsible desktop sidebar (224px expanded, 64px collapsed)
+  - Toggle button to expand/collapse sidebar
+  - Mobile bottom navigation with 5 key items (Home, Campaigns, Create, Helix, Settings)
+  - Clean dark theme styling (#1a1a1a background, coral accents)
+
+- **Genkit Agentic Roadmap Documentation**:
+  - Created `docs/SYSTEM/GENKIT_AGENTIC_ROADMAP.md` for future Pro/Premium/Enterprise tier evolution
+  - Documents multi-agent architecture patterns from Google's AI Barista example
+  - Maps human-in-the-loop, multimodal input, and tool calling to Xelora's roadmap
+
+### Fixed
+- **Helix Chat Background Clash**:
+  - Changed Helix container from `bg-[#09090b]` to `bg-transparent`
+  - Removed solid background from assistant messages for seamless blending
+  - Helix responses now integrate cleanly with site background
+
+- **Reactor Icon**:
+  - Updated sidebar to use Brain icon (matching AI Studio page)
+  - Changed mobile nav "Create" to use Plus icon
+
+- **Social Platform Icons** (from earlier session):
+  - Fixed ConnectionCard.tsx to show proper brand icons (Twitter, LinkedIn, etc.)
+  - Added platform-specific colors (Twitter black, LinkedIn blue, etc.)
+
+### Removed
+- **Analyst Page**: Deleted `/analyst` route - functionality merged into Helix AI via `query_analytics` tool
+- **Floating Navigation**: Removed `FloatingNav` component from portal layout
+
+### Changed
+- **Sidebar Component Structure**:
+  - `components/Sidebar.tsx` - New unified sidebar with `Sidebar` and `MobileNav` exports
+  - Portal layout now uses fixed sidebar instead of floating menu
+
+## [2025-12-28] - Promote Feature (Phase 1) Implementation
+
+### Added
+- **New Feature: "Promote" Campaign Type (Phase 1)**
+  - Integrated "Promote" option into Campaign Creation Wizard (Step 1).
+  - Implemented `PromoteInput` UI for capturing detailed product/service info (Name, Type, Description, Features, Audience, USP).
+  - Added logic to conditional render "Promote" vs "Trend Discovery" workflows in Step 2.
+  - Enhanced AI Generation Engine (`/api/generate`) to accept detailed `promoteData` and inject rich context into generation prompts.
+  - Added placeholders for media upload (Phase 2).
+- **Type Definitions**: Updated `CampaignPayload` and `PromoteData` interfaces.
+
+### Fixed
+- **Build Stabilization**: Fixed TypeScript errors in `ToastState` and `APIResponse` (`errorType`) to ensure clean builds.
+
 ## [2025-12-27] - TikTok UX Implementation & Reactor Navigation
 
 ### Added
@@ -122,6 +204,13 @@ All notable changes to this project will be documented in this file.
 - Fixed HelixWidget.tsx syntax errors that were blocking production builds
 
 ## [Unreleased]
+### Standardized Loading Indicators
+- **Unified BouncingDots**:
+  - Replaced all inconsistent spinners (`Loader2`, `animate-spin` divs) with `BouncingDots` component across 22+ files.
+  - Standardized loading state visualization for AI Studio, Social Accounts, and Settings pages.
+  - Updated `mcp/tests` to verify new component integration.
+  - **Type Fixes**: Resolved `SocialProvider` type mismatch in Settings and `ScheduledPost` property errors in ContentFlow.
+
 ### Helix AI Upgrade (Vercel AI SDK v5)
 - **Frontend Refactor**:
   - Migrated `HelixWidget.tsx` to the headless `useChat` hook from `@ai-sdk/react`.

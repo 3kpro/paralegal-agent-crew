@@ -185,7 +185,7 @@ export function PublishSettings({
               <span className="text-2xl">{platform.icon}</span>
               <span>{platform.name}</span>
               {connecting === platform.id && (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BouncingDots className="bg-current w-1.5 h-1.5" />
               )}
             </Button>
           ))}

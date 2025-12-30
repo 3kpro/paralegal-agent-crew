@@ -6,27 +6,27 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import {
   Brain,
-  Zap,
-  Sparkles,
+  Lightning as Zap,
+  MagicWand,
   Target,
-  TrendingUp,
-  Shield,
+  TrendUp as TrendingUp,
+  ShieldCheck as Shield,
   Clock,
-  DollarSign,
+  CurrencyDollar as DollarSign,
   Star,
   Cpu,
   Wind,
-  Search,
-  Layers,
+  MagnifyingGlass as Search,
+  Stack as Layers,
   Aperture,
   Image as ImageIcon,
-  Video,
-  Wand2,
+  VideoCamera as Video,
+  MagicWand as Wand2,
   Palette,
-  MessageSquare,
-  Rocket,
-  BarChart3 as BarChart
-} from "lucide-react";
+  Chat as MessageSquare,
+  RocketLaunch as Rocket,
+  ChartBar as BarChart
+} from "@phosphor-icons/react";
 
 interface AIProvider {
   id: string;
@@ -176,6 +176,7 @@ const AI_CAPABILITIES = [
 ];
 
 import { BGPattern } from "@/components/ui/bg-pattern";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 // ... imports ...
 
 // ... (providers array)
@@ -218,7 +219,7 @@ export default function AIStudioPage() {
             style={{ zIndex: 0 }}
         />
         <div className="text-center relative z-10">
-          <div className="w-8 h-8 border-2 border-tron-cyan border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <BouncingDots className="bg-tron-cyan" />
           <p className="text-tron-text-muted">Loading Reactor...</p>
         </div>
       </div>
@@ -243,7 +244,7 @@ export default function AIStudioPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center"
           >
-            <Brain className="w-24 h-24 text-coral-400 mx-auto mb-6 animate-pulse" />
+            <Brain className="w-24 h-24 text-coral-400 mx-auto mb-6 animate-pulse" weight="duotone" />
             <h2 className="text-6xl font-bold bg-gradient-to-r from-coral-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-4">
               Reactor
             </h2>
@@ -269,7 +270,7 @@ export default function AIStudioPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-5xl font-bold text-white flex items-center gap-3 mb-3">
-                <Brain className="w-12 h-12 text-coral-400" />
+                <Brain className="w-12 h-12 text-coral-400" weight="duotone" />
                 Reactor
                 <span className="text-sm px-3 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300 font-normal">
                   Coming Soon
@@ -305,7 +306,7 @@ export default function AIStudioPage() {
             className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 via-coral-500/10 to-blue-500/10 border-2 border-coral-500/30 rounded-xl"
           >
             <div className="flex items-center gap-3">
-              <Rocket className="w-8 h-8 text-coral-400" />
+              <Rocket className="w-8 h-8 text-coral-400" weight="duotone" />
               <div>
                 <h3 className="text-coral-300 font-bold text-lg">AI Orchestration Powerhouse</h3>
                 <p className="text-gray-300 text-sm">
@@ -324,7 +325,7 @@ export default function AIStudioPage() {
           className="mb-12"
         >
           <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-            <Palette className="w-8 h-8 text-coral-400" />
+            <Palette className="w-8 h-8 text-coral-400" weight="duotone" />
             What You'll Create
           </h2>
 
@@ -344,7 +345,7 @@ export default function AIStudioPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-3 rounded-lg bg-gradient-to-br ${capability.color}`}>
-                        <capability.icon className="w-6 h-6 text-white" />
+                        <capability.icon className="w-6 h-6 text-white" weight="duotone" />
                       </div>
                       <div>
                         <h3 className="font-bold text-white text-lg">{capability.title}</h3>
@@ -363,7 +364,7 @@ export default function AIStudioPage() {
                   <div className="grid grid-cols-2 gap-2">
                     {capability.features.map((feature, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs text-gray-400">
-                        <Sparkles className="w-3 h-3 text-coral-400" />
+                        <MagicWand className="w-3 h-3 text-coral-400" weight="duotone" />
                         <span>{feature}</span>
                       </div>
                     ))}
@@ -394,7 +395,7 @@ export default function AIStudioPage() {
               transition={{ delay: 0.6 + index * 0.1 }}
               className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-4"
             >
-              <feature.icon className="w-6 h-6 text-tron-cyan mb-2" />
+              <feature.icon className="w-6 h-6 text-tron-cyan mb-2" weight="duotone" />
               <div className="font-semibold text-tron-text text-sm">{feature.label}</div>
               <div className="text-xs text-tron-text-muted mt-1">{feature.desc}</div>
             </motion.div>
@@ -409,7 +410,7 @@ export default function AIStudioPage() {
           className="mb-8"
         >
           <h2 className="text-2xl font-bold text-tron-text mb-4 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-tron-cyan" />
+            <MagicWand className="w-6 h-6 text-tron-cyan" weight="duotone" />
             Integrated AI Providers
           </h2>
 
@@ -434,7 +435,7 @@ export default function AIStudioPage() {
                       />
                     </div>
                   ) : (
-                    <provider.icon className="w-12 h-12 text-tron-cyan" strokeWidth={1.5} />
+                    <provider.icon className="w-12 h-12 text-tron-cyan" weight="duotone" />
                   )}
                 </div>
 
@@ -458,11 +459,11 @@ export default function AIStudioPage() {
                 {/* Stats */}
                 <div className="flex items-center gap-3 text-xs text-tron-text-muted mb-3">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-3 h-3" weight="duotone" />
                     <span>{provider.speed}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <DollarSign className="w-3 h-3" />
+                    <DollarSign className="w-3 h-3" weight="duotone" />
                     <span>{"$".repeat(provider.costRating)}</span>
                   </div>
                 </div>
@@ -525,7 +526,7 @@ export default function AIStudioPage() {
               transition={{ delay: 1.5 + index * 0.1 }}
               className="bg-tron-grid border border-tron-cyan/30 rounded-lg p-6"
             >
-              <feature.icon className="w-8 h-8 text-tron-cyan mb-3" />
+              <feature.icon className="w-8 h-8 text-tron-cyan mb-3" weight="duotone" />
               <h3 className="font-bold text-tron-text mb-2">{feature.title}</h3>
               <p className="text-sm text-tron-text-muted">{feature.desc}</p>
             </motion.div>

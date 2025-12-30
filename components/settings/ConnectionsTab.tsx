@@ -2,31 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Loader2, Plus, AlertCircle } from "lucide-react"
-import ConnectionGrid from "./ConnectionGrid"
+import { Plus, WarningCircle as AlertCircle } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
+import ConnectionGrid, { SocialProvider, UserConnection } from "./ConnectionGrid"
 import AddConnectionModal from "./AddConnectionModal"
 
-interface SocialProvider {
-  id: string
-  provider_key: string
-  name: string
-  description: string
-  logo_url: string | null
-  auth_type: string
-  required_tier: string
-  is_active: boolean
-}
-
-interface UserConnection {
-  id: string
-  provider_id: string
-  connection_name: string
-  account_username: string | null
-  is_active: boolean
-  test_status: "pending" | "success" | "failed"
-  usage_count: number
-  created_at: string
-}
 
 export default function ConnectionsTab() {
   const [providers, setProviders] = useState<SocialProvider[]>([])
@@ -97,7 +77,7 @@ export default function ConnectionsTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-tron-cyan" />
+        <BouncingDots className="bg-tron-cyan" />
       </div>
     )
   }
@@ -106,7 +86,7 @@ export default function ConnectionsTab() {
     return (
       <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" weight="duotone" />
           <div>
             <h3 className="font-semibold text-red-500">Error Loading Connections</h3>
             <p className="text-sm text-red-400 mt-1">{error}</p>

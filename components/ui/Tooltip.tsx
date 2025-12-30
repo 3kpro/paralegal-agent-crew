@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle, X } from "lucide-react";
+import { Question as HelpCircle, X } from "@phosphor-icons/react";
 
 interface TooltipProps {
   title: string;
@@ -66,7 +66,7 @@ export default function Tooltip({
           className="inline-flex items-center justify-center text-gray-400 hover:text-tron-cyan transition-colors cursor-help"
           aria-label="Show tooltip"
         >
-          {icon || <HelpCircle className="w-4 h-4" />}
+          {icon || <HelpCircle className="w-4 h-4" weight="duotone" />}
         </button>
       </div>
 
@@ -85,7 +85,7 @@ export default function Tooltip({
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className="p-1 bg-tron-cyan/20 rounded">
-                    <HelpCircle className="w-4 h-4 text-tron-cyan" />
+                    <HelpCircle className="w-4 h-4 text-tron-cyan" weight="duotone" />
                   </div>
                   <h4 className="text-sm font-bold text-tron-text">{title}</h4>
                 </div>
@@ -95,7 +95,7 @@ export default function Tooltip({
                     className="text-gray-400 hover:text-white transition-colors"
                     aria-label="Dismiss tooltip"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" weight="duotone" />
                   </button>
                 )}
               </div>

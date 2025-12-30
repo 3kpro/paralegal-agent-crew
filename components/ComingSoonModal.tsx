@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
+import { X } from "@phosphor-icons/react";
 
 interface ComingSoonModalProps {
   isOpen: boolean;
@@ -90,7 +91,7 @@ export default function ComingSoonModal({
                   onClick={onClose}
                   className="text-tron-text-muted hover:text-tron-cyan transition-colors text-2xl"
                 >
-                  ✕
+                  <X size={24} weight="duotone" />
                 </button>
               </div>
 

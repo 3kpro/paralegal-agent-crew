@@ -8,7 +8,7 @@
 
 import React, { memo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Edit3, Save, X } from "lucide-react";
+import { PencilSimple as Edit3, FloppyDisk as Save, X, Copy } from "@phosphor-icons/react";
 import { Platform, GeneratedPlatformContent } from "../types";
 
 interface GeneratedContentCardProps {
@@ -21,6 +21,7 @@ interface GeneratedContentCardProps {
   onEditToggle: (platform: string) => void;
   onSaveEdit: (platform: string) => void;
   onContentChange: (platform: string, content: string) => void;
+  onCopy: (platform: string) => void;
 }
 
 /**
@@ -71,6 +72,7 @@ const GeneratedContentCard = memo<GeneratedContentCardProps>(
     onEditToggle,
     onSaveEdit,
     onContentChange,
+    onCopy,
   }) => {
     const Icon = platformConfig.icon;
 
@@ -108,6 +110,7 @@ const GeneratedContentCard = memo<GeneratedContentCardProps>(
               <Icon
                 className="w-6 h-6 text-tron-cyan"
                 aria-label={`${platformConfig.name} icon`}
+                weight="duotone"
               />
             </div>
             <span className="font-semibold text-tron-text capitalize text-lg">
@@ -127,7 +130,7 @@ const GeneratedContentCard = memo<GeneratedContentCardProps>(
               </span>
             )}
 
-            {/* Edit/Save actions */}
+            {/* Edit/Save/Copy actions */}
             {isEditing ? (
               <div className="flex gap-2">
                 <button
@@ -136,7 +139,7 @@ const GeneratedContentCard = memo<GeneratedContentCardProps>(
                   title="Save changes"
                   aria-label={`Save edits for ${platform} content`}
                 >
-                  <Save className="w-5 h-5" />
+                  <Save className="w-5 h-5" weight="duotone" />
                 </button>
                 <button
                   onClick={handleEditClick}
@@ -144,18 +147,28 @@ const GeneratedContentCard = memo<GeneratedContentCardProps>(
                   title="Cancel editing"
                   aria-label={`Cancel editing ${platform} content`}
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" weight="duotone" />
                 </button>
               </div>
             ) : (
-              <button
-                onClick={handleEditClick}
-                className="opacity-0 group-hover:opacity-100 p-2 text-tron-cyan hover:bg-tron-cyan/10 rounded-lg transition-all"
-                title="Edit content"
-                aria-label={`Edit ${platform} content`}
-              >
-                <Edit3 className="w-5 h-5" />
-              </button>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => onCopy(platform)}
+                  className="p-2 text-tron-cyan hover:bg-tron-cyan/10 rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                  title="Copy content"
+                  aria-label={`Copy ${platform} content`}
+                >
+                  <Copy className="w-5 h-5" weight="duotone" />
+                </button>
+                <button
+                  onClick={handleEditClick}
+                  className="p-2 text-tron-cyan hover:bg-tron-cyan/10 rounded-lg transition-all opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
+                  title="Edit content"
+                  aria-label={`Edit ${platform} content`}
+                >
+                  <Edit3 className="w-5 h-5" weight="duotone" />
+                </button>
+              </div>
             )}
           </div>
         </div>

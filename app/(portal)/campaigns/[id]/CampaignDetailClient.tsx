@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy } from "@phosphor-icons/react";
 import { BGPattern } from "@/components/ui/bg-pattern";
 
 interface Campaign {
@@ -121,7 +121,7 @@ export default function CampaignDetailClient({
               }`}
             >
               {toast.type === "success" ? (
-                <Check className="w-5 h-5 text-green-400" />
+                <Check className="w-5 h-5 text-green-400" weight="duotone" />
               ) : (
                 <span className="text-red-400 text-xl">⚠️</span>
               )}
@@ -329,7 +329,7 @@ export default function CampaignDetailClient({
                     onClick={() => copyContent(item.content, item.platform)}
                     className="px-4 py-2 bg-tron-grid border border-green-500/30 text-green-400 hover:border-green-500 hover:bg-green-500/10 rounded-lg transition-colors text-sm flex items-center gap-2"
                   >
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4" weight="duotone" />
                     Copy Content
                   </button>
                   <button

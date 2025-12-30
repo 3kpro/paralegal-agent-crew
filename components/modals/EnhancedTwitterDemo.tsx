@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
 import { Button } from "../ui/Button";
 
 interface DemoModalProps {
@@ -231,7 +232,7 @@ export const EnhancedTwitterDemo: React.FC<DemoModalProps> = ({
                 >
                   {isGenerating ? (
                     <>
-                      <span className="animate-spin mr-2">⚡</span>
+                      <BouncingDots className="bg-white w-1.5 h-1.5" />
                       Generating & Posting...
                     </>
                   ) : (
