@@ -36,7 +36,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.vercel.app https://*.linkedin.com",
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com https://r2cdn.perplexity.ai https://*.linkedin.com",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://generativelanguage.googleapis.com https://vercel.live wss://ws-us3.pusher.com https://*.vercel.app https://*.linkedin.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://generativelanguage.googleapis.com https://vercel.live wss://ws-us3.pusher.com https://*.vercel.app https://*.linkedin.com https://api.web3forms.com",
               "frame-src 'self' https://challenges.cloudflare.com https://js.stripe.com https://vercel.live https://www.linkedin.com https://*.linkedin.com",
               "worker-src 'self' blob:",
               "object-src 'none'",
