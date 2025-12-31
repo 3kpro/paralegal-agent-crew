@@ -15,6 +15,7 @@ import {
   List as Menu,
   X,
   Plus,
+  Lifebuoy as LifeBuoy,
 } from "@phosphor-icons/react";
 import { useState } from "react";
 import { XeloraLogo } from "@/components/XeloraLogo";
@@ -107,6 +108,16 @@ export function Sidebar({ onLogout }: SidebarProps) {
           >
             <CreditCard className="w-5 h-5 flex-shrink-0" weight="duotone" />
             {!isCollapsed && <span className="text-sm font-medium">Upgrade</span>}
+          </Link>
+          <Link
+            href="/support"
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all ${
+              isCollapsed ? "justify-center" : ""
+            }`}
+            title={isCollapsed ? "Support" : undefined}
+          >
+            <LifeBuoy className="w-5 h-5 flex-shrink-0" weight="duotone" />
+            {!isCollapsed && <span className="text-sm font-medium">Support</span>}
           </Link>
           <button
             onClick={onLogout}

@@ -141,7 +141,16 @@ export const Footer: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-col md:flex-row items-center gap-4">
               <p className="text-tron-text-muted">
-                &copy; 2025 XELORA. All rights reserved.
+                &copy; 2025 XELORA by{" "}
+                <a
+                  href="https://3kpro.services"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
+                >
+                  3KPRO.SERVICES
+                </a>
+                . All rights reserved.
               </p>
               <div className="flex gap-4 text-sm">
                 <a

@@ -68,18 +68,26 @@ export async function updateSession(request: NextRequest) {
       request.nextUrl.pathname.startsWith('/contentflow') ||
       request.nextUrl.pathname.startsWith('/launchpad')
   )) {
-    // Check if onboarding is completed
-    const { data: onboarding } = await supabase
-      .from('onboarding_progress')
-      .select('completed')
-      .eq('user_id', user.id)
-      .single();
+    // Allow Stripe success callbacks through to settings page first
+    // This lets the sync-session run before any redirect
+    const isStripeSuccess = request.nextUrl.pathname.startsWith('/settings') &&
+      request.nextUrl.searchParams.get('success') === 'true' &&
+      request.nextUrl.searchParams.get('session_id');
 
-    // Redirect to onboarding if not completed
-    if (!onboarding || !onboarding.completed) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/onboarding';
-      return NextResponse.redirect(url);
+    if (!isStripeSuccess) {
+      // Check if onboarding is completed
+      const { data: onboarding } = await supabase
+        .from('onboarding_progress')
+        .select('completed')
+        .eq('user_id', user.id)
+        .single();
+
+      // Redirect to onboarding if not completed
+      if (!onboarding || !onboarding.completed) {
+        const url = request.nextUrl.clone();
+        url.pathname = '/onboarding';
+        return NextResponse.redirect(url);
+      }
     }
   }
 

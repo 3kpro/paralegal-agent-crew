@@ -54,10 +54,20 @@ export function StructuredData() {
     ],
     "screenshot": "https://xelora.app/og-image.png",
     "url": "https://xelora.app",
+    "author": {
+      "@type": "Organization",
+      "name": "3KPRO.SERVICES",
+      "url": "https://3kpro.services"
+    },
     "creator": {
       "@type": "Organization",
-      "name": "3K Pro Services",
-      "url": "https://xelora.app"
+      "name": "3KPRO.SERVICES",
+      "url": "https://3kpro.services"
+    },
+    "provider": {
+      "@type": "Organization",
+      "name": "3KPRO.SERVICES",
+      "url": "https://3kpro.services"
     }
   };
 
@@ -72,6 +82,11 @@ export function StructuredData() {
       "https://x.com/3KPRO_SAAS",
       "https://linkedin.com/company/3k-pro-services"
     ],
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "3KPRO.SERVICES",
+      "url": "https://3kpro.services"
+    },
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "Customer Support",
