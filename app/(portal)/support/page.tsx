@@ -39,20 +39,53 @@ export default function SupportPage() {
     setIsSubmitting(true);
     setError(null);
 
+    // Format issue type for display
+    const issueLabels: Record<string, string> = {
+      bug: "Bug Report",
+      question: "Question",
+      feature: "Feature Request",
+      billing: "Billing",
+      account: "Account",
+      other: "Other",
+    };
+    const issueLabel = issueLabels[issueType || "other"] || issueType;
+
     try {
-      const response = await fetch("/api/support", {
+      // Call Web3Forms directly from client-side (free plan requirement)
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          issueType,
-          subject,
-          message,
-          email,
+          access_key: "3ac337df-1baf-4b0b-a320-638e3e1917b2",
+          subject: `[XELORA] [${issueLabel}] ${subject}`,
+          from_name: "XELORA Support Form",
+          replyto: email,
+          message: `
+═══════════════════════════════════════════════════
+  XELORA SUPPORT REQUEST
+═══════════════════════════════════════════════════
+
+TYPE:     ${issueLabel}
+FROM:     ${email}
+SUBJECT:  ${subject}
+
+───────────────────────────────────────────────────
+  MESSAGE
+───────────────────────────────────────────────────
+
+${message}
+
+═══════════════════════════════════════════════════
+Sent via XELORA Support Form
+https://xelora.app/support
+          `.trim(),
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send message");
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "Failed to send message");
       }
 
       setIsSubmitted(true);
