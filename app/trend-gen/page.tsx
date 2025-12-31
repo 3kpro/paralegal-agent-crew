@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import TrendDiscovery from "../../components/TrendDiscovery";
+import { XeloraLogo } from '@/components/XeloraLogo';
 
 export default function TrendGenPage() {
   return (
@@ -14,12 +15,8 @@ export default function TrendGenPage() {
               onClick={() => (window.location.href = "/#top")}
               className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">3K</span>
-              </div>
-              <span className="text-xl font-bold text-white">
-                XELORA
-              </span>
+              <XeloraLogo className="w-8 h-8" />
+              <span className="text-xl font-bold text-white">XELORA</span>
             </button>
             <div className="flex items-center space-x-4">
               <Link
@@ -44,7 +41,7 @@ export default function TrendGenPage() {
       {/* Footer */}
       <footer className="bg-gray-900/95 border-t border-gray-700 py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
-          <p>&copy; 2025 3K Pro Services. All rights reserved.</p>
+          <p>&copy; 2025 XELORA by 3KPRO.SERVICES. All rights reserved.</p>
         </div>
       </footer>
     </div>

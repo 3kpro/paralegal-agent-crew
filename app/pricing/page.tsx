@@ -4,7 +4,7 @@ import { TIER_LIMITS } from '@/lib/stripe';
 import { CheckoutButton } from '@/components/CheckoutButton';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-
+import { XeloraLogo } from '@/components/XeloraLogo';
 import { BGPattern } from '@/components/ui/bg-pattern';
 
 export default async function PricingPage() {
@@ -45,12 +45,8 @@ export default async function PricingPage() {
                 href="/"
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity cursor-pointer"
               >
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">3K</span>
-                </div>
-                 <span className="text-xl font-bold text-white">
-                   XELORA
-                 </span>
+                <XeloraLogo className="w-8 h-8" />
+                <span className="text-xl font-bold text-white">XELORA</span>
               </Link>
               <div className="flex items-center space-x-4">
                 <a
