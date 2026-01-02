@@ -7,6 +7,27 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
+- [ ] **Campaign UI Cleanup** 🎨
+      - **Branch:** `ui/campaign-cleanup` (safe rollback available)
+      - **Problem:** Campaign creation wizard needs polish - placeholder text looks dated, buttons need refinement
+      - **Screenshot Reference:** Campaign Name step with "e.g., Summer Product Launch" placeholder
+      - **Requirements:**
+        - [ ] Clean up Campaign Name step (Step 1)
+          - Better placeholder text
+          - More polished input styling
+          - Button styling consistency
+        - [ ] Audit all campaign wizard steps for visual consistency
+        - [ ] Ensure all steps match the coral/tron theme
+        - [ ] Check button states (hover, disabled, active)
+        - [ ] Improve spacing and typography
+        - [ ] Add subtle animations/transitions where appropriate
+        - [ ] Test responsive layout (mobile-first)
+      - **Files to Audit:**
+        - `app/(portal)/campaigns/create/page.tsx`
+        - `app/(portal)/campaigns/create/components/*.tsx`
+        - `app/(portal)/campaigns/[id]/CampaignDetailClient.tsx`
+      - **Guiding Principle:** Modern, clean, professional. No clutter. Easy to scan.
+
 - [x] **Stripe Payment Integration Testing** ✅
       - **Problem:** Subscription sync failing after successful Stripe checkout
       - **Root Cause:** `profiles` table was missing `subscription_started_at` column
