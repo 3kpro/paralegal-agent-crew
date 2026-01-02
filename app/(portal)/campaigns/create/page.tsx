@@ -1362,9 +1362,9 @@ export default function NewCampaignPage() {
                       goToNextCard();
                     }
                   }}
-                  placeholder="e.g., Summer Product Launch"
+                  placeholder="e.g., My Viral Campaign"
                   autoFocus
-                  className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-2xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                  className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-2xl text-center font-light placeholder:text-tron-text-muted/30 transition-all"
                 />
 
                 <motion.button
@@ -1543,10 +1543,10 @@ export default function NewCampaignPage() {
                       </div>
                       <div className="text-left">
                         <h3 className="text-2xl font-bold text-tron-text mb-1">
-                          Trending Now
+                          Discover Viral
                         </h3>
                         <p className="text-tron-text-muted">
-                          Hot topics trending right now
+                          AI predicts what will go viral
                         </p>
                       </div>
                     </div>
@@ -1568,10 +1568,10 @@ export default function NewCampaignPage() {
                       </div>
                       <div className="text-left">
                         <h3 className="text-2xl font-bold text-tron-text mb-1">
-                          Your Trend
+                          Validate Idea
                         </h3>
                         <p className="text-tron-text-muted">
-                          Find something specific
+                          Check if your idea will go viral before posting
                         </p>
                       </div>
                     </div>
@@ -1579,33 +1579,7 @@ export default function NewCampaignPage() {
                   </div>
                 </motion.button>
 
-                {/* Promote Button */}
-                <motion.button
-                  onClick={() => {
-                    setCampaignType("promote");
-                    setCurrentCard(8); // Card 8 is the Promote wizard
-                  }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full p-8 bg-gradient-to-br from-tron-magenta/20 to-purple-500/20 backdrop-blur-xl border-2 border-tron-magenta rounded-2xl hover:shadow-xl hover:shadow-tron-magenta/30 transition-all group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-magenta to-purple-500 flex items-center justify-center">
-                        <Zap className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-2xl font-bold text-tron-text mb-1">
-                          Promote
-                        </h3>
-                        <p className="text-tron-text-muted">
-                          Promote your product or service
-                        </p>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-8 h-8 text-tron-magenta group-hover:translate-x-2 transition-transform" />
-                  </div>
-                </motion.button>
+
 
                 {/* Back Button */}
                 <motion.button
@@ -2509,33 +2483,7 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* CARD 8: Promote Wizard */}
-          {currentCard === 8 && (
-            <motion.div
-              key="card-8"
-              custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-magenta/30 rounded-3xl p-8 shadow-2xl"
-            >
-              <PromoteInput
-                data={promoteData}
-                onChange={setPromoteData}
-                currentStep={promoteWizardStep}
-                onStepChange={setPromoteWizardStep}
-                onBack={() => {
-                  setCampaignType("trending");
-                  setCurrentCard(3);
-                }}
-                onComplete={() => {
-                  // Go to Shape Your Content (Card 6) after Promote wizard
-                  setCurrentCard(6);
-                }}
-              />
-            </motion.div>
-          )}
+
 
         </AnimatePresence>
 

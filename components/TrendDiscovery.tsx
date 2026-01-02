@@ -247,7 +247,7 @@ export default function TrendDiscovery() {
               className="bg-white p-6 rounded-lg shadow-md"
             >
               <h3 className="text-xl font-semibold mb-4 text-blue-600">
-                Trending Now
+                Discover Viral
               </h3>
               <div className="space-y-3">
                 {trends.trending.slice(0, 5).map((trend, index) => (

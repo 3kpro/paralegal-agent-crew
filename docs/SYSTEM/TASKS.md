@@ -7,33 +7,6 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-- [ ] **Campaign UI Cleanup** 🎨
-      - **Branch:** `ui/campaign-cleanup` (safe rollback available)
-      - **Problem:** Campaign creation wizard needs polish and V1 alignment
-      - **V1 SIMPLIFICATION CHANGES (CRITICAL):**
-        - [ ] **REMOVE "Promote" option entirely** - Not part of V1 (see V1_Simplification.md)
-        - [ ] **Rename "Trending Now"** → "Discover Viral" or "Viral Discovery"
-          - Description: "AI predicts what will go viral" (NOT "what's trending now")
-        - [ ] **Keep "Your Trend"** → Consider "Validate Idea"
-          - Description: "Check if your idea will go viral before posting"
-      - **UI Polish:**
-        - [ ] Clean up Campaign Name step (Step 1)
-          - Better placeholder text
-          - More polished input styling
-          - Button styling consistency
-        - [ ] Audit all campaign wizard steps for visual consistency
-        - [ ] Ensure all steps match the coral/tron theme
-        - [ ] Check button states (hover, disabled, active)
-        - [ ] Improve spacing and typography
-        - [ ] Add subtle animations/transitions where appropriate
-        - [ ] Test responsive layout (mobile-first)
-      - **Files to Audit:**
-        - `app/(portal)/campaigns/create/page.tsx`
-        - `app/(portal)/campaigns/create/components/*.tsx`
-        - `app/(portal)/campaigns/[id]/CampaignDetailClient.tsx`
-        - `components/TrendDiscovery.tsx` (Card 3 direction options)
-      - **Guiding Principle:** V1 = Discovery + Validate. No Promote. Modern, clean, professional.
-
 - [x] **Stripe Payment Integration Testing** ✅
       - **Problem:** Subscription sync failing after successful Stripe checkout
       - **Root Cause:** `profiles` table was missing `subscription_started_at` column
@@ -55,6 +28,32 @@ If it's not here, it's not a task.
 ---
 
 ## COMPLETED
+- [x] **Campaign UI Cleanup** 🎨
+      - **Branch:** `ui/campaign-cleanup` (safe rollback available)
+      - **Problem:** Campaign creation wizard needs polish and V1 alignment
+      - **V1 SIMPLIFICATION CHANGES (CRITICAL):**
+        - [x] **REMOVE "Promote" option entirely** - Not part of V1 (see V1_Simplification.md)
+        - [x] **Rename "Trending Now"** → "Discover Viral" or "Viral Discovery"
+          - Description: "AI predicts what will go viral" (NOT "what's trending now")
+        - [x] **Keep "Your Trend"** → Consider "Validate Idea"
+          - Description: "Check if your idea will go viral before posting"
+      - **UI Polish:**
+        - [x] Clean up Campaign Name step (Step 1)
+          - Better placeholder text
+          - More polished input styling
+          - Button styling consistency
+        - [x] Audit all campaign wizard steps for visual consistency
+        - [x] Ensure all steps match the coral/tron theme
+        - [x] Check button states (hover, disabled, active)
+        - [x] Improve spacing and typography
+        - [x] Add subtle animations/transitions where appropriate
+        - [x] Test responsive layout (mobile-first)
+      - **Files to Audit:**
+        - `app/(portal)/campaigns/create/page.tsx`
+        - `app/(portal)/campaigns/create/components/*.tsx`
+        - `app/(portal)/campaigns/[id]/CampaignDetailClient.tsx`
+        - `components/TrendDiscovery.tsx` (Card 3 direction options)
+      - **Guiding Principle:** V1 = Discovery + Validate. No Promote. Modern, clean, professional.
 - [x] **Restore Viral Trend Discovery UI to Production State** ✅
       - Restored 7-card wizard flow from production
       - Added Promote as 3rd option on Card 3 ("Which direction do you want to go?")

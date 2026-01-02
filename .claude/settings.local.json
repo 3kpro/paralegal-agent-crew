@@ -51,7 +51,9 @@
       "Bash(powershell -Command \"Invoke-WebRequest -Uri ''https://github.com/stripe/stripe-cli/releases/download/v1.34.0/stripe_1.34.0_windows_x86_64.zip'' -OutFile ''C:\\\\DEV\\\\stripe-cli.zip''\")",
       "Bash(powershell -Command:*)",
       "Bash(C:DEVstripe-clistripe.exe --version)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,3 +1,23 @@
+## 2026-01-02 — Campaign UI Cleanup & V1 Simplification
+
+**Simplification: Removed Promote feature and aligned terminology with V1 Vision.**
+
+Summary of Actions:
+- **V1 Simplification**:
+    - **Removed "Promote" Option**: Deleted the "Promote" entry point from the Campaign Creation Wizard (Card 3).
+    - **Renamed "Trending Now"** → **"Discover Viral"**: Updated title and description to emphasize viral prediction.
+    - **Renamed "Your Trend"** → **"Validate Idea"**: Updated title and description to emphasize idea validation.
+- **UI Polish**:
+    - Improved Campaign Name input placeholder and styling in Card 1.
+
+Files Modified:
+- `app/(portal)/campaigns/create/page.tsx`
+- `components/TrendDiscovery.tsx`
+
+Status: **Completed & Verified**
+
+---
+
 ## 2025-12-29 — Landing Page Copy Refresh: Honest Features
 
 **Content Update: Aligned landing page copy with current product capabilities (Creation vs Publishing).**
