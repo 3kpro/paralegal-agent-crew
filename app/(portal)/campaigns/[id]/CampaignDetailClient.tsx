@@ -1,12 +1,12 @@
 "use client";
-// Cache bust: 2025-10-22 - Force rebuild for Delete button text update
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Copy } from "@phosphor-icons/react";
+import { Check, Copy, ArrowSquareOut } from "@phosphor-icons/react";
 import { BGPattern } from "@/components/ui/bg-pattern";
+import { TransferMasterclass } from "@/components/TransferMasterclass";
 
 interface Campaign {
   id: string;
@@ -35,11 +35,23 @@ export default function CampaignDetailClient({
   const router = useRouter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [selectedContent, setSelectedContent] = useState<string>("");
   const [toast, setToast] = useState<{
     show: boolean;
     message: string;
     type: "success" | "error";
   }>({ show: false, message: "", type: "success" });
+
+  // Platform URLs for quick open
+  const platformUrls: Record<string, string> = {
+    tiktok: "https://www.tiktok.com/upload",
+    twitter: "https://twitter.com/compose/tweet",
+    linkedin: "https://www.linkedin.com/feed/?shareActive=true",
+    instagram: "https://www.instagram.com/",
+    youtube: "https://studio.youtube.com/",
+    facebook: "https://www.facebook.com/",
+  };
 
   const showToast = (message: string, type: "success" | "error" = "success") => {
     setToast({ show: true, message, type });
@@ -55,6 +67,31 @@ export default function CampaignDetailClient({
     navigator.clipboard.writeText(content)
       .then(() => {
         showToast(`${platform} content copied!`, "success");
+        setSelectedPlatform(platform.toLowerCase());
+        setSelectedContent(content);
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        showToast("Failed to copy content", "error");
+      });
+  }
+
+  function copyAndOpen(content: string, platform: string) {
+    if (!content) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
+    const platformKey = platform.toLowerCase();
+    navigator.clipboard.writeText(content)
+      .then(() => {
+        showToast(`${platform} content copied! Opening ${platform}...`, "success");
+        setSelectedPlatform(platformKey);
+        setSelectedContent(content);
+        const url = platformUrls[platformKey];
+        if (url) {
+          window.open(url, "_blank");
+        }
       })
       .catch((err) => {
         console.error("Failed to copy:", err);
@@ -253,104 +290,121 @@ export default function CampaignDetailClient({
         </div>
       </div>
 
-      {/* Generated Content */}
-      <div className="bg-tron-grid rounded-xl border border-tron-cyan/30 p-6">
-        <h2 className="text-xl font-bold text-tron-text mb-6">
-          Generated Content
-        </h2>
+      {/* Generated Content + Transfer Masterclass */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Generated Content - Main Column */}
+        <div className="lg:col-span-2 bg-tron-grid rounded-xl border border-tron-cyan/30 p-6">
+          <h2 className="text-xl font-bold text-tron-text mb-6">
+            Generated Content
+          </h2>
 
-        {content && content.length > 0 ? (
-          <div className="space-y-6">
-            {content.map((item) => (
-              <div
-                key={item.id}
-                className="bg-tron-dark rounded-lg p-6 border border-tron-grid"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-tron-cyan capitalize">
-                    {item.platform}
-                  </h3>
-                  <span className="text-sm text-tron-text-muted">
-                    {new Date(item.created_at).toLocaleString()}
-                  </span>
-                </div>
+          {content && content.length > 0 ? (
+            <div className="space-y-6">
+              {content.map((item) => (
+                <div
+                  key={item.id}
+                  className={`bg-tron-dark rounded-lg p-6 border transition-all ${
+                    selectedPlatform === item.platform.toLowerCase()
+                      ? "border-coral-500/50 ring-1 ring-coral-500/30"
+                      : "border-tron-grid"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-tron-cyan capitalize">
+                      {item.platform}
+                    </h3>
+                    <span className="text-sm text-tron-text-muted">
+                      {new Date(item.created_at).toLocaleString()}
+                    </span>
+                  </div>
 
-                <div className="space-y-3">
-                  {item.content && (
-                    <div>
-                      <p className="text-sm text-tron-text-muted mb-1">
-                        Content:
-                      </p>
-                      <p className="text-tron-text whitespace-pre-wrap">
-                        {item.content}
-                      </p>
-                    </div>
-                  )}
-
-                  {item.metadata?.subject && (
-                    <div>
-                      <p className="text-sm text-tron-text-muted mb-1">
-                        Subject:
-                      </p>
-                      <p className="text-tron-text">{item.metadata.subject}</p>
-                    </div>
-                  )}
-
-                  {item.metadata?.hashtags &&
-                    item.metadata.hashtags.length > 0 && (
+                  <div className="space-y-3">
+                    {item.content && (
                       <div>
                         <p className="text-sm text-tron-text-muted mb-1">
-                          Hashtags:
+                          Content:
                         </p>
-                        <div className="flex flex-wrap gap-2">
-                          {item.metadata.hashtags.map(
-                            (tag: string, idx: number) => (
-                              <span
-                                key={idx}
-                                className="text-tron-cyan text-sm"
-                              >
-                                {tag}
-                              </span>
-                            ),
-                          )}
-                        </div>
+                        <p className="text-tron-text whitespace-pre-wrap">
+                          {item.content}
+                        </p>
                       </div>
                     )}
 
-                  {item.metadata?.characterCount && (
-                    <p className="text-xs text-tron-text-muted">
-                      Character count: {item.metadata.characterCount}
-                    </p>
-                  )}
-                </div>
+                    {item.metadata?.subject && (
+                      <div>
+                        <p className="text-sm text-tron-text-muted mb-1">
+                          Subject:
+                        </p>
+                        <p className="text-tron-text">{item.metadata.subject}</p>
+                      </div>
+                    )}
 
-                <div className="mt-4 pt-4 border-t border-tron-grid flex gap-3">
-                  <button
-                    onClick={() => copyContent(item.content, item.platform)}
-                    className="px-4 py-2 bg-tron-grid border border-green-500/30 text-green-400 hover:border-green-500 hover:bg-green-500/10 rounded-lg transition-colors text-sm flex items-center gap-2"
-                  >
-                    <Copy className="w-4 h-4" weight="duotone" />
-                    Copy Content
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-tron-grid border border-tron-cyan/30 text-tron-text-muted rounded-lg transition-colors text-sm cursor-not-allowed"
-                    disabled
-                  >
-                    Publish (Coming Soon)
-                  </button>
+                    {item.metadata?.hashtags &&
+                      item.metadata.hashtags.length > 0 && (
+                        <div>
+                          <p className="text-sm text-tron-text-muted mb-1">
+                            Hashtags:
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {item.metadata.hashtags.map(
+                              (tag: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="text-tron-cyan text-sm"
+                                >
+                                  {tag}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                    {item.metadata?.characterCount && (
+                      <p className="text-xs text-tron-text-muted">
+                        Character count: {item.metadata.characterCount}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-tron-grid flex flex-wrap gap-3">
+                    <button
+                      onClick={() => copyContent(item.content, item.platform)}
+                      className="px-4 py-2 bg-tron-grid border border-green-500/30 text-green-400 hover:border-green-500 hover:bg-green-500/10 rounded-lg transition-colors text-sm flex items-center gap-2"
+                    >
+                      <Copy className="w-4 h-4" weight="duotone" />
+                      Copy
+                    </button>
+                    <button
+                      onClick={() => copyAndOpen(item.content, item.platform)}
+                      className="px-4 py-2 bg-coral-500/20 border border-coral-500/50 text-coral-400 hover:bg-coral-500/30 hover:border-coral-500 rounded-lg transition-colors text-sm flex items-center gap-2"
+                    >
+                      <ArrowSquareOut className="w-4 h-4" weight="duotone" />
+                      Copy & Open {item.platform}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-3">📝</div>
-            <p className="text-tron-text-muted">No content generated yet</p>
-            <p className="text-sm text-tron-text-muted mt-2">
-              Content will appear here after generation
-            </p>
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-4xl mb-3">📝</div>
+              <p className="text-tron-text-muted">No content generated yet</p>
+              <p className="text-sm text-tron-text-muted mt-2">
+                Content will appear here after generation
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Transfer Masterclass - Sidebar */}
+        <div className="lg:col-span-1">
+          <TransferMasterclass
+            activePlatform={selectedPlatform || undefined}
+            content={selectedContent}
+            onCopy={() => showToast("Content copied!", "success")}
+          />
+        </div>
       </div>
       </div>
     </div>
