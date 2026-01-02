@@ -9,9 +9,14 @@ If it's not here, it's not a task.
 
 - [ ] **Campaign UI Cleanup** 🎨
       - **Branch:** `ui/campaign-cleanup` (safe rollback available)
-      - **Problem:** Campaign creation wizard needs polish - placeholder text looks dated, buttons need refinement
-      - **Screenshot Reference:** Campaign Name step with "e.g., Summer Product Launch" placeholder
-      - **Requirements:**
+      - **Problem:** Campaign creation wizard needs polish and V1 alignment
+      - **V1 SIMPLIFICATION CHANGES (CRITICAL):**
+        - [ ] **REMOVE "Promote" option entirely** - Not part of V1 (see V1_Simplification.md)
+        - [ ] **Rename "Trending Now"** → "Discover Viral" or "Viral Discovery"
+          - Description: "AI predicts what will go viral" (NOT "what's trending now")
+        - [ ] **Keep "Your Trend"** → Consider "Validate Idea"
+          - Description: "Check if your idea will go viral before posting"
+      - **UI Polish:**
         - [ ] Clean up Campaign Name step (Step 1)
           - Better placeholder text
           - More polished input styling
@@ -26,7 +31,8 @@ If it's not here, it's not a task.
         - `app/(portal)/campaigns/create/page.tsx`
         - `app/(portal)/campaigns/create/components/*.tsx`
         - `app/(portal)/campaigns/[id]/CampaignDetailClient.tsx`
-      - **Guiding Principle:** Modern, clean, professional. No clutter. Easy to scan.
+        - `components/TrendDiscovery.tsx` (Card 3 direction options)
+      - **Guiding Principle:** V1 = Discovery + Validate. No Promote. Modern, clean, professional.
 
 - [x] **Stripe Payment Integration Testing** ✅
       - **Problem:** Subscription sync failing after successful Stripe checkout
