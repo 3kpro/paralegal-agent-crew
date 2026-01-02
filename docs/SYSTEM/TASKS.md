@@ -7,6 +7,37 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
+- [ ] **Campaign Creation Aesthetics Upgrade** 🎨
+      - **Branch:** `ui/campaign-aesthetics` (safe rollback available)
+      - **Problem:** Campaign wizard looks dated/lame. Needs modern, sleek aesthetic matching landing page quality.
+      - **SCOPE: AESTHETICS ONLY** - Do NOT change functionality, wording, or workflow.
+      - **Screens to Upgrade:**
+        1. **Campaign Name Step** (first box where user names campaign)
+           - Modernize input field styling
+           - Improve card/container design
+           - Better visual hierarchy
+           - Subtle glassmorphism or depth effects
+        2. **Path Selection Step** (Viral Discovery / Validate Idea cards)
+           - Make selection cards feel premium
+           - Improve hover/selected states
+           - Better iconography presentation
+           - Modern card design (subtle gradients, shadows, borders)
+      - **Design Direction:**
+        - Simplistic, modern, mainstream
+        - Match landing page quality/style
+        - Keep coral/tron color scheme
+        - Subtle animations on interactions
+        - Clean typography with proper spacing
+        - Premium SaaS feel (think Linear, Vercel, Stripe dashboards)
+      - **Files:**
+        - `app/(portal)/campaigns/create/page.tsx`
+        - `components/TrendDiscovery.tsx`
+      - **DO NOT CHANGE:**
+        - Wording/copy
+        - Workflow/steps
+        - Functionality
+        - Button actions
+
 - [x] **Stripe Payment Integration Testing** ✅
       - **Problem:** Subscription sync failing after successful Stripe checkout
       - **Root Cause:** `profiles` table was missing `subscription_started_at` column
