@@ -62,6 +62,7 @@ import {
   PromoteData,
 } from "./types";
 import PromoteInput from "./components/PromoteInput";
+import { TransferMasterclass } from "@/components/TransferMasterclass";
 
 // Interface for AI provider data
 interface AIProvider {
@@ -1344,15 +1345,25 @@ export default function NewCampaignPage() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
-                  Campaign Name
+              {/* Subtle coral gradient background */}
+              <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
+
+              <div className="relative z-10 text-center mb-12">
+                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                  Step 1 of 3
+                </span>
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Name your campaign
                 </h2>
+                <p className="text-gray-400 max-w-md mx-auto">
+                  Give your idea a unique identity. This helps you track performance later.
+                </p>
               </div>
 
-              <div className="max-w-xl mx-auto">
+              <div className="relative z-10 max-w-xl mx-auto">
                 <input
                   type="text"
                   value={campaignName}
@@ -1362,9 +1373,9 @@ export default function NewCampaignPage() {
                       goToNextCard();
                     }
                   }}
-                  placeholder="e.g., My Viral Campaign"
+                  placeholder="e.g., Summer Launch 2026"
                   autoFocus
-                  className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-2xl text-center font-light placeholder:text-tron-text-muted/30 transition-all"
+                  className="w-full px-6 py-5 bg-gray-800/50 border border-gray-700 rounded-xl focus:outline-none focus:border-coral-500 focus:ring-1 focus:ring-coral-500 text-white text-xl text-center placeholder:text-gray-500 transition-all"
                 />
 
                 <motion.button
@@ -1372,10 +1383,14 @@ export default function NewCampaignPage() {
                   disabled={!campaignName.trim()}
                   whileHover={{ scale: !campaignName.trim() ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full mt-8 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                  className={`w-full mt-6 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                    !campaignName.trim()
+                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
+                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                  }`}
                 >
                   Continue
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className={`w-5 h-5 transition-transform ${campaignName.trim() ? "translate-x-1" : ""}`} />
                 </motion.button>
               </div>
             </motion.div>
@@ -1390,29 +1405,28 @@ export default function NewCampaignPage() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
-              <div className="text-center mb-12">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
-                >
-                  <Layout className="w-10 h-10 text-tron-cyan" />
-                </motion.div>
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
+              {/* Subtle coral gradient background */}
+              <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
+
+              <div className="relative z-10 text-center mb-12">
+                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                  Choose Your Platforms
+                </span>
+                <h2 className="text-4xl font-bold text-white mb-4">
                   Choose Content Formats
                 </h2>
-                <p className="text-tron-text-muted text-lg max-w-2xl mx-auto">
+                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
                   Select which social media formats you want to create content for. Each format will be optimized for its platform's style and character limits.
                 </p>
-                <p className="text-tron-cyan/60 text-sm mt-2">
+                <p className="text-coral-400/60 text-sm mt-2">
                   💡 Note: This is for content generation only. Social publishing features coming soon!
                 </p>
               </div>
 
-              <div className="max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="relative z-10 max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
                   { id: "twitter", name: "Twitter/X", IconComponent: Twitter, limit: "280 chars" },
                   { id: "linkedin", name: "LinkedIn", IconComponent: Linkedin, limit: "3,000 chars" },
@@ -1434,35 +1448,35 @@ export default function NewCampaignPage() {
                       }}
                       whileHover={{ scale: 1.05, y: -5 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative p-4 rounded-2xl border-2 transition-all ${
+                      className={`relative p-4 rounded-2xl border transition-all ${
                         targetPlatforms.includes(platform.id)
-                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg shadow-tron-cyan/30"
-                          : "bg-tron-dark/30 border-tron-cyan/20 hover:border-tron-cyan/40"
+                          ? "bg-coral-500/10 border-coral-500/50 shadow-lg shadow-coral-500/20"
+                          : "bg-gray-800/50 border-gray-700 hover:border-coral-500/30"
                       }`}
                     >
                       {targetPlatforms.includes(platform.id) && (
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="absolute top-2 right-2 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                          className="absolute top-2 right-2 w-6 h-6 bg-coral-500 rounded-full flex items-center justify-center"
                         >
-                          <Check className="w-4 h-4 text-tron-dark" />
+                          <Check className="w-4 h-4 text-white" />
                         </motion.div>
                       )}
                       <div className="flex items-center justify-center mb-2">
                         <Icon
                           className={`w-8 h-8 ${
                             targetPlatforms.includes(platform.id)
-                              ? "text-tron-cyan"
-                              : "text-tron-text-muted/50"
+                              ? "text-coral-400"
+                              : "text-gray-500"
                           }`}
                           strokeWidth={1.5}
                         />
                       </div>
-                      <h3 className="font-semibold mb-1 text-tron-text text-sm">
+                      <h3 className="font-semibold mb-1 text-white text-sm">
                         {platform.name}
                       </h3>
-                      <p className="text-xs text-tron-text-muted">
+                      <p className="text-xs text-gray-400">
                         {platform.limit}
                       </p>
                     </motion.button>
@@ -1474,18 +1488,18 @@ export default function NewCampaignPage() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-sm text-yellow-400/80 text-center mt-8"
+                  className="relative z-10 text-sm text-yellow-400/80 text-center mt-8"
                 >
                   ⚠️ Please select at least one content format to continue.
                 </motion.p>
               )}
 
-              <div className="mt-12 flex gap-4">
+              <div className="relative z-10 mt-12 flex gap-4">
                 <motion.button
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                  className="px-8 py-4 bg-gray-800/50 border border-gray-700 rounded-xl font-semibold text-gray-300 hover:border-coral-500/30 hover:text-coral-400 transition-all text-lg"
                 >
                   ← Back
                 </motion.button>
@@ -1494,16 +1508,20 @@ export default function NewCampaignPage() {
                   disabled={targetPlatforms.length === 0}
                   whileHover={{ scale: targetPlatforms.length === 0 ? 1 : 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                  className={`flex-1 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
+                    targetPlatforms.length === 0
+                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
+                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                  }`}
                 >
                   Continue
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="w-5 h-5" />
                 </motion.button>
               </div>
             </motion.div>
           )}
 
-          {/* CARD 3: Heavy Hitters vs Custom Trend */}
+          {/* CARD 3: Heavy Hitters vs Custom Trend - PREMIUM SAAS UPGRADE */}
           {currentCard === 3 && (
             <motion.div
               key="card-3"
@@ -1512,83 +1530,92 @@ export default function NewCampaignPage() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
-              <div className="text-center mb-12">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
-                >
-                  <TrendingUp className="w-10 h-10 text-tron-cyan" />
-                </motion.div>
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
-                  Which direction do you want to go?
+              {/* Subtle coral gradient background */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-coral-500/10 blur-[120px] rounded-full pointer-events-none" />
+              <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
+
+              <div className="relative z-10 text-center mb-16">
+                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                  Step 2 of 3
+                </span>
+                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
+                  Choose your starting point
                 </h2>
+                <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                  Start with a viral trend or validate your own idea?
+                </p>
               </div>
 
-              <div className="max-w-2xl mx-auto space-y-6">
-                {/* Trending Now Button */}
+              <div className="relative z-10 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Discover Viral Button */}
                 <motion.button
                   onClick={loadTrendingTopics}
-                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full p-8 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 backdrop-blur-xl border-2 border-tron-cyan rounded-2xl hover:shadow-xl hover:shadow-tron-cyan/30 transition-all group"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
-                        <Flame className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-2xl font-bold text-tron-text mb-1">
-                          Discover Viral
-                        </h3>
-                        <p className="text-tron-text-muted">
-                          AI predicts what will go viral
-                        </p>
+                  <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                    <div className="w-14 h-14 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                      <Flame className="w-7 h-7 text-coral-400 group-hover:text-white transition-colors" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-coral-400 transition-colors">
+                        Discover Viral
+                      </h3>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                         AI predicts what will go viral. Start here if you have no ideas yet.
+                      </p>
+
+                      <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors">
+                        Launch Discovery <ChevronRight className="w-4 h-4 ml-1" />
                       </div>
                     </div>
-                    <ChevronRight className="w-8 h-8 text-tron-cyan group-hover:translate-x-2 transition-transform" />
                   </div>
                 </motion.button>
 
-                {/* Custom Search Button */}
+                {/* Validate Idea Button */}
                 <motion.button
                   onClick={() => goToNextCard()}
-                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full p-8 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 backdrop-blur-xl border-2 border-tron-cyan rounded-2xl hover:shadow-xl hover:shadow-tron-cyan/30 transition-all group"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-tron-cyan/20 rounded-3xl overflow-hidden hover:border-tron-cyan/40 hover:shadow-2xl hover:shadow-tron-cyan/10 transition-all duration-300"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-tron-cyan to-tron-magenta flex items-center justify-center">
-                        <Search className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-2xl font-bold text-tron-text mb-1">
-                          Validate Idea
-                        </h3>
-                        <p className="text-tron-text-muted">
-                          Check if your idea will go viral before posting
-                        </p>
+                  <div className="absolute inset-0 bg-gradient-to-br from-tron-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                    <div className="w-14 h-14 rounded-2xl bg-tron-cyan/10 border border-tron-cyan/30 flex items-center justify-center group-hover:bg-tron-cyan group-hover:text-white transition-colors duration-300">
+                      <Search className="w-7 h-7 text-tron-cyan group-hover:text-white transition-colors" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-tron-cyan transition-colors">
+                        Validate Idea
+                      </h3>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                        Check if your idea will go viral before posting. Best if you have a topic.
+                      </p>
+
+                      <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-tron-cyan transition-colors">
+                         Start Validation <ChevronRight className="w-4 h-4 ml-1" />
                       </div>
                     </div>
-                    <ChevronRight className="w-8 h-8 text-tron-cyan group-hover:translate-x-2 transition-transform" />
                   </div>
                 </motion.button>
+              </div>
 
-
-
-                {/* Back Button */}
-                <motion.button
+              <div className="relative z-10 mt-12 text-center">
+                 <motion.button
                   onClick={goToPrevCard}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-4 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="text-gray-400 hover:text-coral-400 text-sm font-medium transition-colors py-2 px-4"
                 >
-                  ← Back
+                  ← Go Back
                 </motion.button>
               </div>
             </motion.div>
@@ -2314,6 +2341,17 @@ export default function NewCampaignPage() {
                         </motion.div>
                       )}
                     </AnimatePresence>
+
+                    {/* Transfer Masterclass - Send to Phone for Mobile Platforms */}
+                    {activePlatformView && (activePlatformView === 'tiktok' || activePlatformView === 'instagram') && generatedContent[activePlatformView] && (
+                      <div className="mb-6">
+                        <TransferMasterclass
+                          activePlatform={activePlatformView}
+                          content={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                          onCopy={() => showToast("Content copied!", "success")}
+                        />
+                      </div>
+                    )}
 
                     {/* Navigation - Back, Copy, and Edit */}
                     <div className="flex gap-3">

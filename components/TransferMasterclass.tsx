@@ -15,7 +15,9 @@ import {
   Clock,
   TextT,
   HashStraight,
+  DeviceMobile,
 } from "@phosphor-icons/react";
+import { SendToPhoneModal } from "./SendToPhoneModal";
 
 interface PlatformGuide {
   name: string;
@@ -161,6 +163,16 @@ export function TransferMasterclass({
     activePlatform || null
   );
   const [isExpanded, setIsExpanded] = useState(true);
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [phoneModalPlatform, setPhoneModalPlatform] = useState("");
+
+  const openPhoneModal = (platform: string) => {
+    setPhoneModalPlatform(platform);
+    setShowPhoneModal(true);
+  };
+
+  // Platforms that are mobile-first (text posts only work on mobile)
+  const mobileFirstPlatforms = ["tiktok", "instagram"];
 
   const togglePlatform = (platform: string) => {
     setExpandedPlatform(expandedPlatform === platform ? null : platform);
@@ -218,36 +230,33 @@ export function TransferMasterclass({
                 }`}
               >
                 {/* Platform Header */}
-                <button
-                  onClick={() => togglePlatform(key)}
-                  className="w-full px-4 py-3 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
+                <div className="w-full px-4 py-3 flex items-center justify-between">
+                  <button
+                    onClick={() => togglePlatform(key)}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                  >
                     <Icon
                       className="w-5 h-5"
                       style={{ color: guide.color }}
                       weight="duotone"
                     />
                     <span className="font-medium text-white">{guide.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        copyAndOpen(key);
-                      }}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-coral-500/20 text-coral-400 hover:bg-coral-500/30 transition-colors flex items-center gap-1.5"
-                    >
-                      <ArrowSquareOut className="w-3.5 h-3.5" />
-                      Open {guide.name.split(" ")[0]}
-                    </button>
                     {isActive ? (
                       <CaretUp className="w-4 h-4 text-gray-400" />
                     ) : (
                       <CaretDown className="w-4 h-4 text-gray-400" />
                     )}
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => copyAndOpen(key)}
+                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-coral-500/20 text-coral-400 hover:bg-coral-500/30 transition-colors flex items-center gap-1.5"
+                    >
+                      <ArrowSquareOut className="w-3.5 h-3.5" />
+                      Open {guide.name.split(" ")[0]}
+                    </button>
                   </div>
-                </button>
+                </div>
 
                 {/* Expanded Content */}
                 {isActive && (
@@ -321,15 +330,41 @@ export function TransferMasterclass({
                       </ol>
                     </div>
 
-                    {/* Action Button */}
-                    <button
-                      onClick={() => copyAndOpen(key)}
-                      className="w-full py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2"
-                      style={{ backgroundColor: guide.color }}
-                    >
-                      <Copy className="w-4 h-4" />
-                      Copy & Open {guide.name.split(" ")[0]}
-                    </button>
+                    {/* Mobile-First Platform Notice */}
+                    {mobileFirstPlatforms.includes(key) && (
+                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 mb-3">
+                        <div className="flex items-center gap-2 text-amber-400 text-xs font-medium mb-1">
+                          <DeviceMobile className="w-3.5 h-3.5" />
+                          Mobile-First Platform
+                        </div>
+                        <p className="text-sm text-gray-300">
+                          {key === "tiktok"
+                            ? "TikTok text posts only work on mobile. Use 'Send to Phone' to copy your content there instantly."
+                            : "Instagram works best on mobile. Use 'Send to Phone' for the full posting experience."}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      {mobileFirstPlatforms.includes(key) && content && (
+                        <button
+                          onClick={() => openPhoneModal(key)}
+                          className="flex-1 py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                        >
+                          <DeviceMobile className="w-4 h-4" />
+                          Send to Phone
+                        </button>
+                      )}
+                      <button
+                        onClick={() => copyAndOpen(key)}
+                        className={`${mobileFirstPlatforms.includes(key) && content ? "flex-1" : "w-full"} py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2`}
+                        style={{ backgroundColor: guide.color }}
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy & Open {guide.name.split(" ")[0]}
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -337,6 +372,14 @@ export function TransferMasterclass({
           })}
         </div>
       )}
+
+      {/* Send to Phone Modal */}
+      <SendToPhoneModal
+        isOpen={showPhoneModal}
+        onClose={() => setShowPhoneModal(false)}
+        content={content || ""}
+        platform={phoneModalPlatform}
+      />
     </div>
   );
 }
