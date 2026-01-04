@@ -7,11 +7,40 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-
-
 ---
 
+
 ## COMPLETED
+
+- [x] **Campaign Creation Video Script** 🎬 ✅
+      - **Action:** Created an 8-second punchy video script focused on "Viral DNA" and predictable success.
+      - **Deliverable:** `docs/VIDEO_SCRIPT.md` with full screenshot instructions.
+      - **Assigned:** Gemini
+
+- [x] **UX/UI Improvements** 🎨 ✅
+      - **Problem:** Cards with choices are  too big.  User has to turn down the zoom when to fit the options or scroll.  Options and text need to be tighted to fit and not waste any room to make it laptop and mobile friendly.  Keep the same look and feel but make it more compact.
+      - **Expected:** Campaign creation should be more compact and user friendly.
+      - **File:** `app/(portal)/campaigns/create/page.tsx` (Content Preferences step)
+      - **Assigned:** Gemini
+
+- [x] **Fix Per-Platform Settings Bug** 🐛 ✅
+      - **Problem:** When "Per Platform" toggle is ON, changing Tone/Length/Focus still applies to ALL platforms instead of just the selected one
+      - **Expected:** Settings should only apply to the platform with "EDITING" badge
+      - **File:** `app/(portal)/campaigns/create/page.tsx` (Content Preferences step)
+      - **Assigned:** Gemini
+
+
+- [x] **Center Loading Spinner on Trend Discovery** 🎨 ✅
+      - **Problem:** "Finding trends..." spinner is slightly above center - off from the fade point of the dotted background
+      - **Goal:** Perfectly center the spinner vertically and horizontally
+      - **File:** `components/TrendDiscovery.tsx` (or wherever the loading state is rendered)
+      - **Assigned:** Gemini
+
+- [x] **Continue Button Width Fix** 🎨 ✅
+      - **Problem:** Continue button on Platform Selection (Step 2) spans full width, doesn't match platform card grid
+      - **Goal:** Align button width with the 3-column platform grid (~max-w-4xl)
+      - **File:** `app/(portal)/campaigns/create/page.tsx`
+      - **Assigned:** Gemini
 
 - [x] **Reactor Landing Page Redesign** 🎨 ✅
       - **Problem:** Current `/ai-studio` page uses a dark transparent overlay on full content. Looks unprofessional and cluttered.
