@@ -15,10 +15,17 @@ interface TrendingTopic {
   viralFactors?: {
     volume: number;
     multiSource: number;
-    specificity: number;
     freshness: number;
+    keywordBoost: number;
+    benchmark: number;
+    aiAnalysis: number;
   };
   sources?: string[];
+  viralDNA?: {
+    hookType: string;
+    primaryEmotion: string;
+    valueProp: string;
+  };
 }
 
 interface RelatedQuery {
@@ -283,6 +290,19 @@ export default function TrendDiscovery() {
                         </div>
                       )}
                     </div>
+                    {trend.viralDNA && (
+                        <div className="flex gap-2 mb-2 flex-wrap">
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                                🪝 {trend.viralDNA.hookType}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-purple-100 text-purple-700 border border-purple-200">
+                                ❤️ {trend.viralDNA.primaryEmotion}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                💎 {trend.viralDNA.valueProp}
+                            </span>
+                        </div>
+                    )}
                     <div className="text-sm text-gray-500">
                       {trend.formattedTraffic}
                     </div>

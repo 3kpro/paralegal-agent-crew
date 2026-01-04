@@ -94,6 +94,10 @@ export default function NewCampaignPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [loadingCampaignData, setLoadingCampaignData] = useState(false);
 
+  // Per-platform customization state
+  const [customizePerPlatform, setCustomizePerPlatform] = useState(false);
+  const [activePlatformTab, setActivePlatformTab] = useState<string | null>(null);
+
   console.log("[EDIT MODE] editId:", editId, "isEditMode:", isEditMode);
 
   // Card-based navigation state
@@ -290,6 +294,30 @@ export default function NewCampaignPage() {
       callToAction: "engage",
       reason: "LinkedIn rewards thoughtful, professional content that provides value. Standard length posts with clear insights drive engagement.",
     },
+    facebook: {
+      tone: "casual",
+      length: "standard",
+      contentFocus: "story",
+      audiences: ["general", "hobbyists"],
+      callToAction: "share",
+      reason: "Facebook thrives on relatable stories and shareable content. Casual tone with emotional hooks drives engagement and shares.",
+    },
+    instagram: {
+      tone: "casual",
+      length: "short",
+      contentFocus: "story",
+      audiences: ["creators", "general"],
+      callToAction: "share",
+      reason: "Instagram favors visually-driven captions with storytelling. Short, punchy copy with strong hooks performs best.",
+    },
+    reddit: {
+      tone: "casual",
+      length: "long",
+      contentFocus: "discussion",
+      audiences: ["techies", "hobbyists"],
+      callToAction: "comment",
+      reason: "Reddit rewards authentic, detailed posts that spark discussion. Long-form content with genuine value gets upvoted.",
+    },
   }), []);
 
   // NEW: Trending combinations (simulated - could be fetched from analytics)
@@ -473,7 +501,7 @@ export default function NewCampaignPage() {
   /**
    * NEW: Apply platform preset
    */
-  const applyPlatformPreset = useCallback((platform: "twitter" | "tiktok" | "linkedin") => {
+  const applyPlatformPreset = useCallback((platform: "twitter" | "tiktok" | "linkedin" | "facebook" | "instagram" | "reddit") => {
     const preset = platformPresets[platform];
     setControls({
       ...controls,
@@ -1424,6 +1452,31 @@ export default function NewCampaignPage() {
                 <p className="text-coral-400/60 text-sm mt-2">
                   💡 Note: This is for content generation only. Social publishing features coming soon!
                 </p>
+
+                <button
+                  onClick={() => {
+                    const allIds = ["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit"];
+                    const allSelected = allIds.every((id) => targetPlatforms.includes(id));
+                    if (allSelected) {
+                      setTargetPlatforms([]);
+                    } else {
+                      setTargetPlatforms(allIds);
+                    }
+                  }}
+                  className="mt-6 px-4 py-2 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 rounded-full text-xs font-medium text-coral-400 transition-all flex items-center gap-2 mx-auto"
+                >
+                  {["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit"].every((id) =>
+                    targetPlatforms.includes(id)
+                  ) ? (
+                    <>
+                      <X className="w-3 h-3" /> Deselect All
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3 h-3" /> Select All Platforms
+                    </>
+                  )}
+                </button>
               </div>
 
               <div className="relative z-10 max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1888,6 +1941,7 @@ export default function NewCampaignPage() {
                 <p className="text-tron-text-muted">
                   Customize how your content will be generated
                 </p>
+
               </div>
 
               <div className="max-w-5xl mx-auto space-y-6">
@@ -1923,44 +1977,219 @@ export default function NewCampaignPage() {
                   </button>
                 </div>
 
-                {/* Platform Presets - Only show for selected platforms */}
-                {(targetPlatforms.includes("twitter") || targetPlatforms.includes("tiktok") || targetPlatforms.includes("linkedin")) && (
-                  <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
-                    <div className="text-sm text-tron-text-muted mb-3 font-semibold">Quick Presets</div>
-                    <div className="flex flex-wrap gap-2">
-                      {targetPlatforms.includes("twitter") && (
+                {/* Platform Cards - Visual Overview */}
+                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                  {/* Header with sync toggle */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-white">Your Platforms</h3>
+                    {targetPlatforms.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newValue = !customizePerPlatform;
+                          setCustomizePerPlatform(newValue);
+                          if (newValue && !activePlatformTab) {
+                            setActivePlatformTab(targetPlatforms[0]);
+                          }
+                        }}
+                        className="flex items-center gap-2 group"
+                      >
+                        <div className={`relative w-10 h-5 rounded-full transition-colors ${!customizePerPlatform ? 'bg-coral-500' : 'bg-gray-600'}`}>
+                          <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${!customizePerPlatform ? 'left-0.5' : 'left-5'}`} />
+                        </div>
+                        <span className="text-sm text-tron-text-muted group-hover:text-white transition-colors">
+                          {!customizePerPlatform ? 'Same for all' : 'Per platform'}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Platform Cards Grid */}
+                  <div className={`grid gap-3 ${targetPlatforms.length === 1 ? 'grid-cols-1' : targetPlatforms.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                    {targetPlatforms.map(platform => {
+                      const isEditing = customizePerPlatform && activePlatformTab === platform;
+                      const platformIcons: Record<string, typeof Twitter> = {
+                        twitter: Twitter,
+                        tiktok: Music,
+                        linkedin: Linkedin,
+                        instagram: Instagram,
+                        facebook: Facebook,
+                      };
+                      const PlatformIcon = platformIcons[platform] || Zap;
+                      const platformColors: Record<string, string> = {
+                        twitter: '#1DA1F2',
+                        tiktok: '#00f2ea',
+                        linkedin: '#0A66C2',
+                        instagram: '#E4405F',
+                        facebook: '#1877F2',
+                      };
+
+                      return (
                         <button
+                          key={platform}
                           type="button"
-                          onClick={() => applyPlatformPreset("twitter")}
-                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                          onClick={() => {
+                            if (targetPlatforms.length > 1) {
+                              setCustomizePerPlatform(true);
+                              setActivePlatformTab(platform);
+                            }
+                          }}
+                          disabled={targetPlatforms.length === 1}
+                          className={`relative p-4 rounded-xl border-2 transition-all text-left ${
+                            isEditing
+                              ? 'border-tron-cyan bg-tron-cyan/10 ring-2 ring-tron-cyan/30'
+                              : !customizePerPlatform
+                                ? 'border-coral-500/50 bg-coral-500/5'
+                                : 'border-gray-700 bg-gray-800/30 hover:border-gray-500'
+                          } ${targetPlatforms.length === 1 ? 'cursor-default' : 'cursor-pointer'}`}
                         >
-                          <Twitter className="w-4 h-4" />
-                          Twitter Best Practices
+                          {/* Editing badge */}
+                          {isEditing && (
+                            <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-tron-cyan text-black text-[10px] font-bold rounded-full">
+                              EDITING
+                            </div>
+                          )}
+
+                          {/* Platform header */}
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${platformColors[platform]}20` }}>
+                              <PlatformIcon className="w-4 h-4" style={{ color: platformColors[platform] || '#888' }} />
+                            </div>
+                            <span className="font-semibold text-white capitalize">{platform}</span>
+                          </div>
+
+                          {/* Current settings preview */}
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">Tone</span>
+                              <span className="text-white capitalize font-medium">{controls.tone}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">Length</span>
+                              <span className="text-white capitalize font-medium">{controls.length}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">Focus</span>
+                              <span className="text-white capitalize font-medium">{controls.contentFocus}</span>
+                            </div>
+                          </div>
+
+                          {/* Click hint for multi-platform */}
+                          {!customizePerPlatform && targetPlatforms.length > 1 && (
+                            <div className="mt-3 pt-2 border-t border-gray-700/50 text-[10px] text-gray-500">
+                              Click to customize just this platform
+                            </div>
+                          )}
                         </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Editing indicator */}
+                  {customizePerPlatform && activePlatformTab && (
+                    <div className="mt-4 p-3 bg-tron-cyan/10 border border-tron-cyan/30 rounded-lg flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-tron-cyan rounded-full animate-pulse" />
+                        <span className="text-sm text-tron-cyan">
+                          Settings below apply to <span className="font-bold capitalize">{activePlatformTab}</span> only
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setCustomizePerPlatform(false)}
+                        className="px-3 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                      >
+                        Apply to All
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Quick Presets */}
+                  <div className="mt-4 pt-4 border-t border-gray-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs text-gray-500 uppercase tracking-wide">Quick Presets</span>
+                      {customizePerPlatform && activePlatformTab && (
+                        <span className="text-xs text-tron-cyan capitalize">for {activePlatformTab}</span>
                       )}
-                      {targetPlatforms.includes("tiktok") && (
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {targetPlatforms.includes('tiktok') && (!customizePerPlatform || activePlatformTab === 'tiktok') && (
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("tiktok")}
-                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#00f2ea] hover:text-[#00f2ea] transition-all flex items-center gap-1.5"
                         >
-                          <Music className="w-4 h-4" />
+                          <Music className="w-3 h-3" />
                           TikTok Viral
                         </button>
                       )}
-                      {targetPlatforms.includes("linkedin") && (
+                      {targetPlatforms.includes('twitter') && (!customizePerPlatform || activePlatformTab === 'twitter') && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("twitter")}
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all flex items-center gap-1.5"
+                        >
+                          <Twitter className="w-3 h-3" />
+                          Twitter Thread
+                        </button>
+                      )}
+                      {targetPlatforms.includes('linkedin') && (!customizePerPlatform || activePlatformTab === 'linkedin') && (
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("linkedin")}
-                          className="px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all flex items-center gap-1.5"
                         >
-                          <Linkedin className="w-4 h-4" />
-                          LinkedIn Authority
+                          <Linkedin className="w-3 h-3" />
+                          LinkedIn Pro
                         </button>
                       )}
+                      {targetPlatforms.includes('facebook') && (!customizePerPlatform || activePlatformTab === 'facebook') && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("facebook")}
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1877F2] hover:text-[#1877F2] transition-all flex items-center gap-1.5"
+                        >
+                          <Facebook className="w-3 h-3" />
+                          Facebook Story
+                        </button>
+                      )}
+                      {targetPlatforms.includes('instagram') && (!customizePerPlatform || activePlatformTab === 'instagram') && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("instagram")}
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#E4405F] hover:text-[#E4405F] transition-all flex items-center gap-1.5"
+                        >
+                          <Instagram className="w-3 h-3" />
+                          Instagram Caption
+                        </button>
+                      )}
+                      {targetPlatforms.includes('reddit') && (!customizePerPlatform || activePlatformTab === 'reddit') && (
+                        <button
+                          type="button"
+                          onClick={() => applyPlatformPreset("reddit")}
+                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#FF4500] hover:text-[#FF4500] transition-all flex items-center gap-1.5"
+                        >
+                          <MessageSquare className="w-3 h-3" />
+                          Reddit Post
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setControls({ ...controls, tone: 'casual', contentFocus: 'tips', length: 'short' })}
+                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                      >
+                        Quick & Casual
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setControls({ ...controls, tone: 'professional', contentFocus: 'informative', length: 'long' })}
+                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                      >
+                        Long-form Pro
+                      </button>
                     </div>
                   </div>
-                )}
+                </div>
 
                 {/* Validation Warnings */}
                 {selectedAudiences.length === 0 && (

@@ -1,5 +1,5 @@
 # TASKS.md
-Last Updated: 2025-12-30
+Last Updated: 2026-01-04
 
 This file lists the ONLY work that should be actively considered.
 If it's not here, it's not a task.
@@ -7,36 +7,88 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-- [ ] **Campaign Creation Aesthetics Upgrade** 🎨
-      - **Branch:** `ui/campaign-aesthetics` (safe rollback available)
-      - **Problem:** Campaign wizard looks dated/lame. Needs modern, sleek aesthetic matching landing page quality.
-      - **SCOPE: AESTHETICS ONLY** - Do NOT change functionality, wording, or workflow.
-      - **Screens to Upgrade:**
-        1. **Campaign Name Step** (first box where user names campaign)
-           - Modernize input field styling
-           - Improve card/container design
-           - Better visual hierarchy
-           - Subtle glassmorphism or depth effects
-        2. **Path Selection Step** (Viral Discovery / Validate Idea cards)
-           - Make selection cards feel premium
-           - Improve hover/selected states
-           - Better iconography presentation
-           - Modern card design (subtle gradients, shadows, borders)
-      - **Design Direction:**
-        - Simplistic, modern, mainstream
-        - Match landing page quality/style
-        - Keep coral/tron color scheme
-        - Subtle animations on interactions
-        - Clean typography with proper spacing
-        - Premium SaaS feel (think Linear, Vercel, Stripe dashboards)
-      - **Files:**
-        - `app/(portal)/campaigns/create/page.tsx`
-        - `components/TrendDiscovery.tsx`
-      - **DO NOT CHANGE:**
-        - Wording/copy
-        - Workflow/steps
-        - Functionality
-        - Button actions
+
+
+---
+
+## COMPLETED
+
+- [x] **Reactor Landing Page Redesign** 🎨 ✅
+      - **Problem:** Current `/ai-studio` page uses a dark transparent overlay on full content. Looks unprofessional and cluttered.
+      - **Goal:** Build a dedicated, minimalistic "Coming Soon" landing page that builds anticipation.
+      - **Design:**
+        - Centered, vertical, clean layout
+        - Animated Brain icon (subtle pulse)
+        - "REACTOR" title with coral→purple→cyan gradient
+        - "50+ AI Models. One Interface." subtitle
+        - Coming Soon pill badge
+        - AI provider logos strip (8 logos, grayscale, glow on hover)
+        - 3 feature teaser cards (Multi-Model, Smart Routing, Cost Control)
+        - Footer tagline
+      - **Keep:** Auth check, BGPattern, provider logo images
+      - **Remove:** Dark overlay, detailed provider cards, AI_CAPABILITIES section, "What You'll Create" section
+      - **File:** `app/(portal)/ai-studio/page.tsx`
+      - **Handoff:** `docs/handoffs/REACTOR_LANDING_PAGE_REDESIGN.md` (full spec + code template)
+      - **Assigned:** Gemini
+
+- [x] **Viral DNA 2.0 Landing Page Alignment** ✅ (2026-01-04)
+      - **Goal:** Update all marketing copy to reflect Viral DNA psychometric analysis upgrade
+      - **Completed:**
+        - [x] Updated `ModernFeatures.tsx` - Viral Score card now shows "Psychometric Viral Analysis"
+        - [x] Updated `ModernHero.tsx` - Key features now say "Viral DNA decoded", capability pills updated
+        - [x] Updated `/demo` page - New title, Viral DNA breakdown cards, updated CTAs
+        - [x] Updated `XELORA_PRESS_PACK.md` - Added Taglines & One-Liners section, updated VPI section
+        - [x] Created `docs/MARKETING_OVERHAUL_PLAN.md` - Full asset audit and production checklist
+      - **Key Messaging:** "Every viral post has DNA. We decode it." / "Stop guessing. Start engineering."
+
+- [x] **Add "Select All" Button to Platform Selection** ✅
+      - **Goal:** Quick way to select all 6 platforms at once.
+      - **Location:** Campaign Create → Step 2 (Choose Content Formats)
+      - **Action:**
+        - Add a subtle "Select All" button that fits the page's dark coral aesthetic.
+        - Should toggle all platforms on/off.
+        - Position: Above or beside the platform grid, not intrusive.
+      - **Why:** UX convenience - users often want multi-platform campaigns.
+      - **Status:** Done. "Select All" / "Deselect All" button added to wizard header.
+
+- [x] **Visualize Viral DNA in Discovery UI** ✅
+      - **Goal:** Show the user *why* a trend is viral using the new psychometric tags.
+      - **Action:**
+        - Update `TrendDiscovery.tsx` or `TrendingTopicsPreview.tsx` to fetch `viral_dna`.
+        - Display tags (e.g. "Hook: Contrarian", "Emotion: Greed") as sleek badges.
+        - Add tooltips explaining the mechanic.
+      - **Why:** Delivers the "OMG" moment where the AI explains the psychology.
+      - **Status:** Done. Interfaces updated, AI prompt enhanced, UI badges added.
+
+---
+
+## COMPLETED
+- [x] **Configure Apify Viral Data Collector** ✅
+      - **Goal:** Switch from raw scraping to "Safe" Apify API integration.
+      - **Results:**
+        - ✅ Setup `fatihtahta/reddit-scraper-search-fast` actor ($1.49/1k cost).
+        - ✅ Bypassed monthly rental fees using usage-based actor.
+        - ✅ Integrated `collect-viral-data-apify.ts` with Supabase.
+      - **Impact:** Legal, compliant, and scalable viral data pipeline.
+
+- [x] **Integrate Benchmark Score into Viral Score Algorithm** ✅
+      - **Goal:** Wire the new `viral-benchmarks.ts` library into the existing Viral Score calculation.
+      - **Results:**
+        - ✅ Updated `lib/viral-score.ts` to call `getBenchmarkScore`.
+        - ✅ Added "Benchmark Score" (0-20 pts) to the calculation logic.
+        - ✅ Updated `TrendWithViralScore` interfaces in `TrendDiscovery.tsx` and `TrendingTopicsPreview.tsx` to prevent type errors.
+        - ✅ Updated UI copy to explain "Proven Viral Patterns".
+      - **Impact:** Viral Scores now boosted by real-world performance data.
+
+- [x] **Build Reddit Viral Data Collector** ✅
+      - **Goal:** Create a dataset of "Proven Viral Hits" to train the Viral Score™ algorithm.
+      - **Source:** Reddit JSON API (`r/all`, `r/entrepreneur`, `r/marketing`, `r/technology`, `r/business`).
+      - **Deliverable:** A populated database table with ~10,000+ high-performance headlines.
+      - **Results:**
+        - ✅ Script validated and running (Daily + Backfill modes working).
+        - ✅ Database migration verified.
+        - ✅ Benchmarking logic library integrated.
+      - **Why:** Moves Viral Score from "Heuristic Guessing" to "Statistical Pattern Matching".
 
 - [x] **Stripe Payment Integration Testing** ✅
       - **Problem:** Subscription sync failing after successful Stripe checkout
@@ -56,9 +108,13 @@ If it's not here, it's not a task.
         - Any other loading states throughout the app
       - **Requirement:** BouncingDots is the ONLY spinner for user-facing loading states
 
----
-
-## COMPLETED
+- [x] **Campaign Creation Aesthetics Upgrade** ✅
+      - **Problem:** Campaign wizard needed capitalization on premium SaaS feel.
+      - **Solution:**
+        - **Card 1 (Name):** Implementing glassmorphism, removing heavy neon borders, adding subtle mesh gradients.
+        - **Card 3 (Path):** Converted large buttons to interactive Feature Cards with grid layout and rich hover states.
+      - **Result:** Visuals now match the high-end landing page aesthetic without altering functionality.
+      - **Files:** `app/(portal)/campaigns/create/page.tsx`
 - [x] **Campaign UI Cleanup** 🎨
       - **Branch:** `ui/campaign-cleanup` (safe rollback available)
       - **Problem:** Campaign creation wizard needs polish and V1 alignment

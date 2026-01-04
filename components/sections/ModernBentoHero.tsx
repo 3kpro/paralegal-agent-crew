@@ -45,7 +45,7 @@ export default function ModernBentoHero() {
             </h1>
 
             <p className="text-lg text-gray-400 mb-8 max-w-xl leading-relaxed">
-              Stop guessing. XELORA uses AI to analyze millions of data points, predicting content performance with <span className="text-white font-semibold">87% accuracy</span>.
+              Stop guessing. XELORA's Viral Score™ is trained on <span className="text-white font-semibold">10,000+ proven viral posts</span> from Reddit, analyzing patterns that actually went viral—not just trending.
             </p>
 
             {/* CTAs */}
@@ -107,7 +107,7 @@ export default function ModernBentoHero() {
                 </div>
                 <div className="p-3 bg-white/5 rounded-lg border border-white/5">
                   <p className="text-xs text-gray-300 leading-relaxed">
-                    <span className="text-green-400 font-semibold">High Potential:</span> Topic is trending up 340% in the last 24h. Recommended hook: "The Secret to..."
+                    <span className="text-green-400 font-semibold">Proven Pattern:</span> Matches 847 viral posts from r/entrepreneur. Hook structure has 12x avg engagement.
                   </p>
                 </div>
               </div>

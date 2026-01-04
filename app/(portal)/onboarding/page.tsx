@@ -29,16 +29,16 @@ const valuePropSlides: ValuePropSlide[] = [
     subtext: "Before you hit publish.",
   },
   {
-    text: "XELORA gives every post a Viral Score™.",
-    subtext: "0-100. 87% accurate. 2 seconds.",
+    text: "Viral Score™ trained on 10K+ proven hits.",
+    subtext: "Real posts. Real engagement. Real patterns.",
   },
   {
-    text: "Find trending topics across all platforms.",
-    subtext: "Twitter. Reddit. TikTok. LinkedIn. All in one place.",
+    text: "Not just trending—proven to perform.",
+    subtext: "We analyze posts that got 10K+ upvotes on Reddit.",
   },
   {
-    text: "AI generates content for you.",
-    subtext: "Platform-optimized. Engagement-focused.",
+    text: "AI generates content that matches.",
+    subtext: "Platform-optimized. Pattern-matched. Data-driven.",
   },
   {
     text: "Ready?",

@@ -11,7 +11,7 @@ export function Skeleton({
 }: SkeletonProps) {
   return (
     <div
-      className={`${width} ${height} bg-tron-grid/50 rounded-md animate-pulse ${className}`}
+      className={`${width} ${height} rounded-md shimmer ${className}`}
     />
   );
 }
@@ -128,8 +128,8 @@ export function SettingsSkeleton() {
 
 export function ButtonSkeleton() {
   return (
-    <div className="inline-flex items-center px-4 py-2 bg-gray-200 rounded-lg animate-pulse">
-      <Skeleton height="h-5" width="w-16" />
+    <div className="inline-flex items-center px-4 py-2 rounded-lg shimmer">
+      <div className="h-5 w-16" />
     </div>
   );
 }

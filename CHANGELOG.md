@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-03] - Viral DNA Visualization & UX Polish
+
+### Added
+- **Viral Score™ 2.0: "Viral DNA" Visualization**:
+  - **Backend Intelligence**: Upgraded the Gemini 2.0 Flash prompt engineering to perform deep psychometric analysis on every trending topic.
+  - **Psychometric Extraction**: Now identifies and tags:
+    - **Hook Type**: (e.g., Contrarian, Secret, Story, News) - How it grabs attention.
+    - **Primary Emotion**: (e.g., Fear, Greed, Curiosity, Awe) - The psychological trigger.
+    - **Value Prop**: (e.g., Status, Money, Time, Knowledge) - The promise to the reader.
+  - **Frontend Experience**:
+    - Added interactive "DNA Badges" to the Trend Discovery and Trending Topics Preview cards.
+    - Users can now instantly scan *why* a topic is trending, not just *that* it is trending.
+    - Color-coded system: Blue for Hooks, Purple for Emotions, Amber for Value Props.
+
+### Improved
+- **Hero Section UX**:
+  - **Interactive Scroll**: Made the visual "mouse" scroll indicator in `ModernHero` interactive (clickable) to smoothly scroll users to the features section.
+
+---
+
 ## [2025-12-29] - Campaign Wizard Restoration & UX Improvements
 
 ### Fixed

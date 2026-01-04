@@ -14,6 +14,7 @@ import {
   Plus,
   ArrowRight,
   Sparkle as Sparkles,
+  Article,
 } from "@phosphor-icons/react";
 import { FirstTimeHelpBanner } from "./FirstTimeTooltips";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
@@ -123,7 +124,7 @@ export default function DashboardClient() {
       gradient: "from-coral-500 to-coral-600",
     },
     {
-      icon: Sparkles,
+      icon: Article,
       value: campaigns.length * 4, // Estimate 4 content pieces per campaign
       label: "Content Pieces",
       subtitle: campaigns.length > 0 ? `$${campaigns.length * 4 * 10} saved` : "AI-powered content",

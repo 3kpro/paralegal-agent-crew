@@ -133,21 +133,21 @@ export default function ModernHero() {
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
               <span>
-                <strong className="text-[#F5F7FA]">Real-time</strong> signal analysis
+                <strong className="text-[#F5F7FA]">Viral DNA</strong> decoded
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-[#A17CF9]" weight="duotone" />
               <span>
-                <strong className="text-[#F5F7FA]">Predictive</strong> momentum detection
+                <strong className="text-[#F5F7FA]">Hook + Emotion + Value</strong> analysis
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
               <span>
-                <strong className="text-[#F5F7FA]">6+ platforms</strong> engineered
+                <strong className="text-[#F5F7FA]">Know WHY</strong> before you post
               </span>
             </div>
           </motion.div>
@@ -160,14 +160,14 @@ export default function ModernHero() {
             className="mt-16 flex flex-wrap gap-3 justify-center"
           >
             {[
-              "Signal Tracking",
-              "Momentum Prediction",
-              "Multi-Platform Engineering",
-              "Real-Time Analysis",
+              "Viral DNA Analysis",
+              "Hook Detection",
+              "Emotion Mapping",
+              "Value Prop Scoring",
+              "Psychometric AI",
+              "Multi-Platform",
               "Trend Forecasting",
-              "Promote Engine",
-              "AI Media Analysis",
-              "Audience Intelligence",
+              "Content Engineering",
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -193,7 +193,13 @@ export default function ModernHero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-[#00C7F2]/60 rounded-full flex items-start justify-center p-2"
+          className="w-6 h-10 border-2 border-[#00C7F2]/60 rounded-full flex items-start justify-center p-2 cursor-pointer hover:border-[#00C7F2] transition-colors"
+          onClick={() => {
+            const features = document.getElementById("features");
+            if (features) {
+              features.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
         >
           <div className="w-1 h-2 bg-[#00C7F2] rounded-full" />
         </motion.div>

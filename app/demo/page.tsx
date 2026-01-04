@@ -27,11 +27,18 @@ export default function DemoPage() {
         <div className="max-w-6xl mx-auto">
           {/* Title */}
           <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/10 border border-coral-500/30 rounded-full mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-coral-500"></span>
+              </span>
+              <span className="text-sm font-medium text-coral-400">Viral DNA 2.0</span>
+            </div>
             <h1 className="text-5xl font-bold text-white mb-4">
-              See XELORA in Action
+              Decode the DNA of Viral Content
             </h1>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Watch how creators predict viral content in under 2 minutes
+              See exactly <span className="text-coral-400 font-semibold">WHY</span> content goes viral - the Hook, the Emotion, the Value
             </p>
           </div>
 
@@ -50,26 +57,29 @@ export default function DemoPage() {
             </video>
           </div>
 
-          {/* Stats Below Video */}
+          {/* Viral DNA Breakdown */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-coral-500 mb-2">87%</div>
-              <div className="text-slate-300">Viral Prediction Accuracy</div>
+            <div className="text-center p-6 rounded-xl bg-[#00C7F2]/10 border border-[#00C7F2]/30">
+              <div className="text-4xl font-bold text-[#00C7F2] mb-2">Hook</div>
+              <div className="text-slate-300">How it grabs attention</div>
+              <div className="text-xs text-slate-400 mt-2">Contrarian, Secret, Story, News</div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-coral-500 mb-2">6</div>
-              <div className="text-slate-300">Platforms Supported</div>
+            <div className="text-center p-6 rounded-xl bg-[#A17CF9]/10 border border-[#A17CF9]/30">
+              <div className="text-4xl font-bold text-[#A17CF9] mb-2">Emotion</div>
+              <div className="text-slate-300">What it triggers</div>
+              <div className="text-xs text-slate-400 mt-2">Fear, Greed, Curiosity, Awe</div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-coral-500 mb-2">2min</div>
-              <div className="text-slate-300">From Idea to Publish</div>
+            <div className="text-center p-6 rounded-xl bg-amber-500/10 border border-amber-500/30">
+              <div className="text-4xl font-bold text-amber-500 mb-2">Value</div>
+              <div className="text-slate-300">What you gain</div>
+              <div className="text-xs text-slate-400 mt-2">Status, Money, Time, Knowledge</div>
             </div>
           </div>
 
           {/* CTA Section */}
           <div className="mt-16 text-center">
             <h2 className="text-3xl font-bold text-white mb-6">
-              Ready to create viral content?
+              Stop guessing. Start engineering.
             </h2>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -87,14 +97,15 @@ export default function DemoPage() {
               </Link>
             </div>
             <p className="text-slate-400 mt-4 text-sm">
-              No credit card required • 5 free predictions/month
+              No credit card required • Decode unlimited Viral DNA
             </p>
           </div>
 
-          {/* Product Hunt Badge (Optional) */}
+          {/* Tagline */}
           <div className="mt-12 text-center">
-            <p className="text-slate-400 mb-4">Launching on Product Hunt</p>
-            {/* Add Product Hunt badge here once launched */}
+            <p className="text-slate-500 text-lg italic">
+              "Every viral post has DNA. We decode it."
+            </p>
           </div>
         </div>
       </main>

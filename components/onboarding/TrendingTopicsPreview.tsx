@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { TrendUp as TrendingUp, WarningCircle as AlertCircle, MagicWand } from "@phosphor-icons/react";
 import { BouncingDots } from "@/components/ui/bouncing-dots";
 import type { Interest } from "./InterestSelection";
-import { getViralScoreEmoji, formatViralScore } from "@/lib/viral-score";
+import { getViralScoreEmoji, formatViralScore } from "@/lib/viral-score-utils";
 
 interface TrendWithViralScore {
   title: string;
@@ -13,6 +13,11 @@ interface TrendWithViralScore {
   relatedQueries?: string[];
   viralScore: number;
   viralPotential: "high" | "medium" | "low";
+  viralDNA?: {
+    hookType: string;
+    primaryEmotion: string;
+    valueProp: string;
+  };
 }
 
 interface InterestTrends {
@@ -165,9 +170,19 @@ export default function TrendingTopicsPreview({
                               {trend.title}
                             </h4>
                           </div>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-gray-500 mb-2">
                             {trend.formattedTraffic}
                           </p>
+                          {trend.viralDNA && (
+                            <div className="flex gap-1.5 flex-wrap">
+                                <span className="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                    🪝 {trend.viralDNA.hookType}
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded text-[9px] uppercase font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                                    ❤️ {trend.viralDNA.primaryEmotion}
+                                </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Viral Score Badge */}
@@ -214,8 +229,8 @@ export default function TrendingTopicsPreview({
               </h4>
               <p className="text-xs text-gray-300 leading-relaxed">
                 Our AI predicts how well content on these topics will perform
-                (0-100 score). Based on search volume, trend velocity, topic
-                specificity, and freshness. Higher scores = higher viral
+                (0-100 score). Based on search volume, trend velocity, proven viral
+                patterns, and freshness. Higher scores = higher viral
                 potential.
               </p>
             </div>

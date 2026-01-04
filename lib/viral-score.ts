@@ -1,13 +1,18 @@
 /**
- * Viral Score™ Algorithm (Hybrid AI + Heuristic)
+ * Viral Score™ Algorithm (Hybrid AI + Heuristic + Benchmark)
+ *
+ * NOTE: This file is server-only. Do not import in client components.
+ * For client-safe utilities, use @/lib/viral-score-utils.ts
  *
  * Predicts viral potential of trending topics (0-100 score)
  * Combines:
  * 1. Data Score: Volume, Multi-source validation, Freshness (Heuristic)
- * 2. Content Score: Hook quality, Emotional resonance, Value prop (Gemini AI)
+ * 2. Benchmark Score: Semantic match against proven viral hits (Database)
+ * 3. Content Score: Hook quality, Emotional resonance, Value prop (Gemini AI)
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getBenchmarkScore } from '@/lib/viral-benchmarks';
 
 // Initialize Gemini AI (Server-side only)
 // Uses API Key for simplicity and reliability
@@ -32,6 +37,12 @@ function getModel() {
   return model;
 }
 
+export interface ViralDNA {
+  hookType: string;
+  primaryEmotion: string;
+  valueProp: string;
+}
+
 export interface TrendWithViralScore {
   title: string;
   formattedTraffic: string;
@@ -45,6 +56,7 @@ export interface TrendWithViralScore {
     multiSource: number; // 0-10 points
     freshness: number; // 0-10 points
     keywordBoost: number; // 0-15 points (New "Hot Topic" Bonus)
+    benchmark: number; // 0-20 points (Proven Viral Hit Match)
     aiAnalysis: number; // 0-70 points (The "Content Score")
   };
 
@@ -52,6 +64,7 @@ export interface TrendWithViralScore {
   sources?: string[]; // ['google', 'twitter', 'reddit']
   firstSeenAt?: Date;
   aiReasoning?: string; // Why the AI gave this score
+  viralDNA?: ViralDNA; // The "Psychology" behind the viral potential
 }
 
 /**
@@ -73,11 +86,22 @@ export async function calculateViralScore(trend: {
   // 2. Calculate Keyword Boost (Heuristic) - Max 15 points
   const keywordBoost = calculateKeywordBoost(trend.title);
 
-  const dataScore = volumeScore + multiSourceScore + freshnessScore + keywordBoost;
+  // 3. Calculate Benchmark Score (Data-Driven) - Max 20 points
+  // Checks our database of 10k+ viral hits for semantic matches
+  let benchmarkScore = 0;
+  try {
+    benchmarkScore = await getBenchmarkScore(trend.title);
+  } catch (err) {
+    console.error(`[Viral Score] Benchmark check failed for "${trend.title}":`, err);
+    benchmarkScore = 0;
+  }
 
-  // 3. Calculate Content Score (AI) - Max 70 points
+  const dataScore = volumeScore + multiSourceScore + freshnessScore + keywordBoost + benchmarkScore;
+
+  // 4. Calculate Content Score (AI) - Max 70 points
   let aiScore = 0;
   let aiReasoning = "AI analysis skipped (No API Key).";
+  let viralDNA: ViralDNA | undefined;
 
   try {
     const aiModel = getModel();
@@ -91,7 +115,21 @@ export async function calculateViralScore(trend: {
         2. Broad Appeal (Do people care?) - Max 25
         3. Emotional Trigger (Fear, Greed, Awe?) - Max 15
         
-        Output JSON only: { "score": number, "reason": "short explanation" }
+        Also identify the Viral DNA:
+        - Hook Type: Contrarian, How-to, Listicle, Secret, News, Story, or Question
+        - Primary Emotion: Greed, Fear, Curiosity, Awe, Anger, Joy, or Urgency
+        - Value Prop: Money, Status, Time, Effort, Knowledge, or Entertainment
+
+        Output JSON only: 
+        { 
+          "score": number, 
+          "reason": "short explanation",
+          "dna": {
+             "hookType": "string",
+             "primaryEmotion": "string",
+             "valueProp": "string"
+          }
+        }
       `;
 
       const result = await aiModel.generateContent(prompt);
@@ -102,15 +140,26 @@ export async function calculateViralScore(trend: {
         const data = JSON.parse(jsonMatch[0]);
         aiScore = Math.min(data.score, 70);
         aiReasoning = data.reason;
+        viralDNA = data.dna;
       }
     } else {
       // Fallback: Boost score if it looks like a "How-to" or "Listicle" (simple heuristic)
       if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {
         aiScore = 40;
         aiReasoning = "Heuristic boost for high-performing format.";
+        viralDNA = {
+            hookType: "High Performing",
+            primaryEmotion: "Curiosity",
+            valueProp: "Knowledge"
+        };
       } else {
         aiScore = 20;
         aiReasoning = "Baseline content score.";
+        viralDNA = {
+            hookType: "Standard",
+            primaryEmotion: "Neutral",
+            valueProp: "Information"
+        };
       }
     }
   } catch (error) {
@@ -119,8 +168,9 @@ export async function calculateViralScore(trend: {
     aiReasoning = "AI analysis failed, used baseline.";
   }
 
-  // 4. Total Score
+  // 5. Total Score
   // We allow the total to go slightly over 100 internally before capping, to reward "Perfect Storms"
+  // Example: 30 (Data) + 15 (Keywords) + 20 (Benchmark) + 70 (AI) = 135 (capped at 100)
   const totalScore = Math.min(Math.round(dataScore + aiScore), 100);
   const viralPotential = classifyViralPotential(totalScore);
 
@@ -129,11 +179,13 @@ export async function calculateViralScore(trend: {
     viralScore: totalScore,
     viralPotential,
     aiReasoning,
+    viralDNA,
     viralFactors: {
       volume: volumeScore,
       multiSource: multiSourceScore,
       freshness: freshnessScore,
       keywordBoost,
+      benchmark: benchmarkScore,
       aiAnalysis: aiScore
     }
   };
