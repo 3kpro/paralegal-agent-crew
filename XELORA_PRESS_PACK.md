@@ -63,10 +63,10 @@ Powered by the **Content Cascade AI (CCAI) engine**, Xelora enables users to dis
 
 ## Core Capabilities
 
-### 1. Viral Prediction Intelligence (VPI)™ + Viral DNA
+### 1. Viral Prediction Intelligence (VPI)™ + Viral DNA™
 **Patent-pending psychometric AI that decodes WHY content goes viral:**
 
-**Viral DNA Analysis** - Every topic is broken into three psychological dimensions:
+**Viral DNA™ Analysis** - Every topic is broken into three psychological dimensions:
 | Dimension | What It Measures | Examples |
 |-----------|------------------|----------|
 | **Hook Type** | How it grabs attention | Contrarian, Secret, Story, News, Question |
@@ -162,7 +162,7 @@ Powered by the **Content Cascade AI (CCAI) engine**, Xelora enables users to dis
 - **Projected 2030:** $89.6B
 
 ### Competitive Advantage
-1. **Viral DNA** - Only platform that explains WHY content goes viral (Hook + Emotion + Value)
+1. **Viral DNA™** - Only platform that explains WHY content goes viral (Hook + Emotion + Value)
 2. **Psychometric AI** - Not just data signals, but psychological pattern analysis
 3. Only platform combining prediction + generation + automation
 4. AI-native architecture (not legacy with AI bolted on)
@@ -200,7 +200,7 @@ Powered by the **Content Cascade AI (CCAI) engine**, Xelora enables users to dis
 
 - **Entity:** 3K Pro Services LLC
 - **IP:** All proprietary technology owned by company
-- **Patents:** Provisional patent filed for VPI™
+- **Patents:** Provisional patent filed for VPI™ and Viral DNA™
 - **Compliance:** GDPR-ready
 
 ---
@@ -214,5 +214,5 @@ Powered by the **Content Cascade AI (CCAI) engine**, Xelora enables users to dis
 
 | Version | Date | Update |
 |---------|------|--------|
-| **2.0** | January 2026 | Viral DNA psychometric analysis, Hook/Emotion/Value breakdown |
+| **2.0** | January 2026 | Viral DNA™ psychometric analysis, Hook/Emotion/Value breakdown |
 | **1.0** | December 2025 | Initial launch with heuristic viral scoring |

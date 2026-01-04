@@ -14,10 +14,10 @@ import { BGPattern } from "@/components/ui/bg-pattern";
 const features = [
   {
     icon: TrendingUp,
-    title: "Viral Score™ + Viral DNA",
+    title: "Viral Score™ + Viral DNA™",
     subtitle: "Psychometric Viral Analysis",
     description:
-      "We don't just tell you what's trending—we tell you WHY. Our AI decodes the psychological DNA of every topic: the Hook (how it grabs attention), the Emotion (what it triggers), and the Value (what readers gain). Stop guessing. Start engineering.",
+      "We don't just tell you what's trending—we tell you WHY. Our AI decodes the Viral DNA™ of every topic: the Hook (how it grabs attention), the Emotion (what it triggers), and the Value (what readers gain). Stop guessing. Start engineering.",
     gradient: "from-emerald-500 to-teal-500",
     status: "available" as const,
   },

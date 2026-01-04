@@ -133,7 +133,7 @@ export default function ModernHero() {
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
               <span>
-                <strong className="text-[#F5F7FA]">Viral DNA</strong> decoded
+                <strong className="text-[#F5F7FA]">Viral DNA™</strong> decoded
               </span>
             </div>
             <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
@@ -160,7 +160,7 @@ export default function ModernHero() {
             className="mt-16 flex flex-wrap gap-3 justify-center"
           >
             {[
-              "Viral DNA Analysis",
+              "Viral DNA™ Analysis",
               "Hook Detection",
               "Emotion Mapping",
               "Value Prop Scoring",

@@ -32,10 +32,10 @@ export default function DemoPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-coral-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-coral-500"></span>
               </span>
-              <span className="text-sm font-medium text-coral-400">Viral DNA 2.0</span>
+              <span className="text-sm font-medium text-coral-400">Viral DNA™ 2.0</span>
             </div>
             <h1 className="text-5xl font-bold text-white mb-4">
-              Decode the DNA of Viral Content
+              Decode the Viral DNA™ of Content
             </h1>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
               See exactly <span className="text-coral-400 font-semibold">WHY</span> content goes viral - the Hook, the Emotion, the Value
@@ -97,14 +97,14 @@ export default function DemoPage() {
               </Link>
             </div>
             <p className="text-slate-400 mt-4 text-sm">
-              No credit card required • Decode unlimited Viral DNA
+              No credit card required • Decode unlimited Viral DNA™
             </p>
           </div>
 
           {/* Tagline */}
           <div className="mt-12 text-center">
             <p className="text-slate-500 text-lg italic">
-              "Every viral post has DNA. We decode it."
+              "Every viral post has Viral DNA™. We decode it."
             </p>
           </div>
         </div>
