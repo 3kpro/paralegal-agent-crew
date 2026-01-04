@@ -53,12 +53,12 @@ const ContentSettings = memo<ContentSettingsProps>(
 
     const audiences = useMemo<ControlOption[]>(
       () => [
-        { id: "general", label: "General Audience" },
+        { id: "general", label: "General" },
         { id: "professionals", label: "Professionals" },
         { id: "entrepreneurs", label: "Entrepreneurs" },
-        { id: "creators", label: "Content Creators" },
+        { id: "creators", label: "Creators" },
         { id: "students", label: "Students" },
-        { id: "techies", label: "Tech Enthusiasts" },
+        { id: "techies", label: "Techies" },
         { id: "gamers", label: "Gamers" },
         { id: "hobbyists", label: "Hobbyists" },
       ],
@@ -67,25 +67,25 @@ const ContentSettings = memo<ContentSettingsProps>(
 
     const focuses = useMemo<ControlOption[]>(
       () => [
-        { id: "informative", label: "Share Information" },
-        { id: "discussion", label: "Start Discussion" },
-        { id: "opinion", label: "Share Opinion/Take" },
-        { id: "news", label: "News/Update" },
-        { id: "tips", label: "Tips & Advice" },
-        { id: "story", label: "Tell a Story" },
-        { id: "walkthrough", label: "Walk Through" },
+        { id: "informative", label: "Informative" },
+        { id: "discussion", label: "Discussion" },
+        { id: "opinion", label: "Opinion" },
+        { id: "news", label: "News" },
+        { id: "tips", label: "Tips" },
+        { id: "story", label: "Story" },
+        { id: "walkthrough", label: "Walkthrough" },
       ],
       []
     );
 
     const callToActions = useMemo<ControlOption[]>(
       () => [
-        { id: "engage", label: "Ask for Engagement" },
-        { id: "share", label: "Encourage Sharing" },
-        { id: "comment", label: "Ask for Comments" },
-        { id: "follow", label: "Ask to Follow" },
-        { id: "learn", label: "Learn More" },
-        { id: "none", label: "No Specific CTA" },
+        { id: "engage", label: "Engage" },
+        { id: "share", label: "Share" },
+        { id: "comment", label: "Comment" },
+        { id: "follow", label: "Follow" },
+        { id: "learn", label: "Learn" },
+        { id: "none", label: "None" },
       ],
       []
     );
@@ -135,17 +135,17 @@ const ContentSettings = memo<ContentSettingsProps>(
     );
 
     return (
-      <div className="space-y-5 p-6 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-3xl">
+      <div className="space-y-3 p-4 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-2xl">
         {/* Header */}
-        <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2 mb-4">
-          <Settings className="w-5 h-5 text-tron-cyan" weight="duotone" />
+        <h3 className="text-base font-semibold text-tron-text flex items-center gap-2 mb-2">
+          <Settings className="w-4 h-4 text-tron-cyan" weight="duotone" />
           Content Settings
         </h3>
 
         {/* Compact Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {/* Left Column: Creativity + Length */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             {/* Creativity Slider */}
             <CreativitySlider
               value={controls.temperature}
@@ -153,12 +153,12 @@ const ContentSettings = memo<ContentSettingsProps>(
             />
 
             {/* Content Length - Compact */}
-            <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
-              <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-                <Settings2 className="w-4 h-4 text-tron-cyan" weight="duotone" />
+            <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all">
+              <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
+                <Settings2 className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
                 Content Length
               </legend>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 {lengths.map((len) => (
                   <ControlOptionButton
                     key={len.id}
@@ -174,12 +174,12 @@ const ContentSettings = memo<ContentSettingsProps>(
           </div>
 
           {/* Right Column: Tone */}
-          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <MagicWand className="w-4 h-4 text-tron-cyan" weight="duotone" />
+          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
+              <MagicWand className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
               Content Tone
             </legend>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               {tones.map((t) => (
                 <ControlOptionButton
                   key={t.id}
@@ -193,12 +193,12 @@ const ContentSettings = memo<ContentSettingsProps>(
           </fieldset>
 
           {/* Target Audience - Full Width, Compact */}
-          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <Users className="w-4 h-4 text-tron-cyan" weight="duotone" />
+          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
+              <Users className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
               Target Audience
             </legend>
-            <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2">
+            <div className="grid grid-cols-4 lg:grid-cols-8 gap-1.5">
               {audiences.map((aud) => (
                 <ControlOptionButton
                   key={aud.id}
@@ -212,12 +212,12 @@ const ContentSettings = memo<ContentSettingsProps>(
           </fieldset>
 
           {/* Content Focus - Full Width, Compact */}
-          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <MessageSquare className="w-4 h-4 text-tron-cyan" weight="duotone" />
+          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
+              <MessageSquare className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
               Content Focus
             </legend>
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+            <div className="grid grid-cols-4 lg:grid-cols-7 gap-1.5">
               {focuses.map((focus) => (
                 <ControlOptionButton
                   key={focus.id}
@@ -231,12 +231,12 @@ const ContentSettings = memo<ContentSettingsProps>(
           </fieldset>
 
           {/* Call to Action - Full Width, Compact */}
-          <fieldset className="p-4 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-xl lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-3 text-sm font-semibold text-tron-text">
-              <Target className="w-4 h-4 text-tron-cyan" weight="duotone" />
+          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
+            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
+              <Target className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
               Call to Action
             </legend>
-            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+            <div className="grid grid-cols-3 lg:grid-cols-6 gap-1.5">
               {callToActions.map((cta) => (
                 <ControlOptionButton
                   key={cta.id}

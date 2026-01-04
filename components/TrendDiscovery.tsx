@@ -238,7 +238,7 @@ export default function TrendDiscovery() {
 
       {/* AI Loading State */}
       {loading && (
-        <div className="my-12">
+        <div className="min-h-[50vh] flex items-center justify-center">
           <LoadingState variant="luma" message="Analyzing global signals..." />
         </div>
       )}

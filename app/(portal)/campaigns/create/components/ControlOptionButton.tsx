@@ -39,8 +39,8 @@ const ControlOptionButton = memo<ControlOptionButtonProps>(
       "bg-tron-grid/50 text-tron-text-muted hover:bg-tron-grid/70 hover:text-tron-text hover:border-tron-cyan/30";
 
     const layoutClasses = flex
-      ? "flex-1 py-2.5 px-3 rounded-lg"
-      : "py-2.5 px-4 rounded-lg text-center";
+      ? "flex-1 py-1.5 px-2 rounded-md"
+      : "py-1.5 px-2 rounded-md text-center";
 
     return (
       <button

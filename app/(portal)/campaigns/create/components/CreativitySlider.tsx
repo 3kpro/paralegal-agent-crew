@@ -39,15 +39,15 @@ const CreativitySlider = memo<CreativitySliderProps>(
     );
 
     return (
-      <div className="p-6 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl hover:border-tron-cyan/50 transition-all">
+      <div className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all">
         {/* Header with label and value display */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-1.5">
           <label htmlFor="temperature-slider" className="flex items-center gap-2">
-            <Zap className="w-5 h-5 text-tron-cyan" weight="duotone" />
-            <span className="font-semibold text-tron-text">{label}</span>
+            <Zap className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
+            <span className="text-xs font-semibold text-tron-text">{label}</span>
           </label>
           <span
-            className="text-tron-cyan font-mono text-lg font-bold"
+            className="text-tron-cyan font-mono text-sm font-bold"
             aria-live="polite"
             aria-label={`Current creativity level: ${value.toFixed(1)}`}
           >
@@ -68,13 +68,13 @@ const CreativitySlider = memo<CreativitySliderProps>(
             aria-label={ariaLabel}
             title={`Adjust ${label.toLowerCase()} level from ${min} to ${max}`}
             className={`w-full h-2 bg-tron-grid/50 rounded-full appearance-none cursor-pointer 
-                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 
+                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
                          [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r 
                          [&::-webkit-slider-thumb]:from-tron-cyan [&::-webkit-slider-thumb]:to-tron-magenta
                          [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-tron-cyan/50
                          [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform
                          [&::-webkit-slider-thumb]:hover:scale-110
-                         [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5
+                         [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4
                          [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-gradient-to-r
                          [&::-moz-range-thumb]:from-tron-cyan [&::-moz-range-thumb]:to-tron-magenta
                          [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:shadow-tron-cyan/50
@@ -83,7 +83,7 @@ const CreativitySlider = memo<CreativitySliderProps>(
         </div>
 
         {/* Helper text */}
-        <div className="flex justify-between text-xs text-tron-text-muted mt-3">
+        <div className="flex justify-between text-[10px] text-tron-text-muted mt-1.5">
           <span aria-hidden="true">Focused</span>
           <span aria-hidden="true">Creative</span>
         </div>

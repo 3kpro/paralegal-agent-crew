@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction, promoteData } = validatedData;
+    const { topic, formats, preferredProvider, temperature, tone, length, audience, contentFocus, callToAction, promoteData, perPlatformControls } = validatedData;
 
     // Set defaults for content controls
     const contentTemperature = temperature ?? 0.7;
@@ -134,6 +134,7 @@ export async function POST(request: Request) {
           contentContentFocus,
           contentCallToAction,
           promoteData,
+          perPlatformControls,
         );
         content = geminiResult.content;
         tokensUsed = geminiResult.tokensUsed;
@@ -391,6 +392,7 @@ async function generateWithGemini(
   focus: string,
   cta: string,
   promoteData?: any,
+  perPlatformControls?: Record<string, any>,
 ) {
   const model = config.model || "gemini-2.0-flash";
 
@@ -400,7 +402,15 @@ async function generateWithGemini(
   // 🚀 OPTIMIZATION: Parallelize all format requests
   const results = await Promise.all(
     formats.map(async (format) => {
-      const prompt = getPromptForFormat(format, topic, tone, length, audience, focus, cta, promoteData);
+      // Apply per-platform overrides if available
+      const overrides = perPlatformControls?.[format] || {};
+      const formatTone = overrides.tone || tone;
+      const formatLength = overrides.length || length;
+      const formatAudience = overrides.audience || audience;
+      const formatFocus = overrides.contentFocus || focus;
+      const formatCta = overrides.callToAction || cta;
+
+      const prompt = getPromptForFormat(format, topic, formatTone, formatLength, formatAudience, formatFocus, formatCta, promoteData);
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`,

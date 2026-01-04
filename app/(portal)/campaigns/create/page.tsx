@@ -194,6 +194,26 @@ export default function NewCampaignPage() {
   const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
   const [editedContent, setEditedContent] = useState<Record<string, string>>({});
 
+  // NEW: Per-platform controls map
+  interface PlatformSpecificSettings extends ContentControls {
+    selectedAudiences: string[];
+  }
+  const [platformControls, setPlatformControls] = useState<Record<string, PlatformSpecificSettings>>({});
+
+  // NEW: Sync controls to platform bucket when customizing
+  useEffect(() => {
+    if (customizePerPlatform && activePlatformTab) {
+      setPlatformControls((prev) => ({
+        ...prev,
+        [activePlatformTab]: {
+          ...controls,
+          selectedAudiences,
+        },
+      }));
+    }
+  }, [controls, selectedAudiences, customizePerPlatform, activePlatformTab]);
+
+
   // Track toast timeout to prevent stacking
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -898,6 +918,19 @@ export default function NewCampaignPage() {
         audience: selectedAudiences[0] || 'professionals',
         contentFocus: controls.contentFocus,
         callToAction: controls.callToAction,
+        perPlatformControls: customizePerPlatform ? (() => {
+          const mapped: Record<string, any> = {};
+          Object.entries(platformControls).forEach(([key, settings]) => {
+            mapped[key] = {
+              tone: settings.tone,
+              length: lengthMapping[settings.length] || 'standard',
+              audience: settings.selectedAudiences?.[0] || 'professionals',
+              contentFocus: settings.contentFocus,
+              callToAction: settings.callToAction,
+            };
+          });
+          return mapped;
+        })() : undefined,
       };
 
       let response: Response;
@@ -1547,7 +1580,7 @@ export default function NewCampaignPage() {
                 </motion.p>
               )}
 
-              <div className="relative z-10 mt-12 flex gap-4">
+              <div className="relative z-10 mt-12 flex gap-4 max-w-2xl mx-auto w-full">
                 <motion.button
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.02 }}
@@ -1988,8 +2021,20 @@ export default function NewCampaignPage() {
                         onClick={() => {
                           const newValue = !customizePerPlatform;
                           setCustomizePerPlatform(newValue);
-                          if (newValue && !activePlatformTab) {
-                            setActivePlatformTab(targetPlatforms[0]);
+
+                          if (newValue) {
+                            // Turning ON: Initialize all platforms with current controls
+                            const initialMap: Record<string, PlatformSpecificSettings> = {};
+                            targetPlatforms.forEach((p) => {
+                              // If we already have settings for this platform, keep them, otherwise use current
+                              initialMap[p] = platformControls[p] || { ...controls, selectedAudiences };
+                            });
+                            setPlatformControls(initialMap);
+
+                            // Select first platform if not selected
+                            if (!activePlatformTab) {
+                              setActivePlatformTab(targetPlatforms[0]);
+                            }
                           }
                         }}
                         className="flex items-center gap-2 group"
@@ -2030,8 +2075,28 @@ export default function NewCampaignPage() {
                           type="button"
                           onClick={() => {
                             if (targetPlatforms.length > 1) {
-                              setCustomizePerPlatform(true);
-                              setActivePlatformTab(platform);
+                              // If we are turning per-platform ON via clicking a card (implicit activation)
+                              if (!customizePerPlatform) {
+                                setCustomizePerPlatform(true);
+                                const initialMap: Record<string, PlatformSpecificSettings> = {};
+                                targetPlatforms.forEach(p => initialMap[p] = { ...controls, selectedAudiences });
+                                setPlatformControls(initialMap);
+                                setActivePlatformTab(platform);
+                              } else {
+                                // Just switching tabs
+                                if (activePlatformTab !== platform) {
+                                  const targetSettings = platformControls[platform];
+                                  if (targetSettings) {
+                                    // Strip selectedAudiences to assume ContentControls type compliance if needed,
+                                    // but setControls accepts ContentControls which is subset of PlatformSpecificSettings
+                                    // however explicit casting might be safer to avoid excess properties if strict
+                                    const { selectedAudiences: targetAudiences, ...targetControls } = targetSettings;
+                                    setControls(targetControls as ContentControls);
+                                    setSelectedAudiences(targetAudiences);
+                                  }
+                                  setActivePlatformTab(platform);
+                                }
+                              }
                             }
                           }}
                           disabled={targetPlatforms.length === 1}
@@ -2060,18 +2125,32 @@ export default function NewCampaignPage() {
 
                           {/* Current settings preview */}
                           <div className="space-y-1.5">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500">Tone</span>
-                              <span className="text-white capitalize font-medium">{controls.tone}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500">Length</span>
-                              <span className="text-white capitalize font-medium">{controls.length}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-gray-500">Focus</span>
-                              <span className="text-white capitalize font-medium">{controls.contentFocus}</span>
-                            </div>
+                            {(() => {
+                              // Determine which settings to show for this card
+                              // If per-platform is ON, show this platform's specific settings from map
+                              // Fallback to current controls if map entry missing (shouldn't happen if init correct)
+                              // If per-platform is OFF, show current global controls
+                              const displaySettings = customizePerPlatform 
+                                ? (platformControls[platform] || controls)
+                                : controls;
+
+                              return (
+                                <>
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">Tone</span>
+                                    <span className="text-white capitalize font-medium">{displaySettings.tone}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">Length</span>
+                                    <span className="text-white capitalize font-medium">{displaySettings.length}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">Focus</span>
+                                    <span className="text-white capitalize font-medium">{displaySettings.contentFocus}</span>
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </div>
 
                           {/* Click hint for multi-platform */}

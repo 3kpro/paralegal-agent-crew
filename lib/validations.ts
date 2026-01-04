@@ -53,6 +53,14 @@ export const generateContentSchema = z.object({
   audience: z.enum(["general", "professionals", "entrepreneurs", "creators", "students", "techies", "gamers", "hobbyists"]).optional(),
   contentFocus: z.enum(["informative", "discussion", "opinion", "news", "tips", "story", "walkthrough"]).optional(),
   callToAction: z.enum(["engage", "share", "comment", "follow", "learn", "none"]).optional(),
+  perPlatformControls: z.record(z.string(), z.object({
+    temperature: z.number().min(0).max(1).optional(),
+    tone: z.enum(["professional", "casual", "friendly", "humorous", "inspirational", "educational"]).optional(),
+    length: z.enum(["concise", "standard", "detailed"]).optional(),
+    audience: z.enum(["general", "professionals", "entrepreneurs", "creators", "students", "techies", "gamers", "hobbyists"]).optional(),
+    contentFocus: z.enum(["informative", "discussion", "opinion", "news", "tips", "story", "walkthrough"]).optional(),
+    callToAction: z.enum(["engage", "share", "comment", "follow", "learn", "none"]).optional(),
+  })).optional(),
 });
 
 export const saveCampaignSchema = z.object({
