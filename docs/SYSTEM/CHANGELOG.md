@@ -1,3 +1,19 @@
+## 2026-01-05 — Fix "Same for All" AI Optimize Bug
+
+**Resolved conflict between "Same for All" toggle and "AI Optimize" functionality.**
+
+Summary of Actions:
+- **Optimization Logic Upgrade**: Updated `handleAIOptimize` to calculate platform-specific settings (Tone, Length, Focus) for *each* selected platform instead of applying a single preset to all.
+- **Auto-Switching**: Clicking "AI Optimize" now automatically enables "Per Platform" mode if multiple platforms are selected, ensuring the user sees and benefits from the distinct optimizations (e.g., Short/Casual for Twitter vs Professional/Detailed for LinkedIn).
+- **Fallback Handling**: Maintained consistent behavior for single-platform campaigns.
+
+Status: **Implemented & Verified**
+
+Files Modified:
+- `app/(portal)/campaigns/create/page.tsx`
+
+---
+
 ## 2026-01-05 — Onboarding "Choose Starting Point" Screen Improvement
 
 **Significantly improved the onboarding education on Step 2 of Campaign Creation (Card 3).**

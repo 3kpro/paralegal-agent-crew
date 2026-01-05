@@ -441,35 +441,6 @@ export default function NewCampaignPage() {
   }, [currentCard, generatedContent, campaignSaved, isEditMode, router]);
 
   /**
-   * NEW: AI Optimize - Auto-select best settings based on user interests and target platforms
-   */
-  const handleAIOptimize = useCallback(() => {
-    const primaryPlatform = targetPlatforms[0] || "linkedin";
-    const preset = platformPresets[primaryPlatform as keyof typeof platformPresets] || platformPresets.linkedin;
-
-    // Apply preset
-    setControls({
-      ...controls,
-      tone: preset.tone,
-      length: preset.length,
-      contentFocus: preset.contentFocus,
-      callToAction: preset.callToAction,
-    });
-
-    // Set multi-select audiences
-    setSelectedAudiences(preset.audiences);
-
-    // Show reasoning
-    setOptimizationReason(preset.reason);
-    setShowOptimizationReason(true);
-
-    // Calculate and show predicted viral score
-    calculatePredictedViralScore(preset.tone, preset.contentFocus, preset.audiences, preset.callToAction);
-
-    showToast("🎯 Settings optimized for maximum engagement!", "success");
-  }, [targetPlatforms, platformPresets, controls, showToast]);
-
-  /**
    * NEW: Calculate predicted viral score based on selected settings
    */
   const calculatePredictedViralScore = useCallback((
@@ -500,6 +471,79 @@ export default function NewCampaignPage() {
     setPredictedViralScore(score);
     return score;
   }, [engagementData]);
+
+  /**
+   * NEW: AI Optimize - Auto-select best settings based on user interests and target platforms
+   */
+  const handleAIOptimize = useCallback(() => {
+    // 1. Create optimized settings for ALL derived platforms
+    const optimizedMap: Record<string, PlatformSpecificSettings> = {};
+    const primaryPlatform = targetPlatforms[0] || "linkedin";
+
+    targetPlatforms.forEach((platform) => {
+      // Get the best preset for this platform
+      const preset = platformPresets[platform as keyof typeof platformPresets] || platformPresets.linkedin;
+      
+      optimizedMap[platform] = {
+        temperature: controls.temperature, // Keep current temperature
+        tone: preset.tone,
+        length: preset.length,
+        contentFocus: preset.contentFocus,
+        targetAudience: preset.audiences[0] || "professionals", // Primary audience for single-select field
+        callToAction: preset.callToAction,
+        selectedAudiences: preset.audiences, // Multi-select
+      };
+    });
+
+    // 2. Update platform-specific controls state
+    setPlatformControls(optimizedMap);
+
+    // 3. If multiple platforms, ENABLE per-platform mode to show the differences
+    if (targetPlatforms.length > 1) {
+      setCustomizePerPlatform(true);
+      
+      // Ensure we have an active tab
+      if (!activePlatformTab) {
+        setActivePlatformTab(primaryPlatform);
+      }
+      
+      // Update global controls to match the primary platform just as a fallback
+      const primaryPreset = platformPresets[primaryPlatform as keyof typeof platformPresets] || platformPresets.linkedin;
+      setControls({
+        ...controls,
+        tone: primaryPreset.tone,
+        length: primaryPreset.length,
+        contentFocus: primaryPreset.contentFocus,
+        callToAction: primaryPreset.callToAction,
+      });
+      setSelectedAudiences(primaryPreset.audiences);
+      
+      showToast(`🎯 Optimized settings applied for all ${targetPlatforms.length} platforms!`, "success");
+    } else {
+      // Single platform case: Update global controls directly
+      const preset = platformPresets[primaryPlatform as keyof typeof platformPresets] || platformPresets.linkedin;
+      setControls({
+        ...controls,
+        tone: preset.tone,
+        length: preset.length,
+        contentFocus: preset.contentFocus,
+        callToAction: preset.callToAction,
+      });
+      setSelectedAudiences(preset.audiences);
+      showToast("🎯 Settings optimized for maximum engagement!", "success");
+    }
+
+    // 4. Show reasoning (for primary platform)
+    const primaryPreset = platformPresets[primaryPlatform as keyof typeof platformPresets] || platformPresets.linkedin;
+    setOptimizationReason(primaryPreset.reason);
+    setShowOptimizationReason(true);
+
+    // 5. Calculate and show predicted viral score (for primary platform)
+    calculatePredictedViralScore(primaryPreset.tone, primaryPreset.contentFocus, primaryPreset.audiences, primaryPreset.callToAction);
+
+  }, [targetPlatforms, platformPresets, controls, showToast, activePlatformTab, calculatePredictedViralScore]);
+
+
 
   /**
    * NEW: Toggle audience selection (multi-select, max 3)

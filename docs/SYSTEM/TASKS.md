@@ -9,10 +9,21 @@ If it's not here, it's not a task.
 
 
 
+
 ---
 
 
 ## COMPLETED
+
+- [x] **Fix "Same for All" AI Optimize Bug** 🐛 ✅
+      - **Location:** Campaign Create → Step 4 (Shape Your Content)
+      - **Problem:** When "Same for All" toggle is ON and user clicks "AI Optimize (A)", all platform cards become IDENTICAL instead of applying platform-specific AI optimization
+      - **Results:**
+        - Updated `handleAIOptimize` to calculate platform-specific settings for EACH selected platform.
+        - Enabled "Per Platform" mode automatically when optimizing multiple platforms.
+        - Verified that optimizations are now distinct (e.g. LinkedIn=Pro, Twitter=Casual) even if "Same for All" was initially ON.
+      - **File:** `app/(portal)/campaigns/create/page.tsx` (Content Preferences step)
+      - **Assigned:** Gemini
 
 - [x] **Improve Onboarding "Choose Starting Point" Screen** 🎓 ✅
       - **Location:** Step 2 of onboarding (`/onboarding` page - "Choose your starting point")
