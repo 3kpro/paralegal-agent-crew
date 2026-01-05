@@ -7,10 +7,28 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
+
+
 ---
 
 
 ## COMPLETED
+
+- [x] **Improve Onboarding "Choose Starting Point" Screen** 🎓 ✅
+      - **Location:** Step 2 of onboarding (`/onboarding` page - "Choose your starting point")
+      - **Problem:** First-time users see two generic options ("Discover Viral" and "Validate Idea") with minimal explanation. This is a critical decision point where we should educate them about Viral DNA™ science.
+      - **Results:**
+        - Added "Viral DNA™ Science" mini-explainer with BrainCircuit icon.
+        - Added "Example Output" preview badges for both paths (Hook/Emotion/Value).
+        - Upgraded copy to be more benefit-driven and authoritative.
+        - Preserved premium glassmorphism design.
+      - **File:** `app/(portal)/campaigns/create/page.tsx` (Step 2 section)
+      - **Assigned:** Gemini
+
+- [x] **Video Prompts Enhancement for Veo** 🎬 ✅
+      - **Action:** Enhanced 18 video prompts in `docs/Marketing/VIDEO_PROMPTS.md` for Vertex AI/Veo.
+      - **Details:** Added cinematic lighting, camera movement, and high-fidelity texture descriptors. Injected trendy TikTok/Instagram content into screen-based scenes.
+      - **Assigned:** Gemini
 
 - [x] **Campaign Creation Video Script** 🎬 ✅
       - **Action:** Created an 8-second punchy video script focused on "Viral DNA" and predictable success.

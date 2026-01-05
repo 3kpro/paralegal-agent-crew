@@ -1622,44 +1622,70 @@ export default function NewCampaignPage() {
               <div className="absolute top-0 right-0 w-96 h-96 bg-coral-500/10 blur-[120px] rounded-full pointer-events-none" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-16">
+              <div className="relative z-10 text-center mb-10">
                  <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
                   Step 2 of 3
                 </span>
                 <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
                   Choose your starting point
                 </h2>
-                <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                  Start with a viral trend or validate your own idea?
-                </p>
+                
+                {/* Mini-Explainer */}
+                <div className="max-w-xl mx-auto mb-8 bg-gray-800/40 border border-gray-700/50 rounded-lg p-3 flex items-center gap-3 backdrop-blur-sm">
+                  <div className="p-2 bg-coral-500/10 rounded-md">
+                    <BrainCircuit className="w-5 h-5 text-coral-400" />
+                  </div>
+                  <p className="text-sm text-gray-300 text-left leading-relaxed">
+                    <span className="text-coral-400 font-bold">Viral DNA™ Science:</span> We analyze the psychological triggers (Hooks, Emotions, Values) behind 10M+ viral posts to predict success.
+                  </p>
+                </div>
               </div>
 
-              <div className="relative z-10 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Discover Viral Button */}
                 <motion.button
                   onClick={loadTrendingTopics}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  <div className="relative z-10 flex flex-col h-full justify-between gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
-                      <Flame className="w-7 h-7 text-coral-400 group-hover:text-white transition-colors" />
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-coral-400 transition-colors">
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Flame className="w-6 h-6 text-coral-400 group-hover:text-white transition-colors" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white group-hover:text-coral-400 transition-colors">
                         Discover Viral
                       </h3>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                         AI predicts what will go viral. Start here if you have no ideas yet.
-                      </p>
+                    </div>
 
-                      <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors">
-                        Launch Discovery <ChevronRight className="w-4 h-4 ml-1" />
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                       Don't guess. Browse concepts that are <strong>mathematically predicted</strong> to go viral right now based on current trends.
+                    </p>
+
+                    {/* Example Output Preview */}
+                    <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Example Output</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Hook Strategy</span>
+                           <span className="text-coral-300">"Contrarian Truth"</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Primary Emotion</span>
+                           <span className="text-coral-300">"Curiosity"</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Value Prop</span>
+                           <span className="text-coral-300">"Insider Knowledge"</span>
+                        </div>
                       </div>
+                    </div>
+
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors mt-auto">
+                      Launch Discovery <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
                 </motion.button>
@@ -1669,26 +1695,45 @@ export default function NewCampaignPage() {
                   onClick={() => goToNextCard()}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-tron-cyan/20 rounded-3xl overflow-hidden hover:border-tron-cyan/40 hover:shadow-2xl hover:shadow-tron-cyan/10 transition-all duration-300"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-tron-cyan/20 rounded-3xl overflow-hidden hover:border-tron-cyan/40 hover:shadow-2xl hover:shadow-tron-cyan/10 transition-all duration-300 h-full flex flex-col"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-tron-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  <div className="relative z-10 flex flex-col h-full justify-between gap-8">
-                    <div className="w-14 h-14 rounded-2xl bg-tron-cyan/10 border border-tron-cyan/30 flex items-center justify-center group-hover:bg-tron-cyan group-hover:text-white transition-colors duration-300">
-                      <Search className="w-7 h-7 text-tron-cyan group-hover:text-white transition-colors" />
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-tron-cyan transition-colors">
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-tron-cyan/10 border border-tron-cyan/30 flex items-center justify-center group-hover:bg-tron-cyan group-hover:text-white transition-colors duration-300">
+                        <Search className="w-6 h-6 text-tron-cyan group-hover:text-white transition-colors" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white group-hover:text-tron-cyan transition-colors">
                         Validate Idea
                       </h3>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                        Check if your idea will go viral before posting. Best if you have a topic.
-                      </p>
+                    </div>
 
-                      <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-tron-cyan transition-colors">
-                         Start Validation <ChevronRight className="w-4 h-4 ml-1" />
+                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                      Have a topic? We'll analyze its <strong>Viral potential</strong> and give you specific instructions to increase its reach before you create.
+                    </p>
+
+                    {/* Example Output Preview */}
+                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-tron-cyan/20 transition-colors">
+                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Viral Prediction</span>
+                           <span className="text-tron-cyan font-mono font-bold">82/100</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Optimization</span>
+                           <span className="text-tron-cyan">"Make hook more urgent"</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-gray-400">Format Match</span>
+                           <span className="text-tron-cyan">"Perfect for LinkedIn"</span>
+                        </div>
                       </div>
+                    </div>
+
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-tron-cyan transition-colors mt-auto">
+                       Start Validation <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
                 </motion.button>

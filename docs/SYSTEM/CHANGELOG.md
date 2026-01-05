@@ -1,3 +1,37 @@
+## 2026-01-05 — Onboarding "Choose Starting Point" Screen Improvement
+
+**Significantly improved the onboarding education on Step 2 of Campaign Creation (Card 3).**
+
+Summary of Actions:
+- **Educational Enhancements**: Added a "Viral DNA™ Science" mini-explainer to clarify how the platform predicts success using Hook/Emotion/Value analysis.
+- **Visual Examples**: Added concrete "Example Output" previews for both "Discover Viral" and "Validate Idea" paths, showing exactly what the user gets (e.g., "Hook Strategy: Contrarian Truth").
+- **Copy Upgrade**: Rewrote the descriptions to be more benefit-driven ("Mathematically predicted" vs "AI predicts") and visually rich.
+- **Design Alignment**: Maintained the premium dark mode aesthetic with coral/cyan accents and glassmorphism.
+
+Status: **Implemented & Verified**
+
+Files Modified:
+- `app/(portal)/campaigns/create/page.tsx`
+
+---
+
+## 2026-01-04 — Video Prompts Enhancement for Veo
+
+**Significantly upgraded video prompts to leverage the high-end capabilities of Veo (Vertex AI).**
+
+Summary of Actions:
+- **Prompt Engineering**: Rewrote all 18 video prompts in `docs/Marketing/VIDEO_PROMPTS.md` to be "cinematic," "photorealistic," and "high production value."
+- **Visual Details**: Added specific directions for lighting (volumetric, rim, natural), camera movement (slow drift, dolly zoom), and texture (bokeh, macro).
+- **Social Media Context**: Updated laptop/screen prompts (Scenes 2, 5, 6, 8, 9, 12, 17) to feature trendy TikTok/Instagram interfaces and specific viral content elements.
+- **Format**: Maintained the existing scene structure and assembly guide while upgrading the descriptive quality of each clip generator prompt.
+
+Status: **Completed**
+
+Files Modified:
+- `docs/Marketing/VIDEO_PROMPTS.md`
+
+---
+
 ## 2026-01-04 — Campaign Creation Video Script
 
 **Created a production-ready video script for the Xelora campaign creation process.**
