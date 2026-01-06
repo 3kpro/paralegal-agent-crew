@@ -1,18 +1,32 @@
 # TASKS.md
-Last Updated: 2026-01-05
+Last Updated: 2026-01-06
 
 This file lists the ONLY work that should be actively considered.
 If it's not here, it's not a task.
 
 ---
 ## NOW (One at a time only)
-https://xelora.app/onboarding?tour=true
+
+
 
 
 ---
 
 
 ## COMPLETED
+
+- [x] **Fix Dashboard Stats 404 Error** 🐛 ✅
+      - **Problem:** Dashboard stats API returning 404 on localhost (Turbopack).
+      - **Solution:** Added `export const dynamic = 'force-dynamic'` to `app/api/dashboard/stats/route.ts` to prevent static optimization failure.
+      - **File:** `app/api/dashboard/stats/route.ts`
+      - **Assigned:** Antigravity
+
+
+- [x] **Campaign Creation: Schedule vs Publish** 📅 ✅
+      - **Action:** Replaced "Publish Now" button with "Schedule for Later" at the end of the wizard.
+      - **Goal:** Align with V1 Simplification strategy (Create now, Publish later).
+      - **File:** `app/(portal)/campaigns/create/page.tsx`
+      - **Assigned:** Gemini
 
 - [x] **Onboarding Copy Update & Flow Simplification** 🎓 ✅
       - **Problem:** Onboarding text was outdated and included a "Connect Social Accounts" step that is no longer part of the V1 simplified flow.

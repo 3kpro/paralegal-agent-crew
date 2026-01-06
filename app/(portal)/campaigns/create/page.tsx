@@ -20,6 +20,7 @@ function isValidationError(data: GenerationResponse): data is ValidationError {
 }
 import {
   Twitter,
+  Calendar,
   Linkedin,
   Facebook,
   Instagram,
@@ -48,7 +49,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
-import PublishButton from "@/components/PublishButton";
+
 import { ViralScoreBreakdown } from "@/components/ViralScoreBreakdown";
 import {
   Platform,
@@ -2810,107 +2811,23 @@ export default function NewCampaignPage() {
                           </>
                         )}
                       </motion.button>
-                      <PublishButton
-                        content={(() => {
-                          // Get content from the first available platform
-                          if (!generatedContent) return "";
-                          const platforms = Object.keys(generatedContent).filter(k => k !== 'hashtags');
-                          if (platforms.length === 0) return "";
-                          const firstPlatform = platforms[0];
-                          const platformContent = generatedContent[firstPlatform];
-                          if (typeof platformContent === 'string') return platformContent;
-                          return platformContent?.content || "";
-                        })()}
-                        campaignId={editId || undefined}
-                        socialAccountIds={connectedAccountObjects
-                          .filter((acc) => targetPlatforms.map(p => p.toLowerCase()).includes(acc.platform.toLowerCase()))
-                          .map((acc) => acc.id)}
-                        onPublishSuccess={(data) => {
-                          console.log("✅ Content posted!", data);
-
-                          // Handle new multi-platform response format
-                          if (data.results && Array.isArray(data.results)) {
-                            const successfulPosts = data.results;
-
-                            if (successfulPosts.length === 1) {
-                              // Single post - show simple success with link
-                              const post = successfulPosts[0];
-                              showToast(
-                                <div>
-                                  <p>✅ Posted to {post.platform} successfully!</p>
-                                  <a
-                                    href={post.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="underline hover:text-tron-cyan"
-                                  >
-                                    View on {post.platform} →
-                                  </a>
-                                </div>,
-                                "success"
-                              );
-                            } else {
-                              // Multiple posts - show count and links
-                              showToast(
-                                <div>
-                                  <p>✅ Posted to {successfulPosts.length} platforms!</p>
-                                  <div className="mt-2 space-y-1">
-                                    {successfulPosts.map((post: any, idx: number) => (
-                                      <a
-                                        key={idx}
-                                        href={post.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block underline hover:text-tron-cyan text-sm"
-                                      >
-                                        View on {post.platform} →
-                                      </a>
-                                    ))}
-                                  </div>
-                                  {data.errors && data.errors.length > 0 && (
-                                    <p className="mt-2 text-xs text-red-400">
-                                      {data.errors.length} platform(s) failed
-                                    </p>
-                                  )}
-                                </div>,
-                                "success"
-                              );
-                            }
-                          } else if (data.url) {
-                            // Legacy format fallback
-                            showToast(
-                              <div>
-                                <p>✅ Posted successfully!</p>
-                                <a
-                                  href={data.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="underline hover:text-tron-cyan"
-                                >
-                                  View post →
-                                </a>
-                              </div>,
-                              "success"
-                            );
-                          } else {
-                            showToast(`Published successfully!`, "success");
-                          }
-
-                          // Save campaign and redirect to campaigns list
-                          saveCampaign(false);
-
-                          // Redirect to campaigns page after 2 seconds
-                          setTimeout(() => {
-                            router.push('/campaigns');
-                          }, 2000);
-                        }}
-                        onPublishError={(error) => {
-                          showToast(error, "error");
-                        }}
-                        disabled={loading || !generatedContent}
-                        variant="primary"
-                        size="lg"
-                      />
+                    <motion.button
+                      onClick={() => saveCampaign(true)}
+                      disabled={loading}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      aria-label="Schedule campaign"
+                    >
+                      {loading ? (
+                        <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                      ) : (
+                        <>
+                          <Calendar className="w-5 h-5" />
+                          Schedule for Later
+                        </>
+                      )}
+                    </motion.button>
                     </div>
                   )}
                 </>
@@ -3519,114 +3436,23 @@ export default function NewCampaignPage() {
                       )}
                     </motion.button>
                     
-                    {/* Calculate publish props explicitly */}
-                    {(() => {
-                        const platforms = generatedContent ? Object.keys(generatedContent).filter(k => k !== 'hashtags') : [];
-                        const firstPlatform = platforms[0];
-                        const platformContent = firstPlatform ? generatedContent?.[firstPlatform] : "";
-                        const finalPublishContent = typeof platformContent === 'string' ? platformContent : (platformContent as ContentData)?.content || "";
-                        
-                        const finalAccountIds = connectedAccountObjects
-                             .filter((acc) => targetPlatforms.map(p => p.toLowerCase()).includes(acc.platform.toLowerCase()))
-                             .map((acc) => acc.id);
-                        
-                        console.log("[DEBUG] Render PublishButton Props:", { finalPublishContent, finalAccountIds, connectedCount: connectedAccountObjects.length });
-
-                    return (
-                    <div className="flex items-center justify-center">
-                      <PublishButton
-                        content={finalPublishContent}
-                        campaignId={editId || undefined}
-                        socialAccountIds={finalAccountIds}
-                        onPublishSuccess={(data) => {
-                          console.log("✅ Content posted!", data);
-
-                          // Handle new multi-platform response format
-                          if (data.results && Array.isArray(data.results)) {
-                            const successfulPosts = data.results;
-
-                            if (successfulPosts.length === 1) {
-                              // Single post - show simple success with link
-                              const post = successfulPosts[0];
-                              showToast(
-                                <div>
-                                  <p>✅ Posted to {post.platform} successfully!</p>
-                                  <a
-                                    href={post.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="underline hover:text-tron-cyan"
-                                  >
-                                    View on {post.platform} →
-                                  </a>
-                                </div>,
-                                "success"
-                              );
-                            } else {
-                              // Multiple posts - show count and links
-                              showToast(
-                                <div>
-                                  <p>✅ Posted to {successfulPosts.length} platforms!</p>
-                                  <div className="mt-2 space-y-1">
-                                    {successfulPosts.map((post: { platform: string; url: string }, idx: number) => (
-                                      <a
-                                        key={idx}
-                                        href={post.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block underline hover:text-tron-cyan text-sm"
-                                      >
-                                        View on {post.platform} →
-                                      </a>
-                                    ))}
-                                  </div>
-                                  {data.errors && data.errors.length > 0 && (
-                                    <p className="mt-2 text-xs text-red-400">
-                                      {data.errors.length} platform(s) failed
-                                    </p>
-                                  )}
-                                </div>,
-                                "success"
-                              );
-                            }
-                          } else if (data.url) {
-                            // Legacy format fallback
-                            showToast(
-                              <div>
-                                <p>✅ Posted successfully!</p>
-                                <a
-                                  href={data.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="underline hover:text-tron-cyan"
-                                >
-                                  View post →
-                                </a>
-                              </div>,
-                              "success"
-                            );
-                          } else {
-                            showToast(`Published successfully!`, "success");
-                          }
-
-                          // Save campaign and redirect to campaigns list
-                          saveCampaign(false);
-
-                          // Redirect to campaigns page after 2 seconds
-                          setTimeout(() => {
-                            router.push('/campaigns');
-                          }, 2000);
-                        }}
-                        onPublishError={(error) => {
-                          showToast(error, "error");
-                        }}
-                        disabled={loading || !generatedContent}
-                        variant="primary"
-                        size="lg"
-                      />
-                    </div>
-                    );
-                    })()}
+                    <motion.button
+                      onClick={() => saveCampaign(true)}
+                      disabled={loading}
+                      whileHover={{ scale: loading ? 1 : 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      aria-label="Schedule campaign"
+                    >
+                      {loading ? (
+                        <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                      ) : (
+                        <>
+                          <Calendar className="w-5 h-5" />
+                          Schedule for Later
+                        </>
+                      )}
+                    </motion.button>
                   </div>
                 </motion.div>
               )}

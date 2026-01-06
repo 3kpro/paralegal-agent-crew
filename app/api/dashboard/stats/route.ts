@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
+  console.log("Dashboard stats API hit");
   try {
     const supabase = await createClient();
 

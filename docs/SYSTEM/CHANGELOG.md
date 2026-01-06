@@ -1,3 +1,35 @@
+## 2026-01-06 — Fix Dashboard Stats 404 Error
+
+**Resolved an issue where the dashboard stats API was returning 404 on localhost.**
+
+Summary of Actions:
+- **Route Configuration**: Added `export const dynamic = 'force-dynamic'` to `app/api/dashboard/stats/route.ts` to ensure the route is correctly identified as a dynamic serverless function and not statically optimized (which caused 404s in some dev environments).
+- **Debugging**: Added console logging to track API hits.
+
+Status: **Fixed**
+
+Files Modified:
+- `app/api/dashboard/stats/route.ts`
+
+---
+
+## 2026-01-06 — Campaign Creation: Replace "Publish Now" with "Schedule for Later"
+
+**Replaced the immediate "Publish Now" action with a "Schedule for Later" workflow in the Campaign Wizard.**
+
+Summary of Actions:
+- **Action Replacement**: Removed the `PublishButton` component (which triggered immediate API publishing) from the final step of the Campaign Wizard.
+- **Workflow Update**: Added a "Schedule for Later" button that saves the campaign with a `scheduled` status (invoking `saveCampaign(true)`), aligning with the V1 Simplification strategy of "Create now, Publish/Schedule later".
+- **Visuals**: Used a "Calendar" icon to clearly distinguish the action from the "Save for Later" (Draft) option.
+- **Fix**: Resolved a `ReferenceError` crash by removing all legacy `PublishButton` usages.
+
+Status: **Implemented**
+
+Files Modified:
+- `app/(portal)/campaigns/create/page.tsx`
+
+---
+
 ## 2026-01-06 — Onboarding Copy Update & Flow Simplification
 
 **Refined onboarding experience to align with "Viral DNA" positioning and V1 simplification.**
