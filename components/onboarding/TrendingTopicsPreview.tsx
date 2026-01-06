@@ -97,11 +97,13 @@ export default function TrendingTopicsPreview({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white mb-2">
-          Trending in Your Interests
+          Here&apos;s what&apos;s trending in your topics
         </h1>
         <p className="text-gray-400">
-          Here are the hottest topics right now based on your interests. These
-          Viral Scores predict how well content on these topics will perform.
+          These are real-time trends across Twitter, Reddit, LinkedIn, and more—updated every hour.
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+            Pick any topic to see its Viral Score and create content around it.
         </p>
       </div>
 

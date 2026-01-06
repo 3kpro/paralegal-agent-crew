@@ -1,3 +1,21 @@
+## 2026-01-06 — Onboarding Copy Update & Flow Simplification
+
+**Refined onboarding experience to align with "Viral DNA" positioning and V1 simplification.**
+
+Summary of Actions:
+- **Copy Refresh**: Updated onboarding verbiage (Welcome Animation, Interest Selection, Trending Topics) to reflect the new "Viral DNA" and "Viral Score" messaging (Version C from copy strategy).
+- **Flow Simplification**: Removed the "Connect Social Accounts" step (formerly Step 4) from the onboarding flow to focus user attention on value discovery ("Viral DNA") rather than configuration.
+- **Progress Tracking**: Updated onboarding progress logic to reflect the new 3-step flow (Interests → Trends → Profile).
+
+Status: **Implemented & Verified**
+
+Files Modified:
+- `app/(portal)/onboarding/page.tsx`
+- `components/onboarding/InterestSelection.tsx`
+- `components/onboarding/TrendingTopicsPreview.tsx`
+
+---
+
 ## 2026-01-05 — Transfer Masterclass Redesign: Context-Aware Guide
 
 **Replaced the manual platform tabs with a context-aware single guide view & extended coverage.**

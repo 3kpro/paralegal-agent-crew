@@ -6,13 +6,19 @@ If it's not here, it's not a task.
 
 ---
 ## NOW (One at a time only)
-
+https://xelora.app/onboarding?tour=true
 
 
 ---
 
 
 ## COMPLETED
+
+- [x] **Onboarding Copy Update & Flow Simplification** 🎓 ✅
+      - **Problem:** Onboarding text was outdated and included a "Connect Social Accounts" step that is no longer part of the V1 simplified flow.
+      - **Solution:** Updated onboarding verbiage to reflect "Viral DNA" messaging (Version C). Removed the social connection step, reducing friction.
+      - **File:** `app/(portal)/onboarding/page.tsx`, `components/onboarding/InterestSelection.tsx`, `components/onboarding/TrendingTopicsPreview.tsx`
+      - **Assigned:** Gemini
 
 - [x] **Transfer Masterclass Redesign** 🎨 ✅
       - **Problem:** Transfer Masterclass showed a cluttered list and was missing guides for Facebook/Reddit. Was also restricted to mobile platforms in Wizard.

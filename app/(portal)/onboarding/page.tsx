@@ -4,19 +4,8 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  TwitterLogo as Twitter,
-  LinkedinLogo as Linkedin,
-  FacebookLogo as Facebook,
-  InstagramLogo as Instagram,
-  MusicNote as Music,
-  ChatCircle as MessageCircle,
-  CaretDown as ChevronDown,
-  CaretUp as ChevronUp,
-} from "@phosphor-icons/react";
 import InterestSelection, { type Interest } from "@/components/onboarding/InterestSelection";
 import TrendingTopicsPreview from "@/components/onboarding/TrendingTopicsPreview";
-import InstagramAccountSetupGuide from "@/components/onboarding/InstagramAccountSetupGuide";
 
 interface ValuePropSlide {
   text: string;
@@ -29,20 +18,20 @@ const valuePropSlides: ValuePropSlide[] = [
     subtext: "Before you hit publish.",
   },
   {
-    text: "Viral Score™ trained on 10K+ proven hits.",
-    subtext: "Real posts. Real engagement. Real patterns.",
+    text: "XELORA decodes the Viral DNA of every post.",
+    subtext: "0-100 Viral Score™. 87% prediction accuracy.",
   },
   {
-    text: "Not just trending—proven to perform.",
-    subtext: "We analyze posts that got 10K+ upvotes on Reddit.",
+    text: "Find trending topics with proven Viral DNA.",
+    subtext: "Twitter. Reddit. TikTok. LinkedIn. All in one place.",
   },
   {
-    text: "AI generates content that matches.",
-    subtext: "Platform-optimized. Pattern-matched. Data-driven.",
+    text: "AI generates content matched to your DNA.",
+    subtext: "Platform-optimized. Engagement-focused.",
   },
   {
-    text: "Ready?",
-    subtext: "Let's set up your account in 2 minutes.",
+    text: "Ready to engineer virality?",
+    subtext: "",
   },
 ];
 
@@ -60,9 +49,6 @@ export default function OnboardingPage() {
   const [companyName, setCompanyName] = useState("");
   const [industry, setIndustry] = useState("");
 
-  // Step 4: Setup Guide
-  const [showInstagramGuide, setShowInstagramGuide] = useState(false);
-
   const handleComplete = async () => {
     setLoading(true);
     try {
@@ -77,7 +63,7 @@ export default function OnboardingPage() {
           .update({
             profile_completed: true,
             completed: true,
-            current_step: 4,
+            current_step: 3,
           })
           .eq("user_id", user.id);
 
@@ -236,16 +222,16 @@ export default function OnboardingPage() {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium text-gray-300">
-                Step {step} of 4
+                Step {step} of 3
               </span>
               <span className="text-sm text-gray-400">
-                {step === 4 ? "Almost there!" : "Setting up your account"}
+                {step === 3 ? "Almost there!" : "Setting up your account"}
               </span>
             </div>
             <div className="w-full bg-gray-700/50 rounded-full h-2 relative overflow-hidden">
               <div
                 className="bg-[#00C7F2] h-full rounded-full transition-all duration-300 absolute top-0 left-0"
-                style={{ width: `${(step / 4) * 100}%` }}
+                style={{ width: `${(step / 3) * 100}%` }}
               />
             </div>
           </div>
@@ -282,9 +268,17 @@ export default function OnboardingPage() {
               <p className="text-gray-400 mb-2">
                 This helps us give you better content recommendations and industry-specific trends.
               </p>
-              <p className="text-sm text-gray-500 mb-6">
-                💡 You can skip this and add it later if you prefer
-              </p>
+              
+              <div className="bg-tron-grid border border-tron-cyan/20 rounded-lg p-4 mb-6">
+                <p className="text-sm text-gray-300 font-semibold mb-2">
+                    Why we ask:
+                </p>
+                <ul className="text-sm text-gray-400 space-y-1">
+                    <li>• <strong className="text-gray-300">Company Name</strong> → See how competitors in your space perform</li>
+                    <li>• <strong className="text-gray-300">Industry</strong> → Get trending topics relevant to your niche</li>
+                    <li>• <strong className="text-gray-300">Skip if you prefer</strong> → You can always add this later</li>
+                </ul>
+              </div>
 
               <div className="space-y-4">
                 <div>
@@ -323,145 +317,20 @@ export default function OnboardingPage() {
                   </select>
                 </div>
 
-                <button
-                  onClick={() => setStep(4)}
-                  className="w-full h-14 bg-[#00C7F2] hover:bg-[#A17CF9] text-[#0A0F1F] font-semibold rounded-lg transition-colors uppercase tracking-wide"
-                >
-                  Next: Connect Socials →
-                </button>
+                <div className="space-y-3 pt-4">
+                    <button
+                        onClick={handleComplete}
+                        disabled={loading}
+                        className="w-full h-14 bg-[#00C7F2] hover:bg-[#A17CF9] disabled:bg-[#00C7F2]/40 text-[#0A0F1F] font-semibold rounded-lg transition-colors uppercase tracking-wide shadow-lg hover:shadow-[#00C7F2]/20"
+                    >
+                        {loading ? "Completing..." : "Complete Setup →"}
+                    </button>
+                </div>
               </div>
             </>
           )}
 
-          {/* Step 4: Connect Social Accounts */}
-          {step === 4 && (
-            <>
-              <h1 className="text-2xl font-bold text-white mb-2">
-                Connect your platforms (Optional)
-              </h1>
-              <p className="text-gray-400 mb-2">
-                Connect now to publish directly from XELORA, or skip and copy-paste content manually.
-              </p>
-              <div className="bg-tron-grid border border-tron-cyan/20 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-300 font-semibold mb-2">
-                  ✅ Benefits of connecting:
-                </p>
-                <ul className="text-sm text-gray-400 space-y-1">
-                  <li>• One-click publishing to all platforms</li>
-                  <li>• Track engagement and performance</li>
-                  <li>• Schedule posts for optimal times</li>
-                  <li>• No more switching between tabs</li>
-                </ul>
-              </div>
-              <p className="text-xs text-gray-500 mb-4">
-                Don't want to connect yet? No problem—you can still use XELORA to generate and copy content.
-              </p>
 
-              {/* Instagram/Facebook Setup Guide */}
-              <div className="mb-6">
-                <button
-                  onClick={() => setShowInstagramGuide(!showInstagramGuide)}
-                  className="w-full bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 hover:bg-blue-500/20 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-left flex-1">
-                      <p className="text-sm text-blue-300 font-semibold mb-1">
-                        📱 Instagram & Facebook Setup Guide
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Need to set up Business/Creator account? Click here for step-by-step instructions
-                      </p>
-                    </div>
-                    {showInstagramGuide ? (
-                      <ChevronUp className="text-blue-300 flex-shrink-0 ml-3" size={20} weight="duotone" />
-                    ) : (
-                      <ChevronDown className="text-blue-300 flex-shrink-0 ml-3" size={20} weight="duotone" />
-                    )}
-                  </div>
-                </button>
-
-                {/* Expandable Guide Content */}
-                {showInstagramGuide && (
-                  <div className="mt-4 p-4 bg-[#0F1628] border border-gray-700 rounded-lg">
-                    <InstagramAccountSetupGuide />
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <button
-                  onClick={() => router.push("/api/auth/connect/twitter")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <Twitter size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    Twitter
-                  </span>
-                </button>
-                <button
-                  onClick={() => router.push("/api/auth/connect/linkedin")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <Linkedin size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    LinkedIn
-                  </span>
-                </button>
-                <button
-                  onClick={() => router.push("/api/auth/connect/facebook")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <Facebook size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    Facebook
-                  </span>
-                </button>
-                <button
-                  onClick={() => router.push("/api/auth/connect/instagram")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <Instagram size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    Instagram
-                  </span>
-                </button>
-                <button
-                  onClick={() => router.push("/api/auth/connect/tiktok")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <Music size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    TikTok
-                  </span>
-                </button>
-                <button
-                  onClick={() => router.push("/api/auth/connect/reddit")}
-                  className="h-16 border-2 border-gray-700 hover:border-[#00C7F2] rounded-lg flex items-center justify-center space-x-2 transition-colors"
-                >
-                  <MessageCircle size={24} className="text-gray-300" />
-                  <span className="font-medium text-gray-300">
-                    Reddit
-                  </span>
-                </button>
-              </div>
-
-              <div className="space-y-3">
-                <button
-                  onClick={handleComplete}
-                  disabled={loading}
-                  className="w-full h-14 bg-[#00C7F2] hover:bg-[#A17CF9] disabled:bg-[#00C7F2]/40 text-[#0A0F1F] font-semibold rounded-lg transition-colors uppercase tracking-wide"
-                >
-                  {loading ? "Completing..." : "Complete Setup →"}
-                </button>
-                <button
-                  onClick={handleComplete}
-                  className="w-full h-12 text-gray-400 hover:text-white font-medium transition-colors"
-                >
-                  Skip for now
-                </button>
-              </div>
-            </>
-          )}
           </div>
         )}
       </div>

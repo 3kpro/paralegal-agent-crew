@@ -137,12 +137,13 @@ export default function InterestSelection({
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white mb-2">
-          What interests you?
+          What are you interested in?
         </h1>
         <p className="text-gray-400">
-          Select {minSelection}-{maxSelection} topics to discover trending
-          content in YOUR interests. This helps XELORA™ show you relevant
-          trends.
+          Select topics you care about so we can show you relevant trends. You can change these anytime.
+        </p>
+        <p className="text-xs text-gray-500 mt-1">
+            XELORA will prioritize trending topics in your selected categories, saving you hours of scrolling.
         </p>
         <p className="text-sm text-coral-400 mt-2">
           {selected.length}/{maxSelection} selected

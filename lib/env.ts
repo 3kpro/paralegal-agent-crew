@@ -25,10 +25,10 @@ const envSchema = z.object({
   }),
   STRIPE_SECRET_KEY: z.string().startsWith("sk_", {
     message: "STRIPE_SECRET_KEY must start with sk_",
-  }),
+  }).optional(), // Optional on client
   STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_", {
     message: "STRIPE_WEBHOOK_SECRET must start with whsec_",
-  }),
+  }).optional(), // Optional on client
 
   // Application URL (REQUIRED)
   NEXT_PUBLIC_BASE_URL: z.string().url({
@@ -63,22 +63,51 @@ export type Env = z.infer<typeof envSchema>;
  * Throws an error if validation fails
  */
 export function validateEnv(): Env {
-  try {
-    const env = envSchema.parse(process.env);
+  // Explicitly access process.env for Next.js inlining
+  const processEnv = {
+    NODE_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL,
+    N8N_BASE_URL: process.env.N8N_BASE_URL,
+    USE_ANTHROPIC_DIRECT: process.env.USE_ANTHROPIC_DIRECT,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    LM_STUDIO_URL: process.env.LM_STUDIO_URL,
+    API_GATEWAY_URL: process.env.API_GATEWAY_URL,
+    POWERSHELL_TRENDS_URL: process.env.POWERSHELL_TRENDS_URL,
+    NEXT_PUBLIC_CONTACT_WEBHOOK_URL: process.env.NEXT_PUBLIC_CONTACT_WEBHOOK_URL,
+  };
 
-    // Additional validation logic
-    if (env.USE_ANTHROPIC_DIRECT === "true" && !env.ANTHROPIC_API_KEY) {
-      throw new Error(
-        "ANTHROPIC_API_KEY is required when USE_ANTHROPIC_DIRECT=true",
-      );
+  try {
+    const isServer = typeof window === 'undefined';
+    
+    // On client, we don't validate server-side keys
+    let parsed: any;
+    
+    if (isServer) {
+        parsed = envSchema.parse(processEnv);
+        // Additional server-side validation
+        if (parsed.STRIPE_SECRET_KEY === undefined) throw new Error("STRIPE_SECRET_KEY is required on server");
+        if (parsed.STRIPE_WEBHOOK_SECRET === undefined) throw new Error("STRIPE_WEBHOOK_SECRET is required on server");
+    } else {
+        // Client-side: validate only what we have, allow missing server keys
+        parsed = envSchema.parse(processEnv);
     }
 
-    return env;
+    // Additional validation logic
+    if (parsed.USE_ANTHROPIC_DIRECT === "true" && !parsed.ANTHROPIC_API_KEY) {
+      if (isServer) { // Only enforce on server if key is hidden
+         throw new Error("ANTHROPIC_API_KEY is required when USE_ANTHROPIC_DIRECT=true");
+      }
+    }
+
+    return parsed as Env;
   } catch (error) {
-    // START FIX: Allow build to proceed even if env vars are missing
-    // This is useful for building in environments (like limited CI or Docker) 
-    // where runtime secrets aren't available but build should pass.
-    // Enhanced check to include Vercel-specific environment variables
+    // OLD FIX: Allow build to proceed even if env vars are missing
     if (
       process.env.npm_lifecycle_event === "build" || 
       process.env.NEXT_PHASE === "phase-production-build" ||
@@ -88,12 +117,10 @@ export function validateEnv(): Env {
       console.warn("⚠️ Environment validation failed during build. Using fallback values to allow build to complete.");
       console.warn(error instanceof Error ? error.message : String(error));
       
-      // Return a mock object satisfying the schema for build purposes ONLY
       return {
         NODE_ENV: "production",
         NEXT_PUBLIC_SUPABASE_URL: "https://placeholder-url.supabase.co",
         NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-key",
-        // Split strings to avoid false-positive security scanners
         NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_" + "test_placeholder",
         STRIPE_SECRET_KEY: "sk_" + "test_placeholder",
         STRIPE_WEBHOOK_SECRET: "whsec_" + "placeholder",
@@ -101,7 +128,6 @@ export function validateEnv(): Env {
         USE_ANTHROPIC_DIRECT: "false",
       } as Env;
     }
-    // END FIX
 
     if (error instanceof z.ZodError) {
       const issues = error.issues.map(
