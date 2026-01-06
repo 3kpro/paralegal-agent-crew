@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CaretDown,
   CaretUp,
@@ -9,6 +9,8 @@ import {
   LinkedinLogo,
   InstagramLogo,
   YoutubeLogo,
+  FacebookLogo,
+  RedditLogo,
   Copy,
   ArrowSquareOut,
   Lightning,
@@ -16,6 +18,7 @@ import {
   TextT,
   HashStraight,
   DeviceMobile,
+  Info,
 } from "@phosphor-icons/react";
 import { SendToPhoneModal } from "./SendToPhoneModal";
 
@@ -123,6 +126,51 @@ const platformGuides: Record<string, PlatformGuide> = {
       "Post and share to Stories",
     ],
   },
+  facebook: {
+    name: "Facebook",
+    icon: FacebookLogo,
+    color: "#1877F2",
+    postUrl: "https://www.facebook.com/",
+    characterLimit: "63,206 characters",
+    bestTimes: "1-3 PM (weekdays)",
+    tips: [
+      "Visuals are key - always include media",
+      "Keep text conversational and friendly",
+      "Ask questions to drive engagement",
+      "Use Facebook Stories for casual updates",
+    ],
+    hashtagTip: "Use sparingly (1-2 max). Less effective than other platforms.",
+    steps: [
+      "Copy your content above",
+      "Click 'Open Facebook' to go to feed",
+      "Create a new post",
+      "Paste content and attach media",
+      "Check preview and post",
+    ],
+  },
+  reddit: {
+    name: "Reddit",
+    icon: RedditLogo,
+    color: "#FF4500",
+    postUrl: "https://www.reddit.com/submit",
+    characterLimit: "40,000 characters (body), 300 (title)",
+    bestTimes: "6-9 AM (US times)",
+    tips: [
+      "Provide value first, don't just sell",
+      "Match the subreddit's culture/rules",
+      "Engage in comments genuinely",
+      "Avoid obvious self-promotion",
+    ],
+    hashtagTip: "Hashtags don't work on Reddit. Use keywords in text.",
+    steps: [
+      "Copy your content above",
+      "Click 'Open Reddit' to submit",
+      "Choose appropriate subreddit",
+      "Paste title and body",
+      "Verify subreddit rules",
+      "Post and monitor comments",
+    ],
+  },
   youtube: {
     name: "YouTube",
     icon: YoutubeLogo,
@@ -159,12 +207,17 @@ export function TransferMasterclass({
   content,
   onCopy,
 }: TransferMasterclassProps) {
-  const [expandedPlatform, setExpandedPlatform] = useState<string | null>(
-    activePlatform || null
-  );
-  const [isExpanded, setIsExpanded] = useState(true);
+  // Use state to manage expansion
+  // Default to collapsed so the user sees the down arrow (CaretDown) and can expand manually
+  const [isExpanded, setIsExpanded] = useState(false);
   const [showPhoneModal, setShowPhoneModal] = useState(false);
   const [phoneModalPlatform, setPhoneModalPlatform] = useState("");
+
+  const selectedGuideKey = activePlatform && platformGuides[activePlatform] ? activePlatform : null;
+  const currentGuide = selectedGuideKey ? platformGuides[selectedGuideKey] : null;
+
+  // Auto-expansion removed per user request - manual control only
+  // "They are collapsed. Let the user do that."
 
   const openPhoneModal = (platform: string) => {
     setPhoneModalPlatform(platform);
@@ -173,10 +226,6 @@ export function TransferMasterclass({
 
   // Platforms that are mobile-first (text posts only work on mobile)
   const mobileFirstPlatforms = ["tiktok", "instagram"];
-
-  const togglePlatform = (platform: string) => {
-    setExpandedPlatform(expandedPlatform === platform ? null : platform);
-  };
 
   const copyAndOpen = (platform: string) => {
     if (content) {
@@ -189,187 +238,177 @@ export function TransferMasterclass({
     }
   };
 
+  const GuideIcon = currentGuide ? currentGuide.icon : Lightning;
+
   return (
-    <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-2xl border border-coral-500/30 overflow-hidden">
+    <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm rounded-2xl border border-coral-500/30 overflow-hidden shadow-xl sticky top-8">
       {/* Header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors"
-      >
+      <div className="w-full px-6 py-4 flex items-center justify-between border-b border-gray-700/50 bg-black/20">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-coral-500/20 flex items-center justify-center">
-            <Lightning className="w-5 h-5 text-coral-400" weight="duotone" />
+          <div 
+            className="w-10 h-10 rounded-xl bg-coral-500/20 flex items-center justify-center shadow-lg shadow-coral-500/10 transition-colors"
+            style={currentGuide ? { backgroundColor: `${currentGuide.color}20` } : undefined}
+          >
+            <GuideIcon 
+              className="w-5 h-5" 
+              weight="duotone"
+              style={currentGuide ? { color: currentGuide.color } : { color: "#ff6b6b" }}
+            />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold text-white">Transfer Masterclass</h3>
-            <p className="text-xs text-gray-400">
-              Platform-specific posting guides
+            <h3 className="font-bold text-white tracking-wide">
+              {currentGuide ? `${currentGuide.name} Guide` : "Transfer Masterclass"}
+            </h3>
+            <p className="text-xs text-gray-400 font-medium">
+              {currentGuide ? "Platform-specific strategy" : "Select content to view guide"}
             </p>
           </div>
         </div>
-        {isExpanded ? (
-          <CaretUp className="w-5 h-5 text-gray-400" />
-        ) : (
-          <CaretDown className="w-5 h-5 text-gray-400" />
+        {currentGuide && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+          >
+            {isExpanded ? (
+              <CaretUp className="w-5 h-5 text-gray-400" />
+            ) : (
+              <CaretDown className="w-5 h-5 text-gray-400" />
+            )}
+          </button>
         )}
-      </button>
+      </div>
 
+      {/* Content Area */}
       {isExpanded && (
-        <div className="px-4 pb-4 space-y-2">
-          {Object.entries(platformGuides).map(([key, guide]) => {
-            const Icon = guide.icon;
-            const isActive = expandedPlatform === key;
-
-            return (
-              <div
-                key={key}
-                className={`rounded-xl border transition-all ${
-                  isActive
-                    ? "border-coral-500/50 bg-coral-500/5"
-                    : "border-gray-700/50 bg-gray-800/30"
-                }`}
-              >
-                {/* Platform Header */}
-                <div className="w-full px-4 py-3 flex items-center justify-between">
-                  <button
-                    onClick={() => togglePlatform(key)}
-                    className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-                  >
-                    <Icon
-                      className="w-5 h-5"
-                      style={{ color: guide.color }}
-                      weight="duotone"
-                    />
-                    <span className="font-medium text-white">{guide.name}</span>
-                    {isActive ? (
-                      <CaretUp className="w-4 h-4 text-gray-400" />
-                    ) : (
-                      <CaretDown className="w-4 h-4 text-gray-400" />
-                    )}
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => copyAndOpen(key)}
-                      className="px-3 py-1.5 text-xs font-medium rounded-lg bg-coral-500/20 text-coral-400 hover:bg-coral-500/30 transition-colors flex items-center gap-1.5"
-                    >
-                      <ArrowSquareOut className="w-3.5 h-3.5" />
-                      Open {guide.name.split(" ")[0]}
-                    </button>
+        <div className="min-h-[300px] flex flex-col">
+          {currentGuide && selectedGuideKey ? (
+            <div className="p-6 space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+               {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-4 rounded-xl bg-gray-800/50 border border-gray-700/50">
+                  <div className="flex items-center gap-2 text-gray-400 text-xs font-medium mb-1.5 uppercase tracking-wide">
+                    <TextT className="w-4 h-4 text-cyan-400" />
+                    Length
                   </div>
+                  <p className="text-sm text-white font-semibold">
+                    {currentGuide.characterLimit}
+                  </p>
                 </div>
-
-                {/* Expanded Content */}
-                {isActive && (
-                  <div className="px-4 pb-4 space-y-4">
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 rounded-lg bg-gray-800/50">
-                        <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
-                          <TextT className="w-3.5 h-3.5" />
-                          Character Limit
-                        </div>
-                        <p className="text-sm text-white font-medium">
-                          {guide.characterLimit}
-                        </p>
-                      </div>
-                      <div className="p-3 rounded-lg bg-gray-800/50">
-                        <div className="flex items-center gap-2 text-gray-400 text-xs mb-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          Best Times
-                        </div>
-                        <p className="text-sm text-white font-medium">
-                          {guide.bestTimes}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Tips */}
-                    <div>
-                      <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-                        Pro Tips
-                      </h4>
-                      <ul className="space-y-1.5">
-                        {guide.tips.map((tip, idx) => (
-                          <li
-                            key={idx}
-                            className="text-sm text-gray-300 flex items-start gap-2"
-                          >
-                            <span className="text-coral-400 mt-0.5">•</span>
-                            {tip}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Hashtag Tip */}
-                    <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                      <div className="flex items-center gap-2 text-blue-400 text-xs font-medium mb-1">
-                        <HashStraight className="w-3.5 h-3.5" />
-                        Hashtag Strategy
-                      </div>
-                      <p className="text-sm text-gray-300">{guide.hashtagTip}</p>
-                    </div>
-
-                    {/* Steps */}
-                    <div>
-                      <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-                        Transfer Steps
-                      </h4>
-                      <ol className="space-y-2">
-                        {guide.steps.map((step, idx) => (
-                          <li
-                            key={idx}
-                            className="text-sm text-gray-300 flex items-start gap-3"
-                          >
-                            <span className="w-5 h-5 rounded-full bg-coral-500/20 text-coral-400 text-xs flex items-center justify-center flex-shrink-0">
-                              {idx + 1}
-                            </span>
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-
-                    {/* Mobile-First Platform Notice */}
-                    {mobileFirstPlatforms.includes(key) && (
-                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 mb-3">
-                        <div className="flex items-center gap-2 text-amber-400 text-xs font-medium mb-1">
-                          <DeviceMobile className="w-3.5 h-3.5" />
-                          Mobile-First Platform
-                        </div>
-                        <p className="text-sm text-gray-300">
-                          {key === "tiktok"
-                            ? "TikTok text posts only work on mobile. Use 'Send to Phone' to copy your content there instantly."
-                            : "Instagram works best on mobile. Use 'Send to Phone' for the full posting experience."}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                      {mobileFirstPlatforms.includes(key) && content && (
-                        <button
-                          onClick={() => openPhoneModal(key)}
-                          className="flex-1 py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                        >
-                          <DeviceMobile className="w-4 h-4" />
-                          Send to Phone
-                        </button>
-                      )}
-                      <button
-                        onClick={() => copyAndOpen(key)}
-                        className={`${mobileFirstPlatforms.includes(key) && content ? "flex-1" : "w-full"} py-3 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2`}
-                        style={{ backgroundColor: guide.color }}
-                      >
-                        <Copy className="w-4 h-4" />
-                        Copy & Open {guide.name.split(" ")[0]}
-                      </button>
-                    </div>
+                <div className="p-4 rounded-xl bg-gray-800/50 border border-gray-700/50">
+                  <div className="flex items-center gap-2 text-gray-400 text-xs font-medium mb-1.5 uppercase tracking-wide">
+                    <Clock className="w-4 h-4 text-purple-400" />
+                    Timing
                   </div>
-                )}
+                  <p className="text-sm text-white font-semibold">
+                    {currentGuide.bestTimes}
+                  </p>
+                </div>
               </div>
-            );
-          })}
+
+              {/* Steps */}
+              <div>
+                <h4 className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                  <span className="w-8 h-[1px] bg-gray-600"></span>
+                  Action Plan
+                  <span className="w-full h-[1px] bg-gray-600"></span>
+                </h4>
+                <ol className="space-y-4">
+                  {currentGuide.steps.map((step, idx) => (
+                    <li
+                      key={idx}
+                      className="group flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors"
+                    >
+                      <span className="w-6 h-6 rounded-full bg-coral-500/10 border border-coral-500/30 text-coral-400 text-xs font-bold flex items-center justify-center flex-shrink-0 group-hover:bg-coral-500 group-hover:text-white transition-all shadow-[0_0_10px_rgba(255,107,107,0.2)]">
+                        {idx + 1}
+                      </span>
+                      <span className="text-sm text-gray-300 leading-relaxed">
+                        {step}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* Pro Tips */}
+              <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-5 border border-gray-700/50">
+                <h4 className="text-xs font-bold text-coral-400 uppercase tracking-wide mb-3 flex items-center gap-2">
+                  <Lightning className="w-4 h-4" weight="fill" />
+                  Pro Tips
+                </h4>
+               <ul className="space-y-2.5">
+                  {currentGuide.tips.map((tip, idx) => (
+                    <li
+                      key={idx}
+                      className="text-sm text-gray-300/90 flex items-start gap-2.5"
+                    >
+                       <div className="w-1 h-1 rounded-full bg-gray-500 mt-2 flex-shrink-0" />
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Hashtag Tip */}
+              <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                <div className="flex items-center gap-2 text-blue-400 text-xs font-bold uppercase tracking-wide mb-2">
+                  <HashStraight className="w-4 h-4" weight="bold" />
+                  Hashtag Strategy
+                </div>
+                <p className="text-sm text-blue-100/80 leading-relaxed font-medium">
+                  {currentGuide.hashtagTip}
+                </p>
+              </div>
+
+              {/* Mobile-First Platform Notice */}
+              {mobileFirstPlatforms.includes(selectedGuideKey) && (
+                <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                  <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wide mb-2">
+                    <DeviceMobile className="w-4 h-4" weight="bold" />
+                    Mobile App Required
+                  </div>
+                  <p className="text-sm text-amber-100/80 leading-relaxed">
+                    {selectedGuideKey === "tiktok"
+                      ? "TikTok text posts only work on mobile. Use 'Send to Phone' to copy instantly."
+                      : "Instagram allows creating posts from desktop, but Reels usually require the mobile app."}
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex flex-col gap-3 pt-2">
+                {mobileFirstPlatforms.includes(selectedGuideKey) && content && (
+                  <button
+                    onClick={() => openPhoneModal(selectedGuideKey)}
+                    className="w-full py-3.5 rounded-xl font-bold text-white text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 shadow-lg shadow-purple-900/20"
+                  >
+                    <DeviceMobile className="w-4 h-4" weight="bold" />
+                    Send to Phone
+                  </button>
+                )}
+                <button
+                  onClick={() => copyAndOpen(selectedGuideKey)}
+                  className="w-full py-3.5 rounded-xl font-bold text-white text-sm transition-all flex items-center justify-center gap-2 hover:brightness-110 shadow-lg"
+                  style={{ backgroundColor: currentGuide.color, boxShadow: `0 4px 14px 0 ${currentGuide.color}40` }}
+                >
+                  <ArrowSquareOut className="w-4 h-4" weight="bold" />
+                  Open {currentGuide.name}
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Empty State */
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4 opacity-50">
+              <div className="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center mb-2">
+                <Info className="w-8 h-8 text-gray-600" />
+              </div>
+              <div>
+                <h4 className="text-white font-medium mb-1">No Content Selected</h4>
+                <p className="text-sm text-gray-500 max-w-[200px] mx-auto">
+                  Click the <span className="text-coral-400">Copy</span> button on any generated content to view its posting guide.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

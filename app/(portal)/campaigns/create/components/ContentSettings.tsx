@@ -6,8 +6,8 @@
  * Memoized to prevent unnecessary re-renders.
  */
 
-import React, { memo, useMemo, useCallback, useRef, useEffect } from "react";
-import { Gear as Settings, Faders as Settings2, MagicWand, Target, Users, Chat as MessageSquare } from "@phosphor-icons/react";
+import React, { memo, useMemo, useCallback, useRef, useEffect, useState } from "react";
+import { Gear as Settings, Faders as Settings2, MagicWand, Target, Users, Chat as MessageSquare, PaintBrush } from "@phosphor-icons/react";
 import CreativitySlider from "./CreativitySlider";
 import ControlOptionButton from "./ControlOptionButton";
 import { ControlOption, ContentControls } from "../types";
@@ -25,6 +25,9 @@ const ContentSettings = memo<ContentSettingsProps>(
     // Keep ref to current controls to avoid placing controls object in dependency arrays
     // This allows handlers to remain stable while still accessing current state
     const controlsRef = useRef<ContentControls>(controls);
+    
+    // Tab state for compact layout
+    const [activeTab, setActiveTab] = useState<"style" | "target">("style");
 
     useEffect(() => {
       controlsRef.current = controls;
@@ -135,119 +138,161 @@ const ContentSettings = memo<ContentSettingsProps>(
     );
 
     return (
-      <div className="space-y-3 p-4 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-2xl">
-        {/* Header */}
-        <h3 className="text-base font-semibold text-tron-text flex items-center gap-2 mb-2">
-          <Settings className="w-4 h-4 text-tron-cyan" weight="duotone" />
-          Content Settings
-        </h3>
-
-        {/* Compact Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-          {/* Left Column: Creativity + Length */}
-          <div className="space-y-2">
-            {/* Creativity Slider */}
-            <CreativitySlider
-              value={controls.temperature}
-              onChange={handleTemperatureChange}
-            />
-
-            {/* Content Length - Compact */}
-            <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all">
-              <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
-                <Settings2 className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
-                Content Length
-              </legend>
-              <div className="grid grid-cols-3 gap-1.5">
-                {lengths.map((len) => (
-                  <ControlOptionButton
-                    key={len.id}
-                    id={len.id}
-                    label={len.label}
-                    isSelected={controls.length === len.id}
-                    onClick={handleLengthChange}
-                    flex={true}
-                  />
-                ))}
-              </div>
-            </fieldset>
+      <div className="space-y-3 p-4 bg-tron-dark/30 backdrop-blur-xl border-2 border-tron-grid rounded-2xl flex flex-col h-full">
+        {/* Header & Tabs */}
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-base font-semibold text-tron-text flex items-center gap-2">
+            <Settings className="w-4 h-4 text-tron-cyan" weight="duotone" />
+            Content Settings
+          </h3>
+          
+          <div className="flex bg-tron-dark/50 p-1 rounded-lg border border-tron-grid">
+            <button
+              onClick={() => setActiveTab("style")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5 ${
+                activeTab === "style" 
+                  ? "bg-tron-cyan/20 text-tron-cyan shadow-sm" 
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <PaintBrush className="w-3.5 h-3.5" weight={activeTab === "style" ? "duotone" : "regular"} />
+              Style & Voice
+            </button>
+            <button
+              onClick={() => setActiveTab("target")}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5 ${
+                activeTab === "target" 
+                  ? "bg-tron-magenta/20 text-tron-magenta shadow-sm" 
+                  : "text-gray-400 hover:text-white"
+              }`}
+            >
+              <Target className="w-3.5 h-3.5" weight={activeTab === "target" ? "duotone" : "regular"} />
+              Target & Goal
+            </button>
           </div>
+        </div>
 
-          {/* Right Column: Tone */}
-          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
-              <MagicWand className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
-              Content Tone
-            </legend>
-            <div className="grid grid-cols-3 gap-1.5">
-              {tones.map((t) => (
-                <ControlOptionButton
-                  key={t.id}
-                  id={t.id}
-                  label={t.label}
-                  isSelected={controls.tone === t.id}
-                  onClick={handleToneChange}
+        {/* Tab Content */}
+        <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+          {activeTab === "style" ? (
+            <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
+              {/* Style Tab: Creativity + Length + Tone */}
+              
+              {/* Creativity Slider */}
+              <div className="bg-tron-dark/30 rounded-lg p-2 border border-tron-grid/50">
+                <CreativitySlider
+                  value={controls.temperature}
+                  onChange={handleTemperatureChange}
                 />
-              ))}
-            </div>
-          </fieldset>
+              </div>
 
-          {/* Target Audience - Full Width, Compact */}
-          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
-              <Users className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
-              Target Audience
-            </legend>
-            <div className="grid grid-cols-4 lg:grid-cols-8 gap-1.5">
-              {audiences.map((aud) => (
-                <ControlOptionButton
-                  key={aud.id}
-                  id={aud.id}
-                  label={aud.label}
-                  isSelected={controls.targetAudience === aud.id}
-                  onClick={handleAudienceChange}
-                />
-              ))}
-            </div>
-          </fieldset>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Content Length */}
+                <fieldset className="p-3 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all h-full">
+                  <legend className="flex items-center gap-2 mb-2 text-xs font-semibold text-tron-text">
+                    <Settings2 className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
+                    Content Length
+                  </legend>
+                  <div className="grid grid-cols-1 gap-2">
+                    {lengths.map((len) => (
+                      <ControlOptionButton
+                        key={len.id}
+                        id={len.id}
+                        label={len.label}
+                        isSelected={controls.length === len.id}
+                        onClick={handleLengthChange}
+                        flex={true}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
 
-          {/* Content Focus - Full Width, Compact */}
-          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
-              <MessageSquare className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
-              Content Focus
-            </legend>
-            <div className="grid grid-cols-4 lg:grid-cols-7 gap-1.5">
-              {focuses.map((focus) => (
-                <ControlOptionButton
-                  key={focus.id}
-                  id={focus.id}
-                  label={focus.label}
-                  isSelected={controls.contentFocus === focus.id}
-                  onClick={handleFocusChange}
-                />
-              ))}
+                {/* Content Tone */}
+                <fieldset className="p-3 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/40 transition-all h-full">
+                  <legend className="flex items-center gap-2 mb-2 text-xs font-semibold text-tron-text">
+                    <MagicWand className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
+                    Content Tone
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2">
+                    {tones.map((t) => (
+                      <ControlOptionButton
+                        key={t.id}
+                        id={t.id}
+                        label={t.label}
+                        isSelected={controls.tone === t.id}
+                        onClick={handleToneChange}
+                        // Make odd number item span full width if needed, or just standard grid
+                        className={tones.length % 2 !== 0 && t.id === tones[tones.length-1].id ? "col-span-2" : ""}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
             </div>
-          </fieldset>
+          ) : (
+            <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
+              {/* Target Tab: Audience + Focus + CTA */}
+              
+              {/* Content Focus */}
+              <fieldset className="p-3 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-magenta/20 rounded-lg hover:border-tron-magenta/40 transition-all">
+                <legend className="flex items-center gap-2 mb-2 text-xs font-semibold text-tron-text">
+                  <MessageSquare className="w-3.5 h-3.5 text-tron-magenta" weight="duotone" />
+                  Content Focus
+                </legend>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {focuses.map((focus) => (
+                    <ControlOptionButton
+                      key={focus.id}
+                      id={focus.id}
+                      label={focus.label}
+                      isSelected={controls.contentFocus === focus.id}
+                      onClick={handleFocusChange}
+                    />
+                  ))}
+                </div>
+              </fieldset>
 
-          {/* Call to Action - Full Width, Compact */}
-          <fieldset className="p-2 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-cyan/20 rounded-lg lg:col-span-2 hover:border-tron-cyan/40 transition-all">
-            <legend className="flex items-center gap-2 mb-1.5 text-xs font-semibold text-tron-text">
-              <Target className="w-3.5 h-3.5 text-tron-cyan" weight="duotone" />
-              Call to Action
-            </legend>
-            <div className="grid grid-cols-3 lg:grid-cols-6 gap-1.5">
-              {callToActions.map((cta) => (
-                <ControlOptionButton
-                  key={cta.id}
-                  id={cta.id}
-                  label={cta.label}
-                  isSelected={controls.callToAction === cta.id}
-                  onClick={handleCtaChange}
-                />
-              ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {/* Target Audience */}
+                <fieldset className="p-3 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-magenta/20 rounded-lg hover:border-tron-magenta/40 transition-all">
+                  <legend className="flex items-center gap-2 mb-2 text-xs font-semibold text-tron-text">
+                    <Users className="w-3.5 h-3.5 text-tron-magenta" weight="duotone" />
+                    Target Audience
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2">
+                    {audiences.map((aud) => (
+                      <ControlOptionButton
+                        key={aud.id}
+                        id={aud.id}
+                        label={aud.label}
+                        isSelected={controls.targetAudience === aud.id}
+                        onClick={handleAudienceChange}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+
+                {/* Call to Action */}
+                <fieldset className="p-3 bg-gradient-to-br from-tron-dark/50 to-tron-dark/30 backdrop-blur-xl border border-tron-magenta/20 rounded-lg hover:border-tron-magenta/40 transition-all">
+                  <legend className="flex items-center gap-2 mb-2 text-xs font-semibold text-tron-text">
+                    <Target className="w-3.5 h-3.5 text-tron-magenta" weight="duotone" />
+                    Call to Action
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2">
+                    {callToActions.map((cta) => (
+                      <ControlOptionButton
+                        key={cta.id}
+                        id={cta.id}
+                        label={cta.label}
+                        isSelected={controls.callToAction === cta.id}
+                        onClick={handleCtaChange}
+                      />
+                    ))}
+                  </div>
+                </fieldset>
+              </div>
             </div>
-          </fieldset>
+          )}
         </div>
       </div>
     );

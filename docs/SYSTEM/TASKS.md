@@ -1,5 +1,5 @@
 # TASKS.md
-Last Updated: 2026-01-04
+Last Updated: 2026-01-05
 
 This file lists the ONLY work that should be actively considered.
 If it's not here, it's not a task.
@@ -9,11 +9,35 @@ If it's not here, it's not a task.
 
 
 
-
 ---
 
 
 ## COMPLETED
+
+- [x] **Transfer Masterclass Redesign** 🎨 ✅
+      - **Problem:** Transfer Masterclass showed a cluttered list and was missing guides for Facebook/Reddit. Was also restricted to mobile platforms in Wizard.
+      - **Solution:** Redesigned as context-aware single view. Added FB/Reddit guides. Enabled for ALL platforms in Campaign Wizard.
+      - **File:** `components/TransferMasterclass.tsx`, `app/(portal)/campaigns/create/page.tsx`
+      - **Assigned:** Gemini
+
+- [x] **Fix Vertical Alignment for Spinners** 🎨 ✅
+      - **Problem:** "Finding trends..." and "Generating" spinners were slightly above center (approx 300px vs 540px fade center).
+      - **Solution:** Replaced `min-h-[600px]` with `min-h-[calc(100vh-4rem)]` for both containers to center them vertically in the viewport.
+      - **File:** `app/(portal)/campaigns/create/page.tsx`
+      - **Assigned:** Gemini
+
+- [x] **Redesign "Shape Your Content" UI for Vertical Compactness** 🎨 ✅
+      - **Location:** Campaign Create → Step 4 (Shape Your Content)
+      - **Problem:** Current layout requires excessive scrolling. Multiple multi-choice sections (Tone, Length, Focus, Target Audience, CTA) are stacked vertically, causing UI fatigue.
+      - **Goal:** Maintain ALL options but redesign layout to fit on single viewport (~no scrolling). "Simplicity is the ultimate form of sophistication."
+      - **Results:**
+        - Implemented tabbed interface: "Style & Voice" and "Target & Goal".
+        - Grouped Creativity, Length, Tone under "Style & Voice".
+        - Grouped Audience, Focus, CTA under "Target & Goal".
+        - Used compact grid layouts for all options.
+        - Split long lists into multi-column grids.
+      - **File:** `app/(portal)/campaigns/create/page.tsx` (Step 4)
+      - **Assigned:** Gemini
 
 - [x] **Fix "Same for All" AI Optimize Bug** 🐛 ✅
       - **Location:** Campaign Create → Step 4 (Shape Your Content)

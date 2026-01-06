@@ -1894,7 +1894,7 @@ export default function NewCampaignPage() {
               className={loadingTrends ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl'}
             >
               {loadingTrends ? (
-                <div className="flex items-center justify-center min-h-[600px]">
+                <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
                   <LoadingState variant="luma" message="Finding trends..." />
                 </div>
               ) : (
@@ -2653,7 +2653,7 @@ export default function NewCampaignPage() {
               className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
             >
               {generatingContent ? (
-                <div className="flex items-center justify-center min-h-[600px] pt-20">
+                <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
                    <LoadingState variant="luma" message="Generating high-viral content..." />
                 </div>
               ) : (
@@ -2739,8 +2739,8 @@ export default function NewCampaignPage() {
                       )}
                     </AnimatePresence>
 
-                    {/* Transfer Masterclass - Send to Phone for Mobile Platforms */}
-                    {activePlatformView && (activePlatformView === 'tiktok' || activePlatformView === 'instagram') && generatedContent[activePlatformView] && (
+                    {/* Transfer Masterclass - Context-Aware Guide for All Platforms */}
+                    {activePlatformView && generatedContent[activePlatformView] && (
                       <div className="mb-6">
                         <TransferMasterclass
                           activePlatform={activePlatformView}
