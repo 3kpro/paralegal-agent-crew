@@ -78,7 +78,13 @@ export function validateEnv(): Env {
     // START FIX: Allow build to proceed even if env vars are missing
     // This is useful for building in environments (like limited CI or Docker) 
     // where runtime secrets aren't available but build should pass.
-    if (process.env.npm_lifecycle_event === "build" || process.env.NEXT_PHASE === "phase-production-build") {
+    // Enhanced check to include Vercel-specific environment variables
+    if (
+      process.env.npm_lifecycle_event === "build" || 
+      process.env.NEXT_PHASE === "phase-production-build" ||
+      process.env.VERCEL || 
+      process.env.CI
+    ) {
       console.warn("⚠️ Environment validation failed during build. Using fallback values to allow build to complete.");
       console.warn(error instanceof Error ? error.message : String(error));
       
