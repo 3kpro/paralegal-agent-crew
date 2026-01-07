@@ -1,3 +1,37 @@
+## 2026-01-07 — Brand Logo Update
+
+**Updated the Xelora brand logo to the finalized version.**
+
+- **Asset Update**: Replaced `WH_TR_LOGO.png` with `LogoFinal_TR.png` in `XeloraLogo.tsx`.
+- **Source**: Migrated final asset from `3kpro-website` repository.
+
+Status: **Implemented**
+
+Files Modified:
+- `components/XeloraLogo.tsx`
+- `public/media/LOGO/images/LogoFinal_TR.png` (Added)
+
+---
+
+## 2026-01-07 — Scaffold Idea 1: n8n Workflow Marketplace
+
+**Initialized project structure and documentation for the n8n Workflow Marketplace product.**
+
+Summary of Actions:
+- **Product Scaffolding**: Created directory structure for `Idea _01_N8N` including `workflows`, `docs`, and `assets` folders.
+- **Documentation**: Created `TRUTH.md` detailing the product vision, core purpose, target user, value proposition, MVP features (Creator Pack, Lead Capture Pack, Scheduler Pack), and monetization strategy.
+- **Context Analysis**: Reviewed `PRODUCT-IDEAS.md` and project `readme.md` to ensure alignment with the "low effort, high value" marketplace strategy.
+
+Status: **Scaffolded & Ready for Build**
+
+Files Created:
+- `Dev/products/Idea _01_N8N/TRUTH.md`
+- `Dev/products/Idea _01_N8N/workflows/` (Dir)
+- `Dev/products/Idea _01_N8N/docs/` (Dir)
+- `Dev/products/Idea _01_N8N/assets/` (Dir)
+
+---
+
 ## 2026-01-06 — 3KPRO Marketplace Scaffolding
 
 **Scaffolding of the 3KPRO.SERVICES marketplace to showcase and sell applications, micro-SaaS, and workflows.**

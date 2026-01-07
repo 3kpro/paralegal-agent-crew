@@ -7,12 +7,22 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-
-
 ---
 
 
 ## COMPLETED
+
+- [x] **Update Site Logo** 🎨 ✅
+      - **Goal:** Update the Xelora brand logo to the final version.
+      - **Action:** Copied `LogoFinal_TR.png` and updated `XeloraLogo.tsx`.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
+
+- [x] **Scaffold Idea 1: n8n Workflow Marketplace** ✅
+      - **Goal:** Initialize project structure for n8n workflow product.
+      - **Action:** Created `TRUTH.md` from template, created `workflows`, `docs`, `assets` directories.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea _01_N8N`
+      - **Assigned:** Antigravity
 
 - [x] **3kpro.services Marketplace Scaffolding** 🛍️ ✅
       - **Goal:** Add a component to showcase and sell applications, micro SaaS, workflows, etc. using Stripe.
