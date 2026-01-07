@@ -6,7 +6,8 @@ If it's not here, it's not a task.
 
 ---
 ## NOW (One at a time only)
-
+Campaigns on prododuction still have Publish Now instead of schedule later button
+pls update
 
 
 
