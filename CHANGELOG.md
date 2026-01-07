@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-06] - Campaign Scheduling & UX Refinements
+
+### Improved
+- **Campaign Creation Flow**:
+  - **Schedule for Later**: Replaced the "Publish Now" button with a "Schedule for Later" button in the final step of the campaign wizard.
+  - **UX Clarity**: Updated button visual style and iconography (Calendar icon) to clearly communicate the scheduling action.
+  - **Logic Update**: `saveCampaign` function now explicitly handles `save` vs `schedule` states, ensuring correct backend processing.
+
+
 ## [2026-01-03] - Viral DNA Visualization & UX Polish
 
 ### Added

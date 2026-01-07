@@ -6,15 +6,21 @@ If it's not here, it's not a task.
 
 ---
 ## NOW (One at a time only)
-Campaigns on prododuction still have Publish Now instead of schedule later button
-pls update
 
+<!-- No active tasks -->
 
 
 ---
 
 
 ## COMPLETED
+
+- [x] **Campaign Creation: Schedule vs Publish (Production Fix)** 📅 ✅
+      - **Action:** Replaced "Publish Now" button with "Schedule for Later" at the end of the wizard.
+      - **Goal:** Align with V1 Simplification strategy and fix production regression.
+      - **File:** `app/(portal)/campaigns/create/page.tsx`
+      - **Assigned:** Gemini
+
 
 - [x] **Fix Dashboard Stats 404 Error** 🐛 ✅
       - **Problem:** Dashboard stats API returning 404 on localhost (Turbopack).
