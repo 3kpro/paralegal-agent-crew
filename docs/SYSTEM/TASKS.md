@@ -7,13 +7,19 @@ If it's not here, it's not a task.
 ---
 ## NOW (One at a time only)
 
-<!-- No active tasks -->
 
 
 ---
 
 
 ## COMPLETED
+
+- [x] **3kpro.services Marketplace Scaffolding** 🛍️ ✅
+      - **Goal:** Add a component to showcase and sell applications, micro SaaS, workflows, etc. using Stripe.
+      - **Solution:** Scaffolded a `/marketplace` route with a data-driven product list (`lib/data/marketplace.ts`), product detail pages, and Stripe Payment Link integration. Branch `feature/marketplace` created and tested.
+      - **File:** `app/marketplace/page.tsx`, `lib/data/marketplace.ts`
+      - **Assigned:** Antigravity
+
 
 - [x] **Campaign Creation: Schedule vs Publish (Production Fix)** 📅 ✅
       - **Action:** Replaced "Publish Now" button with "Schedule for Later" at the end of the wizard.
