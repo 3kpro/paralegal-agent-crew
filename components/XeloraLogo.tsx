@@ -1,16 +1,18 @@
 import Image from 'next/image';
+import logoImg from '../public/media/LOGO/images/LogoFinal_v2.png';
 
 export function XeloraLogo({ className = "w-16 h-16", showText = false }: { className?: string, showText?: boolean }) {
   return (
     <div className="flex items-center gap-3">
       <div className={className}>
         <Image
-          src="/media/LOGO/images/LogoFinal_v2.png"
+          src={logoImg}
           alt="XELORA"
           width={256}
           height={256}
           className="w-full h-full object-contain"
           priority
+          placeholder="blur"
         />
       </div>
       {showText && (
