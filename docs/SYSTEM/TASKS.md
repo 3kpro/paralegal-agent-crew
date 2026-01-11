@@ -1,16 +1,68 @@
-# TASKS.md
-Last Updated: 2026-01-06
+# TASKS.md - XELORA Product
+Last Updated: 2026-01-11
 
-This file lists the ONLY work that should be actively considered.
-If it's not here, it's not a task.
+This file lists XELORA product-specific tasks only.
+
+**Task Organization:**
+- **XELORA tasks:** This file (landing-page/docs/SYSTEM/TASKS.md)
+- **Company tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Google setup, marketplace, SEO)
+- **Dev/ products:** `Dev/products/[product]/TASKS.md` (per-product tasks)
 
 ---
-## NOW (One at a time only)
+
+
+
 
 ---
+
 
 
 ## COMPLETED
+
+- [x] **Migrate Demo Video to Cloud Storage** ☁️ ✅
+      - **Goal:** Host the demo video on cloud storage (Supabase) to enable production access and reduce repo size.
+      - **Action:** Uploaded video to `media` bucket, updated component with cloud URL, and deleted local file.
+      - **Status:** Done. Video URL: `https://hvcmidkylzrhmrwyigqr.supabase.co/storage/v1/object/public/media/marketing/Xelora_demo_YT_final.mp4`
+      - **Assigned:** Antigravity
+
+- [x] **Embed Demo Video on Landing Page** 🎬 ✅
+      - **Goal:** Replace placeholder video section with actual local demo video
+      - **Video Location:** `C:\DEV\3K-Pro-Services\landing-page\public\media\DemoVideo\Xelora_demo_YT_final.mp4`
+      - **Implementation:** HTML5 Video Tag (Local)
+      - **File to Update:** `components/sections/DemoVideoSection.tsx`
+      - **Requirements:**
+        - Replace the mock play button/placeholder with a standard HTML5 video player
+        - Use local source path `/media/DemoVideo/Xelora_demo_YT_final.mp4`
+        - Keep the section header: "Watch How It Works"
+        - Update duration badge from "2:34" to actual video length (~60 seconds)
+        - Update label from "Full Product Demo" to "60-Second Demo"
+        - **REMOVE AI-branded feature cards below video:**
+          - Remove "XELORA™ Discovery" card
+          - Remove "AI Cascade™ Generation" card
+          - Remove "OmniFormat™ Publishing" card
+        - **NO AI ICONS** - keep it clean and minimal
+        - Keep the glassmorphism/tron aesthetic
+        - Ensure video thumbnail shows before play (YouTube handles this)
+        - Mobile responsive (16:9 aspect ratio maintained)
+      - **Copy Updates:**
+        - Subtitle: "See how XELORA decodes Viral DNA and generates content in seconds."
+        - Remove any "publishing" claims (V1 doesn't publish)
+      - **Optional Enhancement:** Add a "Watch on YouTube" text link below the embed
+      - **Assigned:** Antigravity
+
+- [x] **Add XELORA Demo Link to 3kpro.services** 🔗 ✅
+      - **Goal:** Cross-promote XELORA demo video on the company website
+      - **Location Options (pick one):**
+        1. Add to XELORA card on `/marketplace` page - "Watch Demo" button/link
+        2. Add a "Featured Product" banner on homepage with video thumbnail
+        3. Add to the hero section as "See our flagship product in action"
+      - **File:** `3kpro-website/app/marketplace/page.tsx` or `3kpro-website/lib/data/marketplace.ts`
+      - **Requirements:**
+        - Clean, minimal design - no flashy animations
+        - Professional appearance matching 3kpro brand
+        - Link should open xelora.app or YouTube video directly
+        - **NO AI ICONS**
+      - **Assigned:** Antigravity
 
 - [x] **Update Site Logo** 🎨 ✅
       - **Goal:** Update the Xelora brand logo to the final version.
@@ -383,6 +435,11 @@ If it's not here, it's not a task.
 ---
 
 ## PARKED (Ideas only, no commitment)
+- [ ] **Social Media Publishing** 📱
+      - **Reason:** Blocked on Meta Business Verification (requires LLC registration)
+      - **Platforms:** Instagram, Facebook (TikTok, LinkedIn, Twitter have simpler auth but deprioritized)
+      - **Decision:** XELORA V1 is Discovery + Validate only (no publishing)
+      - **Revisit:** After LLC setup and Meta verification complete
 - [ ] Marketplace for agents / workflows
 - [ ] Agency reseller program
 - [ ] Hardware appliance for local AI

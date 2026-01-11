@@ -32,7 +32,7 @@ export default function DemoVideoSection() {
               </span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-tron-text mb-6">
               Watch How It Works
               <br />
               <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -41,9 +41,7 @@ export default function DemoVideoSection() {
             </h2>
 
             <p className="text-xl text-tron-text-muted max-w-3xl mx-auto">
-              See how XELORA transforms trending topics into
-              published content across Twitter, LinkedIn, and
-              email—automatically.
+              See how XELORA decodes Viral DNA and generates content in seconds.
             </p>
           </motion.div>
 
@@ -77,13 +75,13 @@ export default function DemoVideoSection() {
                     </button>
 
                     {/* Video Info Overlay */}
-                    <div className="absolute bottom-6 left-6 flex items-center gap-4 text-white">
+                      <div className="absolute bottom-6 left-6 flex items-center gap-4 text-white">
                       <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1 backdrop-blur-sm">
                         <Clock className="w-4 h-4" weight="duotone" />
-                        <span className="text-sm font-medium">2:34</span>
+                        <span className="text-sm font-medium">1:00</span>
                       </div>
                       <div className="text-sm bg-black/50 rounded-full px-3 py-1 backdrop-blur-sm">
-                        Full Product Demo
+                        60-Second Demo
                       </div>
                     </div>
 
@@ -95,88 +93,30 @@ export default function DemoVideoSection() {
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-white text-center">
-                      <BouncingDots className="bg-white mb-4" />
-                      <p className="text-lg">Loading demo video...</p>
-                      <p className="text-sm opacity-75">
-                        In production, this would be a real video player
-                      </p>
-                    </div>
+                  <div className="w-full h-full">
+                     {/* TODO: Replace 'PLACEHOLDER_ID' with the actual YouTube Video ID */}
+                  <div className="w-full h-full bg-black">
+                    <video
+                      className="w-full h-full object-contain"
+                      src="https://hvcmidkylzrhmrwyigqr.supabase.co/storage/v1/object/public/media/marketing/Xelora_demo_YT_final.mp4"
+                      controls
+                      autoPlay
+                      playsInline
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
                   </div>
                 )}
               </div>
 
               {/* Video Controls Bar (when playing) */}
-              {isPlaying && (
-                <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-white p-4">
-                  <div className="flex items-center gap-4">
-                    <button
-                      className="hover:text-purple-400 transition-colors"
-                      aria-label="Pause video"
-                      title="Pause video"
-                    >
-                      <PlayCircle className="w-6 h-6" weight="duotone" />
-                    </button>
-                    <div className="flex-1 bg-tron-cyan h-2 rounded-full">
-                      <div className="bg-purple-500 h-2 rounded-full w-1/3"></div>
-                    </div>
-                    <span className="text-sm">0:54 / 2:34</span>
-                  </div>
-                </div>
-              )}
+
             </div>
 
             {/* Decorative Elements */}
             <div className="absolute -top-6 -right-6 w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full opacity-20 blur-xl"></div>
             <div className="absolute -bottom-6 -left-6 w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full opacity-20 blur-xl"></div>
-          </motion.div>
-
-          {/* Video Features */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16"
-          >
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-white" weight="duotone" />
-              </div>
-              <h3 className="text-xl font-semibold text-tron-text mb-2">
-                XELORA™ Discovery
-              </h3>
-              <p className="text-tron-text-muted">
-                Watch how we automatically discover trending topics in your
-                industry
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Play className="w-8 h-8 text-white" fill="currentColor" weight="duotone" />
-              </div>
-              <h3 className="text-xl font-semibold text-tron-text mb-2">
-                AI Cascade™ Generation
-              </h3>
-              <p className="text-tron-text-muted">
-                See AI transform topics into Twitter threads, LinkedIn posts,
-                and emails
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <PlayCircle className="w-8 h-8 text-white" weight="duotone" />
-              </div>
-              <h3 className="text-xl font-semibold text-tron-text mb-2">
-                OmniFormat™ Publishing
-              </h3>
-              <p className="text-tron-text-muted">
-                Watch content get formatted and scheduled across all your
-                channels
-              </p>
-            </div>
           </motion.div>
         </div>
       </div>

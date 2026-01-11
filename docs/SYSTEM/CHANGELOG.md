@@ -1,3 +1,28 @@
+## 2026-01-11 — Embed Demo Video & Marketplace Cross-Promotion
+
+**Integrated demo video structure and cross-promoted XELORA on the company marketplace.**
+
+Summary of Actions:
+- **Demo Video Integration**: 
+  - Updated `components/sections/DemoVideoSection.tsx` to use a Supabase Storage hosted video (`<video>`).
+  - Source: `https://hvcmidkylzrhmrwyigqr.supabase.co/storage/v1/object/public/media/marketing/Xelora_demo_YT_final.mp4`
+  - Removed outdated "AI Feature" cards to maintain a clean, minimal aesthetic.
+  - Updated section subtitle to align with "Viral DNA" messaging.
+  - **Ops**: Uploaded 18MB video file to `media` bucket to keep git repo light.
+- **Marketplace Cross-Promotion**:
+  - Added **XELORA** to the product list in `3kpro-website/lib/data/marketplace.ts`.
+  - Updated `ProductCard.tsx` to support a "Watch Demo" button.
+  - Ensured "NO AI ICONS" rule was followed for the new video section.
+
+Status: **Implemented & Verified**
+
+Files Modified:
+- `components/sections/DemoVideoSection.tsx`
+- `3kpro-website/lib/data/marketplace.ts`
+- `3kpro-website/components/marketplace/ProductCard.tsx`
+
+---
+
 ## 2026-01-07 — Brand Logo Update
 
 **Updated the Xelora brand logo to the finalized version.**

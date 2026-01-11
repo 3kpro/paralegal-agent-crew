@@ -80,7 +80,8 @@
       "Bash(docs/handoffs/REACTOR_LANDING_PAGE_REDESIGN.md )",
       "Bash(CHANGELOG.md)",
       "Bash(git pull:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
