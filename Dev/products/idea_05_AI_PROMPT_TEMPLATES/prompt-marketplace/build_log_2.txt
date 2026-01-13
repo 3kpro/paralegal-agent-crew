@@ -1,0 +1,33 @@
+
+> prompt-marketplace@0.1.0 build
+> next build
+
+ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\DEV\3K-Pro-Services\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\package-lock.json
+
+Γû▓ Next.js 16.1.1 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 5.4s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at <unknown> (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\ebdab_next_922006f1._.js:37:43081)
+    at new rj (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\ebdab_next_922006f1._.js:37:43263)
+    at module evaluation (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\ebdab_next_922006f1._.js:37:47529)
+    at instantiateModule (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\[turbopack]_runtime.js:740:9)
+    at instantiateRuntimeModule (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\[turbopack]_runtime.js:768:12)
+    at getOrInstantiateRuntimeModule (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\[turbopack]_runtime.js:781:12)
+    at Object.m (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\chunks\[turbopack]_runtime.js:790:18)
+    at Object.<anonymous> (C:\DEV\3K-Pro-Services\Dev\products\idea_05_AI_PROMPT_TEMPLATES\prompt-marketplace\.next\server\app\api\webhook\stripe\route.js:7:3)
+
+> Build error occurred
+Error: Failed to collect page data for /api/webhook/stripe
+    at ignore-listed frames {
+  type: 'Error'
+}
