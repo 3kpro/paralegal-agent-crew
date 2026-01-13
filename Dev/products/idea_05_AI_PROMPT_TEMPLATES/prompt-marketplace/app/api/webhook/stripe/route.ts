@@ -37,17 +37,21 @@ export async function POST(req: Request) {
     const paymentId = session.payment_intent as string;
 
     if (promptId || bundleId) {
-       // Insert into Supabase
-       const { error } = await (supabaseAdmin as any).from('purchases').insert({
-         user_id: userId, // This assumes user exists in profiles or we handle guest
-         prompt_id: promptId || null,
-         bundle_id: bundleId || null,
-         amount_paid: amountPaid,
-         stripe_payment_id: paymentId,
-       });
+       // Insert into Supabase (only if configured)
+       if (supabaseAdmin) {
+         const { error } = await (supabaseAdmin as any).from('purchases').insert({
+           user_id: userId, // This assumes user exists in profiles or we handle guest
+           prompt_id: promptId || null,
+           bundle_id: bundleId || null,
+           amount_paid: amountPaid,
+           stripe_payment_id: paymentId,
+         });
 
-       if (error) {
-         console.error('Error inserting purchase:', error);
+         if (error) {
+           console.error('Error inserting purchase:', error);
+         }
+       } else {
+         console.log('Supabase not configured - purchase not recorded');
        }
     }
   }
