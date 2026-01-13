@@ -1,0 +1,17 @@
+INFO:__main__:Testing Multi-Lane Orchestrator...
+Traceback (most recent call last):
+  File "C:\DEV\3K-Pro-Services\Dev\products\Idea_21_SolForge\test_orchestrator.py", line 69, in <module>
+    asyncio.run(test_orchestrator())
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python313\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\DEV\3K-Pro-Services\Dev\products\Idea_21_SolForge\test_orchestrator.py", line 25, in test_orchestrator
+    orch = MultiLaneOrchestrator(config)
+TypeError: MultiLaneOrchestrator() takes no arguments

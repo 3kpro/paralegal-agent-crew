@@ -1,0 +1,13 @@
+sqlalchemy
+psycopg2-binary
+playwright
+beautifulsoup4
+lxml
+pytest
+python-dotenv
+pdfplumber
+anthropic
+streamlit
+pandas
+
+

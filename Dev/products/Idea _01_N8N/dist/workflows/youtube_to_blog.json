@@ -1,0 +1,117 @@
+{
+    "name": "YouTube to Blog Post Generator",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Start",
+            "type": "n8n-nodes-base.start",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "pollTimes": {
+                    "item": [
+                        {
+                            "mode": "everyMinute"
+                        }
+                    ]
+                },
+                "channelId": "YOUR_CHANNEL_ID",
+                "limit": 1
+            },
+            "name": "YouTube Trigger",
+            "type": "n8n-nodes-base.youTubeTrigger",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "youTubeOAuth2Api": {
+                    "id": "YOUR_CREDENTIAL_ID",
+                    "name": "YouTube Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4",
+                "messages": {
+                    "values": [
+                        {
+                            "role": "system",
+                            "content": "You are an expert blog writer. Convert the following YouTube video description and title into an engaging blog post."
+                        },
+                        {
+                            "role": "user",
+                            "content": "Title: {{$node[\"YouTube Trigger\"].json[\"title\"]}}\nDescription: {{$node[\"YouTube Trigger\"].json[\"description\"]}}"
+                        }
+                    ]
+                }
+            },
+            "name": "OpenAI - Generate Blog",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ],
+            "credentials": {
+                "openAiApi": {
+                    "id": "YOUR_OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAI Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "title": "={{$node[\"YouTube Trigger\"].json[\"title\"]}}",
+                "content": "={{$node[\"OpenAI - Generate Blog\"].json[\"content\"]}}",
+                "additionalFields": {
+                    "status": "draft"
+                }
+            },
+            "name": "Wordpress - Create Post",
+            "type": "n8n-nodes-base.wordpress",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ],
+            "credentials": {
+                "wordpressApi": {
+                    "id": "YOUR_WORDPRESS_CREDENTIAL_ID",
+                    "name": "Wordpress Account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "YouTube Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "OpenAI - Generate Blog",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI - Generate Blog": {
+            "main": [
+                [
+                    {
+                        "node": "Wordpress - Create Post",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

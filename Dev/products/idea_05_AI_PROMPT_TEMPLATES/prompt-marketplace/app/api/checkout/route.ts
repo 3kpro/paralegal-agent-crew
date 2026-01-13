@@ -22,6 +22,12 @@ export async function POST(req: Request) {
       return new NextResponse('Item not found', { status: 404 });
     }
 
+    // If Stripe is not configured, return error
+    // Users should use dev mode with ?dev=true for testing
+    if (!stripe) {
+      return new NextResponse('Payment system not configured. Use ?dev=true for testing.', { status: 503 });
+    }
+
     const itemName = 'title' in productItem ? productItem.title : productItem.name;
 
     // Create Checkout Session

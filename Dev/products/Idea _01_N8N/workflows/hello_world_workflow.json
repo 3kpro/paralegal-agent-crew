@@ -1,0 +1,31 @@
+{
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Start",
+            "type": "n8n-nodes-base.start",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "content": "## Hello World\nThis is a sample workflow for the N8N Marketplace."
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "typeVersion": 1,
+            "position": [
+                500,
+                300
+            ],
+            "id": "bd4b9a8f-9a8b-4b8c-9a8d-9a8e9f8a8b8c",
+            "name": "Sticky Note"
+        }
+    ],
+    "connections": {},
+    "settings": {},
+    "staticData": null,
+    "meta": null
+}

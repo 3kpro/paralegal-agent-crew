@@ -6,6 +6,11 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import Stripe from 'stripe';
 
 export async function POST(req: Request) {
+  // If Stripe is not configured, webhooks won't work anyway
+  if (!stripe) {
+    return new NextResponse('Stripe not configured', { status: 503 });
+  }
+
   const body = await req.text();
   const signature = (await headers()).get('Stripe-Signature') as string;
 

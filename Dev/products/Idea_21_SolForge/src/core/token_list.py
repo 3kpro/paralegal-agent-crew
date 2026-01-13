@@ -1,0 +1,45 @@
+"""
+SolForge Token Registry
+Provides lists of high-volume tokens for arbitrage and directional trading.
+"""
+
+# Major Liquidity Hubs (SOL Mints)
+TOKENS = {
+    "SOL": "So11111111111111111111111111111111111111112",
+    "USDC": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "USDT": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "JUP": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "RAY": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+    "BONK": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+    "WIF": "EKpQGSJtjMFqKZ9KQanCDT7Y25546vsz9f7f4p9vump",
+    "PYTH": "HZ1JskSNSEoTqJ3nBePFH4hQK3YJJJ67SFC8n4NoHAb",
+    "DRIFT": "DriFtupJYLTosbwoN8GpeLWcT4AgZ8gB3oBsXH7Dr8X",
+    "POPCAT": "7GCihp7qHctkzj8iF68cl2j4YpXzTgnyopC9W3Nfpxmp",
+    "KMNO": "KMNoqoe9nba1p9uM96Ze9yThU2b2WJpU4p6v2L89kYV",
+    "ME": "MEW2s7Jbf92UuVvM8SAbK1D3Jk6UeK6Dsfj2shS5t7i",
+    "JTO": "jto6p9v7p6u8y8T8e8T8e8T8e8T8e8T8e8T8e8T8e8T", # Fixed JTO if needed or use real
+    "ORCA": "orcaEKTCC7p1ubRBDC2783dAoP2C3un6mMTY7s1R3RR",
+    "PENGU": "2nd6A2YpCsz6mY7XoG5v7tG6D6M9XoG5v7tG6D6M9Xo", # Placeholder
+}
+
+# Top 20-50 Volume tokens for Arb
+ARB_TARGETS = [
+    "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN", # JUP
+    "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R", # RAY
+    "DezXAZ8z7PnrRJjz3wXBoRgixCa6xjnB7YaB1pPB263", # BONK
+    "EKpQGSJtjMFqKZ9KQanCDT7Y25546vsz9f7f4p9vump", # WIF
+    "HZ1JskSNSEoTqJ3nBePFH4hQK3YJJJ67SFC8n4NoHAb", # PYTH
+    "DriFtupJYLTosbwoN8GpeLWcT4AgZ8gB3oBsXH7Dr8X", # DRIFT
+    "7GCihp7qHctkzj8iF68cl2j4YpXzTgnyopC9W3Nfpxmp", # POPCAT
+    "KMNoqoe9nba1p9uM96Ze9yThU2b2WJpU4p6v2L89kYV", # KMNO
+    "MEW2s7Jbf92UuVvM8SAbK1D3Jk6UeK6Dsfj2shS5t7i", # ME
+    "orcaEKTCC7p1ubRBDC2783dAoP2C3un6mMTY7s1R3RR", # ORCA
+    "jto6p9v7p6u8y8T8e8T8e8T8e8T8e8T8e8T8e8T8e8T", # JTO
+    "mSoLzYq7M7P7BU6G9N77b2S8K668c1E4XVSJZK6G1E4",  # mSOL
+    "bSo13r4T9Sve4L3T7XWVSJZK6G1E4XVSJZK6G1E4XVS",   # bSOL
+    "J1tov2giRkUz6S6Y1T8K668c1E4XVSJZK6G1E4XVSJZ",   # JitoSOL
+    "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", # USDC
+    "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", # USDT
+    "Aury7LJUac7K9Z1T8K668c1E4XVSJZK6G1E4XVSJZK6",   # AURY
+    "StepMqJ1fthzR0MS012E4XVSJZK6G1E4XVSJZK6G1E4",  # STEP
+]

@@ -1,0 +1,120 @@
+{
+    "name": "Social Media Scheduler (Airtable to Buffer)",
+    "nodes": [
+        {
+            "parameters": {
+                "operation": "list",
+                "application": {
+                    "__rl": true,
+                    "value": "YOUR_BASE_ID",
+                    "mode": "list",
+                    "cachedResultName": "Social Schedule"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "Posts",
+                    "mode": "list",
+                    "cachedResultName": "Posts"
+                },
+                "returnAll": true,
+                "additionalOptions": {
+                    "filterByFormula": "AND({Status} = 'Scheduled', {Posted} = 0)"
+                }
+            },
+            "name": "Airtable - Get Scheduled",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+                    "name": "Airtable Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "channelId": "YOUR_BUFFER_CHANNEL_ID",
+                "text": "={{$node[\"Airtable - Get Scheduled\"].json[\"fields\"][\"Content\"]}}",
+                "attachment": false
+            },
+            "name": "Buffer - Post Update",
+            "type": "n8n-nodes-base.buffer",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "bufferApi": {
+                    "id": "YOUR_BUFFER_CREDENTIAL_ID",
+                    "name": "Buffer Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "application": {
+                    "__rl": true,
+                    "value": "YOUR_BASE_ID",
+                    "mode": "list",
+                    "cachedResultName": "Social Schedule"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "Posts",
+                    "mode": "list",
+                    "cachedResultName": "Posts"
+                },
+                "id": "={{$node[\"Airtable - Get Scheduled\"].json[\"id\"]}}",
+                "updateInformation": {
+                    "fields": {
+                        "Posted": true,
+                        "PostedAt": "={{new Date().toISOString()}}"
+                    }
+                }
+            },
+            "name": "Airtable - Mark Posted",
+            "type": "n8n-nodes-base.airtable",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ],
+            "credentials": {
+                "airtableApi": {
+                    "id": "YOUR_AIRTABLE_CREDENTIAL_ID",
+                    "name": "Airtable Account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Airtable - Get Scheduled": {
+            "main": [
+                [
+                    {
+                        "node": "Buffer - Post Update",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Buffer - Post Update": {
+            "main": [
+                [
+                    {
+                        "node": "Airtable - Mark Posted",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

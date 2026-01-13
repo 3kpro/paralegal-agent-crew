@@ -1,0 +1,90 @@
+{
+    "name": "Small Business Lead Capture",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "lead-capture",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "name": "Webhook - Form Submit",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ],
+            "webhookId": "73d4b6a9-8d2a-4c5e-9f3a-1b4d5e6f7a8b"
+        },
+        {
+            "parameters": {
+                "service": "hubspot",
+                "operation": "create",
+                "resource": "contact",
+                "email": "={{$node[\"Webhook - Form Submit\"].json[\"body\"][\"email\"]}}",
+                "additionalFields": {
+                    "firstname": "={{$node[\"Webhook - Form Submit\"].json[\"body\"][\"firstname\"]}}",
+                    "lastname": "={{$node[\"Webhook - Form Submit\"].json[\"body\"][\"lastname\"]}}"
+                }
+            },
+            "name": "HubSpot - Create Contact",
+            "type": "n8n-nodes-base.hubspot",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "hubspotApi": {
+                    "id": "YOUR_HUBSPOT_CREDENTIAL_ID",
+                    "name": "HubSpot Account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "resource": "message",
+                "subject": "Welcome to Our Service!",
+                "message": "Hi {{$node[\"Webhook - Form Submit\"].json[\"body\"][\"firstname\"]}},\n\nThanks for signing up! We'll be in touch shortly.\n\nBest,\nThe Team",
+                "toEmail": "={{$node[\"Webhook - Form Submit\"].json[\"body\"][\"email\"]}}"
+            },
+            "name": "Gmail - Send Welcome",
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ],
+            "credentials": {
+                "gmailApi": {
+                    "id": "YOUR_GMAIL_CREDENTIAL_ID",
+                    "name": "Gmail Account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Webhook - Form Submit": {
+            "main": [
+                [
+                    {
+                        "node": "HubSpot - Create Contact",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HubSpot - Create Contact": {
+            "main": [
+                [
+                    {
+                        "node": "Gmail - Send Welcome",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

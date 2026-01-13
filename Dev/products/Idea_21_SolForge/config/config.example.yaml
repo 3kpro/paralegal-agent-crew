@@ -1,0 +1,175 @@
+# SolForge Configuration
+# Copy to config.yaml and customize
+
+# ============================================
+# GENERAL SETTINGS
+# ============================================
+app:
+  name: "SolForge"
+  version: "0.1.0"
+  mode: "paper"  # paper | live
+  log_level: "INFO"
+
+# ============================================
+# SOLANA NETWORK
+# ============================================
+solana:
+  rpc_url: "https://api.mainnet-beta.solana.com"
+  ws_url: "wss://api.mainnet-beta.solana.com"
+  # For better performance, use a dedicated RPC:
+  # rpc_url: "https://your-quicknode-endpoint.com"
+
+# ============================================
+# JUPITER API
+# ============================================
+jupiter:
+  quote_api: "https://quote-api.jup.ag/v6/quote"
+  swap_api: "https://quote-api.jup.ag/v6/swap"
+  slippage_bps: 50  # 0.5% default slippage
+
+# ============================================
+# LANE CONFIGURATION
+# ============================================
+lanes:
+  initial_capital: 20.0  # USD worth of SOL per lane
+  
+  # Lane definitions
+  lane_1:
+    name: "Safe Harbor"
+    profile: "safe"
+    enabled: true
+    
+  lane_2:
+    name: "Balanced Growth"
+    profile: "moderate"
+    enabled: true
+    
+  lane_3:
+    name: "YOLO Express"
+    profile: "yolo"
+    enabled: true
+
+# ============================================
+# RISK PROFILES
+# ============================================
+risk_profiles:
+  safe:
+    max_position_pct: 0.10      # 10% of lane capital
+    stop_loss_pct: 0.03         # 3% stop loss
+    take_profit_pct: 0.05       # 5% take profit
+    max_trades_per_day: 2
+    allowed_tokens:
+      - "SOL"
+      - "USDC"
+      - "RAY"
+      - "JUP"
+      - "BONK"
+    min_liquidity_usd: 100000   # $100K minimum liquidity
+    learning_rate: 0.0001       # Conservative
+    
+  moderate:
+    max_position_pct: 0.25      # 25% of lane capital
+    stop_loss_pct: 0.07         # 7% stop loss
+    take_profit_pct: 0.12       # 12% take profit
+    max_trades_per_day: 5
+    allowed_tokens: "top_50"    # Top 50 by volume
+    min_liquidity_usd: 50000    # $50K minimum
+    learning_rate: 0.0005       # Balanced
+    
+  yolo:
+    max_position_pct: 0.50      # 50% of lane capital
+    stop_loss_pct: 0.15         # 15% stop loss
+    take_profit_pct: 0.30       # 30% take profit
+    max_trades_per_day: -1      # Unlimited
+    allowed_tokens: "any"       # Anything with liquidity
+    min_liquidity_usd: 10000    # $10K minimum
+    learning_rate: 0.001        # Aggressive
+
+# ============================================
+# GUARDRAILS
+# ============================================
+guardrails:
+  # Lane-level protection
+  lane_kill_switch_pct: 0.50    # Kill lane at 50% loss
+  
+  # Daily limits
+  max_daily_loss_pct: 0.20      # 20% max daily loss across all lanes
+  
+  # Trade-level protection
+  max_slippage_pct: 0.02        # 2% max slippage per trade
+  min_trade_interval_seconds: 60  # Minimum time between trades
+  
+  # Cool-down after losses
+  cooldown_after_loss_minutes: 5
+  cooldown_after_consecutive_losses: 3  # Number of consecutive losses
+
+# ============================================
+# AI/ML SETTINGS
+# ============================================
+ai:
+  # Model type: "q_learning" | "ppo" | "hybrid"
+  model_type: "q_learning"
+  
+  # Feature windows (in candles/ticks)
+  lookback_window: 50
+  
+  # Training settings
+  batch_size: 32
+  gamma: 0.99                   # Discount factor
+  epsilon_start: 1.0            # Exploration rate start
+  epsilon_end: 0.01             # Exploration rate end
+  epsilon_decay: 0.995          # Exploration decay
+  
+  # Model persistence
+  checkpoint_interval: 100      # Save every N trades
+  checkpoint_dir: "./checkpoints"
+  
+  # Readiness threshold (for paper → live)
+  min_trades_before_live: 500
+  min_win_rate_for_live: 0.55
+  min_sharpe_for_live: 1.0
+
+# ============================================
+# TELEGRAM ALERTS
+# ============================================
+telegram:
+  enabled: true
+  bot_token: "${TELEGRAM_BOT_TOKEN}"
+  chat_id: "${TELEGRAM_CHAT_ID}"
+  
+  # What to alert on
+  alerts:
+    trade_executed: true
+    daily_summary: true
+    lane_killed: true
+    ready_for_live: true
+    error: true
+
+# ============================================
+# DATABASE
+# ============================================
+database:
+  url: "sqlite:///./solforge.db"
+  # For production:
+  # url: "postgresql://user:pass@localhost/solforge"
+
+# ============================================
+# API SERVER
+# ============================================
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:3000"
+    - "https://solforge.3kpro.services"
+
+# ============================================
+# TOKENS (Solana Mint Addresses)
+# ============================================
+tokens:
+  SOL: "So11111111111111111111111111111111111111112"
+  USDC: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+  USDT: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+  RAY: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+  JUP: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+  BONK: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
