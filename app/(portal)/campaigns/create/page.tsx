@@ -51,6 +51,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
+import UpgradeModal from "@/components/UpgradeModal";
 
 import { ViralScoreBreakdown } from "@/components/ViralScoreBreakdown";
 import {
@@ -199,6 +200,11 @@ export default function NewCampaignPage() {
 
   // NEW: View All content toggle
   const [viewAllContent, setViewAllContent] = useState(false);
+
+  // NEW: Upgrade modal state
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<"campaigns" | "generations" | "features">("campaigns");
+  const [usageData, setUsageData] = useState<{ campaigns: number; campaignLimit: number } | undefined>();
 
   // NEW: Per-platform controls map
   interface PlatformSpecificSettings extends ContentControls {
@@ -1248,6 +1254,35 @@ ${targetPlatforms.map(platform => {
           console.error("[SAVE CAMPAIGN] No generated content - aborting save");
           showToast("No content to save. Please generate content first.", "error");
           return;
+        }
+
+        // Check usage limits before saving (only for new campaigns, not edits)
+        if (!isEditMode || !editId) {
+          try {
+            const usageRes = await fetch("/api/usage");
+            const usageJson = await usageRes.json();
+
+            if (usageJson.success) {
+              const { tier, limits, usage } = usageJson;
+
+              // Check if user has exceeded monthly campaign limit
+              if (tier === "free" && limits.monthly_campaigns !== -1) {
+                if (usage.campaigns >= limits.monthly_campaigns) {
+                  setUsageData({
+                    campaigns: usage.campaigns,
+                    campaignLimit: limits.monthly_campaigns,
+                  });
+                  setUpgradeReason("campaigns");
+                  setShowUpgradeModal(true);
+                  setLoading(false);
+                  return;
+                }
+              }
+            }
+          } catch (err) {
+            console.error("[SAVE CAMPAIGN] Usage check failed:", err);
+            // Continue with save even if usage check fails
+          }
         }
 
         // Save campaign metadata
@@ -3633,6 +3668,14 @@ ${targetPlatforms.map(platform => {
 
         {/* Toast Notification - using refactored component */}
         <Toast toast={toast} />
+
+        {/* Upgrade Modal */}
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          reason={upgradeReason}
+          currentUsage={usageData}
+        />
       </div>
 
       </div>

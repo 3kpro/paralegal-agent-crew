@@ -87,7 +87,9 @@
       "Bash(for dir in */)",
       "Bash(echo:*)",
       "Bash(openssl rand:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": []
