@@ -1,0 +1,13 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Agreement is made between GLOBAL_CORP (the "Company") and YOU (the "Participant").
+
+1. PROTECTED INFORMATION. Protected Information includes all information disclosed by the Company to the Participant, including but not limited to trade secrets, customer lists, marketing plans, and anything the Company deems confidential. There are no exclusions to this definition.
+
+2. NON-USE AND NON-DISCLOSURE. Participant shall not disclose any Protected Information to any third party at any time. This obligation shall continue indefinitely, regardless of whether the information enters the public domain.
+
+3. REMEDIES. Participant agrees that any breach of this agreement will cause irreparable harm to the Company, and the Company shall be entitled to seek an injunction and $5,000,000 in liquidated damages without the necessity of proving actual damages.
+
+4. GOVERNING LAW. This agreement is governed by the laws of Mars.
+
+Signed: ____________________

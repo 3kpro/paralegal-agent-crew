@@ -31,7 +31,7 @@ export default function DashboardPage() {
               PromptMarket
             </Link>
             <div className="flex items-center gap-4">
-                 <Link href="/" className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400">
+                 <Link href="/library" className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400">
                     Browse Library
                  </Link>
                  <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500" />
@@ -60,8 +60,8 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="text-lg font-medium text-slate-900 dark:text-white">No prompts purchased yet</h3>
                 <p className="mt-1 text-slate-500">Explore the marketplace to find your first prompt.</p>
-                <Link 
-                    href="/" 
+                <Link
+                    href="/library"
                     className="mt-6 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 hover:shadow-md transition-all"
                 >
                     Browse Prompts

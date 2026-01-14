@@ -66,7 +66,7 @@ scp solforge_migration.tar.gz user@target-machine:/home/user/
 
 ```bash
 # Copy to USB drive
-copy solforge_migration.zip E:\
+copy solforge_migration.zip d:\
 
 # Or upload to cloud
 # - Google Drive

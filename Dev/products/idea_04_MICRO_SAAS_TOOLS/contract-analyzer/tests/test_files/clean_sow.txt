@@ -1,0 +1,16 @@
+STATEMENT OF WORK (SoW) - WEB DESIGN SERVICES
+
+CLIENT: DesignStudio
+CONTRACTOR: Freelance Developer
+
+1. SCOPE OF WORK. Contractor will design and develop a 5-page marketing website using React and Tailwind CSS. The site will include Home, About, Services, Blog, and Contact pages.
+
+2. TIMELINE. Project start date: Jan 20, 2026. Completion date: Feb 20, 2026.
+
+3. PAYMENT. Total fee: $5,000. 50% upfront, 50% upon final delivery. Payment due Net 30 days from invoice date.
+
+4. IP OWNERSHIP. Upon full payment of the total fee, the Contractor hereby assigns all rights, title, and interest in the Work Product to the Client. Contractor retains rights to pre-existing code and generic utility libraries.
+
+5. TERMINATION. Either party may terminate this agreement with 14 days written notice for any reason.
+
+Signed: ____________________

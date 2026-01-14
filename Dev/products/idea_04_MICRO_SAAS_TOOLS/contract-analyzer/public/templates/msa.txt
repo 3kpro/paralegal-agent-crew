@@ -1,0 +1,17 @@
+MASTER SERVICES AGREEMENT (MSA)
+
+This MSA governs the relationship between [Provider] and [Client] for future services.
+
+1. Structure
+Individual projects will be governed by Statements of Work (SoWs) referencing this MSA.
+
+2. Warranties
+Provider warrants that services will be provided with reasonable care and skill.
+
+3. Liability
+Total liability under this MSA is limited to [Amount].
+
+4. Intellectual Property
+IP rights will be defined in each SoW.
+
+[Signature Blocks]

@@ -1,0 +1,23 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement (the "Agreement") is entered into as of [Date], by and between [Party A] and [Party B] (collectively, the "Parties").
+
+1. Purpose
+The Parties wish to explore a potential business relationship of mutual interest and, in connection with this, may disclose to each other certain confidential technical and business information.
+
+2. Confidential Information
+"Confidential Information" means any information disclosed by one Party to the other that is marked as confidential or should reasonably be understood to be confidential given the nature of the information.
+
+3. Obligations
+Each Party agrees:
+(a) To hold the other Party's Confidential Information in strict confidence.
+(b) To use such Confidential Information only for the Purpose.
+(c) To take reasonable measures to protect the Confidential Information.
+
+4. Term
+This Agreement shall remain in effect for [Number] years from the date of disclosure.
+
+5. Governing Law
+This Agreement shall be governed by the laws of [State/Country].
+
+[Signature Blocks]

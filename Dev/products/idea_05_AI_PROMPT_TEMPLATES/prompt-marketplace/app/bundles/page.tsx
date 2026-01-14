@@ -12,7 +12,7 @@ export default function BundlesPage() {
       {/* Navigation */}
       <nav className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 px-6 py-4 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400">
+            <Link href="/library" className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400">
                 <ArrowLeft className="h-4 w-4" /> Back to Library
             </Link>
             <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
