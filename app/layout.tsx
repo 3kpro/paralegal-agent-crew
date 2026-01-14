@@ -54,6 +54,9 @@ export const metadata: Metadata = {
       'msvalidate.01': process.env.NEXT_PUBLIC_BING_VERIFICATION || 'ADD_YOUR_BING_CODE_HERE',
     },
   },
+  alternates: {
+    canonical: 'https://xelora.app',
+  },
 };
 
 export const viewport: Viewport = {

@@ -1,3 +1,20 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | XELORA",
+  description:
+    "Read XELORA's privacy policy to understand how we collect, use, and protect your personal information and data.",
+  openGraph: {
+    title: "Privacy Policy | XELORA",
+    description:
+      "Read XELORA's privacy policy to understand how we collect, use, and protect your personal information.",
+    url: "https://xelora.app/privacy",
+  },
+  alternates: {
+    canonical: "https://xelora.app/privacy",
+  },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-tron-darker py-16 px-4">

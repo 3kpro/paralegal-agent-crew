@@ -1598,9 +1598,6 @@ ${targetPlatforms.map(platform => {
                 <p className="text-gray-400 text-lg max-w-2xl mx-auto">
                   Select which social media formats you want to create content for. Each format will be optimized for its platform's style and character limits.
                 </p>
-                <p className="text-coral-400/60 text-sm mt-2">
-                  💡 Note: This is for content generation only. Social publishing features coming soon!
-                </p>
 
                 <button
                   onClick={() => {
@@ -2955,7 +2952,7 @@ ${targetPlatforms.map(platform => {
 
                   {/* Campaign Save Buttons */}
                   {generatedContent && Object.keys(generatedContent).length > 0 && (
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <motion.button
                         onClick={() => saveCampaign(false)}
                         disabled={loading || campaignSaved}
@@ -2987,23 +2984,6 @@ ${targetPlatforms.map(platform => {
                           <>
                             <Home className="w-5 h-5" />
                             Save & Dashboard
-                          </>
-                        )}
-                      </motion.button>
-                      <motion.button
-                        onClick={() => saveCampaign(true)}
-                        disabled={loading}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                        aria-label="Schedule campaign"
-                      >
-                        {loading ? (
-                          <BouncingDots dots={3} className="w-2 h-2 bg-white" />
-                        ) : (
-                          <>
-                            <Calendar className="w-5 h-5" />
-                            Schedule
                           </>
                         )}
                       </motion.button>

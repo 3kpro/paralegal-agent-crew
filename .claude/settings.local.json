@@ -81,7 +81,13 @@
       "Bash(CHANGELOG.md)",
       "Bash(git pull:*)",
       "Bash(git stash:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(npx create-next-app:*)",
+      "Bash(python:*)",
+      "Bash(for dir in */)",
+      "Bash(echo:*)",
+      "Bash(openssl rand:*)",
+      "Bash(head:*)"
     ],
     "deny": [],
     "ask": []

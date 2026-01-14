@@ -11,6 +11,9 @@ export const metadata: Metadata = {
       "XELORA is an AI-powered predictive intelligence platform for content creators, developed by 3KPRO.SERVICES.",
     url: "https://xelora.app/about",
   },
+  alternates: {
+    canonical: "https://xelora.app/about",
+  },
 };
 
 export default function AboutPage() {

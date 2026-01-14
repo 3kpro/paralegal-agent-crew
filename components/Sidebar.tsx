@@ -5,10 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   SquaresFour as LayoutDashboard,
   Lightning as Zap,
-  FileText,
-  Brain,
   Robot as Bot,
-  ChartBar as BarChart3,
   Gear as Settings,
   SignOut as LogOut,
   CreditCard,
@@ -23,10 +20,7 @@ import { XeloraLogo } from "@/components/XeloraLogo";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/campaigns", label: "Campaigns", icon: Zap },
-  { href: "/contentflow", label: "ContentFlow", icon: FileText },
-  { href: "/ai-studio", label: "Reactor", icon: Brain },
   { href: "/helix", label: "Helix AI", icon: Bot },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

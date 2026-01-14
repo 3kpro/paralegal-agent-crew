@@ -1,3 +1,20 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service | XELORA",
+  description:
+    "Read XELORA's terms of service to understand the rules and guidelines for using our AI-powered social media management platform.",
+  openGraph: {
+    title: "Terms of Service | XELORA",
+    description:
+      "Read XELORA's terms of service to understand the rules and guidelines for using our platform.",
+    url: "https://xelora.app/terms",
+  },
+  alternates: {
+    canonical: "https://xelora.app/terms",
+  },
+};
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-tron-darker py-16 px-4">
