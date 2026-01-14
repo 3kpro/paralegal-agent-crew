@@ -15,56 +15,29 @@ const features = [
   {
     icon: TrendingUp,
     title: "Viral Score™ + Viral DNA™",
-    subtitle: "Psychometric Viral Analysis",
+    subtitle: "Predictive Viral Analysis",
     description:
-      "We don't just tell you what's trending—we tell you WHY. Our AI decodes the Viral DNA™ of every topic: the Hook (how it grabs attention), the Emotion (what it triggers), and the Value (what readers gain). Stop guessing. Start engineering.",
+      "We don't just tell you what's trending—we tell you WHY. Our AI decodes the Viral DNA™ of every topic: the Hook (how it grabs attention), the Emotion (what it triggers), and the Value (what readers gain). Stop guessing. Start engineering virality.",
     gradient: "from-emerald-500 to-teal-500",
     status: "available" as const,
   },
   {
     icon: Sparkles,
-    title: "AI Content Studio™",
-    subtitle: "Intelligent Content Generation",
+    title: "Multi-Platform Content Generation",
+    subtitle: "Platform-Optimized Writing",
     description:
-      "Discover trending topics with our AI-powered trend analysis. Full multi-model content generation coming soon with support for 50+ AI providers.",
+      "Generate perfectly optimized content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Each platform gets unique copy tailored to its character limits, tone, and audience expectations.",
     gradient: "from-purple-500 to-pink-500",
-    status: "beta" as const,
+    status: "available" as const,
   },
   {
     icon: Layout,
-    title: "ContentFlow™ Automation",
-    subtitle: "Multi-Platform Formats",
+    title: "Discovery + Validate Workflow",
+    subtitle: "Data-Driven Content Strategy",
     description:
-      "Generates optimized content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. One-click publishing and smart scheduling coming soon.",
+      "Browse real-time trending topics with search volume data, or validate your own content ideas with our Viral Score algorithm. Make confident decisions backed by predictive intelligence.",
     gradient: "from-orange-500 to-red-500",
-    status: "coming-soon" as const,
-  },
-  {
-    icon: Clock,
-    title: "Analytics Hub™",
-    subtitle: "Performance Intelligence",
-    description:
-      "Real-time performance tracking with predictive insights. A/B test headlines, track viral coefficients, and optimize content strategy with data-driven recommendations.",
-    gradient: "from-green-500 to-emerald-500",
-    status: "coming-soon" as const,
-  },
-  {
-    icon: Shield,
-    title: "Brand Voice AI™",
-    subtitle: "Consistency Engine",
-    description:
-      "Train custom AI models on your content to maintain perfect brand voice across all platforms. Includes tone scoring and compliance monitoring.",
-    gradient: "from-indigo-500 to-purple-500",
-    status: "coming-soon" as const,
-  },
-  {
-    icon: BarChart3,
-    title: "Media Generator™",
-    subtitle: "Visual Content Creation",
-    description:
-      "Generate custom images, infographics, and video thumbnails using DALL-E 3, Midjourney, and Stable Diffusion. Perfect brand alignment guaranteed.",
-    gradient: "from-yellow-500 to-orange-500",
-    status: "coming-soon" as const,
+    status: "available" as const,
   },
 ];
 

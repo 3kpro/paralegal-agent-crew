@@ -12,17 +12,17 @@ const faqs = [
       {
         question: "How does XELORA work?",
         answer:
-          "XELORA uses our XELORA™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ formats it perfectly for all your channels. The entire process takes under 60 seconds.",
+          "XELORA discovers trending topics with real search volume data, scores them with our Viral Score™ algorithm (0-100), and reveals the Viral DNA™ (Hook, Emotion, Value) behind each trend. You then generate platform-optimized content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. The entire process takes under 60 seconds.",
       },
       {
         question: "Do I need any technical skills to use it?",
         answer:
-          "Not at all! XELORA is designed for creators, not developers. If you can post on social media, you can use our platform. Our onboarding wizard walks you through connecting your accounts and launching your first campaign in under 5 minutes.",
+          "Not at all! XELORA is designed for creators, not developers. The interface is simple: browse trends, pick one, select platforms, customize your tone and audience, then generate. No coding or technical knowledge required.",
       },
       {
         question: "Which platforms does it support?",
         answer:
-          "We generate optimized content for Twitter, LinkedIn, and Email. We are adding support for Instagram, Facebook, TikTok, and YouTube formats in Q2 2025. Direct publishing and scheduling integrations are coming soon.",
+          "We generate optimized content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Each platform gets unique copy tailored to its character limits, tone, and audience expectations.",
       },
     ],
   },
@@ -30,24 +30,19 @@ const faqs = [
     category: "AI & Content Quality",
     questions: [
       {
-        question: "Will the AI content sound like my voice?",
+        question: "Can I customize the AI's tone and style?",
         answer:
-          "Yes! Our BrandGuard™ technology learns your writing style from your previous content. You can also set tone preferences (professional, casual, technical, etc.) and the AI adapts accordingly. Most users can't tell the difference between AI and human-written content after the initial setup.",
+          "Yes! You can set tone (professional, casual, friendly), content focus (informative, discussion, tips, etc.), target audience, and length. We also provide quick presets for each platform like 'TikTok Viral' or 'LinkedIn Pro'.",
       },
       {
-        question: "Can I edit the content before publishing?",
+        question: "Can I edit the content after generation?",
         answer:
-          "Absolutely! All content goes through our preview system where you can edit, refine, or completely rewrite before scheduling or publishing. We recommend reviewing content initially as the AI learns your preferences.",
+          "Absolutely! All content can be edited directly in the dashboard before you copy or export it. You can also regenerate with different settings if you want a fresh take.",
       },
       {
         question: "How original is the AI-generated content?",
         answer:
-          "Each piece of content is uniquely generated based on trending topics and your brand voice. Our AI doesn't copy or plagiarize—it creates original content inspired by trends. We also include a plagiarism checker for peace of mind.",
-      },
-      {
-        question: "What if my industry is very niche?",
-        answer:
-          "XELORA™ works across all industries! You can specify your niche during setup (SaaS, coaching, e-commerce, etc.) and our trend discovery focuses on your specific market. The more specific you are, the better your results.",
+          "Each piece of content is uniquely generated based on the trending topic and your settings. The AI creates original copy inspired by the trend's Viral DNA™, not copied text. Every campaign is unique.",
       },
     ],
   },
@@ -55,59 +50,39 @@ const faqs = [
     category: "Pricing & Plans",
     questions: [
       {
-        question: "Is there a free trial?",
+        question: "What's included in the Free plan?",
         answer:
-          "Yes! We offer a 14-day free trial with full access to all features. No credit card required. You can generate up to 50 pieces of content and connect 2 channels during your trial.",
+          "The Free plan includes 5 campaigns per month and 10 trend searches per day. Perfect for trying out XELORA or for creators with lighter content needs.",
       },
       {
         question: "Can I cancel anytime?",
         answer:
-          "Yes, you can cancel your subscription anytime with one click. No contracts, no cancellation fees. Your account remains active until the end of your billing period.",
+          "Yes, you can cancel your subscription anytime. No contracts, no cancellation fees. Your account remains active until the end of your billing period.",
       },
       {
-        question: "Do you offer refunds?",
+        question: "What's the difference between Free and Pro?",
         answer:
-          "We offer a 30-day money-back guarantee on all plans. If you're not satisfied with XELORA, contact us within 30 days for a full refund.",
-      },
-    ],
-  },
-  {
-    category: "Security & Data",
-    questions: [
-      {
-        question: "Is my data safe and secure?",
-        answer:
-          "Security is our top priority. We use enterprise-grade encryption, SOC 2 compliance, and never store your social media passwords. We only access the minimum permissions needed to analyze trends and generate content.",
-      },
-      {
-        question: "Do you store my content?",
-        answer:
-          "We temporarily store generated content for 30 days to enable editing and rescheduling. After that, it's automatically deleted. You own 100% of your content—we never use it for training or other purposes.",
-      },
-      {
-        question: "Can I disconnect my accounts anytime?",
-        answer:
-          "Yes, you can disconnect any connected account with one click. This immediately revokes our access. Your content history remains in your dashboard for reference.",
+          "Pro gives you unlimited campaigns, unlimited trend searches, and priority AI generation. Great for agencies, heavy creators, or anyone producing daily content.",
       },
     ],
   },
   {
-    category: "Features & Limits",
+    category: "Features & How It Works",
     questions: [
       {
-        question: "How much content can I generate?",
+        question: "What is Viral Score™?",
         answer:
-          "It depends on your plan: Starter (50/month), Pro (unlimited), Agency (unlimited). Most users on Pro create 5-10 pieces per day. There are no hidden limits or throttling.",
+          "Our algorithm scores trends 0-100 based on volume, multi-source validation, freshness, keyword signals, benchmarking against 10k+ proven viral hits, and AI content analysis. Higher scores = higher viral potential.",
       },
       {
-        question: "Can I schedule content in advance?",
+        question: "What is Viral DNA™?",
         answer:
-          "SmartScheduler™ is coming soon! Currently, you can generate and export content instantly. We are building direct scheduling integration for Q2 2025 to let you plan weeks in advance.",
+          "Viral DNA™ reveals WHY a topic might go viral by analyzing its Hook (how it grabs attention), Emotion (what it triggers), and Value (what readers gain). This helps you understand the psychology behind viral content.",
       },
       {
-        question: "Do you provide analytics?",
+        question: "Can I validate my own content ideas?",
         answer:
-          "Pro and Agency plans include ImpactMetrics™ with detailed analytics: engagement rates, best-performing content, audience growth, and ROI tracking. You can export reports for clients or internal use.",
+          "Yes! The 'Promote Your Idea' flow lets you input your own product, service, or topic. XELORA will generate content for it across all platforms without needing a trending topic.",
       },
     ],
   },
