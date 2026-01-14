@@ -40,6 +40,8 @@ import {
   Search,
   Activity,
   BrainCircuit,
+  Download,
+  Home,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
@@ -195,6 +197,9 @@ export default function NewCampaignPage() {
   const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
   const [editedContent, setEditedContent] = useState<Record<string, string>>({});
 
+  // NEW: View All content toggle
+  const [viewAllContent, setViewAllContent] = useState(false);
+
   // NEW: Per-platform controls map
   interface PlatformSpecificSettings extends ContentControls {
     selectedAudiences: string[];
@@ -240,6 +245,66 @@ export default function NewCampaignPage() {
     },
     []
   );
+
+  // NEW: Copy all content to clipboard
+  const copyAllContent = useCallback(() => {
+    if (!generatedContent || Object.keys(generatedContent).length === 0) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
+    const allContent = targetPlatforms.map(platform => {
+      const content = editedContent[platform] ||
+        (typeof generatedContent[platform] === 'string'
+          ? generatedContent[platform]
+          : (generatedContent[platform] as ContentData)?.content || '');
+      return `=== ${platform.toUpperCase()} ===\n${content}`;
+    }).join('\n\n');
+
+    navigator.clipboard.writeText(allContent)
+      .then(() => {
+        showToast(`All ${targetPlatforms.length} platform posts copied!`, "success");
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        showToast("Failed to copy content", "error");
+      });
+  }, [editedContent, generatedContent, targetPlatforms, showToast]);
+
+  // NEW: Export campaign as markdown file
+  const exportCampaign = useCallback(() => {
+    if (!generatedContent || Object.keys(generatedContent).length === 0) {
+      showToast("No content to export", "error");
+      return;
+    }
+
+    const trendInfo = selectedTrends.length > 0
+      ? `Trend: ${selectedTrends[0]?.title || 'N/A'}\nViral Score: ${selectedTrends[0]?.viralScore || 'N/A'}\n\n`
+      : '';
+
+    const exportContent = `# ${campaignName || 'Untitled Campaign'}
+Generated: ${new Date().toLocaleDateString()}
+${trendInfo}
+${targetPlatforms.map(platform => {
+      const content = editedContent[platform] ||
+        (typeof generatedContent[platform] === 'string'
+          ? generatedContent[platform]
+          : (generatedContent[platform] as ContentData)?.content || '');
+      return `## ${platform.charAt(0).toUpperCase() + platform.slice(1)}\n\n${content}`;
+    }).join('\n\n---\n\n')}
+`;
+
+    const blob = new Blob([exportContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(campaignName || 'campaign').toLowerCase().replace(/\s+/g, '-')}-content.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Campaign exported!", "success");
+  }, [campaignName, editedContent, generatedContent, selectedTrends, targetPlatforms, showToast]);
 
   // Memoized platform list to prevent recreating on every render
   const platforms = useMemo<Platform[]>(
@@ -1458,9 +1523,15 @@ export default function NewCampaignPage() {
               <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
               <div className="relative z-10 text-center mb-12">
-                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
-                  Step 1 of 3
-                </span>
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                    Setup
+                  </span>
+                  {/* Free/Pro Quota Indicator */}
+                  <span className="inline-block px-3 py-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-full border border-emerald-500/30">
+                    Free Plan: 5 campaigns/mo
+                  </span>
+                </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                   Name your campaign
                 </h2>
@@ -1579,10 +1650,10 @@ export default function NewCampaignPage() {
                       }}
                       whileHover={{ scale: 1.05, y: -5 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative p-4 rounded-2xl border transition-all ${
+                      className={`relative p-4 rounded-2xl border transition-all cursor-pointer group ${
                         targetPlatforms.includes(platform.id)
-                          ? "bg-coral-500/10 border-coral-500/50 shadow-lg shadow-coral-500/20"
-                          : "bg-gray-800/50 border-gray-700 hover:border-coral-500/30"
+                          ? "bg-coral-500/10 border-coral-500/50 shadow-lg shadow-coral-500/20 ring-2 ring-coral-500/30"
+                          : "bg-gray-800/50 border-gray-700 hover:border-coral-500/50 hover:bg-coral-500/5 hover:shadow-lg hover:shadow-coral-500/10"
                       }`}
                     >
                       {targetPlatforms.includes(platform.id) && (
@@ -1596,10 +1667,10 @@ export default function NewCampaignPage() {
                       )}
                       <div className="flex items-center justify-center mb-2">
                         <Icon
-                          className={`w-8 h-8 ${
+                          className={`w-8 h-8 transition-colors ${
                             targetPlatforms.includes(platform.id)
                               ? "text-coral-400"
-                              : "text-gray-500"
+                              : "text-gray-500 group-hover:text-coral-400"
                           }`}
                           strokeWidth={1.5}
                         />
@@ -1669,7 +1740,7 @@ export default function NewCampaignPage() {
 
               <div className="relative z-10 text-center mb-10">
                  <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
-                  Step 2 of 3
+                  Discovery
                 </span>
                 <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
                   Choose your starting point
@@ -2082,12 +2153,16 @@ export default function NewCampaignPage() {
 
                   <div className="flex items-center gap-3 bg-[#2b2b2b] border border-gray-700/50 rounded-lg px-4 py-2">
                     <Flame className={`w-5 h-5 ${
-                      predictedViralScore > 80 ? "text-green-400" :
-                      predictedViralScore > 60 ? "text-yellow-400" : "text-gray-400"
+                      (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
+                      (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-gray-400"
                     }`} />
                     <div>
-                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Predicted Viral Score</div>
-                      <div className="text-xl font-bold text-white font-mono">{predictedViralScore}%</div>
+                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                        {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
+                      </div>
+                      <div className="text-xl font-bold text-white font-mono">
+                        {selectedTrends[0]?.viralScore || predictedViralScore}
+                      </div>
                     </div>
                   </div>
 
@@ -2682,11 +2757,11 @@ export default function NewCampaignPage() {
                       {targetPlatforms.map((platform) => (
                         <motion.button
                           key={platform}
-                          onClick={() => setActivePlatformView(platform)}
+                          onClick={() => { setActivePlatformView(platform); setViewAllContent(false); }}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           className={`flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-                            activePlatformView === platform
+                            activePlatformView === platform && !viewAllContent
                               ? "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg"
                               : "text-tron-text-muted hover:text-tron-text hover:bg-tron-cyan/10"
                           }`}
@@ -2694,65 +2769,133 @@ export default function NewCampaignPage() {
                           {platform.charAt(0).toUpperCase() + platform.slice(1)}
                         </motion.button>
                       ))}
+                      {/* View All Toggle */}
+                      <motion.button
+                        onClick={() => setViewAllContent(!viewAllContent)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-tron-cyan/30 ml-2 ${
+                          viewAllContent
+                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                            : "text-tron-text-muted hover:text-tron-text hover:bg-purple-500/10"
+                        }`}
+                      >
+                        View All
+                      </motion.button>
                     </div>
 
-                    {/* Content Display for Active Platform */}
-                    <AnimatePresence mode="wait">
-                      {activePlatformView && generatedContent[activePlatformView] && (
-                        <motion.div
-                          key={activePlatformView}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ duration: 0.3 }}
-                          className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
-                        >
-                          {/* Header with Platform Name */}
-                          <div className="flex items-center justify-between mb-4">
-                            <div>
-                              <h3 className="text-xl font-bold text-tron-text">
-                                {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
-                              </h3>
-                              <p className="text-sm text-tron-text-muted">
-                                {typeof generatedContent[activePlatformView] === 'string'
-                                  ? generatedContent[activePlatformView].length
-                                  : generatedContent[activePlatformView]?.content?.length || 0} characters
-                              </p>
+                    {/* View All Content OR Single Platform View */}
+                    {viewAllContent ? (
+                      <div className="space-y-4 mb-6">
+                        {/* Viral DNA Display */}
+                        {selectedTrends[0]?.viralDNA && (
+                          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
+                            <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-2">Viral DNA&trade; Analysis</h4>
+                            <div className="flex flex-wrap gap-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-tron-text-muted">Hook:</span>
+                                <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.hookType}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-tron-text-muted">Emotion:</span>
+                                <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.primaryEmotion}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-tron-text-muted">Value:</span>
+                                <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.valueProp}</span>
+                              </div>
                             </div>
                           </div>
-
-                          {/* Content Text */}
-                          {editingContent[activePlatformView] ? (
-                            <textarea
-                              value={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
-                              onChange={(e) => setEditedContent({ ...editedContent, [activePlatformView]: e.target.value })}
-                              placeholder="Edit your content..."
-                              className="w-full h-64 px-4 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan resize-none"
-                            />
-                          ) : (
-                            <div className="bg-tron-dark/30 border border-tron-grid rounded-xl p-4">
-                              <p className="text-tron-text whitespace-pre-wrap">
-                                {editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
-                              </p>
-                            </div>
-                          )}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Transfer Masterclass - Context-Aware Guide for All Platforms */}
-                    {activePlatformView && generatedContent[activePlatformView] && (
-                      <div className="mb-6">
-                        <TransferMasterclass
-                          activePlatform={activePlatformView}
-                          content={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
-                          onCopy={() => showToast("Content copied!", "success")}
-                        />
+                        )}
+                        {/* All Platform Content Cards */}
+                        {targetPlatforms.map((platform) => {
+                          const content = editedContent[platform] ||
+                            (typeof generatedContent[platform] === 'string'
+                              ? generatedContent[platform]
+                              : (generatedContent[platform] as ContentData)?.content || '');
+                          return (
+                            <motion.div
+                              key={platform}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="bg-tron-dark/50 border border-tron-cyan/30 rounded-xl p-4"
+                            >
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="font-bold text-tron-text capitalize">{platform}</h4>
+                                <button
+                                  type="button"
+                                  onClick={() => copyContent(platform)}
+                                  className="px-3 py-1 text-xs bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/30 transition-all flex items-center gap-1"
+                                >
+                                  <Copy className="w-3 h-3" /> Copy
+                                </button>
+                              </div>
+                              <p className="text-tron-text-muted text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
+                            </motion.div>
+                          );
+                        })}
                       </div>
+                    ) : (
+                      <>
+                        {/* Content Display for Active Platform */}
+                        <AnimatePresence mode="wait">
+                          {activePlatformView && generatedContent[activePlatformView] && (
+                            <motion.div
+                              key={activePlatformView}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -20 }}
+                              transition={{ duration: 0.3 }}
+                              className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
+                            >
+                              {/* Header with Platform Name */}
+                              <div className="flex items-center justify-between mb-4">
+                                <div>
+                                  <h3 className="text-xl font-bold text-tron-text">
+                                    {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
+                                  </h3>
+                                  <p className="text-sm text-tron-text-muted">
+                                    {typeof generatedContent[activePlatformView] === 'string'
+                                      ? generatedContent[activePlatformView].length
+                                      : generatedContent[activePlatformView]?.content?.length || 0} characters
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Content Text */}
+                              {editingContent[activePlatformView] ? (
+                                <textarea
+                                  value={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                                  onChange={(e) => setEditedContent({ ...editedContent, [activePlatformView]: e.target.value })}
+                                  placeholder="Edit your content..."
+                                  className="w-full h-64 px-4 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan resize-none"
+                                />
+                              ) : (
+                                <div className="bg-tron-dark/30 border border-tron-grid rounded-xl p-4">
+                                  <p className="text-tron-text whitespace-pre-wrap">
+                                    {editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                                  </p>
+                                </div>
+                              )}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+
+                        {/* Transfer Masterclass - Context-Aware Guide for All Platforms */}
+                        {activePlatformView && generatedContent[activePlatformView] && (
+                          <div className="mb-6">
+                            <TransferMasterclass
+                              activePlatform={activePlatformView}
+                              content={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
+                              onCopy={() => showToast("Content copied!", "success")}
+                            />
+                          </div>
+                        )}
+                      </>
                     )}
 
-                    {/* Navigation - Back, Copy, and Edit */}
-                    <div className="flex gap-3">
+                    {/* Navigation - Back, Copy, Edit, and Bulk Actions */}
+                    <div className="flex flex-wrap gap-3">
                       <motion.button
                         onClick={goToPrevCard}
                         whileHover={{ scale: 1.02 }}
@@ -2761,7 +2904,7 @@ export default function NewCampaignPage() {
                       >
                         ← Back
                       </motion.button>
-                      {activePlatformView && generatedContent[activePlatformView] && (
+                      {!viewAllContent && activePlatformView && generatedContent[activePlatformView] && (
                         <>
                           <motion.button
                             onClick={() => copyContent(activePlatformView)}
@@ -2776,12 +2919,31 @@ export default function NewCampaignPage() {
                             onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                            className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
                           >
                             {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
                           </motion.button>
                         </>
                       )}
+                      {/* Bulk Actions - Always visible when content exists */}
+                      <motion.button
+                        onClick={copyAllContent}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-3 bg-tron-dark/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy All
+                      </motion.button>
+                      <motion.button
+                        onClick={exportCampaign}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-3 bg-tron-dark/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Export
+                      </motion.button>
                     </div>
                   </>
                 ) : (
@@ -2793,13 +2955,13 @@ export default function NewCampaignPage() {
 
                   {/* Campaign Save Buttons */}
                   {generatedContent && Object.keys(generatedContent).length > 0 && (
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                       <motion.button
                         onClick={() => saveCampaign(false)}
                         disabled={loading || campaignSaved}
                         whileHover={{ scale: loading || campaignSaved ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        className="px-6 py-4 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         aria-label="Save campaign as draft"
                       >
                         {loading ? (
@@ -2807,27 +2969,44 @@ export default function NewCampaignPage() {
                         ) : (
                           <>
                             <Check className="w-5 h-5" />
-                            {campaignSaved ? "Saved" : "Save for Later"}
+                            {campaignSaved ? "Saved" : "Save Draft"}
                           </>
                         )}
                       </motion.button>
-                    <motion.button
-                      onClick={() => saveCampaign(true)}
-                      disabled={loading}
-                      whileHover={{ scale: loading ? 1 : 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                      aria-label="Schedule campaign"
-                    >
-                      {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-white" />
-                      ) : (
-                        <>
-                          <Calendar className="w-5 h-5" />
-                          Schedule for Later
-                        </>
-                      )}
-                    </motion.button>
+                      <motion.button
+                        onClick={async () => { await saveCampaign(false); router.push('/campaigns'); }}
+                        disabled={loading}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl font-semibold text-white shadow-lg shadow-green-500/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        aria-label="Save and return to dashboard"
+                      >
+                        {loading ? (
+                          <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                        ) : (
+                          <>
+                            <Home className="w-5 h-5" />
+                            Save & Dashboard
+                          </>
+                        )}
+                      </motion.button>
+                      <motion.button
+                        onClick={() => saveCampaign(true)}
+                        disabled={loading}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        aria-label="Schedule campaign"
+                      >
+                        {loading ? (
+                          <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                        ) : (
+                          <>
+                            <Calendar className="w-5 h-5" />
+                            Schedule
+                          </>
+                        )}
+                      </motion.button>
                     </div>
                   )}
                 </>
