@@ -19,7 +19,9 @@ No agent may perform work unless a task is explicitly listed here and marked OPE
 ---
 
 ## ACTIVE TASKS
----
+OPEN
+Implement the following:
+C:\DEV\3K-Pro-Services\landing-page\docs\helix\Helix_Upgrade.md
 
 ### TASK-002
 Status: COMPLETE

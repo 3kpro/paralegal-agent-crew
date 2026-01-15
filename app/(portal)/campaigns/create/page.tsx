@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Fireworks from "@/components/Fireworks";
 import { GenerationResponse, ValidationError, RateLimitError, SetupRequiredError } from "@/lib/types/api";
+import { useHelix } from "@/context/HelixContext";
 
 // Type guards for API responses
 function isSetupRequiredError(data: GenerationResponse): data is SetupRequiredError {
@@ -101,6 +102,8 @@ export default function NewCampaignPage() {
   // Per-platform customization state
   const [customizePerPlatform, setCustomizePerPlatform] = useState(false);
   const [activePlatformTab, setActivePlatformTab] = useState<string | null>(null);
+
+  const { updateContext, registerAction } = useHelix();
 
   console.log("[EDIT MODE] editId:", editId, "isEditMode:", isEditMode);
 
@@ -224,6 +227,33 @@ export default function NewCampaignPage() {
       }));
     }
   }, [controls, selectedAudiences, customizePerPlatform, activePlatformTab]);
+
+
+  // NEW: Sync Helix Context with Campaign State
+  useEffect(() => {
+    updateContext({
+      page: "campaign-create",
+      pageContent: `
+        Current Step: ${currentCard}
+        Campaign Name: ${campaignName}
+        Selected Platforms: ${targetPlatforms.join(", ")}
+        Selected Trends: ${selectedTrends.map(t => `${t.title} (Score: ${t.viralScore})`).join(", ")}
+        Visible Trends: ${trends.slice(0, 5).map(t => t.title).join(", ")}
+        Available Actions: select_highest_trend, optimize_settings
+      `,
+      data: {
+        trends: trends,
+        selectedTrends: selectedTrends,
+        platforms: targetPlatforms
+      },
+      selections: {
+        trendId: selectedTrends[0]?.id,
+        platformIds: targetPlatforms
+      }
+    });
+  }, [currentCard, campaignName, targetPlatforms, selectedTrends, trends, updateContext]);
+
+
 
 
   // Track toast timeout to prevent stacking
@@ -614,6 +644,23 @@ ${targetPlatforms.map(platform => {
     calculatePredictedViralScore(primaryPreset.tone, primaryPreset.contentFocus, primaryPreset.audiences, primaryPreset.callToAction);
 
   }, [targetPlatforms, platformPresets, controls, showToast, activePlatformTab, calculatePredictedViralScore]);
+
+  // Register Helix Actions (moved here to access function definitions)
+  useEffect(() => {
+    registerAction("select_highest_trend", () => {
+       if (trends.length > 0) {
+          const sorted = [...trends].sort((a,b) => (b.viralScore || 0) - (a.viralScore || 0));
+          if (sorted[0]) {
+             toggleTrendSelection(sorted[0]);
+             showToast(`Selected highest intent trend: ${sorted[0].title}`, "success");
+          }
+       }
+    });
+
+    registerAction("optimize_settings", () => {
+       handleAIOptimize();
+    });
+  }, [trends, toggleTrendSelection, handleAIOptimize, registerAction]);
 
 
 

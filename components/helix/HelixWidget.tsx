@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useHelix } from "@/context/HelixContext";
 
 
 import dynamic from 'next/dynamic';
@@ -65,6 +66,7 @@ const CopyToClipboard = ({ text }: { text: string }) => {
 
 export default function HelixWidget({ subscriptionTier = 'free', onSidebarChange }: HelixWidgetProps) {
   const pathname = usePathname();
+  const { context: helixContext } = useHelix();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); 
   const [isSidePanel, setIsSidePanel] = useState(false); 
@@ -167,7 +169,7 @@ What would you like to know?`
         body: JSON.stringify({
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
           sessionId,
-          context: { currentPath: pathname }
+          context: { ...helixContext, currentPath: pathname }
         })
       });
 
@@ -552,6 +554,8 @@ What would you like to know?`
                          {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-coral-400" weight="duotone" /> : <User className="w-4 h-4 text-white" weight="duotone" />}
                        </div>
 
+
+
                        <div className={`p-3.5 rounded-2xl max-w-[85%] text-[13px] whitespace-pre-wrap leading-relaxed relative ${
                          msg.role === 'assistant'
                            ? 'bg-gray-800/40 border border-gray-700/30 text-gray-200 shadow-sm backdrop-blur-sm shadow-black/20'
@@ -563,7 +567,44 @@ What would you like to know?`
                             </div>
                          )}
                          <span className="block">
-                           {msg.content || ((msg as any).toolData?.explanation && !(msg as any).toolData?.data?.length ? (msg as any).toolData.explanation : '')}
+                           {(() => {
+                              const rawContent = msg.content || ((msg as any).toolData?.explanation && !(msg as any).toolData?.data?.length ? (msg as any).toolData.explanation : '') || '';
+                              // Parse ACTION tags: [ACTION:action_name|Label]
+                              const actionRegex = /\[ACTION:([a-zA-Z0-9_]+)\|([^\]]+)\]/g;
+                              const actions: {action: string, label: string}[] = [];
+                              const cleanContent = rawContent.replace(actionRegex, (match: string, action: string, label: string) => {
+                                actions.push({ action, label });
+                                return ''; // Remove tag from text
+                              });
+
+                              return (
+                                <>
+                                  {cleanContent}
+                                  {actions.length > 0 && (
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                      {actions.map((act, i) => (
+                                        <button
+                                          key={i}
+                                          onClick={() => {
+                                            if (helixContext.actions && helixContext.actions[act.action]) {
+                                              helixContext.actions[act.action]();
+                                              // Optional: Add a system message saying action was clicked?
+                                            } else {
+                                              console.warn(`Action ${act.action} not found in context`, helixContext.actions);
+                                            }
+                                          }}
+                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 text-coral-300 text-xs rounded-lg transition-colors"
+                                        >
+                                          <MagicWand className="w-3 h-3" />
+                                          {act.label}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </>
+                              );
+                           })()}
+                           
                            {!msg.content && !(msg as any).toolData && (
                              <span className="flex items-center gap-2 text-gray-500 italic animate-pulse">
                                Helix is analyzing...

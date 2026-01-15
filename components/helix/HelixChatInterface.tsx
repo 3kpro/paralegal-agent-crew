@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useHelix } from "@/context/HelixContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Robot as Bot, 
@@ -56,6 +57,7 @@ export default function HelixChatInterface({
   user 
 }: HelixChatInterfaceProps) {
   const pathname = usePathname();
+  const { context: helixContext } = useHelix();
   const [localInput, setLocalInput] = useState("");
   const [hasStarted, setHasStarted] = useState(initialMessages.length > 0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export default function HelixChatInterface({
         body: JSON.stringify({
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
           sessionId,
-          context: { currentPath: pathname }
+          context: { ...helixContext, currentPath: pathname }
         })
       });
 
@@ -230,7 +232,42 @@ export default function HelixChatInterface({
                       </div>
                    )}
                    <div className="whitespace-pre-wrap">
-                      {msg.content || (msg.toolData?.explanation && !msg.toolData?.data?.length ? msg.toolData.explanation : '')}
+                      {(() => {
+                          const rawContent = msg.content || (msg.toolData?.explanation && !msg.toolData?.data?.length ? msg.toolData.explanation : '') || '';
+                          const actionRegex = /\[ACTION:([a-zA-Z0-9_]+)\|([^\]]+)\]/g;
+                          const actions: {action: string, label: string}[] = [];
+                          const cleanContent = rawContent.replace(actionRegex, (match: string, action: string, label: string) => {
+                             actions.push({ action, label });
+                             return '';
+                          });
+
+                          return (
+                            <>
+                              {cleanContent}
+                              {actions.length > 0 && (
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                  {actions.map((act, i) => (
+                                    <button
+                                      key={i}
+                                      onClick={() => {
+                                        if (helixContext.actions && helixContext.actions[act.action]) {
+                                           helixContext.actions[act.action]();
+                                        } else {
+                                           console.warn(`Action ${act.action} not found`, helixContext.actions);
+                                        }
+                                      }}
+                                      className="flex items-center gap-2 px-4 py-2 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 text-coral-300 text-sm rounded-lg transition-colors font-medium"
+                                    >
+                                      <MagicWand className="w-4 h-4" />
+                                      {act.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </>
+                          );
+                      })()}
+                   
                       {!msg.content && !msg.toolData && (
                         <span className="flex items-center gap-2 text-gray-400 italic animate-pulse">
                           Thinking...
