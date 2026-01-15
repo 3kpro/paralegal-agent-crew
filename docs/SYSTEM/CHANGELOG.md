@@ -1,3 +1,18 @@
+## 2026-01-14 — Update Xelora Logo Fix
+
+**Corrected the Xelora application logo.**
+
+Summary of Actions:
+- **Logo Update**: Updated `components/XeloraLogo.tsx` to import `WH_TR_LOGO.png` instead of `LogoFinal_v2.png`.
+- **Deployment**: Pushed changes to `main` and triggered Vercel production deployment.
+
+Status: **Deployed**
+
+Files Modified:
+- `components/XeloraLogo.tsx`
+
+---
+
 ## 2026-01-13 — Severity Filtering for Idea 10 (BreakingChange)
 
 **Reduced noise with severity-based timeline filtering.**
