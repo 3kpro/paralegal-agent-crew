@@ -47,15 +47,15 @@ export const HelixProvider = ({ children }: { children: ReactNode }) => {
     }));
   }, [pathname]);
 
-  const setContext = (newContext: Partial<HelixContextState>) => {
+  const setContext = React.useCallback((newContext: Partial<HelixContextState>) => {
     setContextState((prev) => ({ ...prev, ...newContext }));
-  };
+  }, []);
   
-  const updateContext = (updates: Partial<HelixContextState>) => {
+  const updateContext = React.useCallback((updates: Partial<HelixContextState>) => {
      setContextState(prev => ({ ...prev, ...updates }));
-  };
+  }, []);
 
-  const registerAction = (name: string, handler: () => void) => {
+  const registerAction = React.useCallback((name: string, handler: () => void) => {
     setContextState((prev) => ({
       ...prev,
       actions: {
@@ -63,10 +63,14 @@ export const HelixProvider = ({ children }: { children: ReactNode }) => {
         [name]: handler,
       },
     }));
-  };
+  }, []);
+
+  const value = React.useMemo(() => ({
+    context, setContext, updateContext, registerAction
+  }), [context, setContext, updateContext, registerAction]);
 
   return (
-    <HelixContext.Provider value={{ context, setContext, updateContext, registerAction }}>
+    <HelixContext.Provider value={value}>
       {children}
     </HelixContext.Provider>
   );

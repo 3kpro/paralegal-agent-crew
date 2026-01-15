@@ -1280,7 +1280,7 @@ ${targetPlatforms.map(platform => {
    * Save campaign (as draft or scheduled)
    */
   const saveCampaign = useCallback(
-    async (publishNow = false) => {
+    async (publishNow = false): Promise<boolean> => {
       console.log("[SAVE CAMPAIGN] Function called. publishNow:", publishNow, "generatedContent exists:", !!generatedContent);
       setLoading(true);
       try {
@@ -1294,13 +1294,13 @@ ${targetPlatforms.map(platform => {
           console.error("[SAVE CAMPAIGN] No user - redirecting to login");
           showToast("Please log in to save campaigns", "error");
           router.push("/login");
-          return;
+          return false;
         }
 
         if (!generatedContent) {
           console.error("[SAVE CAMPAIGN] No generated content - aborting save");
           showToast("No content to save. Please generate content first.", "error");
-          return;
+          return false;
         }
 
         // Check usage limits before saving (only for new campaigns, not edits)
@@ -1322,7 +1322,7 @@ ${targetPlatforms.map(platform => {
                   setUpgradeReason("campaigns");
                   setShowUpgradeModal(true);
                   setLoading(false);
-                  return;
+                  return false;
                 }
               }
             }
@@ -1465,6 +1465,8 @@ ${targetPlatforms.map(platform => {
             router.push(`/campaigns?action=published&name=${encodeURIComponent(campaignName)}`);
           }, 6500);
         }
+
+        return true;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         console.error("Error saving campaign:", error);
@@ -1472,6 +1474,7 @@ ${targetPlatforms.map(platform => {
           `Failed to save campaign: ${errorMessage}`,
           "error"
         );
+        return false;
       } finally {
         setLoading(false);
       }
@@ -3053,7 +3056,13 @@ ${targetPlatforms.map(platform => {
                         )}
                       </motion.button>
                       <motion.button
-                        onClick={async () => { await saveCampaign(false); router.push('/campaigns'); }}
+                        type="button"
+                        onClick={async () => {
+                          const success = await saveCampaign(false);
+                          if (success) {
+                            router.push('/campaigns');
+                          }
+                        }}
                         disabled={loading}
                         whileHover={{ scale: loading ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
