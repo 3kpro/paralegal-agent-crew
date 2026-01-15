@@ -84,11 +84,11 @@ export default async function PricingPage() {
                 </button>
               </div>
               <div className="px-6 pt-6 pb-8">
-                <h4 className="text-sm font-medium text-white">XELORA™ Access:</h4>
+                <h4 className="text-sm font-medium text-white">What's Included:</h4>
                 <ul className="mt-6 space-y-4">
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
-                    <span className="text-sm text-gray-300">{TIER_LIMITS.free.campaignsPerMonth} trend campaigns/month</span>
+                    <span className="text-sm text-gray-300">{TIER_LIMITS.free.campaignsPerMonth} campaigns/month</span>
                   </li>
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
@@ -96,11 +96,15 @@ export default async function PricingPage() {
                   </li>
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
-                    <span className="text-sm text-gray-300">Viral Score™ predictions</span>
+                    <span className="text-sm text-gray-300">Viral Score™ + Viral DNA™</span>
                   </li>
                   <li className="flex items-center space-x-3">
-                    <span className="text-gray-500">○</span>
-                    <span className="text-sm text-gray-500">Social platforms (coming soon)</span>
+                    <span className="text-coral-400">✓</span>
+                    <span className="text-sm text-gray-300">Multi-platform content generation</span>
+                  </li>
+                  <li className="flex items-center space-x-3">
+                    <span className="text-coral-400">✓</span>
+                    <span className="text-sm text-gray-300">Export campaigns as markdown</span>
                   </li>
                 </ul>
               </div>
@@ -131,15 +135,19 @@ export default async function PricingPage() {
                 <ul className="mt-6 space-y-4">
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
-                    <span className="text-sm text-gray-300">Unlimited trend campaigns</span>
+                    <span className="text-sm text-gray-300">Unlimited campaigns/month</span>
                   </li>
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
-                    <span className="text-sm text-gray-300">Unlimited trend searches</span>
+                    <span className="text-sm text-gray-300">Unlimited trend searches/day</span>
                   </li>
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
-                    <span className="text-sm text-gray-300">Advanced Viral Score™ analytics</span>
+                    <span className="text-sm text-gray-300">Priority AI generation</span>
+                  </li>
+                  <li className="flex items-center space-x-3">
+                    <span className="text-coral-400">✓</span>
+                    <span className="text-sm text-gray-300">Advanced content controls</span>
                   </li>
                   <li className="flex items-center space-x-3">
                     <span className="text-coral-400">✓</span>
