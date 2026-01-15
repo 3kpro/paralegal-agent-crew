@@ -30,6 +30,7 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
     new Set(),
   );
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isArchiving, setIsArchiving] = useState(false);
   const [toast, setToast] = useState<{
     show: boolean;
     message: string;
@@ -122,6 +123,37 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
     }
   };
 
+  const handleBulkArchive = async () => {
+    if (selectedCampaigns.size === 0) return;
+
+    const count = selectedCampaigns.size;
+    const campaignWord = count === 1 ? "campaign" : "campaigns";
+    const action = showArchived ? "unarchived" : "archived";
+
+    setIsArchiving(true);
+
+    try {
+      const { error } = await supabase
+        .from("campaigns")
+        .update({ archived: !showArchived })
+        .in("id", Array.from(selectedCampaigns));
+
+      if (error) throw error;
+
+      showToast(`Successfully ${action} ${count} ${campaignWord}!`, "success");
+      setSelectedCampaigns(new Set());
+
+      // Refresh the page after a brief delay
+      setTimeout(() => {
+        router.refresh();
+      }, 1500);
+    } catch (error: any) {
+      showToast(`Failed to ${showArchived ? "restore" : "archive"} campaigns: ${error.message}`, "error");
+    } finally {
+      setIsArchiving(false);
+    }
+  };
+
   const allSelected =
     filteredCampaigns.length > 0 && selectedCampaigns.size === filteredCampaigns.length;
   const someSelected = selectedCampaigns.size > 0 && !allSelected;
@@ -166,13 +198,29 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={handleBulkDelete}
-              disabled={isDeleting}
+              disabled={isDeleting || isArchiving}
               className="flex items-center gap-2 px-4 py-2 bg-red-900/20 border-2 border-red-500 text-red-400 hover:bg-red-900/30 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 className="w-4 h-4" weight="duotone" />
               {isDeleting
                 ? "Deleting..."
                 : `Delete ${selectedCampaigns.size} ${selectedCampaigns.size === 1 ? "Campaign" : "Campaigns"}`}
+            </motion.button>
+          )}
+
+          {selectedCampaigns.size > 0 && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              onClick={handleBulkArchive}
+              disabled={isDeleting || isArchiving}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-900/20 border-2 border-amber-500/50 text-amber-400 hover:bg-amber-900/30 font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Archive className="w-4 h-4" weight="duotone" />
+              {isArchiving
+                ? (showArchived ? "Restoring..." : "Archiving...")
+                : `${showArchived ? "Restore" : "Archive"} ${selectedCampaigns.size} ${selectedCampaigns.size === 1 ? "Campaign" : "Campaigns"}`}
             </motion.button>
           )}
         </div>
