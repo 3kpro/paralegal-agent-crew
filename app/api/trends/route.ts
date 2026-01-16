@@ -246,8 +246,8 @@ async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
   // Get the model with JSON mode enabled
-  // using gemini-1.5-flash-latest for stability
-  const model = getGeminiModel('gemini-1.5-flash-latest', true);
+  // using gemini-1.5-flash for stability
+  const model = getGeminiModel('gemini-1.5-flash', true);
 
   if (!model) {
      // This will be caught by the calling function and trigger the next fallback.

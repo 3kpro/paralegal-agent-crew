@@ -31,7 +31,7 @@ function getClient(): GoogleGenerativeAI | null {
  * @param useJsonMode Enables JSON output mode for reliable, structured data.
  * @returns A GenerativeModel instance or null if the client could not be initialized.
  */
-export function getGeminiModel(modelName: string = 'gemini-1.5-flash-latest', useJsonMode: boolean = false): GenerativeModel | null {
+export function getGeminiModel(modelName: string = 'gemini-1.5-flash', useJsonMode: boolean = false): GenerativeModel | null {
   const client = getClient();
   if (!client) {
     return null;

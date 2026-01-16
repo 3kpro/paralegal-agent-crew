@@ -86,8 +86,8 @@ export async function calculateViralScore(trend: {
   let viralDNA: ViralDNA | undefined;
 
   // Get the model with JSON mode enabled
-  // using gemini-1.5-flash-latest for stability
-  const aiModel = getGeminiModel('gemini-1.5-flash-latest', true);
+  // using gemini-1.5-flash for stability
+  const aiModel = getGeminiModel('gemini-1.5-flash', true);
 
   if (aiModel) {
     try {
