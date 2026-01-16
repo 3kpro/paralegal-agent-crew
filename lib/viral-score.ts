@@ -86,8 +86,8 @@ export async function calculateViralScore(trend: {
   let viralDNA: ViralDNA | undefined;
 
   // Get the model with JSON mode enabled
-  // using gemini-1.5-flash for stability
-  const aiModel = getGeminiModel('gemini-1.5-flash', true);
+  // using gemini-2.0-flash for stability and availability
+  const aiModel = getGeminiModel('gemini-2.0-flash', true);
 
   if (aiModel) {
     try {
@@ -123,11 +123,12 @@ export async function calculateViralScore(trend: {
       viralDNA = data.dna;
 
     } catch (error: any) {
-      console.error("[Viral Score AI Error] Failed to generate or parse AI score.", {
-        title: trend.title,
-        errorMessage: error.message,
-      });
-      aiReasoning = `AI analysis failed: ${error.message}. Using heuristic fallback.`;
+      if (error.message.includes('429') || error.message.includes('Resource exhausted')) {
+        console.warn(`[Viral Score] Rate limit hit for "${trend.title}". Using heuristic fallback.`);
+      } else {
+        console.error("[Viral Score AI Error] Failed to generate usage.", error.message);
+      }
+      aiReasoning = `AI analysis limited: ${error.message}. Using heuristic fallback.`;
       
       // Keep the simple fallback logic as a final safety net
       if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {

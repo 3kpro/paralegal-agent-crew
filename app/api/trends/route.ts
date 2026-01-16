@@ -211,14 +211,20 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 
     // Calculate viral scores for all trends
     if (trendsData.trending && Array.isArray(trendsData.trending)) {
-      trendsData.trending = await Promise.all(trendsData.trending.map(async (trend: any) =>
-        await calculateViralScore({
+      const scoredTrends = [];
+      // Process sequentially to avoid AI Rate Limits (429)
+      for (const trend of trendsData.trending) {
+        const scoredTrend = await calculateViralScore({
           title: trend.title,
           formattedTraffic: trend.formattedTraffic || '0K searches',
           sources: [source], // Single source for now
           firstSeenAt: new Date() // Current time as first seen
-        })
-      ));
+        });
+        scoredTrends.push(scoredTrend);
+        // Add delay to respect API rate limits (avoid 429)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+      trendsData.trending = scoredTrends;
 
       // Sort by viral score (highest first)
       trendsData.trending = sortByViralScore(trendsData.trending);
@@ -246,8 +252,8 @@ async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
   // Get the model with JSON mode enabled
-  // using gemini-1.5-flash for stability
-  const model = getGeminiModel('gemini-1.5-flash', true);
+  // using gemini-2.0-flash for stability and availability
+  const model = getGeminiModel('gemini-2.0-flash', true);
 
   if (!model) {
      // This will be caught by the calling function and trigger the next fallback.
@@ -280,22 +286,19 @@ Your response MUST be a valid JSON array of objects with the following structure
     const duration = performance.now() - startTime;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
-    // Calculate viral scores for the generated trends
-    const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
-      await calculateViralScore({
-        title: trend.title,
-        formattedTraffic: trend.formattedTraffic || '0K searches',
-        sources: ['gemini-ai'],
-        firstSeenAt: new Date()
-      })
-    ));
+    // Return trends directly - scoring is handled sequentially in the main handler
+    const rawTrends = trends.map((trend: any) => ({
+      title: trend.title,
+      formattedTraffic: trend.formattedTraffic || '0K searches',
+      source: 'gemini-ai',
+      url: '#', // Placeholder
+      publishedAt: new Date().toISOString()
+    }));
 
-    const sortedTrends = sortByViralScore(trendsWithScores);
-
-    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 'N/A'})`);
+    console.log(`[Gemini] ✓ Generated ${rawTrends.length} trends (scoring deferred to main handler)`);
 
     return {
-      trending: sortedTrends,
+      trending: rawTrends,
        relatedQueries: [
         { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
         { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },
