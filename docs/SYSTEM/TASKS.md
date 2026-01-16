@@ -11,8 +11,7 @@ This file lists XELORA product-specific tasks only.
 ---
 
 ## NOW
-Changes for xelora are tested locally on localhost:3000.
-Take care of git and push to production via Vercel CLI.
+
 
 
 ---

@@ -1,3 +1,17 @@
+## 2026-01-16 — Harden AI-Powered Features (Deployment)
+
+**Deployed hardened AI features and cleaned up repository.**
+
+Summary of Actions:
+- **Git Cleanup**: Removed untracked backup files and reverted sensitive changes in test scripts.
+- **Deployment**: Pushed "Harden AI features" dataset to production via Vercel.
+
+Status: **Deployed & Configured**
+
+**Fix Notes:**
+- Added missing `GEMINI_API_KEY` to Vercel production environment to match localhost configuration.
+- **Cache Invalidation:** Bumped Redis cache key version (`trends:v2`) to flush stale "generic" mock results that were cached while the API key was missing.
+
 ## 2026-01-16 — Fix Data Inconsistency (Campaign Saving Atomic Transaction)
 
 **Resolved critical data integrity issue by implementing atomic database transactions for campaign saving.**
