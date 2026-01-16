@@ -109,7 +109,7 @@ export default function AboutPage() {
               about their content strategy.
             </p>
             <p>
-              XELORA is part of our broader Content Cascade platform strategy—a suite
+              XELORA is the flagship product of the 3kpro ecosystem—a suite
               of AI-powered tools designed to help businesses and creators dominate
               the digital landscape.
             </p>

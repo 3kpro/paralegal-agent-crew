@@ -16,7 +16,7 @@ const PROVIDER_INSTRUCTIONS = {
     steps: [
       "Sign in to OpenAI Platform",
       'Click "Create new secret key"',
-      'Name your key (e.g., "Content Cascade")',
+      'Name your key (e.g., "XELORA")',
       "Copy the key (shown only once)",
       "Paste above and save",
     ],

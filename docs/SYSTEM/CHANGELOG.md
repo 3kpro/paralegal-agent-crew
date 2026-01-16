@@ -1,3 +1,194 @@
+## 2026-01-16 — Fix Data Inconsistency (Campaign Saving Atomic Transaction)
+
+**Resolved critical data integrity issue by implementing atomic database transactions for campaign saving.**
+
+Summary of Actions:
+- **Atomic Transaction**: Implemented `upsert_campaign_with_posts` RPC function in Supabase to handle campaign and post creation in a single transaction.
+- **Backend Refactor**: Refactored `app/(portal)/campaigns/create/page.tsx` to replace multi-step API calls with a single RPC invocation.
+- **Fail-Fast**: Updated `lib/gemini.ts` to throw critical errors in production if API keys are missing.
+- **Standardization**: Standardized AI models to `gemini-1.5-flash-latest` for stability.
+
+Status: **Implemented**
+
+Files Created:
+- `supabase/migrations/20260116010000_upsert_campaign_rpc.sql`
+
+## 2026-01-16 — Harden AI-Powered Features (Viral Score & Trends)
+
+**Significantly improved the reliability and robustness of Gemini-powered features.**
+
+Summary of Actions:
+- **Centralized AI Client**: Created `lib/gemini.ts` to manage the Gemini integration in a single place, ensuring consistent configuration and error handling.
+- **Robust JSON Parsing**: Switched `lib/viral-score.ts` and `app/api/trends/route.ts` from fragile regex-based parsing to Gemini's native JSON mode (`responseMimeType: "application/json"`). This eliminates parsing errors caused by markdown formatting or unexpected text.
+- **Error Handling**: Enhanced logging to provide detailed context (keywords, execution time) when AI services fail.
+- **Fail-Fast**: Implemented production-safe checks for missing API keys to prevent silent failures.
+
+Status: **Implemented**
+
+Files Created:
+- `lib/gemini.ts`
+
+Files Modified:
+- `lib/viral-score.ts`
+- `app/api/trends/route.ts`
+
+## 2026-01-15 — Scaffold Idea 11: Code Review Bias Detector (ReviewLens)
+
+**Initialized project structure and core stack for the Code Review Bias Detector.**
+
+Summary of Actions:
+- **Project Structure**: Created `Idea_11_Code_Review_Bias_Detector` data structures.
+- **Backend Setup**: Initialized FastAPI backend in `src/` with `requirements.txt` (FastAPI, SQLAlchemy, Anthropic).
+- **Frontend Setup**: Scaffolded `dashboard` React app using Vite + TypeScript.
+- **Documentation**: Updated `TRUTH.md` and `TASKS.md` for the product.
+
+Status: **Scaffolded & Ready**
+
+Files Created:
+- `Dev/products/Idea_11_Code_Review_Bias_Detector/src/`
+- `Dev/products/Idea_11_Code_Review_Bias_Detector/dashboard/`
+- `Dev/products/Idea_11_Code_Review_Bias_Detector/requirements.txt`
+
+---
+
+## 2026-01-15 — GitHub OAuth Integration for ReviewLens
+
+**Enabled secure GitHub login authentication.**
+
+Summary of Actions:
+- **Backend Auth**: Implemented FastAPI authentication router (`src/auth.py`) with `httpx` and `python-jose`.
+- **Frontend Auth**: Created Login/Callback pages and integrated `react-router-dom`.
+- **Styling**: Configured TailwindCSS for the dashboard.
+- **Security**: Basic JWT session handling implemented.
+
+Status: **Implemented**
+
+Files Created:
+- `src/auth.py`
+- `dashboard/src/Login.tsx`, `AuthCallback.tsx`, `Dashboard.tsx`
+
+---
+
+## 2026-01-15 — PR History Ingestion for ReviewLens
+
+**Enabled data collection pipeline for GitHub Pull Requests.**
+
+Summary of Actions:
+- **Data Modeling**: Defined comprehensive SQL schema for `Repository`, `User`, `PullRequest`, `Review`, and `Comment`.
+- **Ingestion Service**: Built `GitHubIngestor` to fetch and normalize data from GitHub API.
+- **Async Processing**: Implemented background task-based ingestion endpoint.
+- **Database**: Configured `sqlite` connection for rapid development.
+
+Status: **Implemented**
+
+Files Created:
+- `src/models.py`
+- `src/ingestion.py`
+- `src/database.py`
+
+---
+
+## 2026-01-15 — Review Pattern Analysis for ReviewLens
+
+**Activated core analytical engine for detecting code review dynamics.**
+
+Summary of Actions:
+- **Metrics Engine**: Implemented `Analyzer` class to calculate team-wide statistics.
+- **Bias Detection**: Created algorithms to flag statistically significant deviations in review time (Anomaly Detection).
+- **Interaction Matrix**: Built logic to map "Who Reviews Whom" to verify team collaboration patterns.
+- **Reporting API**: Exposed analysis data via simple JSON endpoints for the dashboard.
+
+Status: **Implemented**
+
+Files Created:
+- `src/analysis.py`
+
+---
+
+## 2026-01-15 — Comment Classifier for ReviewLens
+
+**Enabled AI-powered understanding of code review quality and tone.**
+
+Summary of Actions:
+- **AI Integration**: Connected to Anthropic's Claude 3 Haiku model for fast, cost-effective text classification.
+- **Prompt Engineering**: Designed a system prompt to categorize comments into "Nitpick", "Logic", "Architecture", etc., and detect "Harsh" vs. "Constructive" tone.
+- **Batch Processing**: Implemented `CommentClassifier.classify_batch` to efficiently process historical data.
+- **API Trigger**: Added `POST /classify/trigger` to manually start the classification job.
+
+Status: **Implemented**
+
+Files Created:
+- `src/classifier.py`
+
+---
+
+## 2026-01-15 — Bias Detection Algorithm for ReviewLens
+
+**Activated second-layer analysis to detect subtle interpersonal bias.**
+
+Summary of Actions:
+- **Bias Engines**: Implemented pair-wise analysis for "Nitpick Ratio" and "Tone" discrepancies.
+- **Metric Logic**: Defined statistical thresholds (e.g., >30% deviation from baseline) to flag potential bias.
+- **Reporting**: Integrated bias risks into the main analysis API alongside performance anomalies.
+- **Privacy Focus**: System tracks patterns between anonymized IDs internally, though currently mapped to usernames for MVP visibility.
+
+Status: **Implemented**
+
+Files Modified:
+- `src/analysis.py`
+- `src/main.py`
+
+---
+
+## 2026-01-15 — Dashboard Visualizations for ReviewLens
+
+**Launched the visual interface for review analytics.**
+
+Summary of Actions:
+- **UI Components**: Built KPI Cards, Bar Charts, and Risk Alert Feeds using `recharts` and `Lucide` icons.
+- **Data Integration**: Connected Frontend to Backend via `axios` to fetch live analysis data.
+- **UX**: Implemented a clean, dark-mode "Tron" aesthetic consistent with the 3KPRO brand.
+
+Status: **Implemented**
+
+Files Modified:
+- `dashboard/src/Dashboard.tsx`
+
+---
+
+## 2026-01-15 — GitLab Integration for ReviewLens
+
+**Broadened compatibility to include GitLab repositories.**
+
+Summary of Actions:
+- **Adapter Pattern**: Created `GitLabIngestor` class that mirrors the `GitHubIngestor` interface.
+- **Data Normalization**: Mapped GitLab "Merge Requests" to "Pull Requests" and "Notes" to "Comments" in the core schema.
+- **Model Update**: Refactored `Repository` model to handle multiple platforms (`platform`, `external_id`).
+- **Endpoint**: Added `/ingest/gitlab/{id}` to support pipeline-based ingestion.
+
+Status: **Implemented**
+
+Files Created:
+- `src/gitlab_ingestion.py`
+
+---
+
+## 2026-01-15 — Export Reports for ReviewLens
+
+**Finalized MVP by enabling actionable data extraction.**
+
+Summary of Actions:
+- **Export Engine**: Built `ReportExporter` to compile data from multiple tables (Stats, Matrix, Anomalies).
+- **Format Support**: Implemented JSON (full schema) and CSV (summary for managers) exports.
+- **Endpoint**: Exposed simple `GET` route with content-disposition headers for direct browser download.
+
+Status: **Implemented**
+
+Files Created:
+- `src/exporter.py`
+
+---
+
 ## 2026-01-15 — Helix AI: Context-Aware Workflow Integration 🤖
 
 **Transformed Helix from a generic chatbot into a context-aware intelligent copilot.**
@@ -9,6 +200,26 @@ Summary of Actions:
   - Updated `HelixWidget` and `HelixChatInterface` to consume context and render action buttons.
   - Enhanced `/api/helix/chat` system prompt to utilize page context for better advice.
   - Deep integration with `CreateCampaign` page to allow Helix to "Select Highest Trend" and "Optimize Settings" directly.
+
+---
+
+## 2026-01-15 — Rebrand Cleanup & Guides
+  
+**Cleaned up legacy "Content Cascade" branding and prepared external update guides.**
+
+Summary of Actions:
+- **Codebase Cleanup**: Removed legacy styling references to "Content Cascade" in `app/about/page.tsx` and settings configuration.
+- **Documentation**: Created `docs/Marketing/EXTERNAL_UPDATE_GUIDE.md` to assist with Google/LinkedIn profile updates.
+- **Alignment**: Updated "About XELORA" page to correctly position it within the "3kpro Ecosystem".
+
+Status: **Implemented**
+
+Files Modified:
+- `app/about/page.tsx`
+- `app/(portal)/settings/page.tsx`
+
+Files Created:
+- `docs/Marketing/EXTERNAL_UPDATE_GUIDE.md`
 
 Status: **Implemented & Verified**
 

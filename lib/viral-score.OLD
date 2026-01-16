@@ -11,12 +11,31 @@
  * 3. Content Score: Hook quality, Emotional resonance, Value prop (Gemini AI)
  */
 
-import { getGeminiModel } from '@/lib/gemini';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getBenchmarkScore } from '@/lib/viral-benchmarks';
 
 // Initialize Gemini AI (Server-side only)
 // Uses API Key for simplicity and reliability
-// Gemini Client is now centralized in @/lib/gemini.ts
+let model: any = null;
+
+function getModel() {
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+  
+  if (!model && apiKey) {
+    console.log("[Viral Score] Initializing Gemini model with key length:", apiKey.length);
+    const genAI = new GoogleGenerativeAI(apiKey);
+    model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash', // Use stable flash model
+      generationConfig: {
+        maxOutputTokens: 500,
+        temperature: 0.4,
+      }
+    });
+  } else if (!apiKey) {
+    console.error("[Viral Score] Missing API Key! Scores will be low.");
+  }
+  return model;
+}
 
 export interface ViralDNA {
   hookType: string;
@@ -80,72 +99,73 @@ export async function calculateViralScore(trend: {
   const dataScore = volumeScore + multiSourceScore + freshnessScore + keywordBoost + benchmarkScore;
 
   // 4. Calculate Content Score (AI) - Max 70 points
-
   let aiScore = 0;
-  let aiReasoning = "AI analysis skipped.";
+  let aiReasoning = "AI analysis skipped (No API Key).";
   let viralDNA: ViralDNA | undefined;
 
-  // Get the model with JSON mode enabled
-  // using gemini-1.5-flash-latest for stability
-  const aiModel = getGeminiModel('gemini-1.5-flash-latest', true);
-
-  if (aiModel) {
-    try {
+  try {
+    const aiModel = getModel();
+    if (aiModel) {
       const prompt = `
         Analyze the viral potential of this topic for a tech/business audience.
         Topic: "${trend.title}"
         
-        Rate on a scale of 0-70 based on:
-        1. Hook/Curiosity (Is it clicky?)
-        2. Broad Appeal (Do many people care?)
-        3. Emotional Trigger (Fear, Greed, Awe?)
+        Rate on scale 0-70 based on:
+        1. Hook/Curiosity (Is it clicky?) - Max 30
+        2. Broad Appeal (Do people care?) - Max 25
+        3. Emotional Trigger (Fear, Greed, Awe?) - Max 15
         
-        Also identify the Viral DNA.
+        Also identify the Viral DNA:
+        - Hook Type: Contrarian, How-to, Listicle, Secret, News, Story, or Question
+        - Primary Emotion: Greed, Fear, Curiosity, Awe, Anger, Joy, or Urgency
+        - Value Prop: Money, Status, Time, Effort, Knowledge, or Entertainment
 
-        Your response MUST be a valid JSON object with the following structure. Do not include any other text or markdown.
+        Output JSON only: 
         { 
           "score": number, 
-          "reason": "A short explanation for the score.",
+          "reason": "short explanation",
           "dna": {
-             "hookType": "Contrarian, How-to, Listicle, Secret, News, Story, or Question",
-             "primaryEmotion": "Greed, Fear, Curiosity, Awe, Anger, Joy, or Urgency",
-             "valueProp": "Money, Status, Time, Effort, Knowledge, or Entertainment"
+             "hookType": "string",
+             "primaryEmotion": "string",
+             "valueProp": "string"
           }
         }
       `;
 
       const result = await aiModel.generateContent(prompt);
-      // Directly parse the response text, now guaranteed to be JSON
-      const data = JSON.parse(result.response.text());
-
-      aiScore = Math.min(data.score || 0, 70); // Add default value for safety
-      aiReasoning = data.reason || "AI analysis completed without reasoning.";
-      viralDNA = data.dna;
-
-    } catch (error: any) {
-      console.error("[Viral Score AI Error] Failed to generate or parse AI score.", {
-        title: trend.title,
-        errorMessage: error.message,
-      });
-      aiReasoning = `AI analysis failed: ${error.message}. Using heuristic fallback.`;
+      const response = result.response.text();
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
       
-      // Keep the simple fallback logic as a final safety net
+      if (jsonMatch) {
+        const data = JSON.parse(jsonMatch[0]);
+        aiScore = Math.min(data.score, 70);
+        aiReasoning = data.reason;
+        viralDNA = data.dna;
+      }
+    } else {
+      // Fallback: Boost score if it looks like a "How-to" or "Listicle" (simple heuristic)
       if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {
-        aiScore = 35; // Slightly lower heuristic score
+        aiScore = 40;
+        aiReasoning = "Heuristic boost for high-performing format.";
         viralDNA = {
-          hookType: "Heuristic Match",
-          primaryEmotion: "Curiosity",
-          valueProp: "Knowledge"
+            hookType: "High Performing",
+            primaryEmotion: "Curiosity",
+            valueProp: "Knowledge"
         };
       } else {
-        aiScore = 15; // Slightly lower heuristic score
-        viralDNA = { hookType: "Standard", primaryEmotion: "Neutral", valueProp: "Information" };
+        aiScore = 20;
+        aiReasoning = "Baseline content score.";
+        viralDNA = {
+            hookType: "Standard",
+            primaryEmotion: "Neutral",
+            valueProp: "Information"
+        };
       }
     }
-  } else {
-    // This case now primarily means the API key is missing
-    aiReasoning = "AI analysis skipped (Gemini client not initialized).";
-    aiScore = 0;
+  } catch (error) {
+    console.error("Viral Score AI Error:", error);
+    aiScore = 20; // Safe fallback
+    aiReasoning = "AI analysis failed, used baseline.";
   }
 
   // 5. Total Score

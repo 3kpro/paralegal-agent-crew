@@ -1,3 +1,4 @@
+=== FILE: app\(portal)\campaigns\create\page.tsx ===
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
@@ -1332,12 +1333,10 @@ ${targetPlatforms.map(platform => {
           }
         }
 
-        // Prepare campaign data for RPC
-        const campaignData = {
-          id: (isEditMode && editId) ? editId : undefined,
-          user_id: user.id, // Included for completeness, though RPC verifies auth
+        // Save campaign metadata
+        const campaignPayload: CampaignPayload = {
+          user_id: user.id,
           name: campaignName,
-          description: "", // Schema has description, defaulted to empty
           target_platforms: targetPlatforms,
           status: publishNow ? "scheduled" : "draft",
           campaign_type: campaignType,
@@ -1362,8 +1361,39 @@ ${targetPlatforms.map(platform => {
           tone: controls.tone,
         };
 
-        // Prepare posts data for RPC
-        const postsData = [];
+        let campaign;
+        let campaignError;
+
+        if (isEditMode && editId) {
+          // UPDATE existing campaign
+          const { data, error } = await supabase
+            .from("campaigns")
+            .update(campaignPayload)
+            .eq("id", editId)
+            .select()
+            .single();
+          campaign = data;
+          campaignError = error;
+        } else {
+          // INSERT new campaign
+          console.log("[Campaign Save] Payload:", campaignPayload);
+          const { data, error } = await supabase
+            .from("campaigns")
+            .insert(campaignPayload)
+            .select()
+            .single();
+          campaign = data;
+          campaignError = error;
+          console.log("[Campaign Save] Result:", { data, error });
+        }
+
+        if (campaignError) {
+          console.error("[Campaign Save] Error:", campaignError);
+          throw campaignError;
+        }
+
+        // Save generated content for each platform
+        const postsToInsert: ScheduledPost[] = [];
         for (const [platform, contentData] of Object.entries(generatedContent)) {
           if (platform === "hashtags") continue;
 
@@ -1380,7 +1410,9 @@ ${targetPlatforms.map(platform => {
             ? new Date(Date.now() + 60000).toISOString() // 1 minute from now for scheduled
             : new Date().toISOString(); // Current time for drafts
 
-          postsData.push({
+          postsToInsert.push({
+            user_id: user.id,
+            campaign_id: campaign.id,
             title: selectedTrend?.title || searchQuery,
             content: content,
             platform: platform,
@@ -1390,22 +1422,21 @@ ${targetPlatforms.map(platform => {
           });
         }
 
-        // Call the Atomic RPC Function
-        console.log("[Campaign Save] Calling RPC upsert_campaign_with_posts", { campaignData, postsCount: postsData.length });
-        
-        const { data, error } = await supabase.rpc('upsert_campaign_with_posts', {
-          campaign_data: campaignData,
-          posts_data: postsData
-        });
+        if (postsToInsert.length > 0) {
+          // If editing, delete old posts first
+          if (isEditMode && editId) {
+            await supabase
+              .from("scheduled_posts")
+              .delete()
+              .eq("campaign_id", editId);
+          }
 
-        if (error) {
-          console.error("[Campaign Save] RPC Error:", error);
-          throw error;
-        }
+          // Insert new/updated posts
+          const { error: postsError } = await supabase
+            .from("scheduled_posts")
+            .insert(postsToInsert);
 
-        if (data && data.success === false) {
-           console.error("[Campaign Save] logic failure:", data.error);
-           throw new Error(data.error || "Save failed");
+          if (postsError) throw postsError;
         }
 
         const successMessage = isEditMode
@@ -1460,12 +1491,6 @@ ${targetPlatforms.map(platform => {
       searchQuery,
       controls,
       aiProvider,
-      isEditMode,
-      editId,
-      campaignType,
-      promoteData,
-      selectedTrends,
-      selectedAudiences
     ]
   );
 
@@ -2126,27 +2151,6 @@ ${targetPlatforms.map(platform => {
                               )}
                             </div>
                           </div>
-
-                          {/* Viral DNA Tags - NEW */}
-                          {trend.viralDNA && (
-                            <div className="flex flex-wrap gap-2 mb-3 mt-2">
-                              {trend.viralDNA.hookType && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                                  🪝 {trend.viralDNA.hookType}
-                                </span>
-                              )}
-                              {trend.viralDNA.primaryEmotion && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-pink-500/10 text-pink-400 border border-pink-500/20">
-                                  ❤️ {trend.viralDNA.primaryEmotion}
-                                </span>
-                              )}
-                              {trend.viralDNA.valueProp && (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                  💎 {trend.viralDNA.valueProp}
-                                </span>
-                              )}
-                            </div>
-                          )}
 
                           {/* Viral Score Breakdown */}
                           {trend.viralFactors && trend.viralScore !== undefined && (
@@ -3737,6 +3741,2020 @@ ${targetPlatforms.map(platform => {
     </div>
     </>
   );
+}
+
+
+
+
+=== FILE: components\TrendDiscovery.tsx ===
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Fire as Flame, Lightning as Zap, ChartBar as BarChart3, TrendUp as TrendingUp, MagnifyingGlass as Search } from "@phosphor-icons/react";
+import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { LoadingState } from "@/components/LoadingStates";
+
+interface TrendingTopic {
+  title: string;
+  formattedTraffic: string;
+  relatedQueries?: string[];
+  viralScore?: number;
+  viralPotential?: 'high' | 'medium' | 'low';
+  viralFactors?: {
+    volume: number;
+    multiSource: number;
+    freshness: number;
+    keywordBoost: number;
+    benchmark: number;
+    aiAnalysis: number;
+  };
+  sources?: string[];
+  viralDNA?: {
+    hookType: string;
+    primaryEmotion: string;
+    valueProp: string;
+  };
+}
+
+interface RelatedQuery {
+  query: string;
+  value: number;
+  formattedValue?: string;
+}
+
+interface TrendsData {
+  trending: TrendingTopic[];
+  relatedQueries: RelatedQuery[];
+  relatedTopics: RelatedQuery[];
+}
+
+export default function TrendDiscovery() {
+  const [keyword, setKeyword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [trends, setTrends] = useState<TrendsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [generating, setGenerating] = useState(false);
+
+  const searchTrends = async () => {
+    if (!keyword.trim()) {
+      setError("Please enter a keyword");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `/api/trends?keyword=${encodeURIComponent(keyword)}&mode=ideas`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch trends");
+      }
+
+      const result = await response.json();
+      
+      // Debug logging
+      console.log('[TrendDiscovery] API Response:', {
+        success: result.success,
+        source: result.source,
+        dataSource: result.data?.source,
+        trendCount: result.data?.trending?.length,
+        firstTrend: result.data?.trending?.[0]?.title
+      });
+
+      if (result.success) {
+        setTrends(result.data);
+        
+        // Show warning if using fallback data
+        if (result.source === 'Mixed Trends (Fallback)' || result.data?.source?.includes('Fallback')) {
+          console.warn('[TrendDiscovery] ⚠️ Using fallback data - Gemini AI may have failed');
+        }
+      } else {
+        setError(result.message || "Failed to fetch trends");
+      }
+    } catch (err) {
+      console.error('[TrendDiscovery] Error:', err);
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTrendingTopics = async () => {
+    setLoading(true);
+    setError(null);
+    setKeyword("");
+
+    try {
+      const response = await fetch("/api/trends?mode=trending");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch trending topics");
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        setTrends({
+          trending: Array.isArray(result.data)
+            ? result.data
+            : result.data.trending || [],
+          relatedQueries: [],
+          relatedTopics: [],
+        });
+      } else {
+        setError(result.message || "Failed to fetch trending topics");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateContent = async () => {
+    if (!selectedTopic) return;
+
+    setGenerating(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/generate-local", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic: selectedTopic,
+          formats: ["twitter", "linkedin", "email"],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate content");
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        setGeneratedContent(result);
+      } else {
+        setError(result.error || "Failed to generate content");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to generate content",
+      );
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-6xl mx-auto p-6">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Discover Trending Topics
+        </h2>
+        <p className="text-gray-600 text-lg">
+          Find what's trending → Generate viral-ready content in seconds
+        </p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-8">
+        <div className="flex flex-col md:flex-row gap-3">
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && searchTrends()}
+            placeholder="Enter a topic (e.g., AI automation, content marketing)"
+            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            disabled={loading}
+          />
+          <div className="flex gap-3">
+            <button
+              onClick={searchTrends}
+              disabled={loading}
+              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <BouncingDots className="bg-white w-1.5 h-1.5" />
+                  Searching...
+                </>
+              ) : (
+                <>
+                  <Search className="w-4 h-4" weight="duotone" />
+                  Search
+                </>
+              )}
+            </button>
+            <button
+              onClick={getTrendingTopics}
+              disabled={loading}
+              className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <BouncingDots className="bg-white w-1.5 h-1.5" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <TrendingUp className="w-4 h-4" weight="duotone" />
+                  Daily Trends
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          {error}
+        </div>
+      )}
+
+      {/* AI Loading State */}
+      {loading && (
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <LoadingState variant="luma" message="Analyzing global signals..." />
+        </div>
+      )}
+
+      {/* Results */}
+      {!loading && trends && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Trending Topics */}
+          {trends.trending.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-6 rounded-lg shadow-md"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-blue-600">
+                Discover Viral
+              </h3>
+              <div className="space-y-3">
+                {trends.trending.slice(0, 5).map((trend, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedTopic(trend.title)}
+                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                      selectedTopic === trend.title
+                        ? "bg-blue-100 border-2 border-blue-500"
+                        : "bg-gray-50 hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="font-medium">{trend.title}</div>
+                      {trend.viralScore !== undefined && (
+                        <div
+                          className={`px-2 py-0.5 rounded text-xs font-semibold inline-flex items-center gap-1 ${
+                            trend.viralPotential === 'high'
+                              ? 'bg-green-100 text-green-700 border border-green-300'
+                              : trend.viralPotential === 'medium'
+                              ? 'bg-yellow-100 text-yellow-700 border border-yellow-300'
+                              : 'bg-gray-100 text-gray-600 border border-gray-300'
+                          }`}
+                        >
+                          {trend.viralPotential === 'high' ? (
+                            <Flame className="w-3 h-3" weight="duotone" />
+                          ) : trend.viralPotential === 'medium' ? (
+                            <Zap className="w-3 h-3" weight="duotone" />
+                          ) : (
+                            <BarChart3 className="w-3 h-3" weight="duotone" />
+                          )}
+                          {trend.viralScore}
+                        </div>
+                      )}
+                    </div>
+                    {trend.viralDNA && (
+                        <div className="flex gap-2 mb-2 flex-wrap">
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                                🪝 {trend.viralDNA.hookType}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-purple-100 text-purple-700 border border-purple-200">
+                                ❤️ {trend.viralDNA.primaryEmotion}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                💎 {trend.viralDNA.valueProp}
+                            </span>
+                        </div>
+                    )}
+                    <div className="text-sm text-gray-500">
+                      {trend.formattedTraffic}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Related Queries */}
+          {trends.relatedQueries.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white p-6 rounded-lg shadow-md"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-green-600">
+                Related Queries
+              </h3>
+              <div className="space-y-3">
+                {trends.relatedQueries.slice(0, 5).map((query, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedTopic(query.query)}
+                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                      selectedTopic === query.query
+                        ? "bg-green-100 border-2 border-green-500"
+                        : "bg-gray-50 hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="font-medium">{query.query}</div>
+                    {query.formattedValue && (
+                      <div className="text-sm text-gray-500">
+                        Interest: {query.formattedValue}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Related Topics */}
+          {trends.relatedTopics.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white p-6 rounded-lg shadow-md"
+            >
+              <h3 className="text-xl font-semibold mb-4 text-purple-600">
+                Related Topics
+              </h3>
+              <div className="space-y-3">
+                {trends.relatedTopics.slice(0, 5).map((topic, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedTopic(topic.query)}
+                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                      selectedTopic === topic.query
+                        ? "bg-purple-100 border-2 border-purple-500"
+                        : "bg-gray-50 hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="font-medium">{topic.query}</div>
+                    {topic.formattedValue && (
+                      <div className="text-sm text-gray-500">
+                        Interest: {topic.formattedValue}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {/* Selected Topic */}
+      {selectedTopic && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-blue-200"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="text-lg font-semibold text-gray-800 mb-1">
+                Selected Topic
+              </h4>
+              <p className="text-2xl font-bold text-blue-600">
+                {selectedTopic}
+              </p>
+            </div>
+            <button
+              onClick={generateContent}
+              disabled={generating}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all shadow-md"
+            >
+              {generating ? "🔄 Generating..." : "✨ Generate Content"}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Generated Content */}
+      {generatedContent && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8"
+        >
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 border-b">
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                🎉 Content Generated Successfully!
+              </h3>
+              <p className="text-gray-600">
+                Topic:{" "}
+                <span className="font-semibold">{generatedContent.topic}</span>
+              </p>
+            </div>
+
+            {/* Content Tabs */}
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Twitter Content */}
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-3 flex items-center">
+                    🐦 Twitter Post
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border">
+                    <pre className="whitespace-pre-wrap font-sans">
+                      {generatedContent.content.twitter.content}
+                    </pre>
+                  </div>
+                  <div className="mt-2 text-xs text-blue-600">
+                    Characters:{" "}
+                    {generatedContent.content.twitter.characterCount}/280
+                  </div>
+                </div>
+
+                {/* LinkedIn Content */}
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <h4 className="font-semibold text-purple-800 mb-3 flex items-center">
+                    💼 LinkedIn Post
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border max-h-60 overflow-y-auto">
+                    <pre className="whitespace-pre-wrap font-sans">
+                      {generatedContent.content.linkedin.content}
+                    </pre>
+                  </div>
+                  <div className="mt-2 text-xs text-purple-600">
+                    Characters:{" "}
+                    {generatedContent.content.linkedin.characterCount}
+                  </div>
+                </div>
+
+                {/* Email Content */}
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-3 flex items-center">
+                    📧 Email Newsletter
+                  </h4>
+                  <div className="bg-white p-3 rounded text-sm border">
+                    <div className="font-semibold text-gray-800 mb-2">
+                      Subject: {generatedContent.content.email.subject}
+                    </div>
+                    <div className="max-h-48 overflow-y-auto">
+                      <pre className="whitespace-pre-wrap font-sans">
+                        {generatedContent.content.email.content}
+                      </pre>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-green-600">
+                    Words: {generatedContent.content.email.wordCount}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 flex flex-wrap gap-3 justify-center">
+                <button
+                  onClick={() => {
+                    setGeneratedContent(null);
+                    setSelectedTopic(null);
+                  }}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  ✨ New Topic
+                </button>
+                <button
+                  onClick={generateContent}
+                  disabled={generating}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
+                >
+                  {generating ? "🔄 Regenerating..." : "🔄 Regenerate"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+
+=== FILE: components\ViralScoreBreakdown.tsx ===
+"use client";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { CaretDown as ChevronDown, TrendUp as TrendingUp, Users, Clock, MagicWand, Lightbulb } from "@phosphor-icons/react";
+import { useState } from "react";
+
+interface ViralScoreBreakdownProps {
+  score: number;
+  potential: 'high' | 'medium' | 'low';
+  factors: {
+    volume: number;        // 0-10
+    multiSource: number;   // 0-10
+    freshness: number;     // 0-10
+    keywordBoost: number;  // 0-15
+    aiAnalysis: number;    // 0-70
+  };
+  aiReasoning?: string;
+  compact?: boolean;
+}
+
+export function ViralScoreBreakdown({
+  score,
+  potential,
+  factors,
+  aiReasoning,
+  compact = false
+}: ViralScoreBreakdownProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Calculate what's working and what could improve
+  const insights = generateInsights(factors, score);
+
+  return (
+    <div className="w-full">
+      {/* Expandable Trigger */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-tron-grid/30 transition-colors text-sm"
+      >
+        <span className="text-tron-text-muted flex items-center gap-2">
+          <Lightbulb className="w-4 h-4" weight="duotone" />
+          {isExpanded ? "Hide" : "Show"} Score Breakdown
+        </span>
+        <motion.div
+          animate={{ rotate: isExpanded ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown className="w-4 h-4 text-tron-text-muted" weight="duotone" />
+        </motion.div>
+      </button>
+
+      {/* Breakdown Content */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 space-y-4 p-4 bg-tron-grid/20 rounded-lg border border-tron-cyan/20">
+
+              {/* What's Working Section */}
+              {insights.working.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-green-400 mb-2 flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4" weight="duotone" />
+                    What's Working
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {insights.working.map((item, idx) => (
+                      <li key={idx} className="text-xs text-tron-text-muted flex items-start gap-2">
+                        <span className="text-green-400 mt-0.5">✓</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Could Improve Section */}
+              {insights.improvements.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                    <MagicWand className="w-4 h-4" weight="duotone" />
+                    Could Boost Score
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {insights.improvements.map((item, idx) => (
+                      <li key={idx} className="text-xs text-tron-text-muted flex items-start gap-2">
+                        <span className="text-yellow-400 mt-0.5">⚠</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Factor Breakdown */}
+              <div className="pt-3 border-t border-tron-cyan/10">
+                <h4 className="text-xs font-semibold text-tron-text-muted mb-3">Score Components</h4>
+                <div className="space-y-2">
+                  <FactorBar
+                    icon={<Users className="w-3 h-3" weight="duotone" />}
+                    label="Audience Volume"
+                    score={factors.volume}
+                    max={10}
+                    color="blue"
+                  />
+                  <FactorBar
+                    icon={<TrendingUp className="w-3 h-3" weight="duotone" />}
+                    label="Multi-Platform"
+                    score={factors.multiSource}
+                    max={10}
+                    color="purple"
+                  />
+                  <FactorBar
+                    icon={<Clock className="w-3 h-3" weight="duotone" />}
+                    label="Trend Freshness"
+                    score={factors.freshness}
+                    max={10}
+                    color="cyan"
+                  />
+                  <FactorBar
+                    icon={<MagicWand className="w-3 h-3" weight="duotone" />}
+                    label="Hot Keywords"
+                    score={factors.keywordBoost}
+                    max={15}
+                    color="yellow"
+                  />
+                  <FactorBar
+                    icon={<Lightbulb className="w-3 h-3" weight="duotone" />}
+                    label="AI Content Analysis"
+                    score={factors.aiAnalysis}
+                    max={70}
+                    color="green"
+                  />
+                </div>
+              </div>
+
+              {/* AI Reasoning */}
+              {aiReasoning && (
+                <div className="pt-3 border-t border-tron-cyan/10">
+                  <p className="text-xs text-tron-text-muted italic">
+                    <span className="font-semibold text-tron-cyan">AI Insight:</span> {aiReasoning}
+                  </p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Factor Bar Component
+function FactorBar({
+  icon,
+  label,
+  score,
+  max,
+  color
+}: {
+  icon: React.ReactNode;
+  label: string;
+  score: number;
+  max: number;
+  color: 'blue' | 'purple' | 'cyan' | 'yellow' | 'green';
+}) {
+  const percentage = (score / max) * 100;
+
+  const colorClasses = {
+    blue: 'bg-blue-500',
+    purple: 'bg-purple-500',
+    cyan: 'bg-tron-cyan',
+    yellow: 'bg-yellow-500',
+    green: 'bg-green-500'
+  };
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center gap-1.5 text-tron-text-muted">
+          {icon}
+          <span>{label}</span>
+        </div>
+        <span className="text-tron-text font-mono">
+          {score}/{max}
+        </span>
+      </div>
+      <div className="h-1.5 bg-tron-grid rounded-full overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className={`h-full ${colorClasses[color]} rounded-full`}
+        />
+      </div>
+    </div>
+  );
+}
+
+// Generate actionable insights based on factors
+function generateInsights(
+  factors: ViralScoreBreakdownProps['factors'],
+  totalScore: number
+): { working: string[]; improvements: string[] } {
+  const working: string[] = [];
+  const improvements: string[] = [];
+
+  // Volume analysis
+  if (factors.volume >= 7) {
+    working.push(`Strong audience volume (${factors.volume}/10 points)`);
+  } else if (factors.volume >= 5) {
+    improvements.push(`Moderate volume. Could gain +${10 - factors.volume} points with higher traffic topics`);
+  } else {
+    improvements.push(`Low volume topic. Look for trending searches with 100K+ monthly volume (+${10 - factors.volume} pts)`);
+  }
+
+  // Multi-source analysis
+  if (factors.multiSource >= 10) {
+    working.push("Trending across multiple platforms (max points)");
+  } else if (factors.multiSource >= 5) {
+    improvements.push(`Found on 2 platforms. Appearing on 3+ platforms adds +${10 - factors.multiSource} points`);
+  } else {
+    improvements.push(`Single platform trend. Cross-platform topics score +${10 - factors.multiSource} higher`);
+  }
+
+  // Freshness analysis
+  if (factors.freshness >= 10) {
+    working.push("Ultra-fresh trend (discovered within 4 hours)");
+  } else if (factors.freshness >= 5) {
+    improvements.push(`Trend is 4-24 hours old. Catching trends earlier adds +${10 - factors.freshness} points`);
+  } else {
+    improvements.push(`Older trend (24+ hours). Fresh trends within 4 hours score +10 points`);
+  }
+
+  // Keyword boost analysis
+  if (factors.keywordBoost >= 10) {
+    working.push("Contains high-velocity keywords (AI, crypto, viral triggers)");
+  } else if (factors.keywordBoost >= 5) {
+    working.push("Good topic structure (How-to/Why format)");
+    improvements.push(`Add hot keywords (AI, GPT, crypto, hack, secret) for +${15 - factors.keywordBoost} bonus points`);
+  } else {
+    improvements.push(`No viral keywords. Use formats like "How to [X]" or add hot keywords (AI, crypto) for +15 points`);
+  }
+
+  // AI analysis
+  if (factors.aiAnalysis >= 50) {
+    working.push(`Excellent content hook and emotional appeal (${factors.aiAnalysis}/70 points)`);
+  } else if (factors.aiAnalysis >= 30) {
+    improvements.push(`Good content potential. Add stronger hook, emotional trigger, or broader appeal for +${70 - factors.aiAnalysis} points`);
+  } else {
+    improvements.push(`Weak content appeal. Focus on curiosity, fear/greed triggers, or universal problems for +${70 - factors.aiAnalysis} points`);
+  }
+
+  return { working, improvements };
+}
+
+
+=== FILE: lib\viral-score.ts ===
+/**
+ * Viral Score™ Algorithm (Hybrid AI + Heuristic + Benchmark)
+ *
+ * NOTE: This file is server-only. Do not import in client components.
+ * For client-safe utilities, use @/lib/viral-score-utils.ts
+ *
+ * Predicts viral potential of trending topics (0-100 score)
+ * Combines:
+ * 1. Data Score: Volume, Multi-source validation, Freshness (Heuristic)
+ * 2. Benchmark Score: Semantic match against proven viral hits (Database)
+ * 3. Content Score: Hook quality, Emotional resonance, Value prop (Gemini AI)
+ */
+
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getBenchmarkScore } from '@/lib/viral-benchmarks';
+
+// Initialize Gemini AI (Server-side only)
+// Uses API Key for simplicity and reliability
+let model: any = null;
+
+function getModel() {
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+  
+  if (!model && apiKey) {
+    console.log("[Viral Score] Initializing Gemini model with key length:", apiKey.length);
+    const genAI = new GoogleGenerativeAI(apiKey);
+    model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash', // Use stable flash model
+      generationConfig: {
+        maxOutputTokens: 500,
+        temperature: 0.4,
+      }
+    });
+  } else if (!apiKey) {
+    console.error("[Viral Score] Missing API Key! Scores will be low.");
+  }
+  return model;
+}
+
+export interface ViralDNA {
+  hookType: string;
+  primaryEmotion: string;
+  valueProp: string;
+}
+
+export interface TrendWithViralScore {
+  title: string;
+  formattedTraffic: string;
+  relatedQueries?: string[];
+
+  // Viral Score fields
+  viralScore: number; // 0-100
+  viralPotential: 'high' | 'medium' | 'low';
+  viralFactors: {
+    volume: number; // 0-10 points
+    multiSource: number; // 0-10 points
+    freshness: number; // 0-10 points
+    keywordBoost: number; // 0-15 points (New "Hot Topic" Bonus)
+    benchmark: number; // 0-20 points (Proven Viral Hit Match)
+    aiAnalysis: number; // 0-70 points (The "Content Score")
+  };
+
+  // Metadata
+  sources?: string[]; // ['google', 'twitter', 'reddit']
+  firstSeenAt?: Date;
+  aiReasoning?: string; // Why the AI gave this score
+  viralDNA?: ViralDNA; // The "Psychology" behind the viral potential
+}
+
+/**
+ * Calculate viral score for a trending topic
+ */
+export async function calculateViralScore(trend: {
+  title: string;
+  formattedTraffic: string;
+  sources?: string[];
+  firstSeenAt?: Date;
+}): Promise<TrendWithViralScore> {
+  
+  // 1. Calculate Data Score (Heuristic) - Max 30 points
+  const volume = parseVolume(trend.formattedTraffic);
+  const volumeScore = calculateVolumeScore(volume); // Max 10
+  const multiSourceScore = calculateMultiSourceScore(trend.sources || []); // Max 10
+  const freshnessScore = calculateFreshnessScore(trend.firstSeenAt); // Max 10
+  
+  // 2. Calculate Keyword Boost (Heuristic) - Max 15 points
+  const keywordBoost = calculateKeywordBoost(trend.title);
+
+  // 3. Calculate Benchmark Score (Data-Driven) - Max 20 points
+  // Checks our database of 10k+ viral hits for semantic matches
+  let benchmarkScore = 0;
+  try {
+    benchmarkScore = await getBenchmarkScore(trend.title);
+  } catch (err) {
+    console.error(`[Viral Score] Benchmark check failed for "${trend.title}":`, err);
+    benchmarkScore = 0;
+  }
+
+  const dataScore = volumeScore + multiSourceScore + freshnessScore + keywordBoost + benchmarkScore;
+
+  // 4. Calculate Content Score (AI) - Max 70 points
+  let aiScore = 0;
+  let aiReasoning = "AI analysis skipped (No API Key).";
+  let viralDNA: ViralDNA | undefined;
+
+  try {
+    const aiModel = getModel();
+    if (aiModel) {
+      const prompt = `
+        Analyze the viral potential of this topic for a tech/business audience.
+        Topic: "${trend.title}"
+        
+        Rate on scale 0-70 based on:
+        1. Hook/Curiosity (Is it clicky?) - Max 30
+        2. Broad Appeal (Do people care?) - Max 25
+        3. Emotional Trigger (Fear, Greed, Awe?) - Max 15
+        
+        Also identify the Viral DNA:
+        - Hook Type: Contrarian, How-to, Listicle, Secret, News, Story, or Question
+        - Primary Emotion: Greed, Fear, Curiosity, Awe, Anger, Joy, or Urgency
+        - Value Prop: Money, Status, Time, Effort, Knowledge, or Entertainment
+
+        Output JSON only: 
+        { 
+          "score": number, 
+          "reason": "short explanation",
+          "dna": {
+             "hookType": "string",
+             "primaryEmotion": "string",
+             "valueProp": "string"
+          }
+        }
+      `;
+
+      const result = await aiModel.generateContent(prompt);
+      const response = result.response.text();
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      
+      if (jsonMatch) {
+        const data = JSON.parse(jsonMatch[0]);
+        aiScore = Math.min(data.score, 70);
+        aiReasoning = data.reason;
+        viralDNA = data.dna;
+      }
+    } else {
+      // Fallback: Boost score if it looks like a "How-to" or "Listicle" (simple heuristic)
+      if (trend.title.match(/^(How to|Top \d|Why|The Future of)/i)) {
+        aiScore = 40;
+        aiReasoning = "Heuristic boost for high-performing format.";
+        viralDNA = {
+            hookType: "High Performing",
+            primaryEmotion: "Curiosity",
+            valueProp: "Knowledge"
+        };
+      } else {
+        aiScore = 20;
+        aiReasoning = "Baseline content score.";
+        viralDNA = {
+            hookType: "Standard",
+            primaryEmotion: "Neutral",
+            valueProp: "Information"
+        };
+      }
+    }
+  } catch (error) {
+    console.error("Viral Score AI Error:", error);
+    aiScore = 20; // Safe fallback
+    aiReasoning = "AI analysis failed, used baseline.";
+  }
+
+  // 5. Total Score
+  // We allow the total to go slightly over 100 internally before capping, to reward "Perfect Storms"
+  // Example: 30 (Data) + 15 (Keywords) + 20 (Benchmark) + 70 (AI) = 135 (capped at 100)
+  const totalScore = Math.min(Math.round(dataScore + aiScore), 100);
+  const viralPotential = classifyViralPotential(totalScore);
+
+  return {
+    ...trend,
+    viralScore: totalScore,
+    viralPotential,
+    aiReasoning,
+    viralDNA,
+    viralFactors: {
+      volume: volumeScore,
+      multiSource: multiSourceScore,
+      freshness: freshnessScore,
+      keywordBoost,
+      benchmark: benchmarkScore,
+      aiAnalysis: aiScore
+    }
+  };
+}
+
+/**
+ * Parse volume from formatted traffic string
+ */
+function parseVolume(formattedTraffic: string): number {
+  const match = formattedTraffic.match(/([\d.]+)([KM]?)/i);
+  if (!match) return 0;
+
+  const [, num, suffix] = match;
+  const value = parseFloat(num);
+
+  if (suffix.toUpperCase() === 'K') return value * 1000;
+  if (suffix.toUpperCase() === 'M') return value * 1000000;
+  return value;
+}
+
+/**
+ * Factor 1: Volume Score (0-10 points)
+ * Adjusted for AI-First Model
+ */
+function calculateVolumeScore(volume: number): number {
+  if (volume >= 300000) return 10;
+  if (volume >= 100000) return 7;
+  if (volume >= 10000) return 5;
+  return 2;
+}
+
+/**
+ * Factor 2: Multi-Source Score (0-10 points)
+ * Adjusted for AI-First Model
+ */
+function calculateMultiSourceScore(sources: string[]): number {
+  const numSources = sources.length;
+  if (numSources >= 3) return 10;
+  if (numSources === 2) return 5;
+  return 2;
+}
+
+/**
+ * Factor 4: Keyword Boost (0-15 points)
+ * Rewards high-velocity topics
+ */
+function calculateKeywordBoost(title: string): number {
+  const hotKeywords = [
+    'AI', 'GPT', 'Cursor', 'Agent', 'Crypto', 'Bitcoin', 
+    'Hack', 'Secret', 'Revealed', 'Guide', 'Tutorial', 
+    'Free', 'Money', 'Profit', 'Scale', 'Million'
+  ];
+  
+  const lowerTitle = title.toLowerCase();
+  let boost = 0;
+  
+  // +10 for primary hot keywords
+  if (hotKeywords.some(k => lowerTitle.includes(k.toLowerCase()))) {
+    boost += 10;
+  }
+  
+  // +5 for "How to" or "Why" structure (Actionable)
+  if (lowerTitle.match(/^(how to|why|top \d)/)) {
+    boost += 5;
+  }
+  
+  return Math.min(boost, 15);
+}
+
+/**
+ * Factor 3: Freshness Score (0-10 points)
+ */
+function calculateFreshnessScore(firstSeenAt?: Date): number {
+  if (!firstSeenAt) return 5;
+  const hoursSinceFirstSeen = (Date.now() - firstSeenAt.getTime()) / (1000 * 60 * 60);
+  if (hoursSinceFirstSeen < 4) return 10;
+  if (hoursSinceFirstSeen < 24) return 5;
+  return 0;
+}
+
+/**
+ * Classify viral potential based on score
+ */
+function classifyViralPotential(score: number): 'high' | 'medium' | 'low' {
+  if (score >= 75) return 'high';
+  if (score >= 50) return 'medium';
+  return 'low';
+}
+
+// ... (Keep existing helpers for badges/colors)
+export function getViralScoreBadgeColor(viralPotential: 'high' | 'medium' | 'low') {
+  switch (viralPotential) {
+    case 'high': return { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-300' };
+    case 'medium': return { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-300' };
+    case 'low': return { bg: 'bg-gray-50', text: 'text-gray-600', border: 'border-gray-300' };
+  }
+}
+
+export function getViralScoreEmoji(viralPotential: 'high' | 'medium' | 'low'): string {
+  switch (viralPotential) {
+    case 'high': return '🔥';
+    case 'medium': return '⚡';
+    case 'low': return '📊';
+  }
+}
+
+export function sortByViralScore<T extends { viralScore: number }>(trends: T[]): T[] {
+  return [...trends].sort((a, b) => b.viralScore - a.viralScore);
+}
+
+export function formatViralScore(score: number): string {
+  return `${score}/100`;
+}
+
+export function getViralPotentialLabel(viralPotential: 'high' | 'medium' | 'low'): string {
+  switch (viralPotential) {
+    case 'high': return 'High Viral Potential';
+    case 'medium': return 'Medium Viral Potential';
+    case 'low': return 'Low Viral Potential';
+  }
+}
+
+
+=== FILE: app\api\trends\route.ts ===
+import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createClient } from "@/lib/supabase/server";
+import { redis, withCache, cacheKeys, isRedisConnected } from "@/lib/redis";
+import { performance } from "perf_hooks";
+import { getMixedTrends, getGoogleTrends, getTwitterTrends, getRedditTrends } from "@/lib/real-trends";
+import { calculateViralScore, sortByViralScore } from "@/lib/viral-score";
+
+// Cache TTL in seconds
+const CACHE_TTL = 900; // 15 minutes
+
+// Force this route to be dynamic - never cache by Next.js
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+// Removed PowerShell microservice URLs - no longer needed
+// Now using direct Gemini AI integration for all trend generation
+
+// Fallback mock data (only used if PowerShell service is unavailable)
+const mockTrendingTopics = [
+  {
+    title: "AI Content Creation",
+    formattedTraffic: "150K searches",
+    relatedQueries: ["AI writing tools", "Content automation", "AI marketing"],
+  },
+  {
+    title: "Social Media Marketing",
+    formattedTraffic: "200K searches",
+    relatedQueries: [
+      "Instagram marketing",
+      "TikTok trends",
+      "Social media automation",
+    ],
+  },
+  {
+    title: "Digital Marketing Trends",
+    formattedTraffic: "100K searches",
+    relatedQueries: ["Marketing automation", "Email marketing", "SEO trends"],
+  },
+  {
+    title: "Content Marketing Strategy",
+    formattedTraffic: "80K searches",
+    relatedQueries: ["Content planning", "Editorial calendar", "Content SEO"],
+  },
+  {
+    title: "Video Marketing",
+    formattedTraffic: "120K searches",
+    relatedQueries: ["YouTube marketing", "Video SEO", "Short-form video"],
+  },
+  {
+    title: "Influencer Marketing",
+    formattedTraffic: "90K searches",
+    relatedQueries: [
+      "Micro influencers",
+      "Influencer outreach",
+      "Creator economy",
+    ],
+  },
+];
+
+interface PowerShellTrend {
+  id: number;
+  topic: string;
+  trend_direction: string;
+  volume: string;
+  engagement: number;
+  score: number;
+}
+
+interface PowerShellResponse {
+  generated_at: string;
+  trends: PowerShellTrend[];
+  topic: string;
+}
+
+interface TrendingTopic {
+  title: string;
+  formattedTraffic: string;
+  relatedQueries: string[];
+}
+
+// Removed unused PowerShell integration functions
+// - getTrendsData() - No longer needed after PowerShell microservice removal
+// - convertToTrendingTopics() - No longer needed after PowerShell microservice removal
+
+/**
+ * Get real trending data from multiple sources
+ * Primary function for trend discovery
+ */
+/**
+ * 🚀 OPTIMIZATION #1 & #2: Fire-and-forget cache write
+ * Consolidates cache logic and sends updates to background without blocking response
+ */
+function updateCacheAsync(cacheKey: string, value: any, ttl: number): void {
+  if (!redis) return;
+  // Fire-and-forget: Do not await, does not block response
+  redis.setex(cacheKey, ttl, JSON.stringify(value)).catch((err: any) => {
+    console.error(`[Trends API] Cache update failed:`, err.message);
+  });
+}
+
+
+async function getRealTrendingData(keyword: string, userId: string, source: string = 'mixed') {
+  const startTime = performance.now();
+  
+  try {
+    let trendsData;
+    
+    switch (source) {
+      case 'google': {
+        const googleTrends = await getGoogleTrends(keyword);
+        trendsData = {
+          trending: googleTrends,
+          relatedQueries: [
+            { query: `${keyword} trends`, value: 100, formattedValue: "100%" },
+            { query: `${keyword} 2024`, value: 85, formattedValue: "85%" },
+            { query: `popular ${keyword}`, value: 70, formattedValue: "70%" },
+          ],
+          relatedTopics: [
+            { query: `${keyword} content`, value: 100, formattedValue: "100%" },
+            { query: `trending ${keyword}`, value: 90, formattedValue: "90%" },
+            { query: `viral ${keyword}`, value: 80, formattedValue: "80%" },
+          ],
+          source: 'Google Trends',
+        };
+        break;
+      }
+        
+      case 'twitter': {
+        const twitterTrends = await getTwitterTrends();
+        trendsData = {
+          trending: twitterTrends,
+          relatedQueries: [
+            { query: `${keyword} twitter`, value: 100, formattedValue: "100%" },
+            { query: `#${keyword.replace(/\s+/g, '')}`, value: 85, formattedValue: "85%" },
+            { query: `${keyword} hashtag`, value: 70, formattedValue: "70%" },
+          ],
+          relatedTopics: [
+            { query: `${keyword} viral`, value: 100, formattedValue: "100%" },
+            { query: `${keyword} trending`, value: 90, formattedValue: "90%" },
+            { query: `social ${keyword}`, value: 80, formattedValue: "80%" },
+          ],
+          source: 'Twitter Trends',
+        };
+        break;
+      }
+        
+      case 'reddit': {
+        const redditTrends = await getRedditTrends();
+        trendsData = {
+          trending: redditTrends,
+          relatedQueries: [
+            { query: `${keyword} reddit`, value: 100, formattedValue: "100%" },
+            { query: `${keyword} discussion`, value: 85, formattedValue: "85%" },
+            { query: `r/${keyword.replace(/\s+/g, '')}`, value: 70, formattedValue: "70%" },
+          ],
+          relatedTopics: [
+            { query: `${keyword} community`, value: 100, formattedValue: "100%" },
+            { query: `hot ${keyword}`, value: 90, formattedValue: "90%" },
+            { query: `${keyword} upvotes`, value: 80, formattedValue: "80%" },
+          ],
+          source: 'Reddit Hot Topics',
+        };
+        break;
+      }
+        
+      case 'mixed':
+      default: {
+        // For keyword searches, use Gemini AI to generate relevant trends
+        // Real trend APIs (Google/Twitter/Reddit) are better for discovering trending topics
+        // but Gemini is better for generating content ideas around a specific keyword
+        try {
+          console.log(`[Trends] Attempting Gemini AI for keyword: "${keyword}"`);
+          const geminiResult = await generateTrendsWithGemini(keyword, userId);
+          trendsData = {
+            ...geminiResult,
+            source: 'Gemini AI (Keyword-Optimized)',
+          };
+          console.log('[Trends] ✓ Successfully using Gemini AI results');
+        } catch (geminiError: any) {
+          console.error('[Trends] ❌ Gemini AI FAILED:', {
+            error: geminiError.message,
+            stack: geminiError.stack,
+            name: geminiError.name
+          });
+          console.warn('[Trends] Falling back to mixed real trends (Twitter/Reddit mock data)');
+          // Fallback to real trends if Gemini fails
+          
+          // News API implementation
+          const newsApiKey = process.env.NEWS_API_KEY;
+          
+          if (userId !== "anonymous") {
+            // Implementation for user's custom news API key would go here
+          }
+          
+          trendsData = await getMixedTrends(keyword, {
+            includeGoogle: true,
+            includeTwitter: true,
+            includeReddit: true,
+            includeNews: !!newsApiKey,
+            newsApiKey,
+          });
+        }
+        break;
+      }
+    }
+    
+    const duration = performance.now() - startTime;
+    const sourceInfo = (trendsData as any).source || source;
+    console.log(`[Real Trends] ✓ Fetched ${sourceInfo} in ${Math.round(duration)}ms`);
+
+    // Calculate viral scores for all trends
+    if (trendsData.trending && Array.isArray(trendsData.trending)) {
+      trendsData.trending = await Promise.all(trendsData.trending.map(async (trend: any) =>
+        await calculateViralScore({
+          title: trend.title,
+          formattedTraffic: trend.formattedTraffic || '0K searches',
+          sources: [source], // Single source for now
+          firstSeenAt: new Date() // Current time as first seen
+        })
+      ));
+
+      // Sort by viral score (highest first)
+      trendsData.trending = sortByViralScore(trendsData.trending);
+
+      console.log(`[Viral Score] ✓ Calculated viral scores for ${trendsData.trending.length} trends`);
+    }
+
+    return trendsData;
+    
+  } catch (error: any) {
+    const duration = performance.now() - startTime;
+    console.error(`[Real Trends] Error fetching trends after ${Math.round(duration)}ms:`, error.message);
+    
+    // Fallback to Gemini AI if real trends fail
+    console.log('[Real Trends] Falling back to AI-generated trends...');
+    return await generateTrendsWithGemini(keyword, userId);
+  }
+}
+
+/**
+ * Generate trending topics using Google Gemini AI
+ * Fallback function when real trends are unavailable
+ */
+async function generateTrendsWithGemini(keyword: string, _userId: string) {
+  const startTime = performance.now();
+
+  try {
+    const apiKey = process.env.GOOGLE_API_KEY;
+    
+    console.log('[Gemini] API Key loaded:', apiKey ? `${apiKey.substring(0, 20)}...` : 'MISSING');
+
+    if (!apiKey) {
+      throw new Error("No Google API key configured");
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    // Use gemini-2.0-flash (stable, fast model - 1.5 retired April 2025)
+    // Available models: gemini-2.0-flash, gemini-2.5-flash, gemini-2.5-pro
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    console.log('[Gemini] Using model: gemini-2.0-flash');
+
+    const prompt = `You are a content marketing expert. Generate 6 highly engaging, specific content ideas related to "${keyword}".
+
+These should be:
+- Unique angles or perspectives on ${keyword}
+- Actionable content topics that would perform well on social media
+- Relevant to current trends and audience interests
+- Specific enough to create engaging posts
+
+For each idea, provide:
+- title: A compelling, specific content angle (3-6 words, not generic)
+- formattedTraffic: Estimated monthly interest (format: "XXK searches" where XX is 50-300)
+- relatedQueries: 3 specific, searchable phrases people would use to find this content
+
+IMPORTANT: Make titles SPECIFIC and ACTIONABLE, not generic categories.
+Good examples: "Morning Routines for Busy Parents", "Budget-Friendly Car Features to Look For"
+Bad examples: "Parenting Tips", "Car Shopping"
+
+Format as JSON array:
+[
+  {
+    "title": "Specific Content Angle",
+    "formattedTraffic": "XXK searches",
+    "relatedQueries": ["specific query 1", "specific query 2", "specific query 3"]
+  }
+]
+
+Return ONLY the JSON array, no markdown formatting or explanations.`;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    // Clean up markdown if present
+    const jsonText = text
+      .replace(/```json\n?/g, "")
+      .replace(/```\n?/g, "")
+      .trim();
+    const trends = JSON.parse(jsonText);
+
+    const duration = performance.now() - startTime;
+    console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
+
+    // Calculate viral scores for Gemini-generated trends
+    const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
+      await calculateViralScore({
+        title: trend.title,
+        formattedTraffic: trend.formattedTraffic || '0K searches',
+        sources: ['gemini-ai'], // Mark as AI-generated
+        firstSeenAt: new Date()
+      })
+    ));
+
+    // Sort by viral score
+    const sortedTrends = sortByViralScore(trendsWithScores);
+
+    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 0})`);
+
+    return {
+      trending: sortedTrends,
+      relatedQueries: [
+        { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
+        { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },
+        { query: `best ${keyword} tips`, value: 70, formattedValue: "70%" },
+        { query: `${keyword} for beginners`, value: 60, formattedValue: "60%" },
+      ],
+      relatedTopics: [
+        { query: `${keyword} strategies`, value: 100, formattedValue: "100%" },
+        { query: `${keyword} content creation`, value: 90, formattedValue: "90%" },
+        { query: `viral ${keyword} ideas`, value: 80, formattedValue: "80%" },
+        { query: `${keyword} social media`, value: 75, formattedValue: "75%" },
+      ],
+    };
+  } catch (error: any) {
+    const duration = performance.now() - startTime;
+    console.error(
+      `[Gemini Fallback] Error generating trends after ${Math.round(duration)}ms:`,
+      error.message,
+    );
+    throw error;
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const startTime = performance.now();
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const keyword = searchParams.get("keyword") || "";
+    const mode = searchParams.get("mode") || "ideas";
+    const bypassCache = searchParams.get("bypass_cache") === "true";
+
+    // Headers for response
+    const headers = {
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+      Pragma: "no-cache",
+    };
+
+    // 🚀 OPTIMIZATION #3: Parallelize init operations
+    // Supabase client creation + Redis check run in parallel (independent ops)
+    const [supabaseClient, redisStatus] = await Promise.all([
+      createClient(),
+      isRedisConnected(500).catch(() => false),
+    ]);
+    
+    const supabase = supabaseClient;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const userId = user?.id || "anonymous";
+    
+    // Redis check result from parallel operation
+    const redisAvailable = redisStatus === true;
+    if (!redisAvailable) {
+      console.warn("[Trends API] Redis unavailable, proceeding without caching");
+    }
+
+    // Mode: Daily trending topics (no keyword search)
+    if (mode === "trending") {
+      // Generate cache key for trending mode
+      const cacheKey = cacheKeys.trends("trending:daily", "trending");
+
+      // If Redis is unavailable or bypass is requested, generate content directly
+      if (!redisAvailable || bypassCache) {
+        try {
+          // Use real trending data instead of AI-generated
+          const realTrendsResult = await getRealTrendingData("trending topics", userId, "mixed");
+
+          const result = {
+            success: true,
+            mode: "trending",
+            source: "real-trends-mixed",
+            data: realTrendsResult,
+            meta: {
+              totalResults: realTrendsResult.trending?.length || 0,
+              timestamp: new Date().toISOString(),
+              cached: false,
+              response_time_ms: Math.round(performance.now() - startTime),
+            },
+          };
+
+          // If Redis is available, update the cache for future requests
+          if (redisAvailable && !bypassCache) {
+            updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+          }
+
+          return NextResponse.json(result, { headers });
+        } catch (error) {
+          console.error(
+            "[Trends API] PowerShell service unavailable, using mock data",
+          );
+          // Fallback to mock data if PowerShell service is down
+          const result = {
+            success: true,
+            mode: "trending",
+            source: "mock-fallback",
+            data: mockTrendingTopics,
+            meta: {
+              totalResults: mockTrendingTopics.length,
+              timestamp: new Date().toISOString(),
+              cached: false,
+              response_time_ms: Math.round(performance.now() - startTime),
+            },
+          };
+
+          // If Redis is available, update the cache for future requests
+          if (redisAvailable && !bypassCache) {
+            updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+          }
+
+          return NextResponse.json(result, { headers });
+        }
+      }
+
+      // Use cache or fetch fresh data
+      const result = await withCache(
+        cacheKey,
+        CACHE_TTL,
+        async () => {
+          try {
+            // Skip PowerShell microservice, go directly to Gemini
+            const geminiResult = await generateTrendsWithGemini("content creation", userId);
+
+            return {
+              success: true,
+              mode: "trending",
+              source: "gemini-ai-fallback",
+              data: geminiResult,
+              meta: {
+                totalResults: geminiResult.trending?.length || 0,
+                timestamp: new Date().toISOString(),
+                cached: false,
+              },
+            };
+          } catch (error) {
+            console.error(
+              "[Trends API] Gemini service unavailable, using mock data",
+            );
+            // Fallback to mock data if Gemini service is down
+            return {
+              success: true,
+              mode: "trending",
+              source: "mock-fallback",
+              data: mockTrendingTopics,
+              meta: {
+                totalResults: mockTrendingTopics.length,
+                timestamp: new Date().toISOString(),
+                cached: false,
+              },
+            };
+          }
+        },
+        {
+          logLevel: "verbose",
+          bypassCache,
+          addCacheMetadata: true,
+        },
+      );
+
+      const duration = performance.now() - startTime;
+
+      // Return cached or fresh data with performance metrics
+      return NextResponse.json(
+        {
+          ...result,
+          meta: {
+            ...result.meta,
+            response_time_ms: Math.round(duration),
+          },
+        },
+        { headers },
+      );
+    }
+
+    // Mode: Content ideas (uses keyword for search)
+    if (mode === "ideas") {
+      if (keyword) {
+        // Get source parameter (google, twitter, reddit, mixed)
+        const source = searchParams.get("source") || "mixed";
+        
+        // Generate cache key for ideas mode with keyword and source
+        const cacheKey = cacheKeys.trends(`${keyword.toLowerCase()}:${source}`, "ideas");
+
+        // If Redis is unavailable or bypass is requested, generate content directly
+        if (!redisAvailable || bypassCache) {
+          try {
+            // Use real trending data first (Google, Twitter, Reddit, News)
+            const realTrendsData = await getRealTrendingData(keyword, userId, source);
+
+            const result = {
+              success: true,
+              mode: "ideas",
+              keyword,
+              source: (realTrendsData as any).source || `real-trends-${source}`,
+              data: realTrendsData,
+              meta: {
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
+
+            // If Redis is available, update the cache for future requests
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+            }
+
+            return NextResponse.json(result, { headers });
+          } catch (realTrendsError: any) {
+            console.error(
+              "[Trends API] Real trends service failed:",
+              realTrendsError.message,
+            );
+
+            // Final fallback to mock data
+            console.error(
+              "[Trends API] All services unavailable, using mock data",
+            );
+            const filteredTrending = mockTrendingTopics.filter(
+              (topic) =>
+                topic.title.toLowerCase().includes(keyword.toLowerCase()) ||
+                topic.relatedQueries?.some((query) =>
+                  query.toLowerCase().includes(keyword.toLowerCase()),
+                ),
+            );
+
+            const result = {
+              success: true,
+              mode: "ideas",
+              keyword,
+              source: "mock-fallback",
+              data: {
+                trending:
+                  filteredTrending.length > 0
+                    ? filteredTrending
+                    : mockTrendingTopics,
+                relatedQueries: [
+                  {
+                    query: `${keyword} tools`,
+                    value: 100,
+                    formattedValue: "100%",
+                  },
+                  {
+                    query: `${keyword} automation`,
+                    value: 85,
+                    formattedValue: "85%",
+                  },
+                  {
+                    query: `${keyword} strategies`,
+                    value: 70,
+                    formattedValue: "70%",
+                  },
+                ],
+                relatedTopics: [
+                  {
+                    query: `${keyword} trends`,
+                    value: 100,
+                    formattedValue: "100%",
+                  },
+                  {
+                    query: `${keyword} marketing`,
+                    value: 90,
+                    formattedValue: "90%",
+                  },
+                  {
+                    query: `${keyword} best practices`,
+                    value: 80,
+                    formattedValue: "80%",
+                  },
+                ],
+              },
+              meta: {
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
+
+            // If Redis is available, update the cache for future requests
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+            }
+
+            return NextResponse.json(result, { headers });
+          }
+        }
+
+        // Use cache or fetch fresh data
+        const result = await withCache(
+          cacheKey,
+          CACHE_TTL,
+          async () => {
+            // Try real trends first (Google, Twitter, Reddit, News)
+            try {
+              const realTrendsData = await getRealTrendingData(keyword, userId, source);
+              return {
+                success: true,
+                mode: "ideas",
+                keyword,
+                source: (realTrendsData as any).source || `real-trends-${source}`,
+                data: realTrendsData,
+                meta: {
+                  timestamp: new Date().toISOString(),
+                  cached: false,
+                },
+              };
+            } catch (realTrendsError: any) {
+              console.error(
+                "[Trends API] Real trends failed, trying Gemini AI fallback:",
+                realTrendsError.message,
+              );
+
+              // Fallback to Gemini AI if real trends fail
+              try {
+                const geminiData = await generateTrendsWithGemini(keyword, userId);
+                return {
+                  success: true,
+                  mode: "ideas",
+                  keyword,
+                  source: "gemini-ai-fallback",
+                  data: geminiData,
+                  meta: {
+                    timestamp: new Date().toISOString(),
+                    cached: false,
+                  },
+                };
+              } catch (geminiError: any) {
+                console.error(
+                  "[Trends API] Gemini AI also failed:",
+                  geminiError.message,
+                );
+              }
+
+              // Final fallback to mock data
+              console.error(
+                "[Trends API] All services unavailable, using mock data",
+              );
+              const filteredTrending = mockTrendingTopics.filter(
+                (topic) =>
+                  topic.title.toLowerCase().includes(keyword.toLowerCase()) ||
+                  topic.relatedQueries?.some((query) =>
+                    query.toLowerCase().includes(keyword.toLowerCase()),
+                  ),
+              );
+
+              return {
+                success: true,
+                mode: "ideas",
+                keyword,
+                source: "mock-fallback",
+                data: {
+                  trending:
+                    filteredTrending.length > 0
+                      ? filteredTrending
+                      : mockTrendingTopics,
+                  relatedQueries: [
+                    {
+                      query: `${keyword} tools`,
+                      value: 100,
+                      formattedValue: "100%",
+                    },
+                    {
+                      query: `${keyword} automation`,
+                      value: 85,
+                      formattedValue: "85%",
+                    },
+                    {
+                      query: `${keyword} strategies`,
+                      value: 70,
+                      formattedValue: "70%",
+                    },
+                  ],
+                  relatedTopics: [
+                    {
+                      query: `${keyword} trends`,
+                      value: 100,
+                      formattedValue: "100%",
+                    },
+                    {
+                      query: `${keyword} marketing`,
+                      value: 90,
+                      formattedValue: "90%",
+                    },
+                    {
+                      query: `${keyword} best practices`,
+                      value: 80,
+                      formattedValue: "80%",
+                    },
+                  ],
+                },
+                meta: {
+                  timestamp: new Date().toISOString(),
+                  cached: false,
+                },
+              };
+            }
+          },
+          {
+            logLevel: "verbose",
+            bypassCache,
+            addCacheMetadata: true,
+          },
+        );
+
+        const duration = performance.now() - startTime;
+
+        // Return cached or fresh data with performance metrics
+        return NextResponse.json(
+          {
+            ...result,
+            meta: {
+              ...result.meta,
+              response_time_ms: Math.round(duration),
+            },
+          },
+          { headers },
+        );
+      } else {
+        // No keyword provided - return empty or default topics
+        return NextResponse.json(
+          {
+            success: true,
+            mode: "ideas",
+            source: "no-keyword",
+            data: {
+              trending: [],
+              relatedQueries: [],
+              relatedTopics: [],
+            },
+            meta: {
+              message: "Please provide a keyword to search for content ideas",
+              timestamp: new Date().toISOString(),
+              response_time_ms: Math.round(performance.now() - startTime),
+            },
+          },
+          { headers },
+        );
+      }
+    }
+
+    // Unknown mode
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Unknown mode: ${mode}`,
+        response_time_ms: Math.round(performance.now() - startTime),
+      },
+      { status: 400 },
+    );
+  } catch (error) {
+    const duration = performance.now() - startTime;
+    console.error(`[Trends API] Error after ${Math.round(duration)}ms: - route.ts:590`, error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to fetch trending topics",
+        details: error instanceof Error ? error.message : "Unknown error",
+        response_time_ms: Math.round(duration),
+      },
+      { status: 500 },
+    );
+  }
+}
+
+// Handle CORS for any other HTTP methods
+export async function POST(_request: NextRequest) {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+}
+
+
+
+
+
+=== FILE: app\api\usage\route.ts ===
+import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get user's tier limits
+    const { data: tierLimits, error: tierError } = await supabase.rpc(
+      "get_user_tier_limits",
+      { p_user_id: user.id }
+    );
+
+    if (tierError) {
+      console.error("Error fetching tier limits:", tierError);
+      return NextResponse.json(
+        { error: "Failed to fetch tier limits" },
+        { status: 500 }
+      );
+    }
+
+    // Get user's daily usage
+    const { data: dailyUsage, error: usageError } = await supabase.rpc(
+      "get_user_daily_usage",
+      { p_user_id: user.id }
+    );
+
+    if (usageError) {
+      console.error("Error fetching daily usage:", usageError);
+      return NextResponse.json(
+        { error: "Failed to fetch daily usage" },
+        { status: 500 }
+      );
+    }
+
+    // Get user profile for tier info
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("subscription_tier")
+      .eq("id", user.id)
+      .single();
+
+    const limits = tierLimits?.[0] || {
+      tier: "free",
+      daily_generations_limit: 3,
+      daily_tokens_limit: 10000,
+      monthly_campaigns_limit: 5,
+      ai_tools_limit: 1,
+      can_schedule: false,
+      can_publish: false,
+      can_use_ai_studio: false,
+      features: ["xelora", "copy_content"],
+    };
+
+    const usage = dailyUsage?.[0] || {
+      generations_count: 0,
+      tokens_used: 0,
+      campaigns_created: 0,
+      usage_date: new Date().toISOString().split("T")[0],
+    };
+
+    // Check if user can generate
+    const { data: canGenerate } = await supabase.rpc("can_user_generate", {
+      p_user_id: user.id,
+    });
+
+    // Calculate remaining generations
+    const remainingGenerations =
+      limits.daily_generations_limit === -1
+        ? -1 // Unlimited
+        : Math.max(
+            0,
+            limits.daily_generations_limit - usage.generations_count
+          );
+
+    // Calculate percentage used
+    const percentageUsed =
+      limits.daily_generations_limit === -1
+        ? 0
+        : (usage.generations_count / limits.daily_generations_limit) * 100;
+
+    return NextResponse.json({
+      success: true,
+      tier: profile?.subscription_tier || "free",
+      limits: {
+        daily_generations: limits.daily_generations_limit,
+        daily_tokens: limits.daily_tokens_limit,
+        monthly_campaigns: limits.monthly_campaigns_limit,
+        ai_tools: limits.ai_tools_limit,
+        can_schedule: limits.can_schedule,
+        can_publish: limits.can_publish,
+        can_use_ai_studio: limits.can_use_ai_studio,
+        features: limits.features,
+      },
+      usage: {
+        generations: usage.generations_count,
+        tokens: usage.tokens_used,
+        campaigns: usage.campaigns_created,
+        date: usage.usage_date,
+      },
+      remaining: {
+        generations: remainingGenerations,
+        percentage_used: Math.round(percentageUsed),
+      },
+      can_generate: canGenerate || false,
+    });
+  } catch (error: any) {
+    console.error("Usage API error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
 
 

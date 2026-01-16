@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGeminiModel } from '@/lib/gemini';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
 import { redis, withCache, cacheKeys, isRedisConnected } from "@/lib/redis";
 import { performance } from "perf_hooks";
@@ -245,58 +245,81 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
-  // Get the model with JSON mode enabled
-  // using gemini-1.5-flash-latest for stability
-  const model = getGeminiModel('gemini-1.5-flash-latest', true);
-
-  if (!model) {
-     // This will be caught by the calling function and trigger the next fallback.
-     throw new Error("Gemini client is not initialized (likely missing API key).");
-  }
-
   try {
+    const apiKey = process.env.GOOGLE_API_KEY;
+    
+    console.log('[Gemini] API Key loaded:', apiKey ? `${apiKey.substring(0, 20)}...` : 'MISSING');
+
+    if (!apiKey) {
+      throw new Error("No Google API key configured");
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    // Use gemini-2.0-flash (stable, fast model - 1.5 retired April 2025)
+    // Available models: gemini-2.0-flash, gemini-2.5-flash, gemini-2.5-pro
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    console.log('[Gemini] Using model: gemini-2.0-flash');
+
     const prompt = `You are a content marketing expert. Generate 6 highly engaging, specific content ideas related to "${keyword}".
 
 These should be:
-- Unique angles or perspectives
+- Unique angles or perspectives on ${keyword}
 - Actionable content topics that would perform well on social media
-- Relevant to current trends
+- Relevant to current trends and audience interests
+- Specific enough to create engaging posts
 
-For each idea, provide a title, estimated traffic, and related queries.
+For each idea, provide:
+- title: A compelling, specific content angle (3-6 words, not generic)
+- formattedTraffic: Estimated monthly interest (format: "XXK searches" where XX is 50-300)
+- relatedQueries: 3 specific, searchable phrases people would use to find this content
 
-Your response MUST be a valid JSON array of objects with the following structure. Do not include any other text or markdown.
+IMPORTANT: Make titles SPECIFIC and ACTIONABLE, not generic categories.
+Good examples: "Morning Routines for Busy Parents", "Budget-Friendly Car Features to Look For"
+Bad examples: "Parenting Tips", "Car Shopping"
+
+Format as JSON array:
 [
   {
-    "title": "A Specific and Compelling Content Angle",
+    "title": "Specific Content Angle",
     "formattedTraffic": "XXK searches",
     "relatedQueries": ["specific query 1", "specific query 2", "specific query 3"]
   }
-]`;
+]
+
+Return ONLY the JSON array, no markdown formatting or explanations.`;
 
     const result = await model.generateContent(prompt);
-    // Directly parse the response, now guaranteed to be JSON
-    const trends = JSON.parse(result.response.text());
+    const text = result.response.text();
+
+    // Clean up markdown if present
+    const jsonText = text
+      .replace(/```json\n?/g, "")
+      .replace(/```\n?/g, "")
+      .trim();
+    const trends = JSON.parse(jsonText);
 
     const duration = performance.now() - startTime;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
-    // Calculate viral scores for the generated trends
+    // Calculate viral scores for Gemini-generated trends
     const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
       await calculateViralScore({
         title: trend.title,
         formattedTraffic: trend.formattedTraffic || '0K searches',
-        sources: ['gemini-ai'],
+        sources: ['gemini-ai'], // Mark as AI-generated
         firstSeenAt: new Date()
       })
     ));
 
+    // Sort by viral score
     const sortedTrends = sortByViralScore(trendsWithScores);
 
-    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 'N/A'})`);
+    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 0})`);
 
     return {
       trending: sortedTrends,
-       relatedQueries: [
+      relatedQueries: [
         { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
         { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },
         { query: `best ${keyword} tips`, value: 70, formattedValue: "70%" },
@@ -311,11 +334,10 @@ Your response MUST be a valid JSON array of objects with the following structure
     };
   } catch (error: any) {
     const duration = performance.now() - startTime;
-    console.error(`[Gemini Trends Error] Failed to generate trends after ${Math.round(duration)}ms`, {
-        keyword,
-        errorMessage: error.message,
-    });
-    // Re-throw the error to allow the calling function's fallback logic to engage
+    console.error(
+      `[Gemini Fallback] Error generating trends after ${Math.round(duration)}ms:`,
+      error.message,
+    );
     throw error;
   }
 }

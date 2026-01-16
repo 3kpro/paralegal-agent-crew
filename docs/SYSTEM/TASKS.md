@@ -1,5 +1,5 @@
 # TASKS.md - XELORA Product
-Last Updated: 2026-01-14
+Last Updated: 2026-01-16
 
 This file lists XELORA product-specific tasks only.
 
@@ -19,6 +19,78 @@ This file lists XELORA product-specific tasks only.
 
 
 ## COMPLETED
+
+- [x] **Fix Data Inconsistency in Campaign Saving (Issue #1)** 💾 ✅
+      - **Problem:** Campaign saving involved multiple database calls, risking partial failures (zombie campaigns).
+      - **Action:**
+        - Created SQL RPC function `upsert_campaign_with_posts` for atomic transactions.
+        - Refactored `saveCampaign` in `app/(portal)/campaigns/create/page.tsx` to use the RPC.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
+
+- [x] **Harden AI-Powered Features (Viral Score & Trend Generation)** 🛡️ ✅
+      - **Problem:** The Viral Score and AI-generated trends were fragile due to regex-based parsing and decentralized client logic.
+      - **Goal:** Make AI features resilient for beta users.
+      - **Action:**
+        - Created `lib/gemini.ts` for centralized client management with fail-fast logic.
+        - Refactored `viral-score.ts` and `app/api/trends/route.ts` to use Gemini JSON mode (`responseMimeType: "application/json"`).
+        - Improved error handling and fallback degradation (no more 20 vs 70 cliffs).
+      - **Reference:** `docs/GE_SUGGESTIONS.md` Issue #2
+      - **Assigned:** Gemini
+
+- [x] **Scaffold Idea 11: Code Review Bias Detector (ReviewLens)** 🛠️ ✅
+      - **Goal:** Initialize project structure and core stack for code review analysis.
+      - **Action:** Created `src/` (FastAPI), `dashboard` (React+Vite), `TRUTH.md`, and requirements.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **GitHub OAuth Integration for ReviewLens** 🐙 ✅
+      - **Goal:** Enable users to log in with GitHub to access their repositories.
+      - **Action:** Implemented OAuth endpoints in FastAPI and React auth flow.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **PR History Ingestion for ReviewLens** 📥 ✅
+      - **Goal:** Fetch and store pull request history for analysis.
+      - **Action:** Built `GitHubIngestor` service and `SQLAlchemy` models for PRs/Reviews/Comments.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Review Pattern Analysis for ReviewLens** 📊 ✅
+      - **Goal:** Calculate key metrics to identify review bottlenecks and potential bias.
+      - **Action:** Implemented `Analyzer` service with matrix generation and anomaly detection algorithms.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Comment Classifier for ReviewLens** 🧠 ✅
+      - **Goal:** Automatically categorize review comments and detect tone.
+      - **Action:** Integrated Anthropic API (Claude 3 Haiku) to classify comments (Nitpick vs. Architecture) and tone (Constructive vs. Harsh).
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Bias Detection Algorithm for ReviewLens** ⚖️ ✅
+      - **Goal:** Identify statistically significant bias in review patterns.
+      - **Action:** Implemented logic to detect "Nitpick Focus" and "Harsh Tone" anomalies between specific Reviewer-Author pairs.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Dashboard Visualizations for ReviewLens** 📈 ✅
+      - **Goal:** Provide actionable insights via a visual interface.
+      - **Action:** Built React dashboard with KPI cards, interaction charts, and a prioritized Risk Feed.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **GitLab Integration for ReviewLens** 🦊 ✅
+      - **Goal:** Expand support to GitLab repositories.
+      - **Action:** Implemented `GitLabIngestor` to normalize GitLab MRs/Notes into the ReviewLens schema using `httpx`.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Export Reports for ReviewLens** 📋 ✅
+      - **Goal:** Allow users to download audit data.
+      - **Action:** Created `ReportExporter` to serialize analysis results into CSV/JSON formats.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
 
 - [x] **Helix AI: Context-Aware Workflow Integration** 🤖 ✅
       - **Problem:** Helix feels like a generic chatbot, not an intelligent assistant integrated into Xelora workflows.
