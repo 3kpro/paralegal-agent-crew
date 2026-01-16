@@ -87,7 +87,7 @@ export async function calculateViralScore(trend: {
 
   // Get the model with JSON mode enabled
   // using gemini-2.0-flash for stability and availability
-  const aiModel = getGeminiModel('gemini-2.0-flash', true);
+  const aiModel = getGeminiModel('gemini-1.5-flash-latest', true);
 
   if (aiModel) {
     try {
