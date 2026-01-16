@@ -389,28 +389,52 @@ export async function GET(request: NextRequest) {
           return NextResponse.json(result, { headers });
         } catch (error) {
           console.error(
-            "[Trends API] PowerShell service unavailable, using mock data",
+            "[Trends API] Real trends unavailable, falling back to Gemini AI",
           );
-          // Fallback to mock data if PowerShell service is down
-          const result = {
-            success: true,
-            mode: "trending",
-            source: "mock-fallback",
-            data: mockTrendingTopics,
-            meta: {
-              totalResults: mockTrendingTopics.length,
-              timestamp: new Date().toISOString(),
-              cached: false,
-              response_time_ms: Math.round(performance.now() - startTime),
-            },
-          };
+          // Fallback to Gemini AI if real trends fail
+          try {
+            const geminiResult = await generateTrendsWithGemini("trending topics", userId);
+            const result = {
+              success: true,
+              mode: "trending",
+              source: "gemini-ai-fallback",
+              data: geminiResult,
+              meta: {
+                totalResults: geminiResult.trending?.length || 0,
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
 
-          // If Redis is available, update the cache for future requests
-          if (redisAvailable && !bypassCache) {
-            updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+            // If Redis is available, update the cache for future requests
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL);
+            }
+
+            return NextResponse.json(result, { headers });
+          } catch (geminiError) {
+            console.error("[Trends API] Gemini also unavailable, using mock data");
+            // Final fallback to mock data
+            const result = {
+              success: true,
+              mode: "trending",
+              source: "mock-fallback",
+              data: mockTrendingTopics,
+              meta: {
+                totalResults: mockTrendingTopics.length,
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
+
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL);
+            }
+
+            return NextResponse.json(result, { headers });
           }
-
-          return NextResponse.json(result, { headers });
         }
       }
 
