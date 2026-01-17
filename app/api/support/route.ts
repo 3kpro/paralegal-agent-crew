@@ -63,7 +63,7 @@ ${message}
 
 ═══════════════════════════════════════════════════
 Sent via XELORA Support Form
-https://xelora.app/support
+https://getxelora.com/support
         `.trim(),
       }),
     });

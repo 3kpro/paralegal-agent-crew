@@ -52,8 +52,8 @@ export function StructuredData() {
       "Real-Time Analytics",
       "Campaign Scheduling"
     ],
-    "screenshot": "https://xelora.app/og-image.png",
-    "url": "https://xelora.app",
+    "screenshot": "https://getxelora.com/og-image.png",
+    "url": "https://getxelora.com",
     "author": {
       "@type": "Organization",
       "name": "3KPRO.SERVICES",
@@ -75,8 +75,8 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "XELORA",
-    "url": "https://xelora.app",
-    "logo": "https://xelora.app/og-image.png",
+    "url": "https://getxelora.com",
+    "logo": "https://getxelora.com/og-image.png",
     "description": "Predictive intelligence for creators. XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality.",
     "sameAs": [
       "https://x.com/3KPRO_SAAS",
@@ -98,7 +98,7 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "XELORA",
-    "url": "https://xelora.app",
+    "url": "https://getxelora.com",
     "description": "Predictive intelligence platform that analyzes emerging signals across platforms to reveal what's about to rise. Before creators see it. Before the internet reacts to it.",
     "browserRequirements": "Requires JavaScript. Requires HTML5.",
     "operatingSystem": "Any",

@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: "Privacy Policy | XELORA",
     description:
       "Read XELORA's privacy policy to understand how we collect, use, and protect your personal information.",
-    url: "https://xelora.app/privacy",
+    url: "https://getxelora.com/privacy",
   },
   alternates: {
-    canonical: "https://xelora.app/privacy",
+    canonical: "https://getxelora.com/privacy",
   },
 };
 
@@ -115,8 +115,8 @@ export default function PrivacyPage() {
               If you have questions about this Privacy Policy, please contact us at:
             </p>
             <p className="mt-2">
-              Email: support@xelora.app<br />
-              Website: https://xelora.app
+              Email: support@getxelora.com<br />
+              Website: https://getxelora.com
             </p>
           </section>
 

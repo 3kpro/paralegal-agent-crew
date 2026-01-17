@@ -4,7 +4,7 @@ export const COMPANY_INFO = {
   name: 'XELORA',
   tagline: 'Predict Momentum. Engineer Virality.',
   description: 'XELORA analyzes emerging signals across platforms to reveal what\'s about to rise—before the internet reacts.',
-  email: 'hello@xelora.app',
+  email: 'hello@getxelora.com',
   phone: '+1 (555) 123-4567',
   address: '123 Business Ave, Suite 100, City, State 12345'
 } as const

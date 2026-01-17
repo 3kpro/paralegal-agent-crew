@@ -9,10 +9,10 @@ export const metadata: Metadata = {
     title: "About XELORA | A Product of 3KPRO.SERVICES",
     description:
       "XELORA is an AI-powered predictive intelligence platform for content creators, developed by 3KPRO.SERVICES.",
-    url: "https://xelora.app/about",
+    url: "https://getxelora.com/about",
   },
   alternates: {
-    canonical: "https://xelora.app/about",
+    canonical: "https://getxelora.com/about",
   },
 };
 

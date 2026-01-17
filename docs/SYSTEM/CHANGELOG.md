@@ -1,3 +1,23 @@
+## 2026-01-17 — Domain Transition: xelora.app → getxelora.com
+
+**Implemented strategic domain migration to combat brand contamination.**
+
+**Summary of Actions:**
+- **Brand Protection:** Separated from "XELORA SMART TRADING" Ponzi scam association
+- **Domain Strategy:** Purchased getxelora.com (primary) and xelorahq.com (redirect)
+- **Canonical URL Update:** https://getxelora.com
+- **301 Redirects:** xelora.app → getxelora.com, xelorahq.com → getxelora.com
+- **Codebase Audit:** Updated all hardcoded references from xelora.app to getxelora.com
+- **User Experience:** Added dismissible transition banner for existing users
+- **Legal Pages:** Updated Terms, Privacy, and About pages with new domain
+
+**Status:** ✅ **Complete**
+
+**Reasoning:**
+A Philippines-based Ponzi scheme ("XELORA SMART TRADING") has contaminated the Xelora brand, causing Reddit shadowbans and negative search associations. Testing domain-only change (getxelora.com) before committing to full rebrand. If domain change fixes shadowban issue, we preserve brand equity. Otherwise, rebrand to Orinth.
+
+---
+
 ## 2026-01-16 — Harden AI-Powered Features (Deployment)
 
 **Deployed hardened AI features and cleaned up repository.**

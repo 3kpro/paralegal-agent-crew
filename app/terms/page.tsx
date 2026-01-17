@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: "Terms of Service | XELORA",
     description:
       "Read XELORA's terms of service to understand the rules and guidelines for using our platform.",
-    url: "https://xelora.app/terms",
+    url: "https://getxelora.com/terms",
   },
   alternates: {
-    canonical: "https://xelora.app/terms",
+    canonical: "https://getxelora.com/terms",
   },
 };
 
@@ -162,8 +162,8 @@ export default function TermsPage() {
               For questions about these Terms, contact us at:
             </p>
             <p className="mt-2">
-              Email: support@xelora.app<br />
-              Website: https://xelora.app
+              Email: support@getxelora.com<br />
+              Website: https://getxelora.com
             </p>
           </section>
 
