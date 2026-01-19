@@ -1,5 +1,5 @@
 # TASKS.md - XELORA Product
-Last Updated: 2026-01-16
+Last Updated: 2026-01-19
 
 This file lists XELORA product-specific tasks only.
 
@@ -12,12 +12,38 @@ This file lists XELORA product-specific tasks only.
 
 ## NOW
 
+- [ ] **Campaign Creation UI/UX: Command Center Overhaul** 🚀
+      - **Problem:** Current campaign creation flow feels like a standard form. Users need to feel like they're engineering virality, not just filling out text boxes.
+      - **Goal:** Transform `/campaigns/create` into a "Viral Prediction Command Center" with real-time feedback, live previews, and instant AI scoring.
+      - **Action:**
+        - Build 3-column layout: Config (20%) | Editor (45%) | Preview+Score (35%)
+        - Implement Viral Score Gauge with instant local heuristic scoring + debounced AI validation (2s)
+        - Create live platform previews (Twitter/LinkedIn/Facebook) that update on every keystroke
+        - Add "Supercharge" button with AI-powered content variations modal
+        - Build mobile FAB (floating action button) + bottom sheet for score display
+        - Use Zustand for state management, Framer Motion for animations
+      - **Reference:**
+        - `docs/features/New_UI_UX.md` (Design vision + technical specs)
+        - `docs/features/COMMAND_CENTER_IMPLEMENTATION_PLAN.md` (Step-by-step guide)
+      - **Timeline:** 3-5 days (7 phases: dependencies → components → integration → mobile → supercharge → testing → polish)
+      - **Location:** `app/(portal)/dashboard/campaigns/create/page.tsx` and new components in `components/campaign/`
+      - **Priority:** HIGH - Core Product Differentiator
+      - **Assigned:** Gemini
 
 ---
 
 
 
 ## COMPLETED
+
+- [x] **Final Gemini Model Sweep & Cleanup** 🧹 ✅
+      - **Problem:** Scattered references to legacy `gemini-1.5` and `vertex-ai` SDKs could cause inconsistency or future breakage.
+      - **Action:**
+        - Updated legacy scripts (`enrich-viral-data-vertex.ts`, `generate-training-data.ts`) to `gemini-2.0-flash`.
+        - Updated test scripts and Supabase default config.
+        - Verified production fix via debug endpoint (`gemini-2.0-flash` confirmed working).
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
 
 - [x] **Fix Gemini AI Model Rate Limits (429 Error)** 🤖 ✅
       - **Problem:** `localhost:3000` was giving generic data due to `429 Too Many Requests` errors from the Gemini API. The code was attempting to use `gemini-2.5-flash` which is invalid or causing issues, and hitting rate limits on the free tier.
