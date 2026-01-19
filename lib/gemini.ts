@@ -6,9 +6,33 @@ import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
 // and Service Account credentials in production
 const getClient = (): VertexAI | null => {
   try {
+    const project = 'kpro-gemini';
+    const location = 'us-central1';
+    
+    // In Vercel/Production, we need to pass credentials explicitly via env var
+    // because there is no file-system access to ADC.
+    const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+    
+    if (serviceAccountJson) {
+      try {
+        const credentials = JSON.parse(serviceAccountJson);
+        return new VertexAI({
+          project,
+          location,
+          googleAuthOptions: {
+            credentials
+          }
+        });
+      } catch (parseError) {
+        console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON", parseError);
+        // Fallback to ADC if parsing fails (unlikely in prod if var exists)
+      }
+    }
+
+    // Default to ADC (works locally with gcloud auth)
     return new VertexAI({
-      project: 'kpro-gemini',
-      location: 'us-central1'
+      project,
+      location
     });
   } catch (error) {
     console.error("Error initializing Vertex AI client:", error);
