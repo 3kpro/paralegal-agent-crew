@@ -30,7 +30,7 @@ export async function GET() {
       model_response: text,
       env_check: {
           has_service_account_json: !!serviceAccountVar,
-          project_id: 'kpro-gemini'
+          note: "If success, project ID matched credentials."
       }
     });
 

@@ -16,8 +16,10 @@ const getClient = (): VertexAI | null => {
     if (serviceAccountJson) {
       try {
         const credentials = JSON.parse(serviceAccountJson);
+        const resolvedProject = credentials.project_id || project;
+        
         return new VertexAI({
-          project,
+          project: resolvedProject,
           location,
           googleAuthOptions: {
             credentials
