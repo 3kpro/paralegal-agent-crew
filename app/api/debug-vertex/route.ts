@@ -28,6 +28,7 @@ export async function GET() {
     return NextResponse.json({
       status: 'success',
       model_response: text,
+      version: "v2-fix-project-id", // VERSION STAMP
       env_check: {
           has_service_account_json: !!serviceAccountVar,
           note: "If success, project ID matched credentials."
@@ -35,9 +36,14 @@ export async function GET() {
     });
 
   } catch (error: any) {
+    // Extract project ID from error message if possible for debugging
+    const projectMatch = error.message?.match(/projects\/([^/]+)\//);
+    
     return NextResponse.json({
       status: 'error',
       message: error.message,
+      version: "v2-fix-project-id", // VERSION STAMP
+      attempted_project: projectMatch ? projectMatch[1] : 'unknown',
       stack: error.stack,
       env_check: {
           has_service_account_json: !!process.env.GOOGLE_SERVICE_ACCOUNT_JSON
