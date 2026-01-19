@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const apiKey = 'AIzaSyBwFeOnxvd41Gj1fQAKr5ai7SasRZaP07Q';
+const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY;
+
+if (!apiKey) {
+  console.error('❌ Error: No API key found!');
+  console.error('Set GOOGLE_GENERATIVE_AI_API_KEY or GOOGLE_API_KEY environment variable');
+  process.exit(1);
+}
 
 console.log('Testing Gemini API key...');
 console.log('API Key:', apiKey.substring(0, 20) + '...');
@@ -19,14 +25,14 @@ try {
   console.log('❌ gemini-pro FAILED:', error.message);
 }
 
-// Try gemini-1.5-flash
+// Try gemini-2.0-flash
 try {
-  console.log('\n2. Testing gemini-1.5-flash...');
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  console.log('\n2. Testing gemini-2.0-flash...');
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   const result = await model.generateContent('Say "test successful"');
   const response = await result.response;
   const text = response.text();
-  console.log('✅ gemini-1.5-flash WORKS:', text);
+  console.log('✅ gemini-2.0-flash WORKS:', text);
 } catch (error) {
   console.log('❌ gemini-1.5-flash FAILED:', error.message);
 }

@@ -53,6 +53,11 @@ yarn-error.log*
 .env.staging
 .env.vercel
 .env.vercel.*
+# Backup env files (SECURITY: Never commit backups)
+.env*.backup
+.env.*.backup
+*.env.backup
+.env.backup.*
 
 # Stripe CLI & Secrets
 .stripeclitorc
