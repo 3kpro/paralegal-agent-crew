@@ -1,3 +1,62 @@
+## 2026-01-19 — Agent Workflow Fix: One-Task-Per-Session Enforcement 🔧
+
+**Fixed critical workflow issue where agents completed multiple tasks instead of one.**
+
+**Problem Identified:**
+- Gemini agent completed ALL tasks in TASKS.md instead of stopping after one task
+- Agent did NOT add next task to NOW section before exiting (violated agentic workflow)
+- NOW section left empty after completion
+
+**Root Cause:**
+- AGENT_CONTRACT.md lacked explicit "one task per session" enforcement
+- EXIT REQUIREMENTS missing "Queue next task" step
+- No clear task selection protocol
+
+**Changes Made:**
+- **ENTRY REQUIREMENTS:** Added explicit "Work on ONLY the FIRST task" and "STOP after ONE task"
+- **SCOPE OF ACTION:** Added "MAY NOT process multiple tasks in a single session"
+- **EXIT REQUIREMENTS:** Added step 4 "Queue next task to NOW section" and updated verification step
+- **NEW SECTION:** "TASK WORKFLOW" with visual example and clear single-task rule
+- **NEW SECTION:** "DEPLOYMENT PROTOCOL" clarifying local-first development (no remote push by default)
+
+**Impact:**
+- Prevents agents from running indefinitely through task lists
+- Ensures human review between tasks
+- Maintains predictable, manageable scope per session
+- Enforces proper task queuing for agentic workflow
+
+**Status:** ✅ **Complete**
+
+---
+
+## 2026-01-20 — Campaign Command Center Overhaul 🚀
+
+**Transformed the campaign creation flow into a "Viral Prediction Command Center" with real-time feedback.**
+
+**Summary of Actions:**
+- **UI Architecture:** Implemented a new 3-column layout (Config, Editor, Preview/Score) for optimal workflow.
+- **Viral Score Gauge:** Developed a real-time scoring engine with instant heuristic analysis and visual feedback (red/yellow/green gauge).
+- **Live Previews:** Created instant platform previews for Twitter, LinkedIn, and Facebook that update as you type.
+- **Content Editor:** Enhanced the editor with "Supercharge" capability and real-time stats.
+- **Mobile Experience:** Built a dedicated mobile experience with a Floating Action Button (FAB) for the viral score and bottom sheet.
+- **State Management:** Integrated `zustand` for robust global state handling across components.
+
+**Status:** ✅ **Complete**
+
+## 2026-01-19 — Final Gemini Model Sweep & Legacy Cleanup 🧹
+
+**Completed comprehensive cleanup of legacy AI model references.**
+
+**Summary of Actions:**
+- **Script Updates:** Updated `enrich-viral-data-vertex.ts` and `generate-training-data.ts` to use `gemini-2.0-flash`.
+- **Test Infrastructure:** Updated `test-gemini-key.mjs` and `test-models.mjs` to validate against the correct model.
+- **Database Config:** Updated default AI provider config in `supabase/migrations/003_ai_tools_and_profiles.sql`.
+- **Verification:** Confirmed production debug endpoint returns successful generations with `gemini-2.0-flash`.
+
+**Status:** ✅ **Complete**
+
+---
+
 ## 2026-01-18 — Fix Gemini AI Rate Limits 🤖
 
 **Resolved critical 429 errors and model invalidity in AI-powered features.**
