@@ -89,7 +89,13 @@
       "Bash(openssl rand:*)",
       "Bash(head:*)",
       "Bash(tail:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(vercel alias:*)",
+      "Bash(vercel domains:*)",
+      "Bash(vercel project:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(if exist .env type .env)",
+      "Bash(node scripts/list-models.js:*)"
     ],
     "deny": [],
     "ask": []

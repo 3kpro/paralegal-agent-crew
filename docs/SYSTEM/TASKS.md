@@ -13,12 +13,19 @@ This file lists XELORA product-specific tasks only.
 ## NOW
 
 
-
 ---
 
 
 
 ## COMPLETED
+
+- [x] **Fix Gemini AI Model Rate Limits (429 Error)** 🤖 ✅
+      - **Problem:** `localhost:3000` was giving generic data due to `429 Too Many Requests` errors from the Gemini API. The code was attempting to use `gemini-2.5-flash` which is invalid or causing issues, and hitting rate limits on the free tier.
+      - **Action:**
+        - Updated `lib/gemini.ts`, `app/api/trends/route.ts`, `lib/viral-score.ts`, `app/api/generate/route.ts`, and `app/api/test-gemini/route.ts` to use `gemini-1.5-flash` (valid model).
+        - Increased rate limit delay in `app/api/trends/route.ts` from 1500ms to 4000ms to respect the 15 RPM limit of the free tier.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
 
 - [x] **Fix Data Inconsistency in Campaign Saving (Issue #1)** 💾 ✅
       - **Problem:** Campaign saving involved multiple database calls, risking partial failures (zombie campaigns).
@@ -26,6 +33,7 @@ This file lists XELORA product-specific tasks only.
         - Created SQL RPC function `upsert_campaign_with_posts` for atomic transactions.
         - Refactored `saveCampaign` in `app/(portal)/campaigns/create/page.tsx` to use the RPC.
       - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      
       - **Assigned:** Antigravity
 
 - [x] **Harden AI-Powered Features (Viral Score & Trend Generation)** 🛡️ ✅

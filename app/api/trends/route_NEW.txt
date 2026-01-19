@@ -211,20 +211,14 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 
     // Calculate viral scores for all trends
     if (trendsData.trending && Array.isArray(trendsData.trending)) {
-      const scoredTrends = [];
-      // Process sequentially to avoid AI Rate Limits (429)
-      for (const trend of trendsData.trending) {
-        const scoredTrend = await calculateViralScore({
+      trendsData.trending = await Promise.all(trendsData.trending.map(async (trend: any) =>
+        await calculateViralScore({
           title: trend.title,
           formattedTraffic: trend.formattedTraffic || '0K searches',
           sources: [source], // Single source for now
           firstSeenAt: new Date() // Current time as first seen
-        });
-        scoredTrends.push(scoredTrend);
-        // Add delay to respect API rate limits (avoid 429 - 15 RPM limit = 4s/req)
-        await new Promise(resolve => setTimeout(resolve, 4000));
-      }
-      trendsData.trending = scoredTrends;
+        })
+      ));
 
       // Sort by viral score (highest first)
       trendsData.trending = sortByViralScore(trendsData.trending);
@@ -252,8 +246,8 @@ async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
   // Get the model with JSON mode enabled
-  // using gemini-2.0-flash for stability and availability
-  const model = getGeminiModel('gemini-2.0-flash', true);
+  // using gemini-1.5-flash for stability
+  const model = getGeminiModel('gemini-1.5-flash', true);
 
   if (!model) {
      // This will be caught by the calling function and trigger the next fallback.
@@ -280,35 +274,28 @@ Your response MUST be a valid JSON array of objects with the following structure
 ]`;
 
     const result = await model.generateContent(prompt);
-    
-    const candidates = result.response.candidates;
-    const responseText = candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (!responseText) {
-      throw new Error("No text content in Vertex AI response");
-    }
-
     // Directly parse the response, now guaranteed to be JSON
-    // Strip code blocks if present
-    const cleanedText = responseText.replace(/```json\n|\n```/g, '').replace(/```/g, '');
-    const trends = JSON.parse(cleanedText);
+    const trends = JSON.parse(result.response.text());
 
     const duration = performance.now() - startTime;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
-    // Return trends directly - scoring is handled sequentially in the main handler
-    const rawTrends = trends.map((trend: any) => ({
-      title: trend.title,
-      formattedTraffic: trend.formattedTraffic || '0K searches',
-      source: 'gemini-ai',
-      url: '#', // Placeholder
-      publishedAt: new Date().toISOString()
-    }));
+    // Calculate viral scores for the generated trends
+    const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
+      await calculateViralScore({
+        title: trend.title,
+        formattedTraffic: trend.formattedTraffic || '0K searches',
+        sources: ['gemini-ai'],
+        firstSeenAt: new Date()
+      })
+    ));
 
-    console.log(`[Gemini] ✓ Generated ${rawTrends.length} trends (scoring deferred to main handler)`);
+    const sortedTrends = sortByViralScore(trendsWithScores);
+
+    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 'N/A'})`);
 
     return {
-      trending: rawTrends,
+      trending: sortedTrends,
        relatedQueries: [
         { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
         { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },
@@ -399,52 +386,28 @@ export async function GET(request: NextRequest) {
           return NextResponse.json(result, { headers });
         } catch (error) {
           console.error(
-            "[Trends API] Real trends unavailable, falling back to Gemini AI",
+            "[Trends API] PowerShell service unavailable, using mock data",
           );
-          // Fallback to Gemini AI if real trends fail
-          try {
-            const geminiResult = await generateTrendsWithGemini("trending topics", userId);
-            const result = {
-              success: true,
-              mode: "trending",
-              source: "gemini-ai-fallback",
-              data: geminiResult,
-              meta: {
-                totalResults: geminiResult.trending?.length || 0,
-                timestamp: new Date().toISOString(),
-                cached: false,
-                response_time_ms: Math.round(performance.now() - startTime),
-              },
-            };
+          // Fallback to mock data if PowerShell service is down
+          const result = {
+            success: true,
+            mode: "trending",
+            source: "mock-fallback",
+            data: mockTrendingTopics,
+            meta: {
+              totalResults: mockTrendingTopics.length,
+              timestamp: new Date().toISOString(),
+              cached: false,
+              response_time_ms: Math.round(performance.now() - startTime),
+            },
+          };
 
-            // If Redis is available, update the cache for future requests
-            if (redisAvailable && !bypassCache) {
-              updateCacheAsync(cacheKey, result, CACHE_TTL);
-            }
-
-            return NextResponse.json(result, { headers });
-          } catch (geminiError) {
-            console.error("[Trends API] Gemini also unavailable, using mock data");
-            // Final fallback to mock data
-            const result = {
-              success: true,
-              mode: "trending",
-              source: "mock-fallback",
-              data: mockTrendingTopics,
-              meta: {
-                totalResults: mockTrendingTopics.length,
-                timestamp: new Date().toISOString(),
-                cached: false,
-                response_time_ms: Math.round(performance.now() - startTime),
-              },
-            };
-
-            if (redisAvailable && !bypassCache) {
-              updateCacheAsync(cacheKey, result, CACHE_TTL);
-            }
-
-            return NextResponse.json(result, { headers });
+          // If Redis is available, update the cache for future requests
+          if (redisAvailable && !bypassCache) {
+            updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
           }
+
+          return NextResponse.json(result, { headers });
         }
       }
 

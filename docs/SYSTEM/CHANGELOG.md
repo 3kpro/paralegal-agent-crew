@@ -1,3 +1,19 @@
+## 2026-01-18 — Fix Gemini AI Rate Limits 🤖
+
+**Resolved critical 429 errors and model invalidity in AI-powered features.**
+
+**Summary of Actions:**
+- **Model Fix:** Replaced invalid `gemini-2.5-flash` model ID with `gemini-1.5-flash` across all service files (`lib/gemini.ts`, `app/api/trends/route.ts`, `lib/viral-score.ts`, `app/api/generate/route.ts`).
+- **Rate Limiting:** Increased trend generation delay from 1.5s to 4s to strictly adhere to the Gemini Free Tier limit (15 RPM).
+- **Verification:** Updated test route to use valid model for connectivity checks.
+
+**Status:** ✅ **Fixed**
+
+**Reasoning:**
+The application was attempting to use a non-existent or inaccessible model version (`gemini-2.5-flash`) and was hitting rate limits due to insufficient throttling on the free tier.
+
+---
+
 ## 2026-01-17 — Domain Transition: xelora.app → getxelora.com
 
 **Implemented strategic domain migration to combat brand contamination.**

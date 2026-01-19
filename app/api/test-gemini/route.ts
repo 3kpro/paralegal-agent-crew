@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel } from '@/lib/gemini';
 
 export async function GET() {
   try {
@@ -7,31 +7,34 @@ export async function GET() {
     console.log('API Key present:', !!process.env.GOOGLE_API_KEY);
     console.log('API Key prefix:', process.env.GOOGLE_API_KEY?.substring(0, 4));
     
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
+    // Test with the centralized helper to verify Vertex AI connectivity
+    const modelName = 'gemini-2.0-flash';
+    const model = getGeminiModel(modelName);
     
-    try {
-      // Test with a simple prompt - use gemini-2.5-flash (current stable model)
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-      const prompt = 'Say "Hello, this is a test!"';
-      
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      
-      return NextResponse.json({
-        success: true,
-        message: 'Gemini API test successful',
-        testResponse: text
-      });
-    } catch (modelError: any) {
-      console.error('Model operation failed:', modelError);
-      return NextResponse.json({
-        success: false,
-        error: 'Model operation failed',
-        details: modelError.message,
-        stack: modelError.stack
-      }, { status: 500 });
+    if (!model) {
+      throw new Error(`Failed to initialize ${modelName} via Vertex AI`);
     }
+
+    const prompt = 'Say "Hello, this is a test of Vertex AI!"';
+    
+    console.log(`Sending prompt to ${modelName} via Vertex AI...`);
+    const result = await model.generateContent(prompt);
+    
+    // Vertex AI response parsing
+    const candidates = result.response.candidates;
+    const text = candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!text) {
+      throw new Error("No text content in Vertex AI response");
+    }
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Vertex AI (Gemini) API test successful',
+      testResponse: text,
+      model: modelName
+    });
+
   } catch (error: any) {
     console.error('API test failed:', error);
     return NextResponse.json({
