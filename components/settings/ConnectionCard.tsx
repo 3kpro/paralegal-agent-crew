@@ -64,7 +64,7 @@ function getPlatformIcon(providerKey: string) {
 // Platform brand colors
 function getPlatformColor(providerKey: string) {
   const colorMap: Record<string, string> = {
-    twitter: "bg-black",
+    twitter: "bg-[#1DA1F2]",
     linkedin: "bg-[#0A66C2]",
     facebook: "bg-[#1877F2]",
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#F77737]",
@@ -72,7 +72,7 @@ function getPlatformColor(providerKey: string) {
     tiktok: "bg-black",
     reddit: "bg-[#FF4500]",
   }
-  return colorMap[providerKey.toLowerCase()] || "bg-tron-cyan/20"
+  return colorMap[providerKey.toLowerCase()] || "bg-slate-700"
 }
 
 export default function ConnectionCard({

@@ -177,7 +177,7 @@ export const Footer: React.FC = () => {
                 className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Follow us on X (formerly Twitter)"
               >
-                <TwitterLogo className="w-6 h-6" weight="duotone" />
+                <TwitterLogo className="w-6 h-6" weight="fill" />
               </a>
 
               <a
@@ -187,7 +187,7 @@ export const Footer: React.FC = () => {
                 className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Connect with us on LinkedIn"
               >
-                <LinkedinLogo className="w-6 h-6" weight="duotone" />
+                <LinkedinLogo className="w-6 h-6" weight="fill" />
               </a>
 
               <a
@@ -195,7 +195,7 @@ export const Footer: React.FC = () => {
                 className="text-tron-text-muted hover:text-tron-cyan transition-colors"
                 aria-label="Email us"
               >
-                <Envelope className="w-6 h-6" weight="duotone" />
+                <Envelope className="w-6 h-6" weight="fill" />
               </a>
             </div>
           </div>
