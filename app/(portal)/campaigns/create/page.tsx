@@ -37,7 +37,6 @@ import {
   BarChart3,
   Flame,
   Copy,
-  Layout,
   Search,
   Activity,
   BrainCircuit,
@@ -1573,10 +1572,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-1"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
@@ -1639,10 +1638,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-2"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
@@ -1786,10 +1785,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-3"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
@@ -1931,10 +1930,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-4"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
             >
               <div className="text-center mb-12">
@@ -2017,10 +2016,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-5"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className={loadingTrends ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl'}
             >
               {loadingTrends ? (
@@ -2201,10 +2200,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-6"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl"
             >
               <div className="text-center mb-6">
@@ -2801,10 +2800,10 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-7"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
             >
               {generatingContent ? (

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Package, Globe, FileText, Users, Target, CloudArrowUp as UploadCloud, X, Info, ShieldCheck as Shield, CaretRight as ChevronRight, CaretLeft as ChevronLeft, Check, MagicWand, Megaphone, TrendUp as TrendingUp, Star, Clock, Question as HelpCircle, ArrowsLeftRight as ArrowRightLeft, Camera } from "@phosphor-icons/react";
-import { PromoteData } from "../types";
+import { PromoteData, DriveFile } from "../types";
+import useDrivePicker from 'react-google-drive-picker';
 
 interface PromoteInputProps {
   data: PromoteData;
@@ -13,6 +14,41 @@ interface PromoteInputProps {
 }
 
 export default function PromoteInput({ data, onChange, onBack, onComplete, currentStep, onStepChange }: PromoteInputProps) {
+  const [openPicker, authResponse] = useDrivePicker();
+
+  const handleOpenPicker = () => {
+    openPicker({
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_CLIENT_ID || "",
+      developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_API_KEY || "",
+      viewId: "DOCS",
+      token: authResponse?.access_token,
+      showUploadView: true,
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: true,
+      callbackFunction: (res) => {
+        if (res.action === 'picked') {
+          const newFiles: DriveFile[] = res.docs.map((doc: any) => ({
+            id: doc.id,
+            name: doc.name,
+            embedUrl: doc.embedUrl,
+            mimeType: doc.mimeType,
+            iconUrl: doc.iconUrl,
+            url: doc.url
+          }));
+          handleChange("driveFiles", [...(data.driveFiles || []), ...newFiles]);
+        }
+      },
+    });
+  };
+
+  // Capture access token to allow backend to fetch file content
+  React.useEffect(() => {
+    if (authResponse?.access_token && data.accessToken !== authResponse.access_token) {
+      handleChange("accessToken", authResponse.access_token);
+    }
+  }, [authResponse, data.accessToken]);
+
 
   const handleChange = (field: keyof PromoteData, value: any) => {
     onChange({
@@ -86,10 +122,10 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
         <AnimatePresence mode="wait">
         <motion.div
           key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
           className="space-y-6"
         >
           {currentStep === 0 && (
@@ -374,24 +410,64 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                   </div>
               </div>
               
-              {/* Google Drive Link */}
-                <div className="space-y-2">
-                  <label className="text-xs text-tron-text-muted ml-1 font-medium">Google Drive Folder Link</label>
-                  <div className="relative">
-                    <input
-                        type="url"
-                        value={data.driveLink || ""}
-                        onChange={(e) => handleChange("driveLink", e.target.value)}
-                        placeholder="https://drive.google.com/drive/folders/..."
-                        className="w-full pl-4 pr-10 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 text-sm"
-                    />
-                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-tron-cyan/50">
-                        <Globe className="w-4 h-4" weight="duotone" />
+              {/* Google Drive Integration */}
+                <div className="space-y-4">
+                  <label className="text-xs text-tron-text-muted ml-1 font-medium">Google Drive Integration</label>
+                  
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleOpenPicker}
+                      className="flex-1 px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl hover:bg-tron-cyan/10 hover:border-tron-cyan/50 transition-all flex items-center justify-center gap-2 group"
+                    >
+                       <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg" alt="Drive" className="w-4 h-4" />
+                       </div>
+                       <span className="text-sm font-medium text-tron-text group-hover:text-tron-cyan">Select from Drive</span>
+                    </button>
+                    
+                    <div className="flex-1 relative">
+                       <input
+                          type="url"
+                          value={data.driveLink || ""}
+                          onChange={(e) => handleChange("driveLink", e.target.value)}
+                          placeholder="Or paste folder link..."
+                          className="w-full pl-4 pr-10 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 text-sm"
+                      />
+                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-tron-cyan/50">
+                          <Globe className="w-4 h-4" weight="duotone" />
+                      </div>
                     </div>
                   </div>
+
+                  {data.driveFiles && data.driveFiles.length > 0 && (
+                     <div className="bg-tron-dark/30 rounded-xl p-3 border border-tron-cyan/10 space-y-2">
+                        <p className="text-xs font-semibold text-tron-text-muted uppercase tracking-wide px-1">Selected from Drive:</p>
+                        {data.driveFiles.map((file) => (
+                           <div key={file.id} className="flex items-center justify-between p-2 bg-tron-grid/30 rounded-lg border border-tron-cyan/10">
+                              <div className="flex items-center gap-3 overflow-hidden">
+                                  <img src={file.iconUrl} alt="" className="w-4 h-4" />
+                                  <div className="flex flex-col overflow-hidden">
+                                    <span className="text-sm text-tron-text truncate">{file.name}</span>
+                                    <span className="text-[10px] text-tron-text-muted truncate">ID: {file.id}</span>
+                                  </div>
+                              </div>
+                              <button 
+                                  onClick={() => {
+                                      const newFiles = data.driveFiles?.filter(f => f.id !== file.id);
+                                      handleChange("driveFiles", newFiles);
+                                  }}
+                                  className="p-1 text-tron-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                              >
+                                  <X className="w-4 h-4" weight="duotone" />
+                              </button>
+                           </div>
+                        ))}
+                     </div>
+                  )}
+
                   <p className="text-xs text-tron-text-muted/70 flex items-center gap-1.5 ml-1">
                      <Shield className="w-3 h-3 text-tron-cyan" weight="duotone" />
-                     Your files stay in Drive. Xelora only reads content for this session.
+                     Files are indexed remotely. No content is stored on our servers.
                   </p>
               </div>
 
