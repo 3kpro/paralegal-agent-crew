@@ -7,20 +7,21 @@ import { DashboardSkeleton } from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import UsageMeter from "./UsageMeter";
 import {
-  Lightning as Zap,
+  RocketLaunch,
   TrendUp as TrendingUp,
-  Target,
+  ChartLineUp,
   CurrencyDollar as DollarSign,
   Plus,
   ArrowRight,
   Sparkle as Sparkles,
-  Article,
+  Files,
 } from "@phosphor-icons/react";
 import { FirstTimeHelpBanner } from "./FirstTimeTooltips";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ActivityChart from "./dashboard/ActivityChart";
 import QuickWins from "./dashboard/QuickWins";
 import ProgressTracker from "./dashboard/ProgressTracker";
+import CalendarView from "./dashboard/CalendarView";
 
 interface Campaign {
   id: string;
@@ -117,32 +118,32 @@ export default function DashboardClient() {
 
   const stats = [
     {
-      icon: Zap,
+      icon: RocketLaunch,
       value: campaigns.length,
       label: "Campaigns Created",
       subtitle: campaigns.length === 0 ? "Start creating!" : campaigns.length === 1 ? "First one done!" : "Building momentum",
-      gradient: "from-coral-500 to-coral-600",
+      gradient: "from-indigo-500 to-indigo-600",
     },
     {
-      icon: Article,
+      icon: Files,
       value: campaigns.length * 4, // Estimate 4 content pieces per campaign
       label: "Content Pieces",
       subtitle: campaigns.length > 0 ? `$${campaigns.length * 4 * 10} saved` : "AI-powered content",
-      gradient: "from-purple-500 to-purple-600",
+      gradient: "from-violet-500 to-violet-600",
     },
     {
-      icon: Target,
+      icon: ChartLineUp,
       value: campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0),
       label: "Platform Posts",
       subtitle: campaigns.length > 0 ? "Multi-channel reach" : "Cross-platform ready",
-      gradient: "from-blue-500 to-blue-600",
+      gradient: "from-emerald-500 to-emerald-600",
     },
     {
       icon: TrendingUp,
       value: "Day 1+",
       label: "Building Your Brand",
       subtitle: campaigns.length > 0 ? "Keep going!" : "Just getting started",
-      gradient: "from-green-400 to-green-500",
+      gradient: "from-blue-500 to-blue-600",
     },
   ];
 
@@ -161,7 +162,7 @@ export default function DashboardClient() {
                 {profile?.full_name || "Welcome Back"}
               </h1>
               <p className="text-gray-300 text-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-coral-500" weight="duotone" />
+                <Sparkles className="w-4 h-4 text-indigo-400" weight="duotone" />
                 {campaigns.length === 0 ? (
                   "Ready to create your first campaign?"
                 ) : campaigns.length === 1 ? (
@@ -176,7 +177,7 @@ export default function DashboardClient() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
+                className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-3 text-lg shadow-lg border-2 border-transparent hover:border-indigo-400/50"
               >
                 <Plus className="w-6 h-6" weight="duotone" />
                 New Campaign
@@ -203,12 +204,12 @@ export default function DashboardClient() {
                   {/* Gradient glow effect on hover */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl blur-xl`} />
                   
-                  <div className="relative p-6 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-2xl group-hover:border-coral-500/50 group-hover:shadow-xl group-hover:shadow-coral-500/20 transition-all duration-300">
+                  <div className="relative p-6 bg-slate-800 backdrop-blur-xl border-2 border-slate-700/50 rounded-2xl group-hover:border-indigo-500/50 group-hover:shadow-lg group-hover:shadow-indigo-500/20 transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                       <div
                         className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-xl shadow-lg`}
                       >
-                        <Icon className="w-6 h-6 text-white" weight="duotone" />
+                        <Icon className="w-6 h-6 text-white" weight="fill" />
                       </div>
                       {/* Trend indicator */}
                       <motion.div
@@ -255,12 +256,12 @@ export default function DashboardClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="lg:col-span-2 p-8 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl"
+              className="lg:col-span-2 p-8 bg-[#343a40] backdrop-blur-xl border-2 border-slate-700/50 rounded-3xl"
             >
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-coral-500/10 rounded-xl">
-                  <Sparkles className="w-6 h-6 text-coral-500" weight="duotone" />
+                <div className="p-2 bg-indigo-500/10 rounded-xl">
+                  <Sparkles className="w-6 h-6 text-indigo-500" weight="duotone" />
                 </div>
                 Recent Campaigns
               </h2>
@@ -269,7 +270,7 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="text-sm text-coral-500 hover:text-coral-400 transition-colors flex items-center gap-2"
+                    className="text-sm text-indigo-500 hover:text-indigo-400 transition-colors flex items-center gap-2"
                   >
                     View All
                     <ArrowRight className="w-4 h-4" weight="duotone" />
@@ -290,13 +291,13 @@ export default function DashboardClient() {
                     className="group"
                   >
                     <Link href={`/campaigns/${campaign.id}`}>
-                      <div className="p-6 bg-[#2b2b2b] backdrop-blur border-2 border-gray-700/50 hover:border-coral-500/50 rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-coral-500/20">
+                      <div className="p-6 bg-slate-800 backdrop-blur border-2 border-slate-700/50 hover:border-indigo-500/50 rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-indigo-500/20">
                         <div className="flex-1">
-                          <div className="font-semibold text-white text-lg mb-2 group-hover:text-coral-400 transition-colors">
+                          <div className="font-semibold text-white text-lg mb-2 group-hover:text-indigo-400 transition-colors">
                             {campaign.name}
                           </div>
                           <div className="text-sm text-gray-300 flex items-center gap-3">
-                            <span className="px-3 py-1 bg-coral-500/10 border border-coral-500/30 rounded-full text-coral-400 capitalize text-xs font-medium">
+                            <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-indigo-400 capitalize text-xs font-medium">
                               {campaign.status}
                             </span>
                             {campaign.target_platforms && campaign.target_platforms.length > 0 && (
@@ -321,9 +322,9 @@ export default function DashboardClient() {
                         <motion.div
                           initial={{ x: -10, opacity: 0 }}
                           whileHover={{ x: 0, opacity: 1 }}
-                          className="p-2 bg-coral-500/10 rounded-full"
+                          className="p-2 bg-indigo-500/10 rounded-full"
                         >
-                          <ArrowRight className="w-5 h-5 text-coral-500" weight="duotone" />
+                          <ArrowRight className="w-5 h-5 text-indigo-500" weight="duotone" />
                         </motion.div>
                       </div>
                     </Link>
@@ -350,7 +351,7 @@ export default function DashboardClient() {
                     }}
                     className="p-6 bg-coral-500/20 rounded-full"
                   >
-                    <Sparkles className="w-16 h-16 text-coral-500" weight="duotone" />
+                    <Sparkles className="w-16 h-16 text-indigo-500" weight="duotone" />
                   </motion.div>
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">
@@ -392,6 +393,11 @@ export default function DashboardClient() {
               <ProgressTracker progress={analyticsData.progress} />
             </div>
           )}
+
+          {/* Smart Scheduling Calendar */}
+          <div className="mt-8">
+            <CalendarView />
+          </div>
         </div>
       </div>
   );
