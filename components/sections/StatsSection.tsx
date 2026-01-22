@@ -25,22 +25,22 @@ const stats: StatItem[] = [
     value: "6",
     label: "Platform Integrations",
     icon: Zap,
-    color: "text-green-500",
+    color: "text-[#00C7F2]",
     animatedValue: 6,
   },
   {
-    value: "100%",
-    label: "Automated Creation",
+    value: "<5s",
+    label: "Content Generation",
     icon: Clock,
-    color: "text-coral-600",
-    animatedValue: 100,
+    color: "text-green-500",
+    animatedValue: 5,
   },
   {
-    value: "3+",
-    label: "AI Model Options",
+    value: "24/7",
+    label: "AI-Powered Analysis",
     icon: Users,
     color: "text-amber-500",
-    animatedValue: 3,
+    animatedValue: 24,
   },
 ];
 
@@ -164,24 +164,24 @@ export const StatsSection: React.FC = () => {
                 <div
                   className={`text-4xl md:text-5xl font-bold ${stat.color} mb-3 font-mono`}
                 >
-                  {stat.animatedValue ? (
-                    stat.value.includes("%") ? (
-                      <>
-                        <Counter target={stat.animatedValue} />%
-                      </>
-                    ) : stat.value.includes("h") ? (
-                      <>
-                        <Counter target={stat.animatedValue} />h
-                      </>
-                    ) : stat.value.includes("+") ? (
-                      <>
-                        <Counter target={stat.animatedValue} />+
-                      </>
-                    ) : (
-                      <Counter target={stat.animatedValue} />
-                    )
+                  {stat.value.includes("%") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />%
+                    </>
+                  ) : stat.value.includes("<") ? (
+                    <>
+                      {"<"}<Counter target={stat.animatedValue || 0} />s
+                    </>
+                  ) : stat.value.includes("/") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />/7
+                    </>
+                  ) : stat.value.includes("+") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />+
+                    </>
                   ) : (
-                    stat.value
+                    <Counter target={stat.animatedValue || 0} />
                   )}
                 </div>
 
@@ -189,18 +189,6 @@ export const StatsSection: React.FC = () => {
                 <div className="text-gray-300 font-medium leading-tight">
                   {stat.label}
                 </div>
-
-                {/* Beta Badge */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ delay: index * 0.1 + 0.3 }}
-                  className="mt-4 inline-flex px-3 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full"
-                >
-                  <span className="text-xs font-semibold text-coral-400">
-                    BETA
-                  </span>
-                </motion.div>
               </motion.div>
             );
           })}

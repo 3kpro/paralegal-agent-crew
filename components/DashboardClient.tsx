@@ -116,33 +116,38 @@ export default function DashboardClient() {
 
   const { profile, campaigns } = data;
 
+  // Calculate content metrics
+  const totalPlatformPosts = campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0);
+  const estimatedContentPieces = campaigns.length * 4;
+  const estimatedTimeSaved = campaigns.length > 0 ? `${campaigns.length * 2}h saved` : "Ready to save time";
+
   const stats = [
     {
       icon: RocketLaunch,
       value: campaigns.length,
       label: "Campaigns Created",
-      subtitle: campaigns.length === 0 ? "Start creating!" : campaigns.length === 1 ? "First one done!" : "Building momentum",
+      subtitle: campaigns.length === 0 ? "Create your first!" : campaigns.length === 1 ? "Great start!" : "Building momentum",
       gradient: "from-indigo-500 to-indigo-600",
     },
     {
       icon: Files,
-      value: campaigns.length * 4, // Estimate 4 content pieces per campaign
+      value: estimatedContentPieces,
       label: "Content Pieces",
-      subtitle: campaigns.length > 0 ? `$${campaigns.length * 4 * 10} saved` : "AI-powered content",
+      subtitle: campaigns.length > 0 ? `~$${estimatedContentPieces * 10} value` : "AI-generated",
       gradient: "from-violet-500 to-violet-600",
     },
     {
       icon: ChartLineUp,
-      value: campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0),
+      value: totalPlatformPosts,
       label: "Platform Posts",
-      subtitle: campaigns.length > 0 ? "Multi-channel reach" : "Cross-platform ready",
+      subtitle: campaigns.length > 0 ? "Multi-channel reach" : "6 platforms ready",
       gradient: "from-emerald-500 to-emerald-600",
     },
     {
       icon: TrendingUp,
-      value: "Day 1+",
-      label: "Building Your Brand",
-      subtitle: campaigns.length > 0 ? "Keep going!" : "Just getting started",
+      value: estimatedTimeSaved,
+      label: "Time Efficiency",
+      subtitle: campaigns.length > 0 ? "vs manual creation" : "Start saving today",
       gradient: "from-blue-500 to-blue-600",
     },
   ];
@@ -297,7 +302,13 @@ export default function DashboardClient() {
                             {campaign.name}
                           </div>
                           <div className="text-sm text-gray-300 flex items-center gap-3">
-                            <span className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 rounded-full text-indigo-400 capitalize text-xs font-medium">
+                            <span className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
+                              campaign.status === 'published'
+                                ? 'bg-green-500/10 border border-green-500/30 text-green-400'
+                                : campaign.status === 'scheduled'
+                                ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
+                                : 'bg-slate-500/10 border border-slate-500/30 text-slate-400'
+                            }`}>
                               {campaign.status}
                             </span>
                             {campaign.target_platforms && campaign.target_platforms.length > 0 && (
@@ -311,8 +322,8 @@ export default function DashboardClient() {
                             )}
                             <span className="text-gray-600">•</span>
                             <span className="text-xs">
-                              {new Date(campaign.created_at).toLocaleDateString('en-US', { 
-                                month: 'short', 
+                              {new Date(campaign.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
                                 day: 'numeric',
                                 year: 'numeric'
                               })}
@@ -336,41 +347,61 @@ export default function DashboardClient() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-center py-16"
+                className="py-8"
               >
-                <div className="mb-6 flex justify-center">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="p-6 bg-coral-500/20 rounded-full"
-                  >
-                    <Sparkles className="w-16 h-16 text-indigo-500" weight="duotone" />
-                  </motion.div>
+                {/* Getting Started Checklist */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-coral-400" weight="duotone" />
+                    Getting Started
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      { step: 1, label: "Create your first campaign", done: false, href: "/campaigns/create" },
+                      { step: 2, label: "Discover trending topics", done: false, href: "/campaigns/create" },
+                      { step: 3, label: "Generate AI content", done: false, href: "/campaigns/create" },
+                      { step: 4, label: "Schedule or publish", done: false, href: "/campaigns" },
+                    ].map((item, idx) => (
+                      <Link key={item.step} href={item.href}>
+                        <motion.div
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.6 + idx * 0.1 }}
+                          className="flex items-center gap-4 p-4 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-coral-500/30 rounded-xl transition-all group cursor-pointer"
+                        >
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            item.done
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                              : 'bg-coral-500/20 text-coral-400 border border-coral-500/30'
+                          }`}>
+                            {item.step}
+                          </div>
+                          <span className="text-gray-300 group-hover:text-white transition-colors flex-1">
+                            {item.label}
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-coral-400 transition-colors" weight="duotone" />
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  No campaigns yet
-                </h3>
-                <p className="text-gray-300 mb-8 max-w-md mx-auto leading-relaxed">
-                  Start creating amazing content campaigns with AI-powered
-                  generation. Your first campaign is just a click away!
-                </p>
-                <Link href="/campaigns/create">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
-                  >
-                    <Plus className="w-6 h-6" weight="duotone" />
-                    Create First Campaign
-                  </motion.button>
-                </Link>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <Link href="/campaigns/create">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
+                    >
+                      <Plus className="w-6 h-6" weight="duotone" />
+                      Create First Campaign
+                    </motion.button>
+                  </Link>
+                  <p className="text-gray-500 text-sm mt-4">
+                    Takes less than 2 minutes with AI assistance
+                  </p>
+                </div>
               </motion.div>
             )}
           </motion.div>

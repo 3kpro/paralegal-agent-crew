@@ -4,16 +4,57 @@ import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useHelix } from "@/context/HelixContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Robot as Bot, 
-  Paperclip, 
-  Command, 
+import {
+  Robot as Bot,
+  Paperclip,
+  Command,
   PaperPlaneRight as SendIcon,
   MagicWand,
   ArrowUp,
   Copy,
-  Check
+  Check,
+  TrendUp,
+  Lightbulb,
+  ChartLineUp,
+  MagnifyingGlass,
+  Sparkle
 } from "@phosphor-icons/react";
+
+// Suggested prompts for new users
+const suggestedPrompts = [
+  {
+    icon: TrendUp,
+    label: "Find trending topics",
+    prompt: "What are the top trending topics in tech and business right now?",
+    color: "text-coral-400",
+    bgColor: "bg-coral-500/10",
+    borderColor: "border-coral-500/30"
+  },
+  {
+    icon: Lightbulb,
+    label: "Validate content idea",
+    prompt: "Can you help me validate if this content idea has viral potential?",
+    color: "text-[#00C7F2]",
+    bgColor: "bg-[#00C7F2]/10",
+    borderColor: "border-[#00C7F2]/30"
+  },
+  {
+    icon: ChartLineUp,
+    label: "Analyze my campaigns",
+    prompt: "Show me insights about my recent campaign performance",
+    color: "text-purple-400",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/30"
+  },
+  {
+    icon: Sparkle,
+    label: "Generate content hooks",
+    prompt: "Generate 5 viral hook ideas for a post about AI productivity tools",
+    color: "text-amber-400",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30"
+  }
+];
 import dynamic from 'next/dynamic';
 
 const AnalystCharts = dynamic(() => import('@/components/analyst/AnalystCharts'), { 
@@ -380,9 +421,37 @@ export default function HelixChatInterface({
             </div>
           </div>
 
-          {/* Buttons placeholder - explicitly empty as requested */}
+          {/* Suggested Prompts - shown when chat hasn't started */}
           {!hasStarted && (
-             <div className="h-10 w-full mt-6" /> 
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 grid grid-cols-2 gap-3"
+            >
+              {suggestedPrompts.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.button
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05 }}
+                    onClick={() => {
+                      setLocalInput(item.prompt);
+                    }}
+                    className={`flex items-center gap-3 p-3 ${item.bgColor} border ${item.borderColor} rounded-xl text-left hover:scale-[1.02] transition-all group`}
+                  >
+                    <div className={`p-2 rounded-lg ${item.bgColor} ${item.color}`}>
+                      <Icon className="w-4 h-4" weight="duotone" />
+                    </div>
+                    <span className={`text-sm font-medium ${item.color} group-hover:text-white transition-colors`}>
+                      {item.label}
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </motion.div>
           )}
 
         </div>

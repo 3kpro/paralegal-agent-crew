@@ -418,7 +418,13 @@ export default function CampaignsClient({ campaigns }: CampaignsClientProps) {
 
                   {/* Status & Date Row */}
                   <div className="flex items-center justify-between mb-6">
-                    <span className="inline-flex items-center px-3 py-1.5 bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                      campaign.status === 'published'
+                        ? 'bg-green-600/20 border border-green-500/30 text-green-400'
+                        : campaign.status === 'scheduled'
+                        ? 'bg-amber-600/20 border border-amber-500/30 text-amber-400'
+                        : 'bg-slate-600/20 border border-slate-500/30 text-slate-400'
+                    }`}>
                       {campaign.status}
                     </span>
                     <span className="text-xs text-gray-500">

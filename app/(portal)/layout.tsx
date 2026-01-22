@@ -12,6 +12,7 @@ import { XeloraLogo } from "@/components/XeloraLogo";
 import { BGPattern } from "@/components/ui/bg-pattern";
 
 import { HelixProvider } from "@/context/HelixContext";
+import { ToastProvider } from "@/components/ui/toast";
 
 interface Profile {
   email?: string;
@@ -90,9 +91,10 @@ export default function PortalLayout({
   }
 
   return (
-    <HelixProvider>
-      <ErrorBoundary>
-        <div className="min-h-screen bg-[#0a0a0a] flex relative">
+    <ToastProvider>
+      <HelixProvider>
+        <ErrorBoundary>
+          <div className="min-h-screen bg-[#0a0a0a] flex relative">
           <BGPattern 
               variant="dots" 
               mask="fade-center" 
@@ -347,7 +349,8 @@ export default function PortalLayout({
           {/* Helix AI Global Widget */}
           <HelixWidget subscriptionTier={profile?.subscription_tier || 'free'} />
         </div>
-      </ErrorBoundary>
-    </HelixProvider>
+        </ErrorBoundary>
+      </HelixProvider>
+    </ToastProvider>
   );
 }
