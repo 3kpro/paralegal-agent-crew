@@ -304,7 +304,7 @@ export default function DashboardClient() {
                               <>
                                 <span className="text-gray-600">•</span>
                                 <span className="flex items-center gap-1">
-                                  <Target className="w-3 h-3" weight="duotone" />
+                                  <ChartLineUp className="w-3 h-3" weight="fill" />
                                   {campaign.target_platforms.length} {campaign.target_platforms.length === 1 ? 'platform' : 'platforms'}
                                 </span>
                               </>
