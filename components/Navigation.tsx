@@ -1,8 +1,7 @@
-import { Button } from "./ui/Button";
+"use client";
+
 import Link from "next/link";
-import { useState } from "react";
-import { XeloraLogo } from "./XeloraLogo";
-import { List, X } from "@phosphor-icons/react";
+import { useState, useEffect } from "react";
 
 interface NavigationProps {
   onContactClick?: () => void;
@@ -10,6 +9,15 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -19,104 +27,112 @@ export const Navigation: React.FC<NavigationProps> = () => {
     setMobileMenuOpen(false);
   };
 
-  const NavItem = ({ id, label }: { id: string; label: string }) => (
-    <button
-      onClick={() => scrollToSection(id)}
-      className="text-gray-300 hover:text-white transition-colors font-medium"
-    >
-      {label}
-    </button>
-  );
-
   return (
-    <nav className="bg-[#2b2b2b]/95 backdrop-blur-md border-b-2 border-gray-700/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/80 backdrop-blur-lg border-b border-gray-200/50 shadow-sm"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center h-16">
-          <button
-            onClick={() => window.location.reload()}
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <span className="text-xl font-semibold text-white">
-              XELORA
-            </span>
-            <XeloraLogo className="w-10 h-10" />
-          </button>
+            <span className="text-xl font-bold text-gray-900">XELORA</span>
+          </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <NavItem id="services" label="Features" />
-            <NavItem id="pricing" label="Pricing" />
-            <NavItem id="contact" label="Contact" />
-            <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors font-medium">
-              Privacy
+          {/* Desktop navigation */}
+          <div className="hidden md:flex items-center gap-8">
+            <button
+              onClick={() => scrollToSection("features")}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => scrollToSection("pricing")}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Pricing
+            </button>
+            <button
+              onClick={() => scrollToSection("faq")}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              FAQ
+            </button>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              Sign in
             </Link>
-            <Link href="/terms" className="text-gray-300 hover:text-white transition-colors font-medium">
-              Terms
-            </Link>
-            <Link href="/login">
-              <Button variant="primary">Sign In / Sign Up</Button>
+            <Link
+              href="/signup"
+              className="px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-full hover:bg-gray-800 transition-colors"
+            >
+              Get started
             </Link>
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-300 hover:text-white transition-colors p-2"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6" weight="duotone" />
-              ) : (
-                <List className="w-6 h-6" weight="duotone" />
-              )}
-            </button>
-          </div>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-700/30 py-4 bg-[#2b2b2b]/95">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden border-t border-gray-100 py-4 bg-white">
+            <div className="flex flex-col gap-1">
               <button
-                onClick={() => scrollToSection("services")}
-                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                onClick={() => scrollToSection("features")}
+                className="px-4 py-3 text-left text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               >
                 Features
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                className="px-4 py-3 text-left text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               >
                 Pricing
               </button>
               <button
-                onClick={() => scrollToSection("contact")}
-                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                onClick={() => scrollToSection("faq")}
+                className="px-4 py-3 text-left text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               >
-                Contact
+                FAQ
               </button>
               <Link
-                href="/privacy"
-                className="text-gray-300 hover:text-white transition-colors text-left px-4"
+                href="/login"
+                className="px-4 py-3 text-left text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Privacy Policy
+                Sign in
               </Link>
-              <Link
-                href="/terms"
-                className="text-gray-300 hover:text-white transition-colors text-left px-4"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Terms of Service
-              </Link>
-              <div className="px-4">
-                <Link href="/login">
-                  <Button
-                    variant="primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign In / Sign Up
-                  </Button>
+              <div className="px-4 pt-2">
+                <Link
+                  href="/signup"
+                  className="block w-full px-4 py-3 bg-gray-900 text-white text-center font-medium rounded-full hover:bg-gray-800 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Get started
                 </Link>
               </div>
             </div>

@@ -1,265 +1,181 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Check, MagicWand, Lightning as Zap, Crown, ArrowRight } from "@phosphor-icons/react";
-import { BGPattern } from "@/components/ui/bg-pattern";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import Link from "next/link";
 
 const plans = [
   {
     name: "Free",
-    price: "Free",
+    price: "$0",
     period: "forever",
-    description: "Perfect for content creators getting started",
-    icon: MagicWand,
-    gradient: "from-green-400 to-blue-500",
+    description: "For creators just getting started with trend prediction",
     features: [
-      "5 trend campaigns per month",
+      "5 campaigns per month",
       "10 trend searches per day",
-      "Viral Score™ predictions",
-      "XELORA™ Discovery",
+      "Viral score predictions",
       "Basic analytics",
       "Community support",
     ],
-    cta: "Get Started Free",
+    cta: "Start free",
+    href: "/signup",
     popular: false,
   },
   {
     name: "Pro",
     price: "$29",
     period: "per month",
-    description: "For professionals and creators",
-    icon: Zap,
-    gradient: "from-indigo-500 to-purple-600",
+    description: "For serious creators who want to stay ahead",
     features: [
-      "Unlimited trend campaigns",
+      "Unlimited campaigns",
       "Unlimited trend searches",
-      "Advanced Viral Score™ analytics",
+      "Advanced analytics & insights",
       "Export campaign data",
-      "10GB storage",
       "Priority support",
-      "Early access to new features",
+      "Early access to features",
     ],
-    cta: "Upgrade to Pro",
+    cta: "Start free trial",
+    href: "/signup?plan=pro",
     popular: true,
   },
   {
-    name: "Premium",
+    name: "Team",
     price: "$79",
     period: "per month",
-    description: "For agencies and power users",
-    icon: Crown,
-    gradient: "from-purple-500 to-pink-600",
+    description: "For agencies and teams who need more",
     features: [
       "Everything in Pro",
-      "White-label XELORA™",
-      "Custom Viral Score™ models",
-      "100GB storage",
-      "24/7 priority support",
-      "API access & webhooks",
-      "Custom integrations",
+      "5 team members",
+      "Custom AI models",
+      "API access",
+      "White-label reports",
+      "Dedicated support",
     ],
-    cta: "Contact Sales",
+    cta: "Contact sales",
+    href: "#contact",
     popular: false,
   },
 ];
 
 export default function ModernPricing() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <section
-      id="pricing"
-      className="py-24 bg-[#343a40] relative overflow-hidden"
-    >
-      {/* Background Pattern */}
-      <BGPattern
-        variant="dots"
-        mask="fade-edges"
-        size={24}
-        fill="rgba(0,199,242,0.1)"
-        className="z-0"
-        style={{ zIndex: 0 }}
-      />
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
+    <section id="pricing" className="py-32 bg-white" ref={ref}>
+      <div className="container mx-auto px-6">
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-            XELORA™ Launch Pricing
+          <span className="inline-block text-sm font-semibold text-violet-600 tracking-wider uppercase mb-4">
+            Pricing
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Simple, transparent pricing
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Start for free. Upgrade anytime for unlimited access.
-            More XELORA features coming soon.
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Start free. Upgrade when you're ready. No hidden fees.
           </p>
         </motion.div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {plans.map((plan, index) => {
-            const Icon = plan.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative ${plan.popular ? "md:-mt-4 md:mb-4" : ""}`}
-              >
-                {/* Popular Badge */}
-                {plan.popular && (
-                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 z-10">
-                    <div className="bg-coral-500 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                      Most Popular
-                    </div>
-                  </div>
-                )}
-
-                <div
-                  className={`h-full bg-[#2b2b2b] rounded-2xl p-8 shadow-xl border-2 ${
-                    plan.popular ? "border-coral-500/50 shadow-coral-500/20" : "border-gray-700/50"
-                  } hover:border-coral-500/70 transition-all duration-300`}
-                >
-                  {/* Icon */}
-                  <div
-                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-sm`}
-                  >
-                    <Icon className="w-6 h-6 text-white" weight="duotone" />
-                  </div>
-
-                  {/* Plan Name */}
-                  <h3 className="text-2xl font-bold mb-2 text-white">
-                    {plan.name}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-gray-300 mb-6">
-                    {plan.description}
-                  </p>
-
-                  {/* Price */}
-                  <div className="mb-6">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-bold text-white">
-                        {plan.price}
-                      </span>
-                      {plan.price !== "Free" && (
-                        <span className="text-gray-400">
-                          / {plan.period}
-                        </span>
-                      )}
-                    </div>
-                    {plan.price === "Free" && (
-                      <span className="text-gray-400">
-                        {plan.period}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* CTA Button */}
-                  <button
-                    onClick={() => {
-                      if (plan.cta === "Contact Sales" || plan.cta === "Contact Beta Sales") {
-                        const contactElement =
-                          document.getElementById("contact");
-                        if (contactElement) {
-                          contactElement.scrollIntoView({ behavior: "smooth" });
-                        }
-                      } else {
-                        window.location.href = "/signup";
-                      }
-                    }}
-                    className={`w-full py-4 px-6 rounded-xl font-semibold text-lg mb-8 transition-all duration-200 flex items-center justify-center gap-2 ${
-                      plan.popular
-                        ? "bg-coral-500 text-white shadow-xl hover:shadow-2xl hover:bg-coral-600 hover:scale-105"
-                        : "bg-transparent text-gray-300 border-2 border-gray-600 hover:bg-gray-700/50 hover:border-gray-500"
-                    }`}
-                  >
-                    {plan.cta}
-                    <ArrowRight className="w-5 h-5" weight="duotone" />
-                  </button>
-
-                  {/* Features List */}
-                  <div className="space-y-4">
-                    {plan.features.map((feature, featureIndex) => (
-                      <div
-                        key={featureIndex}
-                        className="flex items-start gap-3"
-                      >
-                        <div
-                          className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${plan.gradient} flex items-center justify-center mt-0.5`}
-                        >
-                          <Check className="w-3 h-3 text-white" weight="duotone" />
-                        </div>
-                        <span className="text-gray-300">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
+        {/* Pricing grid */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`relative rounded-2xl p-8 ${
+                plan.popular
+                  ? "bg-gray-900 text-white ring-2 ring-gray-900"
+                  : "bg-gray-50 text-gray-900"
+              }`}
+            >
+              {/* Popular badge */}
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white text-xs font-bold uppercase tracking-wider px-4 py-1.5 rounded-full">
+                    Most popular
+                  </span>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              )}
 
-        {/* Enterprise */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="max-w-4xl mx-auto mt-12"
-        >
-          <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-2xl p-8 md:p-12 text-white shadow-lg">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h3 className="text-3xl font-bold mb-2">Enterprise</h3>
-                <p className="text-gray-200 text-lg">
-                  Custom solutions for large organizations. Self-hosted options,
-                  SLAs, and dedicated support.
+              {/* Plan header */}
+              <div className="mb-6">
+                <h3 className={`text-lg font-semibold mb-2 ${plan.popular ? "text-white" : "text-gray-900"}`}>
+                  {plan.name}
+                </h3>
+                <p className={`text-sm ${plan.popular ? "text-gray-400" : "text-gray-500"}`}>
+                  {plan.description}
                 </p>
               </div>
-              <button
-                onClick={() => {
-                  const contactElement = document.getElementById("contact");
-                  if (contactElement) {
-                    contactElement.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
-                className="flex-shrink-0 px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg hover:bg-coral-600 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-              >
-                Contact Sales
-              </button>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* FAQ Link */}
+              {/* Price */}
+              <div className="mb-6">
+                <span className={`text-5xl font-bold ${plan.popular ? "text-white" : "text-gray-900"}`}>
+                  {plan.price}
+                </span>
+                <span className={`ml-2 ${plan.popular ? "text-gray-400" : "text-gray-500"}`}>
+                  /{plan.period}
+                </span>
+              </div>
+
+              {/* CTA */}
+              <Link
+                href={plan.href}
+                className={`block w-full py-3 px-6 rounded-full font-semibold text-center transition-all duration-200 mb-8 ${
+                  plan.popular
+                    ? "bg-white text-gray-900 hover:bg-gray-100"
+                    : "bg-gray-900 text-white hover:bg-gray-800"
+                }`}
+              >
+                {plan.cta}
+              </Link>
+
+              {/* Features */}
+              <ul className="space-y-3">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3">
+                    <svg
+                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${plan.popular ? "text-violet-400" : "text-violet-500"}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className={plan.popular ? "text-gray-300" : "text-gray-600"}>
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Enterprise CTA */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16 text-center"
         >
-          <p className="text-gray-600">
-            Have questions?{" "}
-            <a
-              href="#contact"
-              className="text-coral-500 hover:text-coral-600 font-semibold underline"
-            >
-              Contact us
-            </a>{" "}
-            or check out our{" "}
-            <a
-              href="#faq"
-              className="text-coral-500 hover:text-coral-600 font-semibold underline"
-            >
-              FAQ
-            </a>
+          <p className="text-gray-600 mb-4">
+            Need something custom? We offer enterprise plans for larger teams.
           </p>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 text-violet-600 font-semibold hover:text-violet-700 transition-colors"
+          >
+            Talk to sales
+            <span>→</span>
+          </a>
         </motion.div>
       </div>
     </section>
