@@ -1,181 +1,256 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Lightning as Zap, ArrowRight } from "@phosphor-icons/react";
 import Link from "next/link";
+import { BGPattern } from "@/components/ui/bg-pattern";
+
+// Skeleton loader for hero content
+const HeroSkeleton = () => (
+  <div className="max-w-5xl mx-auto text-center animate-pulse">
+    {/* Badge skeleton */}
+    <div className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030]/50 rounded-full mb-8">
+      <div className="w-5 h-5 bg-[#00C7F2]/20 rounded-full" />
+      <div className="w-40 h-4 bg-white/10 rounded" />
+      <div className="w-12 h-5 bg-coral-500/20 rounded-full" />
+    </div>
+    {/* Headline skeleton */}
+    <div className="space-y-4 mb-6">
+      <div className="h-12 md:h-16 bg-white/5 rounded-lg mx-auto w-3/4" />
+      <div className="h-12 md:h-16 bg-white/5 rounded-lg mx-auto w-2/3" />
+    </div>
+    {/* Subheadline skeleton */}
+    <div className="space-y-3 mb-12 max-w-3xl mx-auto">
+      <div className="h-6 bg-white/5 rounded mx-auto w-full" />
+      <div className="h-6 bg-[#00C7F2]/10 rounded mx-auto w-4/5" />
+    </div>
+    {/* CTA skeleton */}
+    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <div className="w-48 h-14 bg-coral-500/20 rounded-xl" />
+      <div className="w-40 h-14 bg-white/5 rounded-xl border border-[#00C7F2]/20" />
+    </div>
+  </div>
+);
 
 export default function ModernHero() {
-  const [mounted, setMounted] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Quick load - show content after a brief moment to ensure smooth transition
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#fafafa]">
-      {/* Subtle gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-violet-200/40 via-fuchsia-200/30 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-tl from-sky-200/40 via-cyan-200/30 to-transparent rounded-full blur-3xl" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#121212] to-[#1a1a1a] pt-20">
+      {/* Background Pattern: z-0 to sit above background color but below content */}
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.2)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
+
+      {/* Minimal cyan accents background - render immediately */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-20 left-20 w-72 h-72 bg-[#00C7F2]/5 rounded-full filter blur-3xl animate-pulse"
+        />
+        <div
+          className="absolute top-40 right-20 w-72 h-72 bg-coral-500/5 rounded-full filter blur-3xl animate-pulse"
+        />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 py-32">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Announcement badge */}
-          {mounted && (
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        <AnimatePresence mode="wait">
+          {!isLoaded ? (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-white rounded-full shadow-sm border border-gray-200/80"
+              key="skeleton"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-gray-700">
-                Now in Public Beta
-              </span>
-              <span className="text-gray-300">|</span>
-              <Link href="/signup" className="text-sm font-medium text-violet-600 hover:text-violet-700 transition-colors">
-                Get early access →
-              </Link>
+              <HeroSkeleton />
             </motion.div>
-          )}
-
-          {/* Main headline */}
-          {mounted && (
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-gray-900 mb-6"
-            >
-              Know what goes viral
-              <br />
-              <span className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 bg-clip-text text-transparent">
-                before it happens
-              </span>
-            </motion.h1>
-          )}
-
-          {/* Subheadline */}
-          {mounted && (
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed"
-            >
-              XELORA predicts trending content before it peaks. Create campaigns
-              that capture momentum at the perfect moment.
-            </motion.p>
-          )}
-
-          {/* CTA buttons */}
-          {mounted && (
+          ) : (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
-            >
-              <Link
-                href="/signup"
-                className="group px-8 py-4 bg-gray-900 text-white rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-gray-800 transform hover:-translate-y-0.5 transition-all duration-200"
-              >
-                Start for free
-                <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
-              </Link>
-              <button
-                onClick={() => {
-                  document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-8 py-4 text-gray-700 font-semibold text-lg hover:text-gray-900 transition-colors"
-              >
-                See how it works
-              </button>
-            </motion.div>
-          )}
-
-          {/* Social proof */}
-          {mounted && (
-            <motion.div
+              key="content"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-col items-center gap-4"
+              transition={{ duration: 0.4 }}
+              className="max-w-5xl mx-auto text-center"
             >
-              <div className="flex -space-x-3">
-                {[
-                  "bg-gradient-to-br from-violet-400 to-violet-600",
-                  "bg-gradient-to-br from-fuchsia-400 to-fuchsia-600",
-                  "bg-gradient-to-br from-pink-400 to-pink-600",
-                  "bg-gradient-to-br from-sky-400 to-sky-600",
-                  "bg-gradient-to-br from-emerald-400 to-emerald-600",
-                ].map((gradient, i) => (
-                  <div
-                    key={i}
-                    className={`w-10 h-10 rounded-full ${gradient} border-2 border-white shadow-sm`}
-                  />
-                ))}
-                <div className="w-10 h-10 rounded-full bg-gray-100 border-2 border-white shadow-sm flex items-center justify-center text-xs font-semibold text-gray-600">
-                  +50
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0 }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030] backdrop-blur-sm rounded-full shadow-lg mb-8 border-2 border-[#00C7F2]/30 hover:border-[#00C7F2]/60 transition-all duration-300"
+              >
+                <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
+                <span className="text-sm font-semibold text-[#F5F7FA] uppercase tracking-wide">
+                  XELORA • Predictive Intelligence
+                </span>
+                <span className="px-2 py-1 bg-coral-500/20 rounded-full text-xs font-semibold text-coral-500 border border-coral-500/30 uppercase">
+                  Live
+                </span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.05 }}
+                className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight uppercase tracking-tight"
+              >
+                <span className="bg-gradient-to-r from-white via-coral-400 to-tron-cyan bg-clip-text text-transparent">
+                  Predict Momentum
+                </span>
+                <br />
+                <span className="text-[#F5F7FA]">Engineer Virality</span>
+              </motion.h1>
+
+              {/* Value Proposition - Clearer subheading */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-lg md:text-xl text-coral-400 font-semibold mb-4 max-w-2xl mx-auto"
+              >
+                AI-powered content creation that predicts viral trends before they peak
+              </motion.p>
+
+              {/* Subheadline */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed"
+              >
+                XELORA analyzes emerging signals across platforms to reveal what&apos;s about to rise.
+                <br />
+                <span className="text-[#00C7F2]">
+                  Before creators see it. Before the internet reacts to it.
+                </span>
+              </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+              >
+                <div className="relative">
+                  <Link
+                    href="/signup"
+                    className="group relative px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2 uppercase tracking-wide"
+                  >
+                    <Zap className="w-5 h-5" weight="duotone" />
+                    Get Early Access
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" weight="duotone" />
+                  </Link>
                 </div>
-              </div>
-              <p className="text-sm text-gray-500">
-                <span className="font-semibold text-gray-700">50+ creators</span> are already predicting trends
-              </p>
+
+                <button
+                  onClick={() => {
+                    const featuresElement = document.getElementById("features");
+                    if (featuresElement) {
+                      featuresElement.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className="px-8 py-4 bg-transparent text-[#F5F7FA] rounded-xl font-semibold text-lg border-2 border-[#00C7F2]/50 hover:bg-[#00C7F2]/10 hover:border-[#00C7F2] transform hover:scale-105 transition-all duration-200 uppercase tracking-wide"
+                >
+                  Explore Features
+                </button>
+              </motion.div>
+
+              {/* Key Features */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400 mt-16"
+              >
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
+                  <span>
+                    <strong className="text-[#F5F7FA]">Viral DNA™</strong> decoded
+                  </span>
+                </div>
+                <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#A17CF9]" weight="duotone" />
+                  <span>
+                    <strong className="text-[#F5F7FA]">Hook + Emotion + Value</strong> analysis
+                  </span>
+                </div>
+                <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
+                  <span>
+                    <strong className="text-[#F5F7FA]">Know WHY</strong> before you post
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Capability Pills */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="mt-16 flex flex-wrap gap-3 justify-center"
+              >
+                {[
+                  "Viral DNA™ Analysis",
+                  "Hook Detection",
+                  "Emotion Mapping",
+                  "Value Prop Scoring",
+                  "Psychometric AI",
+                  "Multi-Platform",
+                  "Trend Forecasting",
+                  "Content Engineering",
+                ].map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.35 + index * 0.05 }}
+                    className="px-4 py-2 bg-[#00C7F2]/10 rounded-full text-sm font-medium text-[#00C7F2] shadow-sm border border-[#00C7F2]/30 hover:border-[#00C7F2]/60 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default uppercase tracking-wide"
+                  >
+                    {feature}
+                  </motion.div>
+                ))}
+              </motion.div>
             </motion.div>
           )}
-        </div>
-
-        {/* Feature highlights */}
-        {mounted && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-24 max-w-5xl mx-auto"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Predict",
-                  description: "AI analyzes signals across platforms to identify emerging trends before they peak",
-                  accent: "from-violet-500 to-fuchsia-500"
-                },
-                {
-                  title: "Create",
-                  description: "Generate platform-optimized content in seconds with trend-aware AI writing",
-                  accent: "from-fuchsia-500 to-pink-500"
-                },
-                {
-                  title: "Capture",
-                  description: "Schedule campaigns at the perfect moment to ride the wave of momentum",
-                  accent: "from-pink-500 to-rose-500"
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                  className="group p-8 bg-white rounded-2xl border border-gray-200/80 shadow-sm hover:shadow-md hover:border-gray-300/80 transition-all duration-300"
-                >
-                  <div className={`w-12 h-1 bg-gradient-to-r ${feature.accent} rounded-full mb-6`} />
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        </AnimatePresence>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-6 h-10 border-2 border-[#00C7F2]/60 rounded-full flex items-start justify-center p-2 cursor-pointer hover:border-[#00C7F2] transition-colors"
+          onClick={() => {
+            const features = document.getElementById("features");
+            if (features) {
+              features.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+        >
+          <div className="w-1 h-2 bg-[#00C7F2] rounded-full" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

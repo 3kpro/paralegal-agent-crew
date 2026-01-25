@@ -2,6 +2,47 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { Users, Lightning as Zap, Clock, Star } from "@phosphor-icons/react";
+import { BGPattern } from "@/components/ui/bg-pattern";
+
+interface StatItem {
+  value: string;
+  label: string;
+  icon: React.ElementType;
+  color: string;
+  animatedValue?: number;
+}
+
+const stats: StatItem[] = [
+  {
+    value: "87%",
+    label: "Viral Prediction Accuracy",
+    icon: Star,
+    color: "text-coral-500",
+    animatedValue: 87,
+  },
+  {
+    value: "6",
+    label: "Platform Integrations",
+    icon: Zap,
+    color: "text-[#00C7F2]",
+    animatedValue: 6,
+  },
+  {
+    value: "<5s",
+    label: "Content Generation",
+    icon: Clock,
+    color: "text-green-500",
+    animatedValue: 5,
+  },
+  {
+    value: "24/7",
+    label: "AI-Powered Analysis",
+    icon: Users,
+    color: "text-amber-500",
+    animatedValue: 24,
+  },
+];
 
 const Counter = ({
   target,
@@ -28,13 +69,17 @@ const Counter = ({
         const now = Date.now();
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
+
         const easeOut = 1 - Math.pow(1 - progress, 3);
         const currentCount = Math.round(start + (end - start) * easeOut);
+
         setCount(currentCount);
+
         if (progress < 1) {
           requestAnimationFrame(updateCount);
         }
       };
+
       updateCount();
     }
   }, [inView, target, duration]);
@@ -48,82 +93,129 @@ const Counter = ({
   );
 };
 
-const stats = [
-  {
-    value: 87,
-    suffix: "%",
-    label: "Prediction accuracy",
-    description: "Our AI correctly identifies viral content",
-  },
-  {
-    value: 6,
-    suffix: "",
-    label: "Platforms supported",
-    description: "Twitter, LinkedIn, TikTok, and more",
-  },
-  {
-    value: 5,
-    prefix: "<",
-    suffix: "s",
-    label: "Generation time",
-    description: "Content created in seconds",
-  },
-  {
-    value: 50,
-    suffix: "+",
-    label: "Beta users",
-    description: "Creators already on the platform",
-  },
-];
-
 export const StatsSection: React.FC = () => {
-  const ref = React.useRef(null);
-  const inView = useInView(ref, { once: true });
-
   return (
-    <section className="py-24 bg-gray-50" ref={ref}>
-      <div className="container mx-auto px-6">
-        {/* Section header */}
+    <section className="py-20 bg-[#2b2b2b] relative overflow-hidden">
+      {/* Background Pattern */}
+      <BGPattern
+        variant="dots"
+        mask="fade-center"
+        size={24}
+        fill="rgba(255,255,255,0.15)"
+        className="z-0"
+        style={{ zIndex: 0 }}
+      />
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-r from-coral-500/5 to-transparent opacity-50 z-0" />
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-coral-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-coral-500/5 rounded-full blur-2xl" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Numbers that matter
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
+            <Star className="w-4 h-4 text-coral-400" fill="currentColor" weight="duotone" />
+            <span className="text-sm font-semibold text-coral-400">
+              XELORA™ Platform
+            </span>
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Built for Content Creators
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Real metrics from real creators using XELORA to predict and capture viral moments
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Professional-grade tools backed by real technology
           </p>
         </motion.div>
 
-        {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
-            >
-              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                <Counter
-                  target={stat.value}
-                  prefix={stat.prefix}
-                  suffix={stat.suffix}
-                />
-              </div>
-              <div className="text-sm font-semibold text-gray-900 mb-1">
-                {stat.label}
-              </div>
-              <div className="text-sm text-gray-500">
-                {stat.description}
-              </div>
-            </motion.div>
-          ))}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: `0 20px 40px rgba(0, 0, 0, 0.2)`,
+                }}
+                className="text-center p-8 bg-[#343a40] backdrop-blur-sm border-2 border-gray-700/50 rounded-2xl hover:border-coral-500/50 hover:shadow-xl hover:shadow-coral-500/10 transition-all duration-300 group"
+              >
+                {/* Icon */}
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                  className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-coral-500/10 to-transparent rounded-2xl flex items-center justify-center border border-gray-700/30 group-hover:border-coral-500/30 group-hover:shadow-sm transition-all duration-300`}
+                >
+                  <Icon className="w-8 h-8" weight="duotone" />
+                </motion.div>
+
+                {/* Counter Value */}
+                <div
+                  className={`text-4xl md:text-5xl font-bold ${stat.color} mb-3 font-mono`}
+                >
+                  {stat.value.includes("%") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />%
+                    </>
+                  ) : stat.value.includes("<") ? (
+                    <>
+                      {"<"}<Counter target={stat.animatedValue || 0} />s
+                    </>
+                  ) : stat.value.includes("/") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />/7
+                    </>
+                  ) : stat.value.includes("+") ? (
+                    <>
+                      <Counter target={stat.animatedValue || 0} />+
+                    </>
+                  ) : (
+                    <Counter target={stat.animatedValue || 0} />
+                  )}
+                </div>
+
+                {/* Label */}
+                <div className="text-gray-300 font-medium leading-tight">
+                  {stat.label}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Call to Action */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="text-center mt-16"
+        >
+          <p className="text-gray-300 mb-6 max-w-xl mx-auto">
+            Start creating viral content with AI-powered trend discovery and
+            multi-platform publishing
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              window.location.href = "/signup";
+            }}
+            className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform transition-all duration-200"
+          >
+            Get Started Free
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );

@@ -5,24 +5,37 @@ import {
   ModernFeatures,
   ModernPricing,
   StatsSection,
+  ServicesGrid,
   FAQSection,
+  WaitlistSection,
 } from "../components/sections";
 import { Navigation, Footer, ContactSection } from "../components";
 
-export default function LandingPage() {
+export default function ModernLandingPage() {
+  const handleContactClick = () => {
+    const contactElement = document.getElementById("contact");
+    if (contactElement) {
+      contactElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <Navigation />
+    <div className="min-h-screen">
+      <Navigation onContactClick={handleContactClick} />
 
       <ModernHero />
 
+      <ModernFeatures />
+
       <StatsSection />
 
-      <ModernFeatures />
+      <ServicesGrid />
 
       <ModernPricing />
 
       <FAQSection />
+
+      <WaitlistSection />
 
       <ContactSection />
 
