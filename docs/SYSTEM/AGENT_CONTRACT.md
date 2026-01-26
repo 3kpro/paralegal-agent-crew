@@ -3,6 +3,7 @@
 This contract governs all AI agents, tools, and automated processes interacting with this repository.
 
 ## ENTRY REQUIREMENTS
+
 An agent MUST, before performing any work:
 - Read SYSTEM/VISION.md (canonical source of truth)
 - Read SYSTEM/TASKS.md
@@ -11,12 +12,14 @@ An agent MUST, before performing any work:
 - **STOP after completing ONE task - do NOT process multiple tasks**
 
 ## DEVELOPMENT ENVIRONMENT
+
 When running the dev server or testing:
 - **Port:** Always use port 3000 (run `restart-dev.bat` to start/restart)
 - **Test Credentials:** Username and password are saved in Chrome browser (no need to ask)
 - **Dev Server:** `restart-dev.bat` kills existing processes and starts fresh on port 3000
 
 ## DEPLOYMENT PROTOCOL
+
 An agent working on implementation tasks:
 - **MUST** commit changes to local git repository
 - **MUST** test changes locally using `npm run dev` on localhost:3000
@@ -25,6 +28,7 @@ An agent working on implementation tasks:
 - **Default assumption:** All work stays local for human review before deployment
 
 ## SCOPE OF ACTION
+
 An agent MAY:
 - Work only on **ONE task** - the first task listed in NOW section
 - Modify only files required to complete **that single task**
@@ -84,11 +88,9 @@ An agent MUST work on ONLY ONE task per session. This is non-negotiable.
 5. Follow EXIT REQUIREMENTS to mark complete and queue next task
 
 **Example Workflow:**
-```
 Session Start → Read NOW section → Work on FIRST task → Complete task →
 Update CHANGELOG → Mark task complete → Move to COMPLETED →
 Add next task to NOW → STOP (do not begin next task)
-```
 
 **Why One Task Per Session:**
 - Ensures predictable, manageable scope
@@ -97,10 +99,13 @@ Add next task to NOW → STOP (do not begin next task)
 - Maintains clear progress tracking
 
 ## EXIT REQUIREMENTS (MANDATORY)
+
 **Before ending your session, you MUST complete ALL of these steps:**
 
 1. **Update CHANGELOG.md** - Add entry in SYSTEM/CHANGELOG.md summarizing what was done
-2. **Mark task COMPLETE** - Change `- [ ]` to `- [x]` in SYSTEM/TASKS.md and add ✅
+2. **Mark task COMPLETE**
+   - Change `- [ ]` to `- [x]` in SYSTEM/TASKS.md and add ✅ for the **CURRENT task only**.
+   - **CRITICAL:** Do NOT uncheck, modify, or remove any existing `[x]` tasks in the COMPLETED section. Preserve history exactly as is.
 3. **Move to COMPLETED section** - Move the task from NOW to COMPLETED section
 4. **Queue next task** - Add the next logical task to the NOW section (if applicable)
 5. **Verify** - Confirm both CHANGELOG.md and TASKS.md are updated before stopping

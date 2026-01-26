@@ -25,14 +25,14 @@ try {
   console.log('❌ gemini-pro FAILED:', error.message);
 }
 
-// Try gemini-2.0-flash
+// Try gemini-1.5-flash
 try {
-  console.log('\n2. Testing gemini-2.0-flash...');
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  console.log('\n2. Testing gemini-1.5-flash...');
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
   const result = await model.generateContent('Say "test successful"');
   const response = await result.response;
   const text = response.text();
-  console.log('✅ gemini-2.0-flash WORKS:', text);
+  console.log('✅ gemini-1.5-flash WORKS:', text);
 } catch (error) {
   console.log('❌ gemini-1.5-flash FAILED:', error.message);
 }

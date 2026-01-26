@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getValidToken } from '@/lib/auth/oauth';
+import { rateLimit, RateLimitPresets } from '@/lib/rate-limit';
 
 interface PostRequest {
   platform: string;

@@ -1,0 +1,92 @@
+CSS Tailwind Theme:
+:root {
+  --card: #FFFFFF;
+  --ring: #007AFF;
+  --input: #E7EAEE;
+  --muted: #E7EAEE;
+  --accent: #FEE36F;
+  --border: #E7EAEE;
+  --radius: 0.8rem;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --popover: #FFFFFF;
+  --primary: #007AFF;
+  --font-sans: "Avertastd", sans-serif;
+  --secondary: #E7EAEE;
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --background: #F5F8FA;
+  --font-serif: "Circular", serif;
+  --foreground: #041D34;
+  --spacing-lg: 2.4rem;
+  --spacing-md: 1.6rem;
+  --spacing-sm: 0.8rem;
+  --spacing-xl: 3.2rem;
+  --spacing-xs: 0.4rem;
+  --destructive: #FE565B;
+  --card-foreground: #041D34;
+  --muted-foreground: #515E71;
+  --accent-foreground: #041D34;
+  --popover-foreground: #041D34;
+  --primary-foreground: #FFFFFF;
+  --secondary-foreground: #041D34;
+  --destructive-foreground: #FFFFFF;
+}
+
+.dark {
+  --card: #05294B;
+  --ring: #007AFF;
+  --input: #293A52;
+  --muted: #293A52;
+  --accent: #FEE36F;
+  --border: #293A52;
+  --popover: #05294B;
+  --primary: #007AFF;
+  --secondary: #293A52;
+  --background: #041D34;
+  --foreground: #F5F8FA;
+  --destructive: #FE565B;
+  --card-foreground: #F5F8FA;
+  --muted-foreground: #8294A5;
+  --accent-foreground: #041D34;
+  --popover-foreground: #F5F8FA;
+  --primary-foreground: #FFFFFF;
+  --secondary-foreground: #F5F8FA;
+  --destructive-foreground: #FFFFFF;
+}
+
+@theme inline {
+  --color-card: var(--card);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-radius: var(--radius);
+  --color-shadow: var(--shadow);
+  --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-font-sans: var(--font-sans);
+  --color-secondary: var(--secondary);
+  --color-shadow-lg: var(--shadow-lg);
+  --color-shadow-md: var(--shadow-md);
+  --color-shadow-sm: var(--shadow-sm);
+  --color-shadow-xl: var(--shadow-xl);
+  --color-background: var(--background);
+  --color-font-serif: var(--font-serif);
+  --color-foreground: var(--foreground);
+  --color-spacing-lg: var(--spacing-lg);
+  --color-spacing-md: var(--spacing-md);
+  --color-spacing-sm: var(--spacing-sm);
+  --color-spacing-xl: var(--spacing-xl);
+  --color-spacing-xs: var(--spacing-xs);
+  --color-destructive: var(--destructive);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
+}

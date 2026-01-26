@@ -86,6 +86,12 @@
       "permanent": true
     }
   ],
+  "crons": [
+    {
+      "path": "/api/cron/process-schedule",
+      "schedule": "* * * * *"
+    }
+  ],
   "github": {
     "enabled": true,
     "autoJobCancelation": true

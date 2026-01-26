@@ -12,29 +12,119 @@ This file lists XELORA product-specific tasks only.
 
 ## NOW
 
-- [ ] **Campaign Creation UI/UX: Command Center Overhaul** 🚀
-      - **Problem:** Current campaign creation flow feels like a standard form. Users need to feel like they're engineering virality, not just filling out text boxes.
-      - **Goal:** Transform `/campaigns/create` into a "Viral Prediction Command Center" with real-time feedback, live previews, and instant AI scoring.
-      - **Action:**
-        - Build 3-column layout: Config (20%) | Editor (45%) | Preview+Score (35%)
-        - Implement Viral Score Gauge with instant local heuristic scoring + debounced AI validation (2s)
-        - Create live platform previews (Twitter/LinkedIn/Facebook) that update on every keystroke
-        - Add "Supercharge" button with AI-powered content variations modal
-        - Build mobile FAB (floating action button) + bottom sheet for score display
-        - Use Zustand for state management, Framer Motion for animations
-      - **Reference:**
-        - `docs/features/New_UI_UX.md` (Design vision + technical specs)
-        - `docs/features/COMMAND_CENTER_IMPLEMENTATION_PLAN.md` (Step-by-step guide)
-      - **Timeline:** 3-5 days (7 phases: dependencies → components → integration → mobile → supercharge → testing → polish)
-      - **Location:** `app/(portal)/dashboard/campaigns/create/page.tsx` and new components in `components/campaign/`
-      - **Priority:** HIGH - Core Product Differentiator
-      - **Assigned:** Gemini
-
----
 
 
 
 ## COMPLETED
+
+- [x] **XELORA Theme Upgrade** 🎨 ✅
+      - **Goal:** Modernize design system with premium color/font variables.
+      - **Action:**
+        - Updated `app/globals.css` with new CSS variables.
+        - Refactored `tailwind.config.js` to use variable mappings.
+        - Created branch `feature/xelora-theme-upgrade`.
+      - **Source:** `docs/upgrades/xelora_upgrades.md`
+      - **Assigned:** Antigravity
+
+- [x] **Cleanup Migration Files** 🧹 ✅
+      - **Goal:** Remove temporary files after secure migration.
+      - **Files:** `script.js`, `docs/handoffs/upgrade_to_xelora.md`.
+      - **Assigned:** Antigravity
+
+- [x] **Implement Code Suggestions from Handoff** ✅
+      - **Goal:** Improve `script.js` quality and ensure safe execution.
+      - **Action:**
+        - Refactored `script.js` with error handling, constants, and logging.
+        - Executed script to apply rate-limit import to `app/api/social/post/route.ts`.
+      - **Source:** `docs/handoffs/upgrade_to_xelora.md`
+      - **Assigned:** Antigravity
+
+- [x] **Refactor Portal Layout** 🎨 ✅
+      - **Goal:** Implement suggestions from `upgrade_to_layout.md` (reduce complexity, improve error handling).
+      - **Action:**
+        - Extracted `PortalHeader`, `UserMenuDropdown`, `WhatsNewModal` components.
+        - Refactored `PortalLayout` to support context providers (`useToast`).
+        - Fixed magic numbers and code duplication.
+      - **Location:** `app/(portal)/layout.tsx`
+      - **Assigned:** Antigravity
+
+- [x] **React Security Audit & Patch** 🛡️ ✅
+      - **Goal:** Verify codebase against "React2Shell" (CVE-2025-55182) and fix vulnerabilities.
+      - **Action:**
+        - Verified React (19.2.1) and Next.js (16.0.7).
+        - Confirmed clean `npm audit` for core frameworks.
+        - Patched `qs` vulnerability via `npm audit fix`.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Promote: Implement Drive Content Analysis** 🧠 ✅
+      - **Goal:** Allow AI to read content from selected Drive files to generate campaign copy.
+      - **Action:**
+        - Created `lib/google-drive.ts` backend service.
+        - Updated `generatePromoteCampaign` in `gemini-actions.ts` to fetch and use file content.
+        - Updated `PromoteInput.tsx` to capture access token.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Google Drive Integration for Promote** 📁 ✅
+      - **Goal:** Allow users to select files from Google Drive for Promote campaigns.
+      - **Action:**
+        - Created `driveFiles` metadata structure in `PromoteData`.
+        - Integrated `useDrivePicker` in `PromoteInput` component.
+        - Implemented "Select from Drive" UI with file listing.
+        - Verified metadata indexing without storage.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Workflow Automation Engine** ⚙️ ✅
+      - **Goal:** Build the backend engine to execute scheduled campaigns.
+      - **Action:**
+        - Set up Vercel Cron or ticking API.
+        - Implement task processor.
+        - Handle state transitions.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Smart Scheduling Dashboard** 📅 ✅
+      - **Goal:** Visualize and manage scheduled campaigns on a drag-and-drop calendar.
+      - **Action:**
+        - Create `CalendarView` component in Dashboard.
+        - API route to fetch scheduled campaigns.
+        - Drag-and-drop to reschedule (update `scheduled_at`).
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Campaign Command Center: Real AI Integration** 🧠 ✅
+      - **Problem:** "Supercharge" and "Viral Score" currently use mocks/heuristics. Users expect real AI intelligence.
+      - **Goal:** Connect the Command Center to the live Gemini 2.0 Flash API.
+      - **Action:**
+        - Replaced `setTimeout` mock in `SuperchargeButton` with `generateSuperchargeVariations` server action.
+        - Replaced fake AI score validation in `ContentEditor` with real `calculateRealViralScore` server action.
+        - Engineered prompts for viral variations (Provocative, Data, Story).
+      - **Assigned:** Antigravity
+
+
+
+- [x] **Campaign Command Center: Supercharge & Media Integration** ⚡ ✅
+      - **Problem:** Command Center has core UI but lacks the AI "Supercharge" variations and Media Upload functionality.
+      - **Goal:** Enable users to generate AI variations and upload media files.
+      - **Action:**
+        - Implemented `SuperchargeButton` with 3-mode Variations Modal.
+        - Connected `MediaUploader` to campaign store.
+        - Finalized flow with `ActionPanel` (Draft/Schedule).
+      - **Assigned:** Antigravity
+
+- [x] **Campaign Creation UI/UX: Command Center Overhaul (Phase 1)** 🚀 ✅
+      - **Problem:** Current campaign creation flow feels like a standard form. Users need to feel like they're engineering virality, not just filling out text boxes.
+      - **Goal:** Transform `/campaigns/create` into a "Viral Prediction Command Center" with real-time feedback, live previews, and instant AI scoring.
+      - **Action:**
+        - Built 3-column layout: Config | Editor | Preview+Score
+        - Implemented Viral Score Gauge with instant local heuristic scoring (0-100)
+        - Created live platform previews (Twitter/LinkedIn)
+        - Implemented Zustand state management for zero-latency updates
+        - Built mobile FAB for score display
+      - **Location:** `app/(portal)/campaigns/create/page.tsx`, `components/campaign/`
+      - **Assigned:** Antigravity
 
 - [x] **Final Gemini Model Sweep & Cleanup** 🧹 ✅
       - **Problem:** Scattered references to legacy `gemini-1.5` and `vertex-ai` SDKs could cause inconsistency or future breakage.
@@ -59,7 +149,7 @@ This file lists XELORA product-specific tasks only.
         - Created SQL RPC function `upsert_campaign_with_posts` for atomic transactions.
         - Refactored `saveCampaign` in `app/(portal)/campaigns/create/page.tsx` to use the RPC.
       - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
-      
+
       - **Assigned:** Antigravity
 
 - [x] **Harden AI-Powered Features (Viral Score & Trend Generation)** 🛡️ ✅
@@ -576,14 +666,14 @@ This file lists XELORA product-specific tasks only.
         - `components/sections/ModernFeatures.tsx`
         - `components/sections/ModernHero.tsx`
       - **Requirements:**
-        - [x] **StatsSection.tsx:** Change "100% Automated Publishing" to something honest (e.g., "100% AI-Powered" or "Full Campaign Creation")
-        - [x] **FAQSection.tsx:** Update "Which platforms does it support?" answer - remove publishing claims, focus on content creation + scheduling coming soon
-        - [x] **FAQSection.tsx:** Update "Can I schedule content in advance?" - soften to "coming soon" or remove
-        - [x] **FAQSection.tsx:** Review all answers for publishing promises and update to reflect current reality
-        - [x] **ModernFeatures.tsx:** ContentFlow™ claims "One-click publishing to 6 platforms" - mark as "Coming Soon" or update description
-        - [x] **ModernHero.tsx:** Consider adding "Promote" feature mention (AI-powered content creation with media analysis)
-        - [x] **Optional:** Add Google Drive integration / media analysis as a feature highlight
-        - [x] **Optional:** Mention guided wizard UX as a selling point
+        - [] **StatsSection.tsx:** Change "100% Automated Publishing" to something honest (e.g., "100% AI-Powered" or "Full Campaign Creation")
+        - [] **FAQSection.tsx:** Update "Which platforms does it support?" answer - remove publishing claims, focus on content creation + scheduling coming soon
+        - [] **FAQSection.tsx:** Update "Can I schedule content in advance?" - soften to "coming soon" or remove
+        - [] **FAQSection.tsx:** Review all answers for publishing promises and update to reflect current reality
+        - [] **ModernFeatures.tsx:** ContentFlow™ claims "One-click publishing to 6 platforms" - mark as "Coming Soon" or update description
+        - [] **ModernHero.tsx:** Consider adding "Promote" feature mention (AI-powered content creation with media analysis)
+        - [] **Optional:** Add Google Drive integration / media analysis as a feature highlight
+        - [] **Optional:** Mention guided wizard UX as a selling point
       - **Guiding Principle:** Be honest about current capabilities. Use "Coming Soon" badges where appropriate. Highlight what DOES work: trend discovery, AI content generation, Promote feature, Viral Score predictions.
       - **Reference:** See `docs/SYSTEM/VISION.md` for current feature status
 
@@ -593,12 +683,12 @@ This file lists XELORA product-specific tasks only.
       - **Problem:** User has to type audience manually - friction and requires thinking
       - **Solution:** Add clickable preset chips/buttons that auto-fill the field, plus manual entry option
       - **Requirements:**
-        - [x] Add preset audience options as clickable chips (e.g., "Professionals", "Small Business Owners", "Entrepreneurs", "Marketers", "Developers", "Creatives", "Students", "Gen Z", "Parents", etc.)
-        - [x] Clicking a chip inserts that value into the Target Audience field
-        - [x] Allow selecting multiple chips (comma-separated in field)
-        - [x] Keep the text input for custom/manual entry
-        - [x] Chips should have selected/unselected visual states
-        - [x] Consider a "Custom" chip that focuses the text input
+        - [] Add preset audience options as clickable chips (e.g., "Professionals", "Small Business Owners", "Entrepreneurs", "Marketers", "Developers", "Creatives", "Students", "Gen Z", "Parents", etc.)
+        - [] Clicking a chip inserts that value into the Target Audience field
+        - [] Allow selecting multiple chips (comma-separated in field)
+        - [] Keep the text input for custom/manual entry
+        - [] Chips should have selected/unselected visual states
+        - [] Consider a "Custom" chip that focuses the text input
       - **Design:** Match existing Tron theme - chips with cyan/magenta accent on select
       - **Reference:** Similar to tag selection UIs
 
@@ -672,8 +762,6 @@ This file lists XELORA product-specific tasks only.
 ---
 
 ## LATER (Vision-aligned, not urgent)
-- [ ] AI Studio (brand-trained agents per customer)
-- [ ] Workflow automation & scheduling
 - [ ] White-label / middleware APIs for SMBs
 - [ ] Local / private AI option for businesses
 
@@ -688,3 +776,21 @@ This file lists XELORA product-specific tasks only.
 - [ ] Marketplace for agents / workflows
 - [ ] Agency reseller program
 - [ ] Hardware appliance for local AI
+- [ ] **Re-evaluate Command Center Implementation Strategy** 🔄
+      - **Problem:** Command Center replaced entire wizard instead of enhancing it, making product unusable
+      - **Goal:** Determine proper integration strategy for Command Center features
+      - **Options:**
+        1. Add as optional "Advanced Mode" toggle in final editing step
+        2. Create separate `/campaigns/command-center` route for power users
+        3. Integrate specific features (live preview, viral score) into existing wizard steps
+      - **Current Status:** Wizard restored to working state, Command Center components preserved in codebase
+      - **Priority:** MEDIUM
+      - **Assigned:** TBD
+      - [ ] **AI Studio (brand-trained agents per customer)**
+      - **Goal:** Implement brand-specific AI agents for customers.
+      - **Action:**
+        - Create `AIStudio` component.
+        - Implement custom model training/fine-tuning interface.
+        - Integrate with Vertex AI/OpenRouter.
+      - **Priority:** MEDIUM
+      - **Assigned:** TBD

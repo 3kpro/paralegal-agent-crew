@@ -42,6 +42,7 @@ import {
   BrainCircuit,
   Download,
   Home,
+  RefreshCw,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
@@ -2041,19 +2042,36 @@ ${targetPlatforms.map(platform => {
 
                   {/* Viral Score Education Banner */}
                   {trends.length > 0 && (
-                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl flex items-start gap-4">
-                      <div className="p-2 bg-gray-800 rounded-lg">
-                        <Activity className="w-5 h-5 text-coral-400" />
+                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className="p-2 bg-gray-800 rounded-lg">
+                            <Activity className="w-5 h-5 text-coral-400" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-white mb-1">
+                              Viral Score™ Prediction
+                            </h4>
+                            <p className="text-xs text-gray-400 leading-relaxed max-w-xl">
+                              Trends are scored (0-100) based on search volume, platform validation, and freshness.
+                              <span className="text-coral-400 ml-1">Higher scores indicate stronger viral potential.</span>
+                            </p>
+                          </div>
+                        </div>
+                        <motion.button
+                          onClick={searchQuery.trim() ? searchTrends : loadTrendingTopics}
+                          disabled={loadingTrends}
+                          whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex items-center gap-2 px-4 py-2 bg-tron-cyan/10 border border-tron-cyan/30 rounded-lg text-tron-cyan text-sm font-medium hover:bg-tron-cyan/20 transition-all disabled:opacity-50"
+                        >
+                          <RefreshCw className={`w-4 h-4 ${loadingTrends ? 'animate-spin' : ''}`} />
+                          {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
+                        </motion.button>
                       </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-white mb-1">
-                          Viral Score™ Prediction
-                        </h4>
-                        <p className="text-xs text-gray-400 leading-relaxed max-w-2xl">
-                          Trends are scored (0-100) based on search volume, platform validation, and freshness. 
-                          <span className="text-coral-400 ml-1">Higher scores indicate stronger viral potential.</span>
-                        </p>
-                      </div>
+                      <p className="text-[10px] text-gray-500 mt-2 ml-12">
+                        💡 Scores vary based on AI analysis. Not happy with these? Click &quot;New Suggestions&quot; to get fresh trend ideas with updated scores.
+                      </p>
                     </div>
                   )}
 

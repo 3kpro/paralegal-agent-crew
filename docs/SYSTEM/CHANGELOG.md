@@ -1,4 +1,186 @@
-## 2026-01-19 — Agent Workflow Fix: One-Task-Per-Session Enforcement 🔧
+## 2026-01-25 — XELORA Theme Upgrade 🎨
+
+**Implemented the comprehensive Tailwind theme upgrade defined in `xelora_upgrades.md`.**
+
+**Summary of Actions:**
+- **CSS Variables**: Updated `app/globals.css` with a complete set of design tokens (colors, fonts, spacing, shadows) for both Light and Dark modes.
+- **Tailwind Config**: Refactored `tailwind.config.js` to map all `theme.extend` properties to the new CSS variables, replacing hardcoded hex values.
+- **Legacy Support**: Mapped legacy `coral` and `tron` colors to the new variables to ensure backward compatibility.
+- **Design System**: Established a consistent foundation for the premium XELORA aesthetic (`--background`, `--foreground`, `--primary`, etc.).
+
+**Status:** ✅ **Implemented**
+
+---
+
+## 2026-01-25 — Cleanup Migration Files 🧹
+
+**Removed temporary migration scripts and documentation.**
+
+**Summary of Actions:**
+- **Cleanup**: Deleted `script.js` and `docs/handoffs/upgrade_to_xelora.md` as the migration task is complete and changes are applied.
+
+**Status:** ✅ **Cleaned**
+
+---
+
+## 2026-01-25 — Implement Code Review Suggestions (Script Refactor) 🛠️
+
+**Refactored `script.js` to improve robustness and applied rate-limit imports.**
+
+**Summary of Actions:**
+- **Code Improvement**: Refactored `script.js` to implement all suggestions from `docs/handoffs/upgrade_to_xelora.md`:
+  - Enforced constant definitions for file paths and magic strings.
+  - Added proper error handling (try-catch).
+  - Encapsulated logic in a named function.
+  - Added checks for existing content to prevent idempotent failures.
+- **Execution**: Ran the refactored script to successfully patch `app/api/social/post/route.ts` with the required `rateLimit` import.
+
+**Status:** ✅ **Implemented & Applied**
+
+---
+
+## 2026-01-21 — React Security Audit & Patch 🛡️
+
+**Verified codebase security against "React2Shell" (CVE-2025-55182) and general vulnerabilities.**
+
+**Summary of Actions:**
+- **Audit**: Verified React (`19.2.1`) and Next.js (`16.0.7`) versions. Confirmed `npm audit` finding 0 vulnerabilities for these packages.
+- **Vulnerability Patch**: Ran `npm audit fix` to resolve high-severity `qs` vulnerability.
+- **Verification**: Confirmed "React2Shell" (CVE-2025-55182) effectively mitigated by current versions.
+
+**Status:** ✅ **Verified & Secured**
+
+---
+
+## 2026-01-19 — REVERT: Restore Campaign Wizard with Viral DNA 🔄
+
+**Reverted Command Center implementation to restore working product.**
+
+**Problem:**
+- Command Center replaced the entire campaign wizard with a complex 3-column layout
+- Users lost the simple 2-path flow: "Discover Viral" vs "Validate Idea"
+- No onboarding or context - users dropped straight into an unfamiliar interface
+- Product became unusable
+
+**Action:**
+- Reverted `app/(portal)/campaigns/create/page.tsx` to commit `adcbf69`
+- Restored card-based wizard with ALL recent features:
+  - ✅ Viral DNA™ scoring and analysis
+  - ✅ Recent UI improvements
+  - ✅ Promote flow with Google Drive integration
+  - ✅ Transfer Masterclass
+  - ✅ UpgradeModal for tier limits
+- Command Center components remain in codebase for future re-integration
+
+**Status:** ✅ **Wizard Restored (Modern Version)**
+
+**Next Steps:** Re-evaluate Command Center as an optional "Advanced Mode" or separate feature, not a replacement for the main wizard.
+
+---
+
+## 2026-01-19 — Promote Implement Drive Content Analysis 🧠
+
+**Enabled backend processing of Google Drive files for "Promote" campaigns.**
+
+**Summary of Actions:**
+- **Backend Service**: Created `lib/google-drive.ts` to fetch file content (Text/Binary) from Google Drive API using an access token.
+- **AI Integration**: Updated `app/actions/gemini-actions.ts` with `generatePromoteCampaign` server action that fetches selected Drive files and passes them as `inlineData` to Gemini 2.0 Flash for context-aware generation.
+- **Frontend State**: Updated `PromoteInput.tsx` to capture and store the Google Drive OAuth `accessToken` in `PromoteData` so it can be passed to the backend.
+- **Data Model**: Updated `PromoteData` type to include `accessToken`.
+
+**Status:** ✅ **Implemented**
+
+---
+
+## 2026-01-19 — Google Drive Integration for Promote 📁
+
+**Implemented Google Drive Picker integration for Promote campaigns.**
+
+**Summary of Actions:**
+- **Integration**: Added `useDrivePicker` hook to `PromoteInput` to allow direct file selection from Google Drive.
+- **Frontend**: Implemented "Select from Drive" button and file list UI.
+- **Data Model**: Updated `PromoteData` and `types.ts` to include `DriveFile` metadata structure.
+- **Storage**: Implemented metadata-only indexing (files remain in Drive, Xelora stores references).
+
+**Status:** ✅ **Implemented**
+
+---
+
+## 2026-01-19 — Workflow Automation Engine ⚙️
+
+**Built the backend engine to process and "execute" scheduled campaigns.**
+
+**Summary of Actions:**
+- **Cron Job**: Implemented `/api/cron/process-schedule` route to check for due campaigns every minute.
+- **Admin Client**: Created `lib/supabase/admin.ts` to bypass RLS for system operations.
+- **Vercel Config**: Updated `vercel.json` to register the cron job.
+- **Execution Logic**: Implemented "Mock Publish" state transition (Scheduled → Published) to complete the campaign lifecycle for V1.
+
+**Status:** ✅ **Implemented**
+
+---
+
+## 2026-01-19 — Smart Scheduling Dashboard 📅
+
+**Implemented a drag-and-drop calendar for campaign management.**
+
+**Summary of Actions:**
+- **Calendar UI**: Created `CalendarView` with monthly grid, platform-specific colors, and drag-and-drop support (`@dnd-kit`).
+- **Backend API**: Added `/api/campaigns/scheduled` to fetch scheduled content and updated `/api/campaigns/[id]` to support rescheduling.
+- **Integration**: Embedded `CalendarView` into the main Dashboard for high-visibility access.
+
+**Status:** ✅ **Implemented**
+
+---
+
+## 2026-01-19 — Campaign Command Center: Real AI Integration 🧠
+
+**Connected Content Lab to live Gemini 2.0 Flash API for real-time viral intelligence.**
+
+**Summary of Actions:**
+- **AI Server Actions**: Created `app/actions/gemini-actions.ts` with `generateSuperchargeVariations` and `calculateRealViralScore` to securely handle API interaction.
+- **Supercharge Engine**: Updated `SuperchargeButton` to generate 3 unique viral angles (Provocative, Data-Backed, Storyteller) using Gemini.
+- **Real-time Scoring**: Connected `ContentEditor` to live viral scoring, replacing mocks/heuristics with deep prompt analysis.
+- **Prompt Engineering**: Engineered specific prompts to enforce viral formatting and "Viral DNA" extraction.
+
+**Status:** ✅ **Feature Complete**
+
+---
+
+## 2026-01-19 — Campaign Command Center Overhaul (Phase 1) 🚀
+
+**Implemented core foundation for the new "Viral Prediction Command Center".**
+
+**Summary of Actions:**
+- **Architecture**: Created 3-column layout (Config | Editor | Preview+Score) for desktop, stacking on mobile.
+- **Components**: Built `ViralScoreGauge`, `ContentEditor` (with heuristic scoring hook), `PlatformPreview` (Twitter, LinkedIn), and `ConfigPanel`.
+- **State Management**: Implemented `useCampaignStore` (Zustand) for centralized state across components.
+- **Scoring Engine**: Implemented `viral-score-heuristic.ts` for instant local scoring feedback (0-100).
+- **UI Primitives**: Created/Polished standard shadcn-like components (`shadcn-card`, `shadcn-tooltip`, `textarea`, `input`, `select`, `badge`) to support the new UI.
+- **Mobile Support**: Added `MobileScoreFab` for accessing viral score on small screens.
+
+**Status:** ✅ **Phase 1 Complete (Foundation & Core UI)**
+
+**Next Steps:** Implement "Supercharge" (AI variations) and Media Upload integration.
+
+---
+
+## 2026-01-19 — Campaign Command Center: Supercharge & Media ⚡
+
+**Activated AI content variations and media handling in the Command Center.**
+
+**Summary of Actions:**
+- **AI Variations**: Implemented `SuperchargeButton` with "Variations Modal", offering 3 distinct AI-generated angles (Provocative, Data-Backed, Storyteller).
+- **Media Support**: Built `MediaUploader` with drag-and-drop support, integrated into the Content Lab.
+- **Workflow Finalization**: Created `ActionPanel` for "Save Draft" vs "Schedule" actions, replacing the old wizard flow.
+- **Integration**: Connected all new components to `useCampaignStore` and the new `ContentEditor` layout.
+- **Storage**: Configured media handling in the campaign submission payload (simulated upload for MVP).
+
+**Status:** ✅ **Feature Complete**
+
+---
+
+
 
 **Fixed critical workflow issue where agents completed multiple tasks instead of one.**
 
@@ -24,34 +206,6 @@
 - Ensures human review between tasks
 - Maintains predictable, manageable scope per session
 - Enforces proper task queuing for agentic workflow
-
-**Status:** ✅ **Complete**
-
----
-
-## 2026-01-20 — Campaign Command Center Overhaul 🚀
-
-**Transformed the campaign creation flow into a "Viral Prediction Command Center" with real-time feedback.**
-
-**Summary of Actions:**
-- **UI Architecture:** Implemented a new 3-column layout (Config, Editor, Preview/Score) for optimal workflow.
-- **Viral Score Gauge:** Developed a real-time scoring engine with instant heuristic analysis and visual feedback (red/yellow/green gauge).
-- **Live Previews:** Created instant platform previews for Twitter, LinkedIn, and Facebook that update as you type.
-- **Content Editor:** Enhanced the editor with "Supercharge" capability and real-time stats.
-- **Mobile Experience:** Built a dedicated mobile experience with a Floating Action Button (FAB) for the viral score and bottom sheet.
-- **State Management:** Integrated `zustand` for robust global state handling across components.
-
-**Status:** ✅ **Complete**
-
-## 2026-01-19 — Final Gemini Model Sweep & Legacy Cleanup 🧹
-
-**Completed comprehensive cleanup of legacy AI model references.**
-
-**Summary of Actions:**
-- **Script Updates:** Updated `enrich-viral-data-vertex.ts` and `generate-training-data.ts` to use `gemini-2.0-flash`.
-- **Test Infrastructure:** Updated `test-gemini-key.mjs` and `test-models.mjs` to validate against the correct model.
-- **Database Config:** Updated default AI provider config in `supabase/migrations/003_ai_tools_and_profiles.sql`.
-- **Verification:** Confirmed production debug endpoint returns successful generations with `gemini-2.0-flash`.
 
 **Status:** ✅ **Complete**
 

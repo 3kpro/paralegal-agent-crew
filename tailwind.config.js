@@ -1,5 +1,33 @@
 /** @type {import('tailwindcss').Config} */
+
+// Shared color palette to avoid duplication
+// Source: Claude AI Color Scheme (Legacy/Fallback)
+const coralPalette = {
+  50: '#fef7f5',
+  100: '#fdeee9',
+  200: '#fbdcd3',
+  300: '#f8c1b3',
+  400: '#f49d87',
+  500: '#ee8b72',  // Primary coral from Claude UI
+  600: '#e67056',
+  700: '#d15a42',
+  800: '#ad4b37',
+  900: '#8f4032',
+};
+
+// Animation Constants
+const ANIMATION_CONSTANTS = {
+  FLOAT_DISTANCE: '-10px',      // Gentle floating effect
+  SLIDE_UP_START: '20px',       // Subtle upward entry
+  LOADER_SIZE: '35px',          // Size of the loader segments
+  FADE_IN_DURATION: '0.6s',    // Quick fade for UI availability
+  SLIDE_UP_DURATION: '0.8s',   // Smooth entry for larger content
+  FLOAT_DURATION: '3s',        // Slow, relaxing float cycle
+  LOADER_DURATION: '2.5s',     // Cycle time for complex loader animation
+};
+
 module.exports = {
+  darkMode: ["class"], // Enable class-based dark mode
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -8,77 +36,71 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Claude AI Color Scheme
-        coral: {
-          50: '#fef7f5',
-          100: '#fdeee9',
-          200: '#fbdcd3',
-          300: '#f8c1b3',
-          400: '#f49d87',
-          500: '#ee8b72',  // Primary coral from Claude UI
-          600: '#e67056',
-          700: '#d15a42',
-          800: '#ad4b37',
-          900: '#8f4032',
-        },
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
-          50: '#fef7f5',
-          100: '#fdeee9',
-          200: '#fbdcd3',
-          300: '#f8c1b3',
-          400: '#f49d87',
-          500: '#ee8b72',  // Using coral as primary
-          600: '#e67056',
-          700: '#d15a42',
-          800: '#ad4b37',
-          900: '#8f4032',
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
         },
-        dark: {
-          50: '#f8f9fa',
-          100: '#e9ecef',
-          200: '#dee2e6',
-          300: '#ced4da',
-          400: '#adb5bd',
-          500: '#6c757d',
-          600: '#495057',
-          700: '#343a40',
-          800: '#2b2b2b',  // Main background from Claude UI
-          900: '#1a1a1a',
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
         },
-        // Neutral grays for text
-        slate: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+        destructive: {
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
         },
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          foreground: "var(--accent-foreground)",
+        },
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
+        },
+        card: {
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+        },
+
+        // Claude AI Color Scheme (Legacy)
+        coral: coralPalette,
+
+        // LEGACY TRON COLORS - Mapped to new variables or closest matches to override hardcoded values
+        // This allows old code to work without drastic changes while adopting the new theme
+        'tron-dark': '#2b2b2b',        // → dark-800 equivalent
+        'tron-grid': '#343a40',        // → dark-700 equivalent
+        'tron-cyan': 'var(--primary)', // Mapped to primary blue
+        'tron-magenta': 'var(--destructive)', // Mapped to destructive red
+        'tron-text': 'var(--foreground)',
+        'tron-text-muted': 'var(--muted-foreground)',
+        'tron-green': '#10b981',       // Keeping as is for success states
+
+        // Custom palette extensions if needed
         navy: '#1e293b',
         charcoal: '#374151',
-
-        // LEGACY TRON COLORS - Mapped to new coral/dark scheme
-        // This allows old code to work without changes
-        'tron-dark': '#2b2b2b',        // → dark-800
-        'tron-grid': '#343a40',        // → dark-700
-        'tron-cyan': '#ee8b72',        // → coral-500
-        'tron-magenta': '#e67056',     // → coral-600
-        'tron-text': '#ffffff',        // → white
-        'tron-text-muted': '#d1d5db',  // → gray-300
-        'tron-green': '#10b981',       // → green-500
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'serif'],
       },
       animation: {
-        'fade-in': 'fadeIn 0.6s ease-in-out',
-        'slide-up': 'slideUp 0.8s ease-out',
-        'float': 'float 3s ease-in-out infinite',
-        'loaderAnim': 'loaderAnim 2.5s infinite',
+        'fade-in': `fadeIn ${ANIMATION_CONSTANTS.FADE_IN_DURATION} ease-in-out`,
+        'slide-up': `slideUp ${ANIMATION_CONSTANTS.SLIDE_UP_DURATION} ease-out`,
+        'float': `float ${ANIMATION_CONSTANTS.FLOAT_DURATION} ease-in-out infinite`,
+        'loaderAnim': `loaderAnim ${ANIMATION_CONSTANTS.LOADER_DURATION} infinite`,
       },
       keyframes: {
         fadeIn: {
@@ -86,23 +108,23 @@ module.exports = {
           '100%': { opacity: '1' },
         },
         slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '0%': { transform: `translateY(${ANIMATION_CONSTANTS.SLIDE_UP_START})`, opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: `translateY(${ANIMATION_CONSTANTS.FLOAT_DISTANCE})` },
         },
         loaderAnim: {
-          '0%': { inset: '0 35px 35px 0' },
-          '12.5%': { inset: '0 35px 0 0' },
-          '25%': { inset: '35px 35px 0 0' },
-          '37.5%': { inset: '35px 0 0 0' },
-          '50%': { inset: '35px 0 0 35px' },
-          '62.5%': { inset: '0 0 0 35px' },
-          '75%': { inset: '0 0 35px 35px' },
-          '87.5%': { inset: '0 0 35px 0' },
-          '100%': { inset: '0 35px 35px 0' },
+          '0%': { inset: `0 ${ANIMATION_CONSTANTS.LOADER_SIZE} ${ANIMATION_CONSTANTS.LOADER_SIZE} 0` },
+          '12.5%': { inset: `0 ${ANIMATION_CONSTANTS.LOADER_SIZE} 0 0` },
+          '25%': { inset: `${ANIMATION_CONSTANTS.LOADER_SIZE} ${ANIMATION_CONSTANTS.LOADER_SIZE} 0 0` },
+          '37.5%': { inset: `${ANIMATION_CONSTANTS.LOADER_SIZE} 0 0 0` },
+          '50%': { inset: `${ANIMATION_CONSTANTS.LOADER_SIZE} 0 0 ${ANIMATION_CONSTANTS.LOADER_SIZE}` },
+          '62.5%': { inset: `0 0 0 ${ANIMATION_CONSTANTS.LOADER_SIZE}` },
+          '75%': { inset: `0 0 ${ANIMATION_CONSTANTS.LOADER_SIZE} ${ANIMATION_CONSTANTS.LOADER_SIZE}` },
+          '87.5%': { inset: `0 0 ${ANIMATION_CONSTANTS.LOADER_SIZE} 0` },
+          '100%': { inset: `0 ${ANIMATION_CONSTANTS.LOADER_SIZE} ${ANIMATION_CONSTANTS.LOADER_SIZE} 0` },
         },
       },
     },

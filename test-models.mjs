@@ -13,9 +13,11 @@ console.log('Testing different model names...\n');
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const modelsToTest = [
-  'gemini-2.0-flash',
   'gemini-pro',
-  'models/gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+  'models/gemini-pro',
+  'models/gemini-1.5-flash',
   'models/gemini-1.5-pro',
   'gemini-1.5-flash-latest',
   'gemini-1.5-pro-latest'

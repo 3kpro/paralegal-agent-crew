@@ -9,6 +9,10 @@ import { DomainTransitionBanner } from "@/components/DomainTransitionBanner";
 export const metadata: Metadata = {
   metadataBase: new URL('https://getxelora.com'),
   title: "XELORA - Predictive Intelligence for Creators",
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   description:
     "XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality. Real-time signal analysis, multi-platform optimization, 6+ platform integration.",
   keywords:

@@ -1,46 +1,20 @@
 
-import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 
-// Initialize Vertex AI Client
-// This automatically uses Application Default Credentials (ADC) locally
-// and Service Account credentials in production
-const getClient = (): VertexAI | null => {
-  try {
-    const project = 'kpro-gemini';
-    const location = 'us-central1';
-    
-    // In Vercel/Production, we need to pass credentials explicitly via env var
-    // because there is no file-system access to ADC.
-    const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-    
-    if (serviceAccountJson) {
-      try {
-        const credentials = JSON.parse(serviceAccountJson);
-        const resolvedProject = credentials.project_id || project;
-        
-        return new VertexAI({
-          project: resolvedProject,
-          location,
-          googleAuthOptions: {
-            credentials
-          }
-        });
-      } catch (parseError) {
-        console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_JSON", parseError);
-        // Fallback to ADC if parsing fails (unlikely in prod if var exists)
-      }
-    }
-
-    // Default to ADC (works locally with gcloud auth)
-    return new VertexAI({
-      project,
-      location
-    });
-  } catch (error) {
-    console.error("Error initializing Vertex AI client:", error);
+// Initialize Google AI Client (Server-side only)
+// Uses API Key for simplicity and reliability, bypassing Vertex AI complexity
+const getClient = (): GoogleGenerativeAI | null => {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  
+  if (!apiKey) {
+    console.error("Missing GEMINI_API_KEY");
     return null;
   }
+
+  return new GoogleGenerativeAI(apiKey);
 };
+
+export { GenerativeModel };
 
 /**
  * Retrieves a Gemini model instance via Vertex AI.

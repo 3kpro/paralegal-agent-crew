@@ -322,12 +322,12 @@ What would you like to know?`
   if (pathname === '/helix') return null;
 
   return (
-    <div 
+    <div
       ref={sidebarRef}
       style={{ width: isSidePanel ? panelWidth : undefined }}
       className={`${
-      isSidePanel 
-        ? "relative z-40 shrink-0 h-screen bg-gray-900 border-l border-gray-800 flex flex-col transition-all duration-75 ease-out" 
+      isSidePanel
+        ? "relative z-40 shrink-0 h-full max-h-screen bg-gray-900 border-l border-gray-800 flex flex-col transition-all duration-75 ease-out overflow-hidden"
         : "fixed z-[100] flex flex-col items-end pointer-events-none bottom-6 right-6"
     }`}>
       {/* Resize Handle */}
