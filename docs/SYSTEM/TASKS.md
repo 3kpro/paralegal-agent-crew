@@ -12,10 +12,13 @@ This file lists XELORA product-specific tasks only.
 
 ## NOW
 
+- [ ] **Verify Theme Upgrade & UI Polish**
+      - **Goal:** Ensure new XELORA premium theme is applied correctly across known UI components.
+      - **Action:**
+        - Check landing page, dashboard, and campaign wizard for visual regressions.
+        - Verify dark mode/light mode consistency (if applicable).
+        - Update any hardcoded colors found during audit.
 
-
-
-## COMPLETED
 
 - [x] **XELORA Theme Upgrade** 🎨 ✅
       - **Goal:** Modernize design system with premium color/font variables.
