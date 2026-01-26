@@ -56,6 +56,11 @@ export interface Trend {
     keywordBoost: number;
     aiAnalysis: number;
   };
+  viralDNA?: {
+    hookType?: string;
+    primaryEmotion?: string;
+    valueProp?: string;
+  };
   aiReasoning?: string;
   sources?: string[];
 }

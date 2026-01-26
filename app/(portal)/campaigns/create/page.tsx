@@ -1869,16 +1869,16 @@ ${targetPlatforms.map(platform => {
                   onClick={() => goToNextCard()}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-tron-cyan/20 rounded-3xl overflow-hidden hover:border-tron-cyan/40 hover:shadow-2xl hover:shadow-tron-cyan/10 transition-all duration-300 h-full flex flex-col"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-tron-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-tron-cyan/10 border border-tron-cyan/30 flex items-center justify-center group-hover:bg-tron-cyan group-hover:text-white transition-colors duration-300">
-                        <Search className="w-6 h-6 text-tron-cyan group-hover:text-white transition-colors" />
+                      <div className="w-12 h-12 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Search className="w-6 h-6 text-coral-400 group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-tron-cyan transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-coral-400 transition-colors">
                         Validate Idea
                       </h3>
                     </div>
@@ -1888,25 +1888,25 @@ ${targetPlatforms.map(platform => {
                     </p>
 
                     {/* Example Output Preview */}
-                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-tron-cyan/20 transition-colors">
+                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
                       <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
                            <span className="text-gray-400">Viral Prediction</span>
-                           <span className="text-tron-cyan font-mono font-bold">82/100</span>
+                           <span className="text-coral-300 font-mono font-bold">76/100</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
                            <span className="text-gray-400">Optimization</span>
-                           <span className="text-tron-cyan">"Make hook more urgent"</span>
+                           <span className="text-coral-300">"Make hook more urgent"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
                            <span className="text-gray-400">Format Match</span>
-                           <span className="text-tron-cyan">"Perfect for LinkedIn"</span>
+                           <span className="text-coral-300">"Perfect for LinkedIn"</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-tron-cyan transition-colors mt-auto">
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors mt-auto">
                        Start Validation <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>

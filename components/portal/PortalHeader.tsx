@@ -28,8 +28,8 @@ export function PortalHeader({
   onWhatsNewOpen,
 }: PortalHeaderProps) {
   return (
-    <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 relative z-20">
-      <div className="flex items-center justify-between">
+    <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 relative z-20 flex-shrink-0">
+      <div className="flex items-center justify-between w-full">
         {/* Logo - only show on mobile since desktop has sidebar */}
         <div className="flex items-center gap-3 md:hidden">
           <span className="text-lg font-bold text-white uppercase tracking-wide">
@@ -37,11 +37,11 @@ export function PortalHeader({
           </span>
           <XeloraLogo className="w-8 h-8" />
         </div>
-        
+
         {/* Spacer for desktop to push right items */}
-        <div className="hidden md:block" />
-        
-        <div className="flex items-center space-x-2 md:space-x-3">
+        <div className="hidden md:flex flex-1" />
+
+        <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0">
           {/* What's New Button */}
           <button
             onClick={onWhatsNewOpen}
