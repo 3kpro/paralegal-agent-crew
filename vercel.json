@@ -89,7 +89,7 @@
   "crons": [
     {
       "path": "/api/cron/process-schedule",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ],
   "github": {
