@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { CalendarBlank as Calendar, PaperPlaneRight as Send, X } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SchedulePostDialogProps {
@@ -358,7 +358,7 @@ export function SchedulePostDialog({
               >
                 {loading ? (
                   <>
-                    <BouncingDots className="bg-tron-dark w-1.5 h-1.5" />
+                    <OrbitalLoader className="w-5 h-5" />
                     Scheduling...
                   </>
                 ) : (

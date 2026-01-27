@@ -95,22 +95,18 @@ const Counter = ({
 
 export const StatsSection: React.FC = () => {
   return (
-    <section className="py-20 bg-[#2b2b2b] relative overflow-hidden">
+    <section className="py-20 bg-background relative overflow-hidden border-y border-border">
       {/* Background Pattern */}
       <BGPattern
-        variant="dots"
+        variant="grid"
         mask="fade-center"
         size={24}
-        fill="rgba(255,255,255,0.15)"
+        fill="rgba(0,0,0,0.05)"
         className="z-0"
         style={{ zIndex: 0 }}
       />
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-r from-coral-500/5 to-transparent opacity-50 z-0" />
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-coral-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-coral-500/5 rounded-full blur-2xl" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-50 z-0" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
@@ -120,49 +116,43 @@ export const StatsSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 border border-coral-500/30 rounded-full mb-6">
-            <Star className="w-4 h-4 text-coral-400" fill="currentColor" weight="duotone" />
-            <span className="text-sm font-semibold text-coral-400">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-none mb-6">
+            <Star className="w-4 h-4 text-foreground" fill="currentColor" weight="duotone" />
+            <span className="text-sm font-bold text-foreground">
               XELORA™ Platform
             </span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Built for Content Creators
+          <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4 uppercase tracking-tighter">
+            Built for Content Creators.
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Professional-grade tools backed by real technology
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Professional-grade tools backed by predictive intelligence.
           </p>
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-border">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{
-                  scale: 1.05,
-                  boxShadow: `0 20px 40px rgba(0, 0, 0, 0.2)`,
-                }}
-                className="text-center p-8 bg-[#343a40] backdrop-blur-sm border-2 border-gray-700/50 rounded-2xl hover:border-coral-500/50 hover:shadow-xl hover:shadow-coral-500/10 transition-all duration-300 group"
+                className="text-center p-12 bg-card border border-border transition-all duration-300 group hover:bg-muted"
               >
                 {/* Icon */}
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className={`w-16 h-16 mx-auto mb-6 ${stat.color} bg-gradient-to-br from-coral-500/10 to-transparent rounded-2xl flex items-center justify-center border border-gray-700/30 group-hover:border-coral-500/30 group-hover:shadow-sm transition-all duration-300`}
+                <div
+                  className={`w-12 h-12 mx-auto mb-6 flex items-center justify-center border border-border group-hover:bg-background transition-all duration-300`}
                 >
-                  <Icon className="w-8 h-8" weight="duotone" />
-                </motion.div>
+                  <Icon className="w-6 h-6 text-foreground" weight="duotone" />
+                </div>
 
                 {/* Counter Value */}
                 <div
-                  className={`text-4xl md:text-5xl font-bold ${stat.color} mb-3 font-mono`}
+                  className={`text-4xl md:text-6xl font-bold text-foreground mb-3 font-sans tracking-tighter`}
                 >
                   {stat.value.includes("%") ? (
                     <>
@@ -186,7 +176,7 @@ export const StatsSection: React.FC = () => {
                 </div>
 
                 {/* Label */}
-                <div className="text-gray-300 font-medium leading-tight">
+                <div className="text-muted-foreground font-bold uppercase text-xs tracking-widest">
                   {stat.label}
                 </div>
               </motion.div>
@@ -201,22 +191,23 @@ export const StatsSection: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center mt-16"
         >
-          <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-            Start creating viral content with AI-powered trend discovery and
-            multi-platform publishing
+          <p className="text-muted-foreground mb-8 max-w-xl mx-auto font-medium">
+            Start engineering viral momentum with AI-powered trend discovery and
+            full campaign orchestration.
           </p>
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => {
               window.location.href = "/signup";
             }}
-            className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform transition-all duration-200"
+            className="px-12 py-5 bg-foreground text-background font-bold text-lg border-2 border-foreground hover:bg-background hover:text-foreground transition-all duration-200 uppercase tracking-tighter"
           >
             Get Started Free
           </motion.button>
         </motion.div>
       </div>
     </section>
+
   );
 };

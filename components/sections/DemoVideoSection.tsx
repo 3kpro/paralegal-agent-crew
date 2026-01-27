@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Play, PlayCircle, Clock, Eye, Lightning as Zap } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+
 
 export default function DemoVideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);

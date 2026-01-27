@@ -46,7 +46,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { BGPattern } from "@/components/ui/bg-pattern";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
@@ -68,6 +68,7 @@ import {
 } from "./types";
 import PromoteInput from "./components/PromoteInput";
 import { TransferMasterclass } from "@/components/TransferMasterclass";
+import ControlOptionButton from "./components/ControlOptionButton";
 
 // Interface for AI provider data
 interface AIProvider {
@@ -1503,7 +1504,7 @@ ${targetPlatforms.map(platform => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex flex-col items-center justify-center gap-4">
         <LoadingState variant="luma" message="" />
-        <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
+        <p className="text-zinc-500 text-lg">Loading campaign data...</p>
       </div>
     );
   }
@@ -1577,15 +1578,15 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
               <div className="relative z-10 text-center mb-12">
                 <div className="flex items-center justify-center gap-3 mb-6">
-                  <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                  <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                     Setup
                   </span>
                   {/* Free/Pro Quota Indicator */}
@@ -1613,7 +1614,7 @@ ${targetPlatforms.map(platform => {
                   }}
                   placeholder="e.g., Summer Launch 2026"
                   autoFocus
-                  className="w-full px-6 py-5 bg-gray-800/50 border border-gray-700 rounded-xl focus:outline-none focus:border-coral-500 focus:ring-1 focus:ring-coral-500 text-white text-xl text-center placeholder:text-gray-500 transition-all"
+                  className="w-full px-6 py-5 bg-muted/50 border border-input rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground text-xl text-center placeholder:text-muted-foreground transition-all"
                 />
 
                 <motion.button
@@ -1623,8 +1624,8 @@ ${targetPlatforms.map(platform => {
                   whileTap={{ scale: 0.98 }}
                   className={`w-full mt-6 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
                     !campaignName.trim()
-                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
                   }`}
                 >
                   Continue
@@ -1643,14 +1644,14 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
               <div className="relative z-10 text-center mb-12">
-                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Choose Your Platforms
                 </span>
                 <h2 className="text-4xl font-bold text-white mb-4">
@@ -1670,7 +1671,7 @@ ${targetPlatforms.map(platform => {
                       setTargetPlatforms(allIds);
                     }
                   }}
-                  className="mt-6 px-4 py-2 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 rounded-full text-xs font-medium text-coral-400 transition-all flex items-center gap-2 mx-auto"
+                  className="mt-6 px-4 py-2 bg-white/5 hover:bg-coral-500/20 border border-white/10 rounded-full text-xs font-medium text-white transition-all flex items-center gap-2 mx-auto"
                 >
                   {["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit"].every((id) =>
                     targetPlatforms.includes(id)
@@ -1710,7 +1711,7 @@ ${targetPlatforms.map(platform => {
                       whileTap={{ scale: 0.95 }}
                       className={`relative p-4 rounded-2xl border transition-all cursor-pointer group ${
                         targetPlatforms.includes(platform.id)
-                          ? "bg-coral-500/10 border-coral-500/50 shadow-lg shadow-coral-500/20 ring-2 ring-coral-500/30"
+                          ? "bg-white/5 border-coral-500/50 shadow-lg shadow-coral-500/20 ring-2 ring-coral-500/30"
                           : "bg-gray-800/50 border-gray-700 hover:border-coral-500/50 hover:bg-coral-500/5 hover:shadow-lg hover:shadow-coral-500/10"
                       }`}
                     >
@@ -1727,8 +1728,8 @@ ${targetPlatforms.map(platform => {
                         <Icon
                           className={`w-8 h-8 transition-colors ${
                             targetPlatforms.includes(platform.id)
-                              ? "text-coral-400"
-                              : "text-gray-500 group-hover:text-coral-400"
+                              ? "text-white"
+                              : "text-gray-500 group-hover:text-white"
                           }`}
                           strokeWidth={1.5}
                         />
@@ -1759,7 +1760,7 @@ ${targetPlatforms.map(platform => {
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-gray-800/50 border border-gray-700 rounded-xl font-semibold text-gray-300 hover:border-coral-500/30 hover:text-coral-400 transition-all text-lg"
+                  className="px-8 py-4 bg-gray-800/50 border border-gray-700 rounded-xl font-semibold text-gray-300 hover:border-white/10 hover:text-white transition-all text-lg"
                 >
                   ← Back
                 </motion.button>
@@ -1770,8 +1771,8 @@ ${targetPlatforms.map(platform => {
                   whileTap={{ scale: 0.98 }}
                   className={`flex-1 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
                     targetPlatforms.length === 0
-                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
                   }`}
                 >
                   Continue
@@ -1790,14 +1791,14 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-coral-500/10 blur-[120px] rounded-full pointer-events-none" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
               <div className="relative z-10 text-center mb-10">
-                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Discovery
                 </span>
                 <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
@@ -1806,11 +1807,11 @@ ${targetPlatforms.map(platform => {
                 
                 {/* Mini-Explainer */}
                 <div className="max-w-xl mx-auto mb-8 bg-gray-800/40 border border-gray-700/50 rounded-lg p-3 flex items-center gap-3 backdrop-blur-sm">
-                  <div className="p-2 bg-coral-500/10 rounded-md">
-                    <BrainCircuit className="w-5 h-5 text-coral-400" />
+                  <div className="p-2 bg-white/5 rounded-md">
+                    <BrainCircuit className="w-5 h-5 text-white" />
                   </div>
                   <p className="text-sm text-gray-300 text-left leading-relaxed">
-                    <span className="text-coral-400 font-bold">Viral DNA™ Science:</span> We analyze the psychological triggers (Hooks, Emotions, Values) behind 10M+ viral posts to predict success.
+                    <span className="text-white font-bold">Viral DNA™ Science:</span> We analyze the psychological triggers (Hooks, Emotions, Values) behind 10M+ viral posts to predict success.
                   </p>
                 </div>
               </div>
@@ -1827,10 +1828,10 @@ ${targetPlatforms.map(platform => {
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
-                        <Flame className="w-6 h-6 text-coral-400 group-hover:text-white transition-colors" />
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Flame className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-coral-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                         Discover Viral
                       </h3>
                     </div>
@@ -1858,7 +1859,7 @@ ${targetPlatforms.map(platform => {
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors mt-auto">
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-white transition-colors mt-auto">
                       Launch Discovery <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
@@ -1875,10 +1876,10 @@ ${targetPlatforms.map(platform => {
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
-                        <Search className="w-6 h-6 text-coral-400 group-hover:text-white transition-colors" />
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Search className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-coral-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                         Validate Idea
                       </h3>
                     </div>
@@ -1906,7 +1907,7 @@ ${targetPlatforms.map(platform => {
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors mt-auto">
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-white transition-colors mt-auto">
                        Start Validation <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
@@ -1918,7 +1919,7 @@ ${targetPlatforms.map(platform => {
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="text-gray-400 hover:text-coral-400 text-sm font-medium transition-colors py-2 px-4"
+                  className="text-gray-400 hover:text-white text-sm font-medium transition-colors py-2 px-4"
                 >
                   ← Go Back
                 </motion.button>
@@ -1935,21 +1936,21 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-12 shadow-2xl"
             >
               <div className="text-center mb-12">
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-white/10 mb-6"
                 >
-                  <TrendingUp className="w-10 h-10 text-tron-cyan" />
+                  <TrendingUp className="w-10 h-10 text-white" />
                 </motion.div>
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                <h2 className="text-4xl font-bold text-white mb-4">
                   What is the focus of your campaign?
                 </h2>
-                <p className="text-tron-text-muted text-lg">
+                <p className="text-zinc-500 text-lg">
                   Search for topics, keywords, or niches that matter to you
                 </p>
               </div>
@@ -1968,16 +1969,16 @@ ${targetPlatforms.map(platform => {
                     }}
                     placeholder="e.g., artificial intelligence, sustainable fashion, gaming..."
                     autoFocus
-                    className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                    className="w-full px-8 py-6 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
                   />
                   {searchQuery && (
                     <motion.button
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-tron-cyan/10 rounded-full transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
                     >
-                      <X className="w-5 h-5 text-tron-text-muted" />
+                      <X className="w-5 h-5 text-zinc-500" />
                     </motion.button>
                   )}
                 </div>
@@ -1987,7 +1988,7 @@ ${targetPlatforms.map(platform => {
                     onClick={goToPrevCard}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                    className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
                   >
                     ← Back
                   </motion.button>
@@ -2021,7 +2022,7 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className={loadingTrends ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl'}
+              className={loadingTrends ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-12 shadow-2xl'}
             >
               {loadingTrends ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
@@ -2030,10 +2031,10 @@ ${targetPlatforms.map(platform => {
               ) : (
                 <>
                   <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-tron-text mb-4">
+                    <h2 className="text-4xl font-bold text-white mb-4">
                       Pick your trends
                     </h2>
-                    <p className="text-tron-text-muted text-lg">
+                    <p className="text-zinc-500 text-lg">
                       {selectedTrends.length > 0
                         ? `${selectedTrends.length} trend${selectedTrends.length > 1 ? 's' : ''} selected`
                         : 'Select one or more trending topics'}
@@ -2046,7 +2047,7 @@ ${targetPlatforms.map(platform => {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-4">
                           <div className="p-2 bg-gray-800 rounded-lg">
-                            <Activity className="w-5 h-5 text-coral-400" />
+                            <Activity className="w-5 h-5 text-white" />
                           </div>
                           <div>
                             <h4 className="text-sm font-bold text-white mb-1">
@@ -2054,7 +2055,7 @@ ${targetPlatforms.map(platform => {
                             </h4>
                             <p className="text-xs text-gray-400 leading-relaxed max-w-xl">
                               Trends are scored (0-100) based on search volume, platform validation, and freshness.
-                              <span className="text-coral-400 ml-1">Higher scores indicate stronger viral potential.</span>
+                              <span className="text-white ml-1">Higher scores indicate stronger viral potential.</span>
                             </p>
                           </div>
                         </div>
@@ -2063,7 +2064,7 @@ ${targetPlatforms.map(platform => {
                           disabled={loadingTrends}
                           whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="flex items-center gap-2 px-4 py-2 bg-tron-cyan/10 border border-tron-cyan/30 rounded-lg text-tron-cyan text-sm font-medium hover:bg-tron-cyan/20 transition-all disabled:opacity-50"
+                          className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
                         >
                           <RefreshCw className={`w-4 h-4 ${loadingTrends ? 'animate-spin' : ''}`} />
                           {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
@@ -2092,15 +2093,15 @@ ${targetPlatforms.map(platform => {
                           whileTap={{ scale: 0.98 }}
                           className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
                             isSelected
-                              ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg"
-                              : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-md hover:shadow-tron-cyan/20"
+                              ? "bg-primary/10 border-primary shadow-[0_0_15px_-3px_var(--primary)] text-foreground"
+                              : "bg-muted/30 border-border hover:border-primary/50 hover:bg-muted/50 hover:shadow-lg"
                           }`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <h3 className={`font-semibold ${
-                                  isSelected ? "text-tron-text" : "text-tron-text-muted"
+                                  isSelected ? "text-white" : "text-zinc-500"
                                 }`}>
                                   {trend.title}
                                 </h3>
@@ -2126,7 +2127,7 @@ ${targetPlatforms.map(platform => {
                                 )}
                               </div>
                               {trend.formattedTraffic && (
-                                <p className="text-xs text-tron-text-muted">
+                                <p className="text-xs text-zinc-500">
                                   {trend.formattedTraffic}
                                 </p>
                               )}
@@ -2136,7 +2137,7 @@ ${targetPlatforms.map(platform => {
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  className="w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                                  className="w-6 h-6 bg-white rounded-full flex items-center justify-center"
                                 >
                                   <Check className="w-4 h-4 text-white" />
                                 </motion.div>
@@ -2182,7 +2183,7 @@ ${targetPlatforms.map(platform => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-tron-text-muted">No trends found. Try a different search.</p>
+                    <p className="text-zinc-500">No trends found. Try a different search.</p>
                   </div>
                 )}
 
@@ -2192,7 +2193,7 @@ ${targetPlatforms.map(platform => {
                       onClick={() => goToCard(3)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                      className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
                     >
                       ← Back
                     </motion.button>
@@ -2201,7 +2202,7 @@ ${targetPlatforms.map(platform => {
                       disabled={selectedTrends.length === 0}
                       whileHover={{ scale: selectedTrends.length === 0 ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                      className="flex-1 px-8 py-5 bg-primary rounded-2xl font-semibold text-primary-foreground shadow-lg shadow-primary/25 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
                     >
                       Continue
                     </motion.button>
@@ -2222,13 +2223,13 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl"
+              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-8 shadow-2xl"
             >
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-tron-text mb-2">
+                <h2 className="text-3xl font-bold text-white mb-2">
                   Shape your content
                 </h2>
-                <p className="text-tron-text-muted">
+                <p className="text-zinc-500">
                   Customize how your content will be generated
                 </p>
 
@@ -2265,14 +2266,14 @@ ${targetPlatforms.map(platform => {
                   <button
                     type="button"
                     onClick={() => setShowSaveTemplateDialog(true)}
-                    className="ml-auto px-4 py-2 bg-tron-dark/70 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                    className="ml-auto px-4 py-2 bg-zinc-950/70 border border-white/10 rounded-lg text-sm text-white hover:bg-white/10 transition-all"
                   >
                     Save as Template
                   </button>
                 </div>
 
                 {/* Platform Cards - Visual Overview */}
-                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                <div className="bg-zinc-950/30 border border-white/5 rounded-xl p-4">
                   {/* Header with sync toggle */}
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-white">Your Platforms</h3>
@@ -2303,7 +2304,7 @@ ${targetPlatforms.map(platform => {
                         <div className={`relative w-10 h-5 rounded-full transition-colors ${!customizePerPlatform ? 'bg-coral-500' : 'bg-gray-600'}`}>
                           <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${!customizePerPlatform ? 'left-0.5' : 'left-5'}`} />
                         </div>
-                        <span className="text-sm text-tron-text-muted group-hover:text-white transition-colors">
+                        <span className="text-sm text-zinc-500 group-hover:text-white transition-colors">
                           {!customizePerPlatform ? 'Same for all' : 'Per platform'}
                         </span>
                       </button>
@@ -2363,7 +2364,7 @@ ${targetPlatforms.map(platform => {
                           disabled={targetPlatforms.length === 1}
                           className={`relative p-4 rounded-xl border-2 transition-all text-left ${
                             isEditing
-                              ? 'border-tron-cyan bg-tron-cyan/10 ring-2 ring-tron-cyan/30'
+                              ? 'border-white bg-white/10 ring-2 ring-tron-cyan/30'
                               : !customizePerPlatform
                                 ? 'border-coral-500/50 bg-coral-500/5'
                                 : 'border-gray-700 bg-gray-800/30 hover:border-gray-500'
@@ -2371,7 +2372,7 @@ ${targetPlatforms.map(platform => {
                         >
                           {/* Editing badge */}
                           {isEditing && (
-                            <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-tron-cyan text-black text-[10px] font-bold rounded-full">
+                            <div className="absolute -top-3 right-4 px-3 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full shadow-lg border border-primary-foreground/20 z-10">
                               EDITING
                             </div>
                           )}
@@ -2427,10 +2428,10 @@ ${targetPlatforms.map(platform => {
 
                   {/* Editing indicator */}
                   {customizePerPlatform && activePlatformTab && (
-                    <div className="mt-4 p-3 bg-tron-cyan/10 border border-tron-cyan/30 rounded-lg flex items-center justify-between">
+                    <div className="mt-4 p-3 bg-white/10 border border-white/10 rounded-lg flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-tron-cyan rounded-full animate-pulse" />
-                        <span className="text-sm text-tron-cyan">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                        <span className="text-sm text-white">
                           Settings below apply to <span className="font-bold capitalize">{activePlatformTab}</span> only
                         </span>
                       </div>
@@ -2449,7 +2450,7 @@ ${targetPlatforms.map(platform => {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-gray-500 uppercase tracking-wide">Quick Presets</span>
                       {customizePerPlatform && activePlatformTab && (
-                        <span className="text-xs text-tron-cyan capitalize">for {activePlatformTab}</span>
+                        <span className="text-xs text-white capitalize">for {activePlatformTab}</span>
                       )}
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -2457,7 +2458,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("tiktok")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#00f2ea] hover:text-[#00f2ea] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#00f2ea] hover:text-[#00f2ea] transition-all flex items-center gap-1.5"
                         >
                           <Music className="w-3 h-3" />
                           TikTok Viral
@@ -2467,7 +2468,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("twitter")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all flex items-center gap-1.5"
                         >
                           <Twitter className="w-3 h-3" />
                           Twitter Thread
@@ -2477,7 +2478,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("linkedin")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all flex items-center gap-1.5"
                         >
                           <Linkedin className="w-3 h-3" />
                           LinkedIn Pro
@@ -2487,7 +2488,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("facebook")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1877F2] hover:text-[#1877F2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1877F2] hover:text-[#1877F2] transition-all flex items-center gap-1.5"
                         >
                           <Facebook className="w-3 h-3" />
                           Facebook Story
@@ -2497,7 +2498,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("instagram")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#E4405F] hover:text-[#E4405F] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#E4405F] hover:text-[#E4405F] transition-all flex items-center gap-1.5"
                         >
                           <Instagram className="w-3 h-3" />
                           Instagram Caption
@@ -2507,7 +2508,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("reddit")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#FF4500] hover:text-[#FF4500] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#FF4500] hover:text-[#FF4500] transition-all flex items-center gap-1.5"
                         >
                           <MessageSquare className="w-3 h-3" />
                           Reddit Post
@@ -2516,14 +2517,14 @@ ${targetPlatforms.map(platform => {
                       <button
                         type="button"
                         onClick={() => setControls({ ...controls, tone: 'casual', contentFocus: 'tips', length: 'short' })}
-                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                        className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-white transition-all"
                       >
                         Quick & Casual
                       </button>
                       <button
                         type="button"
                         onClick={() => setControls({ ...controls, tone: 'professional', contentFocus: 'informative', length: 'long' })}
-                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                        className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-white transition-all"
                       >
                         Long-form Pro
                       </button>
@@ -2568,27 +2569,23 @@ ${targetPlatforms.map(platform => {
                   <div className="space-y-5">
                     {/* Tone with Tooltips */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
-                        Tone <span className="text-xs text-tron-text-muted">(Press 1-3)</span>
+                      <label className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
+                        Tone <span className="text-xs text-zinc-500">(Press 1-3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {['professional', 'casual', 'friendly'].map((t) => (
                           <div key={t} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, tone: t })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.tone === t
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {t.charAt(0).toUpperCase() + t.slice(1)}
-                            </button>
+                            <ControlOptionButton
+                              id={t}
+                              label={t.charAt(0).toUpperCase() + t.slice(1)}
+                              isSelected={controls.tone === t}
+                              onClick={(id) => setControls({ ...controls, tone: id })}
+                              className="w-full"
+                            />
                             {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
+                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2597,8 +2594,8 @@ ${targetPlatforms.map(platform => {
 
                     {/* Length Slider */}
                     <div>
-                      <label htmlFor="content-length-slider" className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
-                        Content Length <span className="text-xs text-tron-text-muted">(Press S/M/L)</span>
+                      <label htmlFor="content-length-slider" className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
+                        Content Length <span className="text-xs text-zinc-500">(Press S/M/L)</span>
                       </label>
                       <div className="space-y-3">
                         <input
@@ -2613,36 +2610,32 @@ ${targetPlatforms.map(platform => {
                             setControls({ ...controls, length: val === 0 ? 'short' : val === 1 ? 'standard' : 'long' });
                           }}
                           aria-label="Select content length"
-                          className="w-full h-2 bg-tron-dark/50 rounded-lg appearance-none cursor-pointer range-slider"
+                          className="w-full h-2 bg-zinc-950/50 rounded-lg appearance-none cursor-pointer range-slider"
                         />
-                        <div className="flex justify-between text-xs text-tron-text-muted">
-                          <span className={controls.length === 'short' ? 'text-tron-cyan font-semibold' : ''}>Short (280 chars)</span>
-                          <span className={controls.length === 'standard' ? 'text-tron-cyan font-semibold' : ''}>Standard (500 chars)</span>
-                          <span className={controls.length === 'long' ? 'text-tron-cyan font-semibold' : ''}>Long (1000+ chars)</span>
+                        <div className="flex justify-between text-xs text-zinc-500">
+                          <span className={controls.length === 'short' ? 'text-white font-semibold' : ''}>Short (280 chars)</span>
+                          <span className={controls.length === 'standard' ? 'text-white font-semibold' : ''}>Standard (500 chars)</span>
+                          <span className={controls.length === 'long' ? 'text-white font-semibold' : ''}>Long (1000+ chars)</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Content Focus with Tooltips */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
+                      <label className="block text-white font-semibold mb-2 text-sm">Content Focus</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['informative', 'discussion', 'opinion', 'news', 'tips', 'story', 'walkthrough'].map((f) => (
                           <div key={f} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, contentFocus: f })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.contentFocus === f
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {f.charAt(0).toUpperCase() + f.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
+                            <ControlOptionButton
+                              id={f}
+                              label={f.charAt(0).toUpperCase() + f.slice(1)}
+                              isSelected={controls.contentFocus === f}
+                              onClick={(id) => setControls({ ...controls, contentFocus: id })}
+                              className="w-full"
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
+                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2654,36 +2647,32 @@ ${targetPlatforms.map(platform => {
                   <div className="space-y-5">
                     {/* Target Audience - Multi-Select (NO "general") */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">
-                        Target Audience <span className="text-xs text-tron-text-muted">(Select up to 3)</span>
+                      <label className="block text-white font-semibold mb-2 text-sm">
+                        Target Audience <span className="text-xs text-zinc-500">(Select up to 3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists', 'parents'].map((a) => (
                           <div key={a} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => toggleAudience(a)}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 relative ${
-                                selectedAudiences.includes(a)
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              } ${selectedAudiences.length >= 3 && !selectedAudiences.includes(a) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                              disabled={selectedAudiences.length >= 3 && !selectedAudiences.includes(a)}
-                            >
-                              {selectedAudiences.includes(a) && (
-                                <Check className="w-4 h-4 absolute left-1 top-1/2 -translate-y-1/2" />
-                              )}
-                              {a.charAt(0).toUpperCase() + a.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
+                            <ControlOptionButton
+                              id={a}
+                              label={a.charAt(0).toUpperCase() + a.slice(1)}
+                              isSelected={selectedAudiences.includes(a)}
+                              onClick={() => {
+                                if (!(selectedAudiences.length >= 3 && !selectedAudiences.includes(a))) {
+                                  toggleAudience(a);
+                                }
+                              }}
+                              className={`w-full ${selectedAudiences.length >= 3 && !selectedAudiences.includes(a) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
+                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
                             </div>
                           </div>
                         ))}
                       </div>
                       {selectedAudiences.length > 0 && (
-                        <div className="mt-2 text-xs text-tron-text-muted">
+                        <div className="mt-2 text-xs text-zinc-500">
                           Selected: {selectedAudiences.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}
                         </div>
                       )}
@@ -2691,24 +2680,20 @@ ${targetPlatforms.map(platform => {
 
                     {/* Call to Action with Tooltips (NO "none") */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
+                      <label className="block text-white font-semibold mb-2 text-sm">Call to Action</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['engage', 'share', 'comment', 'follow', 'learn'].map((c) => (
                           <div key={c} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, callToAction: c })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.callToAction === c
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {c.charAt(0).toUpperCase() + c.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
+                            <ControlOptionButton
+                              id={c}
+                              label={c.charAt(0).toUpperCase() + c.slice(1)}
+                              isSelected={controls.callToAction === c}
+                              onClick={(id) => setControls({ ...controls, callToAction: id })}
+                              className="w-full"
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
+                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2718,10 +2703,10 @@ ${targetPlatforms.map(platform => {
                 </div>
 
                 {/* Trending This Week */}
-                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                <div className="bg-zinc-950/30 border border-white/5 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <TrendingUp className="w-4 h-4 text-tron-cyan" />
-                    <div className="text-sm text-tron-text font-semibold">Trending This Week</div>
+                    <TrendingUp className="w-4 h-4 text-white" />
+                    <div className="text-sm text-white font-semibold">Trending This Week</div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {trendingCombinations.map((combo) => (
@@ -2729,10 +2714,10 @@ ${targetPlatforms.map(platform => {
                         type="button"
                         key={combo.name}
                         onClick={() => applyTrendingCombination(combo)}
-                        className="text-left px-3 py-2 bg-tron-dark/50 border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/50 transition-all"
+                        className="text-left px-3 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-white/30 hover:bg-white/10 transition-all active:scale-[0.98]"
                       >
-                        <div className="text-xs font-semibold text-tron-text mb-1">{combo.name}</div>
-                        <div className="flex items-center gap-2 text-xs text-tron-text-muted">
+                        <div className="text-xs font-semibold text-white mb-1">{combo.name}</div>
+                        <div className="flex items-center gap-2 text-xs text-zinc-500">
                           <span className="text-green-400">{combo.successRate}</span>
                           <span>•</span>
                           <span>{combo.uses} uses</span>
@@ -2743,7 +2728,7 @@ ${targetPlatforms.map(platform => {
                 </div>
 
                 {/* Keyboard Shortcuts Hint */}
-                <div className="text-center text-xs text-tron-text-muted">
+                <div className="text-center text-xs text-zinc-500">
                   💡 Tip: Use keyboard shortcuts - 1-3 for tone, S/M/L for length, A for AI optimize
                 </div>
 
@@ -2753,7 +2738,7 @@ ${targetPlatforms.map(platform => {
                     onClick={goToPrevCard}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-6 py-4 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                    className="px-6 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/80 transition-all"
                   >
                     ← Back
                   </motion.button>
@@ -2765,7 +2750,7 @@ ${targetPlatforms.map(platform => {
                     }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-xl font-semibold text-white shadow-lg shadow-tron-cyan/30 transition-all"
+                    className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border border-purple-500/30 rounded-xl font-semibold text-white shadow-lg shadow-purple-900/20 hover:border-purple-500/60 hover:shadow-purple-500/20 transition-all"
                   >
                     {generateButtonText}
                   </motion.button>
@@ -2779,15 +2764,15 @@ ${targetPlatforms.map(platform => {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-tron-dark border-2 border-tron-cyan/30 rounded-2xl p-6 max-w-md w-full mx-4"
+                    className="bg-zinc-950 border-2 border-white/10 rounded-2xl p-6 max-w-md w-full mx-4"
                   >
-                    <h3 className="text-xl font-bold text-tron-text mb-4">Save as Template</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">Save as Template</h3>
                     <input
                       type="text"
                       value={templateName}
                       onChange={(e) => setTemplateName(e.target.value)}
                       placeholder="Enter template name..."
-                      className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text outline-none focus:border-tron-cyan/50 mb-4"
+                      className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-lg text-white outline-none focus:border-white/50 mb-4"
                       autoFocus
                       onKeyPress={(e) => e.key === 'Enter' && handleSaveTemplate()}
                     />
@@ -2795,7 +2780,7 @@ ${targetPlatforms.map(platform => {
                       <button
                         type="button"
                         onClick={() => setShowSaveTemplateDialog(false)}
-                        className="flex-1 px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text hover:bg-tron-cyan/10"
+                        className="flex-1 px-4 py-2 bg-zinc-950/50 border border-white/10 rounded-lg text-white hover:bg-white/10"
                       >
                         Cancel
                       </button>
@@ -2822,7 +2807,7 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
+              className={generatingContent ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
             >
               {generatingContent ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
@@ -2836,10 +2821,10 @@ ${targetPlatforms.map(platform => {
                       value={campaignName}
                       onChange={(e) => setCampaignName(e.target.value)}
                       placeholder="Enter campaign name"
-                      className="text-3xl font-bold text-tron-text mb-2 bg-transparent border-2 border-transparent hover:border-tron-cyan/30 focus:border-tron-cyan/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
+                      className="text-3xl font-bold text-white mb-2 bg-transparent border-2 border-transparent hover:border-white/10 focus:border-white/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
                     />
                     {generatedContent && (
-                      <p className="text-tron-text-muted">
+                      <p className="text-zinc-500">
                         Edit and publish your campaign
                       </p>
                     )}
@@ -2849,7 +2834,7 @@ ${targetPlatforms.map(platform => {
                     {generatedContent ? (
                   <>
                     {/* Platform Switcher Toolbar */}
-                    <div className="flex gap-2 mb-6 p-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl">
+                    <div className="flex gap-2 mb-6 p-2 bg-zinc-950/50 border border-white/10 rounded-xl">
                       {targetPlatforms.map((platform) => (
                         <motion.button
                           key={platform}
@@ -2859,7 +2844,7 @@ ${targetPlatforms.map(platform => {
                           className={`flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                             activePlatformView === platform && !viewAllContent
                               ? "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg"
-                              : "text-tron-text-muted hover:text-tron-text hover:bg-tron-cyan/10"
+                              : "text-zinc-500 hover:text-white hover:bg-white/10"
                           }`}
                         >
                           {platform.charAt(0).toUpperCase() + platform.slice(1)}
@@ -2870,10 +2855,10 @@ ${targetPlatforms.map(platform => {
                         onClick={() => setViewAllContent(!viewAllContent)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-tron-cyan/30 ml-2 ${
+                        className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-white/10 ml-2 ${
                           viewAllContent
                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                            : "text-tron-text-muted hover:text-tron-text hover:bg-purple-500/10"
+                            : "text-zinc-500 hover:text-white hover:bg-purple-500/10"
                         }`}
                       >
                         View All
@@ -2889,15 +2874,15 @@ ${targetPlatforms.map(platform => {
                             <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-2">Viral DNA&trade; Analysis</h4>
                             <div className="flex flex-wrap gap-4">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Hook:</span>
+                                <span className="text-xs text-zinc-500">Hook:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.hookType}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Emotion:</span>
+                                <span className="text-xs text-zinc-500">Emotion:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.primaryEmotion}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Value:</span>
+                                <span className="text-xs text-zinc-500">Value:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.valueProp}</span>
                               </div>
                             </div>
@@ -2914,10 +2899,10 @@ ${targetPlatforms.map(platform => {
                               key={platform}
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="bg-tron-dark/50 border border-tron-cyan/30 rounded-xl p-4"
+                              className="bg-zinc-950/50 border border-white/10 rounded-xl p-4"
                             >
                               <div className="flex items-center justify-between mb-3">
-                                <h4 className="font-bold text-tron-text capitalize">{platform}</h4>
+                                <h4 className="font-bold text-white capitalize">{platform}</h4>
                                 <button
                                   type="button"
                                   onClick={() => copyContent(platform)}
@@ -2926,7 +2911,7 @@ ${targetPlatforms.map(platform => {
                                   <Copy className="w-3 h-3" /> Copy
                                 </button>
                               </div>
-                              <p className="text-tron-text-muted text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
+                              <p className="text-zinc-500 text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
                             </motion.div>
                           );
                         })}
@@ -2942,15 +2927,15 @@ ${targetPlatforms.map(platform => {
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20 }}
                               transition={{ duration: 0.3 }}
-                              className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
+                              className="bg-zinc-950/50 border-2 border-white/10 rounded-xl p-6 mb-6"
                             >
                               {/* Header with Platform Name */}
                               <div className="flex items-center justify-between mb-4">
                                 <div>
-                                  <h3 className="text-xl font-bold text-tron-text">
+                                  <h3 className="text-xl font-bold text-white">
                                     {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
                                   </h3>
-                                  <p className="text-sm text-tron-text-muted">
+                                  <p className="text-sm text-zinc-500">
                                     {typeof generatedContent[activePlatformView] === 'string'
                                       ? generatedContent[activePlatformView].length
                                       : generatedContent[activePlatformView]?.content?.length || 0} characters
@@ -2964,11 +2949,11 @@ ${targetPlatforms.map(platform => {
                                   value={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
                                   onChange={(e) => setEditedContent({ ...editedContent, [activePlatformView]: e.target.value })}
                                   placeholder="Edit your content..."
-                                  className="w-full h-64 px-4 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan resize-none"
+                                  className="w-full h-64 px-4 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl text-white focus:ring-2 focus:ring-tron-cyan/50 focus:border-white resize-none"
                                 />
                               ) : (
-                                <div className="bg-tron-dark/30 border border-tron-grid rounded-xl p-4">
-                                  <p className="text-tron-text whitespace-pre-wrap">
+                                <div className="bg-zinc-950/30 border border-zinc-800 rounded-xl p-4">
+                                  <p className="text-white whitespace-pre-wrap">
                                     {editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
                                   </p>
                                 </div>
@@ -2996,7 +2981,7 @@ ${targetPlatforms.map(platform => {
                         onClick={goToPrevCard}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                        className="px-6 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
                       >
                         ← Back
                       </motion.button>
@@ -3006,7 +2991,7 @@ ${targetPlatforms.map(platform => {
                             onClick={() => copyContent(activePlatformView)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-6 py-3 bg-tron-dark/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
+                            className="px-6 py-3 bg-zinc-950/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
                           >
                             <Copy className="w-4 h-4" />
                             Copy Content
@@ -3015,7 +3000,7 @@ ${targetPlatforms.map(platform => {
                             onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                            className="px-6 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
                           >
                             {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
                           </motion.button>
@@ -3026,7 +3011,7 @@ ${targetPlatforms.map(platform => {
                         onClick={copyAllContent}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
+                        className="px-6 py-3 bg-zinc-950/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
                       >
                         <Copy className="w-4 h-4" />
                         Copy All
@@ -3035,7 +3020,7 @@ ${targetPlatforms.map(platform => {
                         onClick={exportCampaign}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
+                        className="px-6 py-3 bg-zinc-950/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
                       >
                         <Download className="w-4 h-4" />
                         Export
@@ -3044,7 +3029,7 @@ ${targetPlatforms.map(platform => {
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-tron-text-muted">No content generated yet.</p>
+                    <p className="text-zinc-500">No content generated yet.</p>
                   </div>
                 )}
                   </div>
@@ -3057,11 +3042,11 @@ ${targetPlatforms.map(platform => {
                         disabled={loading || campaignSaved}
                         whileHover={{ scale: loading || campaignSaved ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-4 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        className="px-6 py-4 bg-zinc-900/50 backdrop-blur-xl border-2 border-white/50 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         aria-label="Save campaign as draft"
                       >
                         {loading ? (
-                          <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                          <OrbitalLoader className="w-5 h-5" />
                         ) : (
                           <>
                             <Check className="w-5 h-5" />
@@ -3084,7 +3069,7 @@ ${targetPlatforms.map(platform => {
                         aria-label="Save and return to dashboard"
                       >
                         {loading ? (
-                          <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                          <OrbitalLoader className="w-5 h-5" />
                         ) : (
                           <>
                             <Home className="w-5 h-5" />
@@ -3123,20 +3108,20 @@ ${targetPlatforms.map(platform => {
                   <div
                     className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-br from-tron-cyan to-tron-magenta shadow-lg shadow-tron-cyan/50 ring-4 ring-tron-cyan/20"
+                        ? "bg-gradient-to-br from-tron-cyan to-tron-magenta shadow-lg shadow-white/20 ring-4 ring-white/10"
                         : isCompleted
-                          ? "bg-tron-cyan/20 border-2 border-tron-cyan"
-                          : "bg-tron-grid border-2 border-tron-grid"
+                          ? "bg-white/20 border-2 border-white"
+                          : "bg-zinc-900 border-2 border-zinc-800"
                     }`}
                   >
                     {isCompleted ? (
-                      <Check className="w-6 h-6 text-tron-cyan" />
+                      <Check className="w-6 h-6 text-white" />
                     ) : (
                       <Icon
                         className={`w-6 h-6 ${
                           isActive
                             ? "text-white"
-                            : "text-tron-text-muted"
+                            : "text-zinc-500"
                         }`}
                       />
                     )}
@@ -3144,7 +3129,7 @@ ${targetPlatforms.map(platform => {
                   {idx < stepConfig.length - 1 && (
                     <div
                       className={`w-20 h-0.5 transition-all duration-500 ${
-                        isCompleted ? "bg-tron-cyan" : "bg-tron-grid"
+                        isCompleted ? "bg-white" : "bg-zinc-900"
                       }`}
                     />
                   )}
@@ -3160,12 +3145,12 @@ ${targetPlatforms.map(platform => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold text-tron-text mb-2">
+            <h2 className="text-3xl font-bold text-white mb-2">
               {step === 1 && "Setup Your Campaign"}
               {step === 2 && "Discover Trending Topics"}
               {step === 3 && "Generate Content"}
             </h2>
-            <p className="text-tron-text-muted">
+            <p className="text-zinc-500">
               {step === 1 && "Choose a name and select target platforms"}
               {step === 2 && "Find the perfect trending topic for your campaign"}
               {step === 3 && "Customize and generate AI-powered content"}
@@ -3186,8 +3171,8 @@ ${targetPlatforms.map(platform => {
             >
               {/* Campaign Name Input */}
               <div className="space-y-3">
-                <label htmlFor="campaign-name" className="block text-sm font-medium text-tron-text-muted">
-                  Campaign Name <span className="text-tron-magenta">*</span>
+                <label htmlFor="campaign-name" className="block text-sm font-medium text-zinc-500">
+                  Campaign Name <span className="text-zinc-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -3197,13 +3182,13 @@ ${targetPlatforms.map(platform => {
                   placeholder="e.g., Summer Product Launch"
                   aria-label="Campaign name"
                   aria-required="true"
-                  className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl font-light placeholder-tron-text-muted/50 transition-all"
+                  className="w-full px-6 py-4 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl font-light placeholder-tron-text-muted/50 transition-all"
                 />
                 {campaignName && (
                   <motion.p 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-sm text-tron-cyan flex items-center gap-2"
+                    className="text-sm text-white flex items-center gap-2"
                   >
                     <Check className="w-4 h-4" />
                     Looking good!
@@ -3215,18 +3200,18 @@ ${targetPlatforms.map(platform => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-tron-text">
-                      Target Platforms <span className="text-tron-magenta">*</span>
+                    <h3 className="text-lg font-semibold text-white">
+                      Target Platforms <span className="text-zinc-500">*</span>
                     </h3>
-                    <p className="text-sm text-tron-text-muted mt-1">
+                    <p className="text-sm text-zinc-500 mt-1">
                       {targetPlatforms.length > 0 
                         ? `${targetPlatforms.length} platform${targetPlatforms.length > 1 ? 's' : ''} selected`
                         : 'Select at least one platform'}
                     </p>
                   </div>
                   {connectedPlatforms.length > 0 && (
-                    <div className="flex items-center gap-2 text-sm text-tron-cyan">
-                      <div className="w-2 h-2 rounded-full bg-tron-cyan animate-pulse" />
+                    <div className="flex items-center gap-2 text-sm text-white">
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                       {connectedPlatforms.length} connected
                     </div>
                   )}
@@ -3246,8 +3231,8 @@ ${targetPlatforms.map(platform => {
                       whileTap={{ scale: 0.95 }}
                       className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 group ${
                         isSelected
-                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl shadow-tron-cyan/30 ring-2 ring-tron-cyan/20"
-                          : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-white shadow-xl shadow-tron-cyan/30 ring-2 ring-white/10"
+                          : "bg-zinc-950/50 border-zinc-800 hover:border-white/50 hover:shadow-lg"
                       }`}
                     >
                       {/* Selection Checkmark */}
@@ -3255,7 +3240,7 @@ ${targetPlatforms.map(platform => {
                         <motion.div
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
-                          className="absolute top-3 left-3 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center shadow-lg"
+                          className="absolute top-3 left-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
                         >
                           <Check className="w-4 h-4 text-white" />
                         </motion.div>
@@ -3265,19 +3250,19 @@ ${targetPlatforms.map(platform => {
                       <div className="absolute top-3 right-3">
                         {isConnected ? (
                           <div className="relative">
-                            <div className="w-3 h-3 rounded-full bg-tron-cyan shadow-lg shadow-tron-cyan/50 animate-pulse" />
-                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-tron-cyan animate-ping" />
+                            <div className="w-3 h-3 rounded-full bg-white shadow-lg shadow-white/20 animate-pulse" />
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-white animate-ping" />
                           </div>
                         ) : (
-                          <div className="w-3 h-3 rounded-full bg-tron-grid border border-tron-text-muted/30" />
+                          <div className="w-3 h-3 rounded-full bg-zinc-900 border border-tron-text-muted/30" />
                         )}
                       </div>
 
                       <Icon
                         className={`w-12 h-12 mb-4 mx-auto transition-all duration-300 ${
                           isSelected
-                            ? "text-tron-cyan"
-                            : "text-tron-text-muted group-hover:text-tron-cyan"
+                            ? "text-white"
+                            : "text-zinc-500 group-hover:text-white"
                         }`}
                         style={{
                           filter: isSelected
@@ -3286,12 +3271,12 @@ ${targetPlatforms.map(platform => {
                         }}
                       />
                       <div className={`font-semibold text-center transition-colors ${
-                        isSelected ? "text-tron-cyan" : "text-tron-text"
+                        isSelected ? "text-white" : "text-white"
                       }`}>
                         {platform.name}
                       </div>
                       {isConnected && (
-                        <div className="text-xs text-tron-cyan mt-1 text-center">
+                        <div className="text-xs text-white mt-1 text-center">
                           Connected
                         </div>
                       )}
@@ -3306,7 +3291,7 @@ ${targetPlatforms.map(platform => {
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-sm text-tron-text-muted text-center mb-4"
+                    className="text-sm text-zinc-500 text-center mb-4"
                   >
                     Enter a campaign name and select at least one platform to continue
                   </motion.p>
@@ -3338,7 +3323,7 @@ ${targetPlatforms.map(platform => {
             >
               {/* Search Bar with Better UX */}
               <div className="space-y-3">
-                <label htmlFor="search-trends" className="block text-sm font-medium text-tron-text-muted">
+                <label htmlFor="search-trends" className="block text-sm font-medium text-zinc-500">
                   Search Keywords
                 </label>
                 <div className="flex gap-3">
@@ -3355,14 +3340,14 @@ ${targetPlatforms.map(platform => {
                       placeholder="e.g., AI productivity tools, healthy recipes..."
                       aria-label="Search trending topics"
                       aria-describedby="search-help"
-                      className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-lg placeholder-tron-text-muted/50 transition-all"
+                      className="w-full px-6 py-4 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-lg placeholder-tron-text-muted/50 transition-all"
                     />
                     {searchQuery && (
                       <motion.button
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         onClick={() => setSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-tron-text-muted hover:text-tron-cyan transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-zinc-500 hover:text-white transition-colors"
                         aria-label="Clear search"
                       >
                         <X className="w-5 h-5" />
@@ -3405,10 +3390,10 @@ ${targetPlatforms.map(platform => {
               {trends.length > 0 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-tron-text">
+                    <h3 className="text-lg font-semibold text-white">
                       Trending Topics
                     </h3>
-                    <span className="text-sm text-tron-text-muted">
+                    <span className="text-sm text-zinc-500">
                       {trends.length} results
                     </span>
                   </div>
@@ -3423,22 +3408,22 @@ ${targetPlatforms.map(platform => {
                         whileHover={{ scale: 1.01 }}
                         className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 cursor-pointer transition-all ${
                           selectedTrend === trend
-                            ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl ring-2 ring-tron-cyan/20"
-                            : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                            ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-white shadow-xl ring-2 ring-white/10"
+                            : "bg-zinc-950/50 border-zinc-800 hover:border-white/50 hover:shadow-lg"
                         }`}
                       >
                         {selectedTrend === trend && (
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="absolute top-4 right-4 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                            className="absolute top-4 right-4 w-6 h-6 bg-white rounded-full flex items-center justify-center"
                           >
                             <Check className="w-4 h-4 text-white" />
                           </motion.div>
                         )}
                         <div className="flex items-center gap-2 mb-2">
                           <div className={`font-semibold text-lg ${
-                            selectedTrend === trend ? "text-tron-cyan" : "text-tron-text"
+                            selectedTrend === trend ? "text-white" : "text-white"
                           }`}>
                             {trend.title}
                           </div>
@@ -3464,11 +3449,11 @@ ${targetPlatforms.map(platform => {
                           )}
                         </div>
                         <div className="flex items-center gap-4 text-sm">
-                          <span className="text-tron-text-muted">
+                          <span className="text-zinc-500">
                             {trend.formattedTraffic || "Trending"}
                           </span>
                           {trend.relatedQueries && (
-                            <span className="text-tron-cyan">
+                            <span className="text-white">
                               +{trend.relatedQueries.length} related topics
                             </span>
                           )}
@@ -3487,14 +3472,14 @@ ${targetPlatforms.map(platform => {
                   className="text-center py-16 px-4"
                 >
                   <div className="mb-6 flex justify-center">
-                    <div className="p-6 bg-tron-grid/30 rounded-full">
-                      <TrendingUp className="w-16 h-16 text-tron-text-muted" />
+                    <div className="p-6 bg-zinc-900/30 rounded-full">
+                      <TrendingUp className="w-16 h-16 text-zinc-500" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                  <h3 className="text-xl font-semibold text-white mb-3">
                     No trends found
                   </h3>
-                  <p className="text-tron-text-muted max-w-md mx-auto">
+                  <p className="text-zinc-500 max-w-md mx-auto">
                     Try different keywords or search terms
                   </p>
                 </motion.div>
@@ -3520,13 +3505,13 @@ ${targetPlatforms.map(platform => {
                       }}
                       className="p-6 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-full"
                     >
-                      <Sparkles className="w-16 h-16 text-tron-cyan" />
+                      <Sparkles className="w-16 h-16 text-white" />
                     </motion.div>
                   </div>
-                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                  <h3 className="text-xl font-semibold text-white mb-3">
                     Discover Trending Topics
                   </h3>
-                  <p className="text-tron-text-muted max-w-md mx-auto mb-8">
+                  <p className="text-zinc-500 max-w-md mx-auto mb-8">
                     Enter keywords to find the hottest trends and content ideas powered by AI
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
@@ -3537,7 +3522,7 @@ ${targetPlatforms.map(platform => {
                           setSearchQuery(suggestion);
                           setTimeout(() => searchTrends(), 100);
                         }}
-                        className="px-4 py-2 bg-tron-grid/50 border border-tron-cyan/30 rounded-xl text-tron-text hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all text-sm"
+                        className="px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-white hover:border-white hover:bg-white/10 transition-all text-sm"
                       >
                         {suggestion}
                       </button>
@@ -3552,7 +3537,7 @@ ${targetPlatforms.map(platform => {
                   onClick={() => setStep(1)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                  className="px-8 py-4 bg-zinc-900/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
                 >
                   Back
                 </motion.button>
@@ -3594,7 +3579,7 @@ ${targetPlatforms.map(platform => {
                 disabled={generatingContent || selectedTrends.length === 0}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-8 py-6 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
+                className="w-full px-8 py-6 bg-white text-tron-dark font-bold rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
               >
                 {generatingContent ? (
                   <>
@@ -3627,12 +3612,12 @@ ${targetPlatforms.map(platform => {
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-tron-cyan" />
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-white" />
                       Generated Posts
                     </h3>
                     <span
-                      className="text-sm text-tron-text-muted"
+                      className="text-sm text-zinc-500"
                       aria-live="polite"
                     >
                       {Object.keys(generatedContent).filter((k) => k !== "hashtags")
@@ -3687,11 +3672,11 @@ ${targetPlatforms.map(platform => {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      className="px-8 py-5 bg-zinc-900/50 backdrop-blur-xl border-2 border-white/50 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                       aria-label="Save campaign as draft"
                     >
                       {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                        <OrbitalLoader className="w-5 h-5" />
                       ) : (
                         <>
                           <Check className="w-5 h-5" />
@@ -3709,7 +3694,7 @@ ${targetPlatforms.map(platform => {
                       aria-label="Schedule campaign"
                     >
                       {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                        <OrbitalLoader className="w-5 h-5" />
                       ) : (
                         <>
                           <Calendar className="w-5 h-5" />
@@ -3727,7 +3712,7 @@ ${targetPlatforms.map(platform => {
                   onClick={() => setStep(2)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan"
+                  className="px-8 py-4 bg-zinc-900/50 border-2 border-white/10 rounded-2xl font-semibold text-white"
                 >
                   Back
                 </motion.button>

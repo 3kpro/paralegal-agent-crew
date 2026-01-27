@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 function ResetPasswordForm() {
   const [password, setPassword] = useState("");
@@ -233,7 +233,7 @@ export default function ResetPasswordPage() {
       fallback={
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
           <div className="text-center">
-            <BouncingDots className="bg-indigo-600 mb-4" />
+            <OrbitalLoader className="w-10 h-10 text-indigo-600 mb-4 mx-auto" />
             <p className="mt-4 text-gray-600">Loading...</p>
           </div>
         </div>

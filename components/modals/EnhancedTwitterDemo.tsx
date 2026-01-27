@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { Button } from "../ui/Button";
 
 interface DemoModalProps {
@@ -232,7 +232,7 @@ export const EnhancedTwitterDemo: React.FC<DemoModalProps> = ({
                 >
                   {isGenerating ? (
                     <>
-                      <BouncingDots className="bg-white w-1.5 h-1.5" />
+                       <OrbitalLoader className="w-5 h-5 mr-2" />
                       Generating & Posting...
                     </>
                   ) : (

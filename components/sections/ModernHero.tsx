@@ -10,25 +10,23 @@ import { BGPattern } from "@/components/ui/bg-pattern";
 const HeroSkeleton = () => (
   <div className="max-w-5xl mx-auto text-center animate-pulse">
     {/* Badge skeleton */}
-    <div className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030]/50 rounded-full mb-8">
-      <div className="w-5 h-5 bg-[#00C7F2]/20 rounded-full" />
-      <div className="w-40 h-4 bg-white/10 rounded" />
-      <div className="w-12 h-5 bg-coral-500/20 rounded-full" />
+    <div className="inline-flex items-center gap-2 px-6 py-3 bg-muted border border-border rounded-none mb-8">
+      <div className="w-5 h-5 bg-foreground/10 rounded-none" />
+      <div className="w-40 h-4 bg-foreground/5 rounded-none" />
     </div>
     {/* Headline skeleton */}
     <div className="space-y-4 mb-6">
-      <div className="h-12 md:h-16 bg-white/5 rounded-lg mx-auto w-3/4" />
-      <div className="h-12 md:h-16 bg-white/5 rounded-lg mx-auto w-2/3" />
+      <div className="h-12 md:h-16 bg-foreground/5 rounded-none mx-auto w-3/4" />
+      <div className="h-12 md:h-16 bg-foreground/5 rounded-none mx-auto w-2/3" />
     </div>
     {/* Subheadline skeleton */}
     <div className="space-y-3 mb-12 max-w-3xl mx-auto">
-      <div className="h-6 bg-white/5 rounded mx-auto w-full" />
-      <div className="h-6 bg-[#00C7F2]/10 rounded mx-auto w-4/5" />
+      <div className="h-6 bg-foreground/5 rounded-none mx-auto w-full" />
     </div>
     {/* CTA skeleton */}
     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <div className="w-48 h-14 bg-coral-500/20 rounded-xl" />
-      <div className="w-40 h-14 bg-white/5 rounded-xl border border-[#00C7F2]/20" />
+      <div className="w-48 h-14 bg-foreground/10 rounded-none border border-border" />
+      <div className="w-40 h-14 bg-background rounded-none border border-border" />
     </div>
   </div>
 );
@@ -43,24 +41,24 @@ export default function ModernHero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#121212] to-[#1a1a1a] pt-20">
-      {/* Background Pattern: z-0 to sit above background color but below content */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20">
+      {/* Background Pattern */}
       <BGPattern
-        variant="dots"
+        variant="grid"
         mask="fade-center"
         size={24}
-        fill="rgba(255,255,255,0.2)"
+        fill="rgba(0,0,0,0.05)"
         className="z-0"
         style={{ zIndex: 0 }}
       />
 
-      {/* Minimal cyan accents background - render immediately */}
+      {/* Subtle accents background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute top-20 left-20 w-72 h-72 bg-[#00C7F2]/5 rounded-full filter blur-3xl animate-pulse"
+          className="absolute top-20 left-20 w-72 h-72 bg-foreground/5 rounded-full filter blur-3xl animate-pulse"
         />
         <div
-          className="absolute top-40 right-20 w-72 h-72 bg-coral-500/5 rounded-full filter blur-3xl animate-pulse"
+          className="absolute bottom-20 right-20 w-72 h-72 bg-foreground/5 rounded-full filter blur-3xl animate-pulse"
         />
       </div>
 
@@ -88,14 +86,14 @@ export default function ModernHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0 }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a2030] backdrop-blur-sm rounded-full shadow-lg mb-8 border-2 border-[#00C7F2]/30 hover:border-[#00C7F2]/60 transition-all duration-300"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-muted backdrop-blur-sm border border-border hover:border-foreground transition-all duration-300 mb-10"
               >
-                <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
-                <span className="text-sm font-semibold text-[#F5F7FA] uppercase tracking-wide">
-                  XELORA • Predictive Intelligence
+                <Zap className="w-4 h-4 text-foreground" weight="bold" />
+                <span className="text-[10px] font-bold text-foreground uppercase tracking-[0.2em]">
+                  XELORA PROTOCOL • PREDICTIVE INTELLIGENCE
                 </span>
-                <span className="px-2 py-1 bg-coral-500/20 rounded-full text-xs font-semibold text-coral-500 border border-coral-500/30 uppercase">
-                  Live
+                <span className="px-2 py-0.5 bg-foreground text-background text-[10px] font-bold uppercase tracking-widest ml-2">
+                  v1.0
                 </span>
               </motion.div>
 
@@ -104,23 +102,21 @@ export default function ModernHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.05 }}
-                className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight uppercase tracking-tight"
+                className="text-6xl md:text-8xl font-black mb-8 leading-[0.9] uppercase tracking-tighter text-foreground"
               >
-                <span className="bg-gradient-to-r from-white via-coral-400 to-tron-cyan bg-clip-text text-transparent">
-                  Predict Momentum
-                </span>
+                Predict <span className="text-muted-foreground">Momentum.</span>
                 <br />
-                <span className="text-[#F5F7FA]">Engineer Virality</span>
+                Engineer <span className="text-muted-foreground">Virality.</span>
               </motion.h1>
 
-              {/* Value Proposition - Clearer subheading */}
+              {/* Value Proposition */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-lg md:text-xl text-coral-400 font-semibold mb-4 max-w-2xl mx-auto"
+                className="text-xl md:text-2xl text-foreground font-bold mb-4 max-w-2xl mx-auto uppercase tracking-tighter"
               >
-                AI-powered content creation that predicts viral trends before they peak
+                Deploy AI-Engineered content for your next viral campaign.
               </motion.p>
 
               {/* Subheadline */}
@@ -128,12 +124,12 @@ export default function ModernHero() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.15 }}
-                className="text-lg md:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed"
+                className="text-lg md:text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
               >
-                XELORA analyzes emerging signals across platforms to reveal what&apos;s about to rise.
+                XELORA decodes the psychometric DNA of trending topics to generate high-performance content before the peak.
                 <br />
-                <span className="text-[#00C7F2]">
-                  Before creators see it. Before the internet reacts to it.
+                <span className="text-foreground font-bold">
+                  Stop guessing. Start building with data-backed momentum.
                 </span>
               </motion.p>
 
@@ -144,16 +140,12 @@ export default function ModernHero() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
               >
-                <div className="relative">
-                  <Link
-                    href="/signup"
-                    className="group relative px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:bg-coral-600 transform hover:scale-105 transition-all duration-200 flex items-center gap-2 uppercase tracking-wide"
-                  >
-                    <Zap className="w-5 h-5" weight="duotone" />
-                    Get Early Access
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" weight="duotone" />
-                  </Link>
-                </div>
+                <Link
+                  href="/signup"
+                  className="px-12 py-5 bg-foreground text-background font-bold text-lg border-2 border-foreground hover:bg-background hover:text-foreground transition-all duration-200 uppercase tracking-tighter"
+                >
+                  Join the Beta
+                </Link>
 
                 <button
                   onClick={() => {
@@ -162,9 +154,9 @@ export default function ModernHero() {
                       featuresElement.scrollIntoView({ behavior: "smooth" });
                     }
                   }}
-                  className="px-8 py-4 bg-transparent text-[#F5F7FA] rounded-xl font-semibold text-lg border-2 border-[#00C7F2]/50 hover:bg-[#00C7F2]/10 hover:border-[#00C7F2] transform hover:scale-105 transition-all duration-200 uppercase tracking-wide"
+                  className="px-12 py-5 bg-background text-foreground font-bold text-lg border-2 border-border hover:border-foreground transition-all duration-200 uppercase tracking-tighter"
                 >
-                  Explore Features
+                  Explore Strategy
                 </button>
               </motion.div>
 
@@ -240,7 +232,7 @@ export default function ModernHero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-[#00C7F2]/60 rounded-full flex items-start justify-center p-2 cursor-pointer hover:border-[#00C7F2] transition-colors"
+          className="w-px h-12 bg-border relative cursor-pointer group"
           onClick={() => {
             const features = document.getElementById("features");
             if (features) {
@@ -248,7 +240,7 @@ export default function ModernHero() {
             }
           }}
         >
-          <div className="w-1 h-2 bg-[#00C7F2] rounded-full" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground scale-0 group-hover:scale-100 transition-transform" />
         </motion.div>
       </motion.div>
     </section>

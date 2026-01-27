@@ -1,44 +1,20 @@
 "use client";
 
-import {
-  ModernHero,
-  ModernFeatures,
-  ModernPricing,
-  StatsSection,
-  ServicesGrid,
-  FAQSection,
-  WaitlistSection,
-} from "../components/sections";
-import { Navigation, Footer, ContactSection } from "../components";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { HeroSection } from "@/components/landing/hero-section";
+import { BentoGrid } from "@/components/landing/bento-grid";
+import { PricingSection } from "@/components/landing/pricing-section";
 
-export default function ModernLandingPage() {
-  const handleContactClick = () => {
-    const contactElement = document.getElementById("contact");
-    if (contactElement) {
-      contactElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen">
-      <Navigation onContactClick={handleContactClick} />
-
-      <ModernHero />
-
-      <ModernFeatures />
-
-      <StatsSection />
-
-      <ServicesGrid />
-
-      <ModernPricing />
-
-      <FAQSection />
-
-      <WaitlistSection />
-
-      <ContactSection />
-
+    <div className="min-h-screen bg-background flex flex-col font-sans">
+      <Navigation />
+      <main className="flex-1">
+        <HeroSection />
+        <BentoGrid />
+        <PricingSection />
+      </main>
       <Footer />
     </div>
   );

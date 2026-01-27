@@ -42,7 +42,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { BGPattern } from "@/components/ui/bg-pattern";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
@@ -2324,7 +2324,7 @@ export default function NewCampaignPage() {
                         aria-label="Save campaign as draft"
                       >
                         {loading ? (
-                          <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                          <OrbitalLoader className="w-6 h-6 text-tron-cyan" />
                         ) : (
                           <>
                             <Check className="w-5 h-5" />
@@ -3042,7 +3042,7 @@ export default function NewCampaignPage() {
                       aria-label="Save campaign as draft"
                     >
                       {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                        <OrbitalLoader className="w-6 h-6 text-tron-cyan" />
                       ) : (
                         <>
                           <Check className="w-5 h-5" />

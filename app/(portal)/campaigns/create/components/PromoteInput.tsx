@@ -101,14 +101,14 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
       {/* Progress Indicator */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-medium text-tron-cyan">
+          <span className="text-sm font-medium text-white">
              Step {currentStep + 1} of {steps.length}
           </span>
-          <span className="text-sm text-tron-text-muted">
+          <span className="text-sm text-zinc-500">
              {steps[currentStep].title}
           </span>
         </div>
-        <div className="w-full h-2 bg-tron-grid rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-zinc-900 rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-tron-cyan to-tron-magenta"
             initial={{ width: 0 }}
@@ -130,34 +130,34 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
         >
           {currentStep === 0 && (
             <div className="space-y-6">
-               <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <Package className="w-6 h-6 text-tron-cyan" weight="duotone" />
+               <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Package className="w-6 h-6 text-white" weight="duotone" />
                   What are you promoting?
                </h3>
                {/* Product Name */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-tron-text-muted">
-                  Product / Service Name <span className="text-tron-magenta">*</span>
+                <label className="text-sm font-medium text-zinc-500">
+                  Product / Service Name <span className="text-zinc-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={data.productName}
                   onChange={(e) => handleChange("productName", e.target.value)}
                   placeholder="e.g. Acme Dashboard Pro, Summer Sale..."
-                  className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50"
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50"
                   autoFocus
                 />
               </div>
 
               {/* Type Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-tron-text-muted">
+                <label className="text-sm font-medium text-zinc-500">
                   Type
                 </label>
                 <select
                   value={data.productType}
                   onChange={(e) => handleChange("productType", e.target.value)}
-                  className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text"
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white"
                 >
                   <option value="product">Physical/Digital Product</option>
                   <option value="service">Service / Consulting</option>
@@ -171,8 +171,8 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 1 && (
             <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <MagicWand className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <MagicWand className="w-6 h-6 text-white" weight="duotone" />
                   What's the angle?
                </h3>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -191,12 +191,12 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                      onClick={() => handleChange("contentFocus", option.id)}
                      className={`p-4 rounded-xl border text-left transition-all ${
                        data.contentFocus === option.id
-                         ? "bg-tron-cyan/10 border-tron-cyan text-tron-cyan shadow-[0_0_15px_rgba(0,255,255,0.2)]"
-                         : "bg-tron-dark/30 border-tron-grid hover:border-tron-cyan/50 hover:bg-tron-dark/50 text-tron-text-muted hover:text-tron-text"
+                         ? "bg-white/10 border-white text-white shadow-[0_0_15px_rgba(0,255,255,0.2)]"
+                         : "bg-zinc-950/30 border-zinc-800 hover:border-white/50 hover:bg-zinc-950/50 text-zinc-500 hover:text-white"
                      }`}
                    >
                      <div className="flex items-center gap-3 mb-1">
-                        <option.icon className={`w-5 h-5 ${data.contentFocus === option.id ? "text-tron-cyan" : "text-tron-text-muted"}`} weight="duotone" />
+                        <option.icon className={`w-5 h-5 ${data.contentFocus === option.id ? "text-white" : "text-zinc-500"}`} weight="duotone" />
                         <span className="font-semibold">{option.label}</span>
                      </div>
                      <p className="text-xs opacity-70 ml-8">{option.desc}</p>
@@ -208,13 +208,13 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 2 && (
             <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <Globe className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Globe className="w-6 h-6 text-white" weight="duotone" />
                   Where can people find it?
                </h3>
                {/* Website URL */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-tron-text-muted">
+                <label className="text-sm font-medium text-zinc-500">
                   Landing Page URL (Optional)
                 </label>
                 <input
@@ -222,10 +222,10 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                   value={data.websiteUrl || ""}
                   onChange={(e) => handleChange("websiteUrl", e.target.value)}
                   placeholder="https://..."
-                  className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50"
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50"
                   autoFocus
                 />
-                <p className="text-xs text-tron-text-muted">
+                <p className="text-xs text-zinc-500">
                     We'll include this link in your generated posts.
                 </p>
               </div>
@@ -234,21 +234,21 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 3 && (
              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-white" weight="duotone" />
                   Describe your offer
                </h3>
               {/* Description */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-tron-text-muted">
-                  Description / Value Proposition <span className="text-tron-magenta">*</span>
+                <label className="text-sm font-medium text-zinc-500">
+                  Description / Value Proposition <span className="text-zinc-500">*</span>
                 </label>
                 <textarea
                   value={data.description}
                   onChange={(e) => handleChange("description", e.target.value)}
                   placeholder="Describe what you are promoting. What problem does it solve? Why strictly this?"
                   rows={6}
-                  className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 resize-none"
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50 resize-none"
                   autoFocus
                 />
               </div>
@@ -257,14 +257,14 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 4 && (
             <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <Target className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Target className="w-6 h-6 text-white" weight="duotone" />
                   What makes it special?
                </h3>
               <div className="grid grid-cols-1 gap-6">
                 {/* Key Features */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-tron-text-muted">
+                  <label className="text-sm font-medium text-zinc-500">
                     Key Features (One per line)
                   </label>
                   <textarea
@@ -272,13 +272,13 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                      onChange={(e) => handleChange("keyFeatures", e.target.value.split("\n"))}
                      placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
                      rows={4}
-                     className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 resize-none"
+                     className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50 resize-none"
                   />
                 </div>
 
                 {/* Unique Selling Points */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-tron-text-muted">
+                  <label className="text-sm font-medium text-zinc-500">
                     Unique Selling Points (One per line)
                   </label>
                   <textarea
@@ -286,7 +286,7 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                      onChange={(e) => handleChange("uniqueSellingPoints", e.target.value.split("\n"))}
                      placeholder="Why buy from you?&#10;Competitive advantage&#10;Guarantees"
                      rows={4}
-                     className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 resize-none"
+                     className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50 resize-none"
                   />
                 </div>
               </div>
@@ -295,14 +295,14 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 5 && (
              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <Users className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Users className="w-6 h-6 text-white" weight="duotone" />
                   Who is this for?
                </h3>
               
               {/* Audience Presets */}
               <div className="space-y-3">
-                 <label className="text-sm font-medium text-tron-text-muted">
+                 <label className="text-sm font-medium text-zinc-500">
                     Quick Select
                  </label>
                  <div className="flex flex-wrap gap-2">
@@ -340,8 +340,8 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                            }}
                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                              isSelected
-                               ? "bg-tron-cyan/20 border-tron-cyan text-tron-cyan shadow-[0_0_10px_rgba(0,255,255,0.2)]"
-                               : "bg-tron-dark/30 border-tron-grid text-tron-text-muted hover:border-tron-cyan/50 hover:text-tron-text"
+                               ? "bg-white/20 border-white text-white shadow-[0_0_10px_rgba(0,255,255,0.2)]"
+                               : "bg-zinc-950/30 border-zinc-800 text-zinc-500 hover:border-white/50 hover:text-white"
                            }`}
                          >
                             {audi}
@@ -353,7 +353,7 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
               {/* Target Audience Input */}
               <div className="space-y-2">
-                <label className="text-sm font-medium text-tron-text-muted">
+                <label className="text-sm font-medium text-zinc-500">
                   Detailed Definition
                 </label>
                 <input
@@ -361,10 +361,10 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                   value={data.targetAudience}
                   onChange={(e) => handleChange("targetAudience", e.target.value)}
                   placeholder="e.g. Busy professionals, Gamers, Parents..."
-                  className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50"
+                  className="w-full px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50"
                   autoFocus
                 />
-                <p className="text-xs text-tron-text-muted">
+                <p className="text-xs text-zinc-500">
                    You can select multiple presets or type your own custom audience segments separated by commas.
                 </p>
               </div>
@@ -373,36 +373,36 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
 
           {currentStep === 6 && (
              <div className="space-y-6">
-                <h3 className="text-xl font-semibold text-tron-text flex items-center gap-2">
-                  <UploadCloud className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <UploadCloud className="w-6 h-6 text-white" weight="duotone" />
                   Media Assets
                </h3>
                
-               <div className="flex items-center gap-1 text-xs text-tron-cyan/80 bg-tron-cyan/10 px-2 py-1 rounded-full w-fit">
+               <div className="flex items-center gap-1 text-xs text-white/80 bg-white/10 px-2 py-1 rounded-full w-fit">
                     <Shield className="w-3 h-3" weight="duotone" />
                     <span>Zero Storage Policy</span>
                 </div>
 
               {/* User Guidance Banner */}
-              <div className="bg-tron-cyan/5 border border-tron-cyan/20 rounded-xl p-4 text-sm relative overflow-hidden group">
+              <div className="bg-white/5 border border-white/20 rounded-xl p-4 text-sm relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-2 opacity-50">
-                      <Info className="w-16 h-16 text-tron-cyan/5" weight="duotone" />
+                      <Info className="w-16 h-16 text-white/5" weight="duotone" />
                   </div>
                   <div className="relative z-10 flex items-start gap-3">
-                      <Info className="w-5 h-5 text-tron-cyan shrink-0 mt-0.5" weight="duotone" />
+                      <Info className="w-5 h-5 text-white shrink-0 mt-0.5" weight="duotone" />
                       <div className="space-y-3">
-                          <p className="font-semibold text-tron-text">How Xelora analyzes your media</p>
+                          <p className="font-semibold text-white">How Xelora analyzes your media</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div className="bg-tron-dark/30 rounded-lg p-3 border border-tron-cyan/10">
-                                  <p className="text-tron-cyan font-medium mb-1 text-xs uppercase tracking-wider">Option 1: Google Drive</p>
-                                  <p className="text-tron-text-muted text-xs leading-relaxed">
-                                      Paste a link to a Drive folder. Xelora indexes metadata <span className="text-tron-text">without moving your files</span>. Best for large asset libraries.
+                              <div className="bg-zinc-950/30 rounded-lg p-3 border border-white/10">
+                                  <p className="text-white font-medium mb-1 text-xs uppercase tracking-wider">Option 1: Google Drive</p>
+                                  <p className="text-zinc-500 text-xs leading-relaxed">
+                                      Paste a link to a Drive folder. Xelora indexes metadata <span className="text-white">without moving your files</span>. Best for large asset libraries.
                                   </p>
                               </div>
-                              <div className="bg-tron-dark/30 rounded-lg p-3 border border-tron-cyan/10">
-                                  <p className="text-tron-cyan font-medium mb-1 text-xs uppercase tracking-wider">Option 2: Direct Upload</p>
-                                  <p className="text-tron-text-muted text-xs leading-relaxed">
-                                      Drag & drop for quick tasks. Files are processed instantly and <span className="text-tron-text">discarded immediately</span> after analysis.
+                              <div className="bg-zinc-950/30 rounded-lg p-3 border border-white/10">
+                                  <p className="text-white font-medium mb-1 text-xs uppercase tracking-wider">Option 2: Direct Upload</p>
+                                  <p className="text-zinc-500 text-xs leading-relaxed">
+                                      Drag & drop for quick tasks. Files are processed instantly and <span className="text-white">discarded immediately</span> after analysis.
                                   </p>
                               </div>
                           </div>
@@ -412,17 +412,17 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
               
               {/* Google Drive Integration */}
                 <div className="space-y-4">
-                  <label className="text-xs text-tron-text-muted ml-1 font-medium">Google Drive Integration</label>
+                  <label className="text-xs text-zinc-500 ml-1 font-medium">Google Drive Integration</label>
                   
                   <div className="flex gap-3">
                     <button
                       onClick={handleOpenPicker}
-                      className="flex-1 px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl hover:bg-tron-cyan/10 hover:border-tron-cyan/50 transition-all flex items-center justify-center gap-2 group"
+                      className="flex-1 px-4 py-3 bg-zinc-950/50 border border-white/30 rounded-xl hover:bg-white/10 hover:border-white/50 transition-all flex items-center justify-center gap-2 group"
                     >
                        <div className="w-6 h-6 rounded bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
                           <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo_%282020%29.svg" alt="Drive" className="w-4 h-4" />
                        </div>
-                       <span className="text-sm font-medium text-tron-text group-hover:text-tron-cyan">Select from Drive</span>
+                       <span className="text-sm font-medium text-white group-hover:text-white">Select from Drive</span>
                     </button>
                     
                     <div className="flex-1 relative">
@@ -431,24 +431,24 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                           value={data.driveLink || ""}
                           onChange={(e) => handleChange("driveLink", e.target.value)}
                           placeholder="Or paste folder link..."
-                          className="w-full pl-4 pr-10 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan text-tron-text placeholder-tron-text-muted/50 text-sm"
+                          className="w-full pl-4 pr-10 py-3 bg-zinc-950/50 border border-white/30 rounded-xl focus:ring-2 focus:ring-tron-cyan/50 focus:border-white text-white placeholder-tron-text-muted/50 text-sm"
                       />
-                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-tron-cyan/50">
+                       <div className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50">
                           <Globe className="w-4 h-4" weight="duotone" />
                       </div>
                     </div>
                   </div>
 
                   {data.driveFiles && data.driveFiles.length > 0 && (
-                     <div className="bg-tron-dark/30 rounded-xl p-3 border border-tron-cyan/10 space-y-2">
-                        <p className="text-xs font-semibold text-tron-text-muted uppercase tracking-wide px-1">Selected from Drive:</p>
+                     <div className="bg-zinc-950/30 rounded-xl p-3 border border-white/10 space-y-2">
+                        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide px-1">Selected from Drive:</p>
                         {data.driveFiles.map((file) => (
-                           <div key={file.id} className="flex items-center justify-between p-2 bg-tron-grid/30 rounded-lg border border-tron-cyan/10">
+                           <div key={file.id} className="flex items-center justify-between p-2 bg-zinc-900/30 rounded-lg border border-white/10">
                               <div className="flex items-center gap-3 overflow-hidden">
                                   <img src={file.iconUrl} alt="" className="w-4 h-4" />
                                   <div className="flex flex-col overflow-hidden">
-                                    <span className="text-sm text-tron-text truncate">{file.name}</span>
-                                    <span className="text-[10px] text-tron-text-muted truncate">ID: {file.id}</span>
+                                    <span className="text-sm text-white truncate">{file.name}</span>
+                                    <span className="text-[10px] text-zinc-500 truncate">ID: {file.id}</span>
                                   </div>
                               </div>
                               <button 
@@ -456,7 +456,7 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                                       const newFiles = data.driveFiles?.filter(f => f.id !== file.id);
                                       handleChange("driveFiles", newFiles);
                                   }}
-                                  className="p-1 text-tron-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                                  className="p-1 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
                               >
                                   <X className="w-4 h-4" weight="duotone" />
                               </button>
@@ -465,23 +465,23 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                      </div>
                   )}
 
-                  <p className="text-xs text-tron-text-muted/70 flex items-center gap-1.5 ml-1">
-                     <Shield className="w-3 h-3 text-tron-cyan" weight="duotone" />
+                  <p className="text-xs text-zinc-500/70 flex items-center gap-1.5 ml-1">
+                     <Shield className="w-3 h-3 text-white" weight="duotone" />
                      Files are indexed remotely. No content is stored on our servers.
                   </p>
               </div>
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-tron-grid"></span>
+                  <span className="w-full border-t border-zinc-800"></span>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-tron-dark px-2 text-tron-text-muted">Or upload directly</span>
+                  <span className="bg-zinc-950 px-2 text-zinc-500">Or upload directly</span>
                 </div>
               </div>
 
               {/* File Upload Area */}
-              <div className="border-2 border-dashed border-tron-cyan/30 rounded-xl p-6 text-center bg-tron-dark/30 hover:bg-tron-cyan/5 hover:border-tron-cyan/50 transition-all cursor-pointer relative group">
+              <div className="border-2 border-dashed border-white/30 rounded-xl p-6 text-center bg-zinc-950/30 hover:bg-white/5 hover:border-white/50 transition-all cursor-pointer relative group">
                   <input 
                       type="file" 
                       multiple 
@@ -494,27 +494,27 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                       }}
                   />
                   <div className="flex flex-col items-center gap-2 pointer-events-none relative z-10">
-                      <div className="p-3 bg-tron-cyan/10 rounded-full group-hover:scale-110 transition-transform duration-300">
-                            <UploadCloud className="w-6 h-6 text-tron-cyan" weight="duotone" />
+                      <div className="p-3 bg-white/10 rounded-full group-hover:scale-110 transition-transform duration-300">
+                            <UploadCloud className="w-6 h-6 text-white" weight="duotone" />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-tron-text font-medium">Click to upload or drag and drop</p>
-                        <p className="text-xs text-tron-text-muted">Images, Videos, or Documents (Max 50MB)</p>
+                        <p className="text-white font-medium">Click to upload or drag and drop</p>
+                        <p className="text-xs text-zinc-500">Images, Videos, or Documents (Max 50MB)</p>
                       </div>
                   </div>
               </div>
 
               {/* File List */}
               {data.uploadedFiles && data.uploadedFiles.length > 0 && (
-                  <div className="space-y-2 bg-tron-dark/30 p-4 rounded-xl border border-tron-cyan/10">
-                      <p className="text-xs font-semibold text-tron-text-muted mb-2 uppercase tracking-wide">Ready for analysis:</p>
+                  <div className="space-y-2 bg-zinc-950/30 p-4 rounded-xl border border-white/10">
+                      <p className="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wide">Ready for analysis:</p>
                       {data.uploadedFiles.map((file, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2 bg-tron-grid/30 rounded-lg border border-tron-cyan/10 hover:border-tron-cyan/30 transition-colors">
+                          <div key={idx} className="flex items-center justify-between p-2 bg-zinc-900/30 rounded-lg border border-white/10 hover:border-white/30 transition-colors">
                               <div className="flex items-center gap-3 overflow-hidden">
-                                  <div className="w-8 h-8 rounded bg-tron-cyan/10 flex items-center justify-center shrink-0">
-                                      <FileText className="w-4 h-4 text-tron-cyan" weight="duotone" />
+                                  <div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center shrink-0">
+                                      <FileText className="w-4 h-4 text-white" weight="duotone" />
                                   </div>
-                                  <span className="text-sm text-tron-text truncate">{file.name}</span>
+                                  <span className="text-sm text-white truncate">{file.name}</span>
                               </div>
                               <button 
                                   onClick={() => {
@@ -522,7 +522,7 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
                                       newFiles.splice(idx, 1);
                                       handleChange("uploadedFiles", newFiles);
                                   }}
-                                  className="p-1 text-tron-text-muted hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors type='button'"
+                                  className="p-1 text-zinc-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors type='button'"
                                   title="Remove file"
                               >
                                   <X className="w-4 h-4" weight="duotone" />
@@ -538,12 +538,12 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
       </div>
 
       {/* Navigation Buttons */}
-       <div className="flex gap-3 pt-6 border-t border-tron-grid/30">
+       <div className="flex gap-3 pt-6 border-t border-zinc-800/30">
           <motion.button
             onClick={handleBack}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+            className="px-8 py-4 bg-zinc-900/50 border-2 border-white/30 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 transition-all flex items-center gap-2"
           >
              <ChevronLeft className="w-5 h-5" weight="duotone" />
              Back
@@ -554,7 +554,7 @@ export default function PromoteInput({ data, onChange, onBack, onComplete, curre
             disabled={!isStepValid(currentStep)}
             whileHover={{ scale: isStepValid(currentStep) ? 1.02 : 1 }}
             whileTap={{ scale: isStepValid(currentStep) ? 0.98 : 1 }}
-            className="flex-1 px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
+            className="flex-1 px-8 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-white/20 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
           >
             {currentStep === steps.length - 1 ? (
                 <>

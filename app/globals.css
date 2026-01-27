@@ -1,42 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --bg-deep: #0a0a0f;
-    --bg-card: rgba(255, 255, 255, 0.03);
-    --border-glass: rgba(255, 255, 255, 0.08);
-    --coral-glow: rgba(255, 126, 95, 0.4);
-    --blue-glow: rgba(95, 126, 255, 0.4);
+    --background: 0 0% 100%;    /* #ffffff */
+    --foreground: 240 10% 3.9%; /* #09090b */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0rem;
   }
+}
 
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
-    scroll-behavior: smooth;
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-  }
-
   body {
-    @apply bg-[#0a0a0f] text-gray-100 antialiased;
-    background-image:
-      radial-gradient(circle at 50% 0%, rgba(95, 126, 255, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 126, 95, 0.1) 0%, transparent 40%);
-    background-attachment: fixed;
-  }
-
-  /* Accessibility: Respect user's motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
@@ -47,25 +45,26 @@
   }
 
   .glass-panel-hover {
-    @apply hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_32px_0_rgba(255,126,95,0.1)];
+    @apply hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_32px_0_rgba(255,255,255,0.05)];
   }
 
   .btn-primary {
-    @apply relative overflow-hidden bg-gradient-to-r from-coral-500 to-orange-600 text-white font-semibold py-3 px-8 rounded-xl
-           transition-all duration-300 shadow-lg shadow-coral-500/20 hover:shadow-coral-500/40 hover:scale-[1.02] active:scale-[0.98];
+    @apply relative overflow-hidden bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-xl
+           transition-all duration-300 shadow-lg hover:scale-[1.02] active:scale-[0.98];
   }
   
   .btn-secondary {
-    @apply bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white hover:border-white/20
-           font-semibold py-3 px-8 rounded-xl transition-all duration-300 backdrop-blur-md;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80
+           font-semibold py-3 px-8 rounded-xl transition-all duration-300;
   }
   
   .text-gradient-primary {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400;
   }
 
+  /* Updated to match zinc palette/monochrome aesthetic */
   .text-gradient-accent {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-coral-400 to-orange-300;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400;
   }
 
   .bento-grid {
@@ -79,25 +78,28 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: hsl(var(--muted));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: hsl(var(--muted-foreground));
 }
 
 /* Selection styling */
 ::selection {
-  background-color: rgba(255, 126, 95, 0.3);
+  background-color: #000000;
   color: #ffffff;
 }
 
-/* Aurora Animation */
+/* Aurora Animation - Revised for subtle effect if needed, otherwise kept as legacy support or removed if not in spec. 
+   Keeping specifically requested animations is safer, but spec focuses on "Linear" look. 
+   I will keep it neutral. 
+*/
 @keyframes aurora {
   0% { background-position: 50% 50%; }
   50% { background-position: 100% 50%; }
@@ -118,4 +120,15 @@
   background: linear-gradient(90deg, #1a1a1a 0px, #2a2a2a 40px, #1a1a1a 80px);
   background-size: 200px;
   animation: shimmer 1.5s infinite;
+}
+
+/* Structural Vector Utilities */
+.bg-grid {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.02em;
 }

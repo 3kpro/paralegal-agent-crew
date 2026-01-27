@@ -4,7 +4,7 @@ import { useState } from "react";
 import PublishButton from "@/components/PublishButton";
 import { motion } from "framer-motion";
 import { Sparkle as Sparkles, ArrowsClockwise as RefreshCw } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 const mockContent = [
   "🚀 Just discovered the secret to viral content: AI + trending topics = engagement gold! Who else is using XELORA? #ContentMarketing #AI",
@@ -108,7 +108,7 @@ export default function TestTwitterPage() {
                   onClick={randomizeMockContent}
                   className="px-3 py-1.5 bg-tron-cyan/20 hover:bg-tron-cyan/30 text-tron-cyan text-sm rounded-lg transition-colors flex items-center gap-2"
                 >
-                  <BouncingDots className="bg-tron-cyan w-1.5 h-1.5" />
+                  <OrbitalLoader className="w-4 h-4" />
                   Randomize
                 </button>
               </div>

@@ -18,7 +18,7 @@ import {
   RedditLogo,
   Globe,
 } from "@phosphor-icons/react"
-import { BouncingDots } from "@/components/ui/bouncing-dots"
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface SocialProvider {
   id: string
@@ -259,7 +259,7 @@ export default function ConnectionCard({
             >
               {testing ? (
                 <>
-                  <BouncingDots className="bg-current w-1.5 h-1.5" />
+                  <OrbitalLoader className="w-5 h-5" />
                   <span>Testing...</span>
                 </>
               ) : (
@@ -285,7 +285,7 @@ export default function ConnectionCard({
               title="Remove connection"
             >
               {deleting ? (
-                <BouncingDots className="bg-current w-1.5 h-1.5" />
+                <OrbitalLoader className="w-5 h-5" />
               ) : (
                 <Trash2 className="w-4 h-4" weight="duotone" />
               )}

@@ -350,7 +350,7 @@ export default function HelixChatInterface({
 
       {/* Input Container - Centers initially, then fixes to bottom */}
       <div 
-        className={`fixed left-0 right-0 z-30 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col items-center justify-center px-4 ${
+        className={`fixed left-0 right-0 z-30 transition-all duration-700 ease-out flex flex-col items-center justify-center px-4 ${
           !hasStarted 
             ? "top-0 bottom-0" 
             : "bottom-8 top-auto"

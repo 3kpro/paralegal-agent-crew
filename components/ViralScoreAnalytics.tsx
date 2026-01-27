@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChartBar as BarChart3, TrendUp as TrendingUp, Target, DownloadSimple as Download } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import type { ViralScoreAnalytics } from "@/types/feedback";
 import { formatEngagement, formatAccuracy } from "@/lib/feedback-tracking";
 
@@ -71,7 +71,7 @@ export default function ViralScoreAnalyticsComponent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <BouncingDots className="bg-tron-cyan" />
+        <OrbitalLoader className="w-10 h-10 text-tron-cyan" />
       </div>
     );
   }
@@ -107,7 +107,7 @@ export default function ViralScoreAnalyticsComponent() {
           >
             {exporting ? (
               <>
-                <BouncingDots className="bg-tron-dark w-1.5 h-1.5" />
+                <OrbitalLoader className="w-5 h-5" />
                 Exporting...
               </>
             ) : (

@@ -17,13 +17,10 @@ import {
 } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  CaretLeft, 
-  CaretRight, 
+  ChevronLeft, 
+  ChevronRight, 
   Calendar as CalendarIcon,
-  CircleNotch,
-  CornersOut,
-  DotsThree
-} from '@phosphor-icons/react';
+} from 'lucide-react';
 import { 
   DndContext, 
   useDraggable, 
@@ -37,7 +34,7 @@ import {
   useSensors,
   closestCenter
 } from '@dnd-kit/core';
-import { BouncingDots } from '@/components/ui/bouncing-dots';
+import { OrbitalLoader } from '@/components/ui/orbital-loader';
 import Link from 'next/link';
 
 interface ScheduledCampaign {
@@ -293,7 +290,7 @@ export default function CalendarView() {
       <div className="p-6 border-b border-gray-700/50 flex items-center justify-between">
          <div className="flex items-center gap-4">
              <div className="p-2 bg-coral-500/10 rounded-xl">
-                 <CalendarIcon className="w-6 h-6 text-coral-500" weight="duotone" />
+                 <CalendarIcon className="w-6 h-6 text-coral-500" />
              </div>
              <div>
                  <h2 className="text-xl font-bold text-white">Smart Schedule</h2>
@@ -306,13 +303,13 @@ export default function CalendarView() {
                 Today
             </button>
             <button onClick={prevMonth} className="p-1.5 hover:bg-gray-700 rounded-lg transition-colors">
-                <CaretLeft className="w-5 h-5 text-gray-300" />
+                <ChevronLeft className="w-5 h-5 text-gray-300" />
             </button>
             <span className="text-lg font-semibold w-32 text-center">
                 {format(currentDate, 'MMMM yyyy')}
             </span>
             <button onClick={nextMonth} className="p-1.5 hover:bg-gray-700 rounded-lg transition-colors">
-                <CaretRight className="w-5 h-5 text-gray-300" />
+                <ChevronRight className="w-5 h-5 text-gray-300" />
             </button>
          </div>
       </div>
@@ -336,7 +333,7 @@ export default function CalendarView() {
               <div className="grid grid-cols-7 auto-rows-fr bg-[#2b2b2b]">
                   {loading ? (
                        <div className="col-span-7 h-96 flex items-center justify-center">
-                           <BouncingDots className="bg-coral-500" />
+                           <OrbitalLoader className="h-10 w-10 text-coral-500" />
                        </div>
                   ) : (
                       days.map((day, i) => (

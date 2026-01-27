@@ -15,163 +15,151 @@ export const metadata: Metadata = {
   },
 };
 
+"use client";
+
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { motion } from "framer-motion";
+
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-tron-darker py-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-tron-text mb-8">Terms of Service</h1>
+    <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-primary selection:text-primary-foreground">
+      <Navigation />
+      
+      <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
+        {/* Background with Grid Pattern */}
+        <div 
+          className="absolute inset-0 z-0 bg-grid-pattern opacity-10" 
+          style={{ maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)" }} 
+        />
 
-        <div className="space-y-6 text-tron-text-muted">
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">1. Acceptance of Terms</h2>
-            <p>
-              By accessing or using XELORA, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.
-            </p>
-          </section>
+        <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground uppercase tracking-tighter mb-16">
+              Terms of <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40">Service.</span>
+            </h1>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">2. Description of Service</h2>
-            <p>
-              XELORA is a social media management platform that provides AI-powered content generation, trend discovery, and multi-platform publishing capabilities for businesses and individuals.
-            </p>
-          </section>
+            <div className="space-y-12 text-muted-foreground font-medium leading-relaxed">
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4 uppercase tracking-tight">1. Acceptance of Terms</h2>
+                <p>
+                  By accessing or using XELORA, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.
+                </p>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">3. User Accounts</h2>
-            <h3 className="text-xl font-medium text-tron-text mb-2">Registration</h3>
-            <p className="mb-4">
-              You must create an account to use XELORA. You agree to provide accurate, current information and keep your account secure.
-            </p>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4 uppercase tracking-tight">2. Description of Service</h2>
+                <p>
+                  XELORA is a social media management platform that provides AI-powered content generation, trend discovery, and multi-platform publishing capabilities for businesses and individuals.
+                </p>
+              </section>
 
-            <h3 className="text-xl font-medium text-tron-text mb-2">Account Responsibility</h3>
-            <p>
-              You are responsible for all activity that occurs under your account. You must immediately notify us of any unauthorized access.
-            </p>
-          </section>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-6 uppercase tracking-tight">3. User Accounts</h2>
+                <h3 className="text-xl font-bold text-foreground/80 mb-3">Registration</h3>
+                <p className="mb-6">
+                  You must create an account to use XELORA. You agree to provide accurate, current information and keep your account secure.
+                </p>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">4. Social Media Connections</h2>
-            <p className="mb-4">
-              When you connect social media accounts to XELORA:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>You grant us permission to post content on your behalf</li>
-              <li>You remain responsible for all content posted through our platform</li>
-              <li>You must comply with each platform's terms of service</li>
-              <li>You can revoke access at any time through account settings</li>
-            </ul>
-          </section>
+                <h3 className="text-xl font-bold text-foreground/80 mb-3">Account Responsibility</h3>
+                <p>
+                  You are responsible for all activity that occurs under your account. You must immediately notify us of any unauthorized access.
+                </p>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">5. Acceptable Use</h2>
-            <p className="mb-4">You agree NOT to:</p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Post illegal, harmful, or offensive content</li>
-              <li>Spam or harass others</li>
-              <li>Violate intellectual property rights</li>
-              <li>Use the service for unauthorized commercial purposes</li>
-              <li>Attempt to circumvent security measures</li>
-              <li>Reverse engineer or copy our software</li>
-              <li>Use automated tools to scrape our service</li>
-            </ul>
-          </section>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-6 uppercase tracking-tight">4. Social Media Connections</h2>
+                <p className="mb-4">When you connect social media accounts to XELORA:</p>
+                <ul className="space-y-4">
+                  {[
+                    "You grant us permission to post content on your behalf",
+                    "You remain responsible for all content posted through our platform",
+                    "You must comply with each platform's terms of service",
+                    "You can revoke access at any time through account settings"
+                  ].map(item => (
+                    <li key={item} className="flex items-start">
+                      <div className="w-1.5 h-1.5 bg-white mr-4 mt-2 rotate-45 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">6. Content Ownership</h2>
-            <h3 className="text-xl font-medium text-tron-text mb-2">Your Content</h3>
-            <p className="mb-4">
-              You retain ownership of all content you create or upload. By using our service, you grant us a license to store, display, and process your content solely to provide the service.
-            </p>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-6 uppercase tracking-tight">5. Acceptable Use</h2>
+                <p className="mb-6">You agree NOT to:</p>
+                <ul className="grid md:grid-cols-2 gap-4">
+                   {[
+                     "Post illegal or offensive content",
+                     "Spam or harass others",
+                     "Violate intellectual property",
+                     "Circumvent security measures",
+                     "Reverse engineer software",
+                     "Automated scraping"
+                   ].map(item => (
+                     <div key={item} className="flex items-center p-3 rounded border border-white/5 bg-white/2">
+                        <div className="w-1 h-1 bg-white mr-4 rotate-45 shrink-0" />
+                        <span className="text-sm">{item}</span>
+                     </div>
+                   ))}
+                </ul>
+              </section>
 
-            <h3 className="text-xl font-medium text-tron-text mb-2">AI-Generated Content</h3>
-            <p>
-              Content generated by our AI tools is provided as-is. You are responsible for reviewing and editing AI-generated content before publishing.
-            </p>
-          </section>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-6 uppercase tracking-tight">6. Content Ownership</h2>
+                <h3 className="text-xl font-bold text-foreground/80 mb-3">Your Content</h3>
+                <p className="mb-6">
+                  You retain ownership of all content you create. By using our service, you grant us a license to store and process your content solely to provide the service.
+                </p>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">7. Subscription and Payment</h2>
-            <p className="mb-4">
-              XELORA offers subscription-based pricing with different tiers:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Subscriptions renew automatically unless cancelled</li>
-              <li>Payment is processed through Stripe</li>
-              <li>Refunds are provided according to our refund policy</li>
-              <li>We reserve the right to modify pricing with notice</li>
-            </ul>
-          </section>
+                <h3 className="text-xl font-bold text-foreground/80 mb-3">AI-Generated Content</h3>
+                <p>
+                  Content generated by our AI tools is provided as-is. You are responsible for reviewing and editing AI-generated content before publishing.
+                </p>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">8. Service Availability</h2>
-            <p>
-              We strive to maintain service availability but do not guarantee uninterrupted access. We may perform maintenance, updates, or experience outages beyond our control.
-            </p>
-          </section>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4 uppercase tracking-tight">7. Subscription and Payment</h2>
+                <p>
+                  Subscriptions renew automatically unless cancelled. Payment is processed through Stripe. Refunds are provided according to our policy. We reserve the right to modify pricing with notice.
+                </p>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">9. Termination</h2>
-            <p className="mb-4">
-              We may suspend or terminate your account if you:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Violate these Terms of Service</li>
-              <li>Engage in fraudulent activity</li>
-              <li>Fail to pay subscription fees</li>
-              <li>Request account deletion</li>
-            </ul>
-          </section>
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4 uppercase tracking-tight">8. Service Availability</h2>
+                <p>
+                  We strive for availability but do not guarantee uninterrupted access. We may perform maintenance or experience outages beyond our control.
+                </p>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">10. Disclaimers</h2>
-            <p className="mb-4">
-              THE SERVICE IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. WE DO NOT GUARANTEE:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4">
-              <li>Accuracy of AI-generated content</li>
-              <li>Success of social media posts</li>
-              <li>Uninterrupted service availability</li>
-              <li>Compatibility with all platforms</li>
-            </ul>
-          </section>
+              <section className="p-10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md">
+                <h2 className="text-2xl font-bold text-foreground mb-8 uppercase tracking-tight">Contact Interface</h2>
+                <div className="grid md:grid-cols-2 gap-10 text-sm">
+                  <div>
+                    <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Legal Channel</div>
+                    <a href="mailto:support@getxelora.com" className="text-lg text-foreground hover:opacity-80 transition-opacity font-bold underline underline-offset-4">support@getxelora.com</a>
+                  </div>
+                  <div>
+                    <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Operations Center</div>
+                    <div className="text-lg text-foreground font-bold italic">Tulsa // Oklahoma // USA</div>
+                  </div>
+                </div>
+              </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">11. Limitation of Liability</h2>
-            <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, XELORA SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING FROM YOUR USE OF THE SERVICE.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">12. Changes to Terms</h2>
-            <p>
-              We may modify these Terms of Service at any time. Continued use of the service after changes constitutes acceptance of the new terms.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">13. Governing Law</h2>
-            <p>
-              These Terms shall be governed by the laws of the jurisdiction where 3K Pro Services operates, without regard to conflict of law provisions.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">14. Contact</h2>
-            <p>
-              For questions about these Terms, contact us at:
-            </p>
-            <p className="mt-2">
-              Email: support@getxelora.com<br />
-              Website: https://getxelora.com
-            </p>
-          </section>
-
-          <p className="text-sm text-tron-text-muted mt-8 pt-8 border-t border-tron-cyan/20">
-            Last Updated: November 24, 2024
-          </p>
+              <p className="text-[10px] text-muted-foreground mt-20 pt-8 border-t border-white/10 font-bold uppercase tracking-widest opacity-60">
+                Last Updated: November 24, 2024
+              </p>
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 }
+

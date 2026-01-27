@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Envelope as Mail, CheckCircle, ArrowRight, Users } from "@phosphor-icons/react";
 import { BGPattern } from "@/components/ui/bg-pattern";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 export default function WaitlistSection() {
   const [email, setEmail] = useState("");
@@ -140,7 +140,7 @@ export default function WaitlistSection() {
               >
                 {isSubmitting ? (
                   <>
-                    <BouncingDots className="bg-white w-1.5 h-1.5" />
+                    <OrbitalLoader className="w-5 h-5" />
                     Joining...
                   </>
                 ) : (

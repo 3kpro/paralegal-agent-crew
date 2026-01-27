@@ -122,7 +122,8 @@
       "Bash(npm view:*)",
       "Bash(npm ls:*)",
       "Bash(npm audit:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": []

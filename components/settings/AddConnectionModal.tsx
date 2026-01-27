@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { X, ArrowSquareOut as ExternalLink, CheckCircle as CheckCircle2 } from "@phosphor-icons/react"
-import { BouncingDots } from "@/components/ui/bouncing-dots"
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { SocialProvider } from "./ConnectionGrid"
 
 interface AddConnectionModalProps {
@@ -251,7 +251,7 @@ export default function AddConnectionModal({
           >
             {loading ? (
               <>
-                <BouncingDots className="bg-current w-1.5 h-1.5" />
+                <OrbitalLoader className="w-5 h-5" />
                 <span>Saving...</span>
               </>
             ) : (
@@ -302,7 +302,7 @@ export default function AddConnectionModal({
           >
             {loading ? (
               <>
-                <BouncingDots className="bg-current w-1.5 h-1.5" />
+                <OrbitalLoader className="w-5 h-5" />
                 <span>Redirecting...</span>
               </>
             ) : (

@@ -16,189 +16,123 @@ export const metadata: Metadata = {
   },
 };
 
+"use client";
+
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import { motion } from "framer-motion";
+import { Info, Globe, Shield, Zap } from "lucide-react";
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-tron-darker py-16 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-tron-text mb-8">About XELORA</h1>
+    <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-primary selection:text-primary-foreground">
+      <Navigation />
+      
+      <main className="flex-1 pt-32 pb-20 relative overflow-hidden">
+        {/* Background with Grid Pattern */}
+        <div 
+          className="absolute inset-0 z-0 bg-grid-pattern opacity-10" 
+          style={{ maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)" }} 
+        />
 
-        <div className="space-y-8 text-tron-text-muted">
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">
-              A Product of 3KPRO.SERVICES
-            </h2>
-            <p className="mb-4">
-              XELORA is developed and maintained by{" "}
-              <a
-                href="https://3kpro.services"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-              >
-                3KPRO.SERVICES
-              </a>
-              , a professional IT solutions company based in Tulsa, Oklahoma. We
-              specialize in SaaS development, web services, and AI-powered business
-              tools.
-            </p>
-            <p>
-              Our mission is to empower creators and businesses with predictive
-              intelligence tools that help them stay ahead of trends and maximize
-              their content's impact.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">
-              What is XELORA?
-            </h2>
-            <p className="mb-4">
-              XELORA is an AI-powered predictive intelligence platform designed for
-              content creators, marketers, and brands. Our platform analyzes emerging
-              signals across multiple platforms to reveal what's about to rise—before
-              the internet reacts to it.
-            </p>
-            <div className="grid md:grid-cols-2 gap-4 mt-6">
-              <div className="bg-tron-dark/50 p-4 rounded-lg border border-tron-cyan/20">
-                <h3 className="text-lg font-medium text-tron-cyan mb-2">
-                  Predict Momentum
-                </h3>
-                <p className="text-sm">
-                  Our Viral Score algorithm analyzes 1M+ viral posts to predict
-                  content performance with 87% accuracy.
-                </p>
-              </div>
-              <div className="bg-tron-dark/50 p-4 rounded-lg border border-tron-cyan/20">
-                <h3 className="text-lg font-medium text-tron-cyan mb-2">
-                  Engineer Virality
-                </h3>
-                <p className="text-sm">
-                  Generate platform-optimized content for Twitter, LinkedIn,
-                  Instagram, Facebook, Reddit, and TikTok.
-                </p>
-              </div>
-              <div className="bg-tron-dark/50 p-4 rounded-lg border border-tron-cyan/20">
-                <h3 className="text-lg font-medium text-tron-cyan mb-2">
-                  Real-Time Signals
-                </h3>
-                <p className="text-sm">
-                  Track emerging trends and signals before they peak, giving you
-                  first-mover advantage.
-                </p>
-              </div>
-              <div className="bg-tron-dark/50 p-4 rounded-lg border border-tron-cyan/20">
-                <h3 className="text-lg font-medium text-tron-cyan mb-2">
-                  Multi-Platform
-                </h3>
-                <p className="text-sm">
-                  One campaign, six platforms. Automatically adapt content for
-                  each platform's unique format.
-                </p>
-              </div>
+        <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-12"
+          >
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground uppercase tracking-tighter">
+                About <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40">XELORA.</span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed font-medium">
+                The predictive intelligence layer for creators. Engineered for momentum.
+              </p>
             </div>
-          </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">
-              Our Vision
-            </h2>
-            <p className="mb-4">
-              We believe that success in content creation shouldn't be left to chance.
-              By leveraging AI and predictive analytics, we're building tools that
-              give creators the insights they need to make data-driven decisions
-              about their content strategy.
-            </p>
-            <p>
-              XELORA is the flagship product of the 3kpro ecosystem—a suite
-              of AI-powered tools designed to help businesses and creators dominate
-              the digital landscape.
-            </p>
-          </section>
+            <section className="space-y-6">
+              <div className="p-8 rounded-2xl border border-white/5 bg-white/5 backdrop-blur-sm">
+                <h2 className="text-2xl font-bold text-foreground mb-6 uppercase tracking-tight">A Product of 3KPRO.SERVICES</h2>
+                <p className="text-muted-foreground leading-relaxed mb-8 font-medium">
+                  XELORA is developed and maintained by{" "}
+                  <a
+                    href="https://3kpro.services"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white underline underline-offset-8 decoration-white/20 hover:decoration-white transition-all font-bold"
+                  >
+                    3KPRO.SERVICES
+                  </a>
+                  , a professional IT solutions company based in Tulsa, Oklahoma. We specialize in SaaS development, precision digital infrastructure, and AI-powered business tools.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {["SaaS Development", "IT Consulting", "Signal Engineering"].map(tag => (
+                    <div key={tag} className="px-3 py-1 rounded bg-white/5 border border-white/10 text-[9px] uppercase tracking-widest font-bold text-muted-foreground">
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">
-              About 3KPRO.SERVICES
-            </h2>
-            <p className="mb-4">
-              <a
-                href="https://3kpro.services"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-              >
-                3KPRO.SERVICES
-              </a>{" "}
-              is a professional IT solutions company offering:
-            </p>
-            <ul className="list-disc list-inside space-y-2 ml-4 mb-4">
-              <li>SaaS Product Development</li>
-              <li>Custom Web Application Development</li>
-              <li>AI Integration & Automation</li>
-              <li>Cloud Infrastructure & DevOps</li>
-              <li>Digital Marketing Solutions</li>
-            </ul>
-            <p>
-              Based in Tulsa, Oklahoma, we serve clients worldwide with innovative
-              technology solutions.
-            </p>
-          </section>
+            <section className="grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  title: "Predict Momentum",
+                  description: "Viral Score™ algorithm analyzes millions of signals to predict performance with high accuracy.",
+                  icon: Zap
+                },
+                {
+                  title: "Engineer Virality",
+                  description: "Platform-optimized content generation for the modern social stack.",
+                  icon: Shield
+                },
+                {
+                  title: "Real-Time Signals",
+                  description: "Track emerging trends before they peak, giving you first-mover advantage.",
+                  icon: Globe
+                },
+                {
+                  title: "Professional Grade",
+                  description: "Built on enterprise-standard infrastructure for high-scale content operations.",
+                  icon: Info
+                }
+              ].map((item, i) => (
+                <div key={i} className="p-8 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/5 transition-all group">
+                  <item.icon className="w-8 h-8 text-white mb-6 opacity-40 group-hover:opacity-80 transition-opacity" />
+                  <h3 className="text-lg font-bold text-foreground mb-3 uppercase tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed font-medium">{item.description}</p>
+                </div>
+              ))}
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-tron-text mb-4">Contact</h2>
-            <p className="mb-4">
-              Have questions about XELORA or interested in working with us?
-            </p>
-            <ul className="space-y-2">
-              <li>
-                <strong className="text-tron-text">Email:</strong>{" "}
-                <a
-                  href="mailto:info@3kpro.services"
-                  className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-                >
-                  info@3kpro.services
-                </a>
-              </li>
-              <li>
-                <strong className="text-tron-text">Website:</strong>{" "}
-                <a
-                  href="https://3kpro.services"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-                >
-                  3kpro.services
-                </a>
-              </li>
-              <li>
-                <strong className="text-tron-text">Location:</strong> Tulsa, Oklahoma,
-                USA
-              </li>
-            </ul>
-          </section>
+            <section className="space-y-6 border-t border-white/10 pt-16">
+              <h2 className="text-3xl font-bold text-foreground uppercase tracking-tight">The Vision</h2>
+              <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+                We believe that success in content creation shouldn't be left to chance. By leveraging predictive analytics and structural intelligence, we're building tools that give creators the insights they need to dominate the digital landscape.
+              </p>
+            </section>
 
-          <div className="pt-8 border-t border-tron-cyan/20">
-            <Link
-              href="/"
-              className="inline-flex items-center text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-            >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-              Back to Home
-            </Link>
-          </div>
+            <section className="p-10 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md shadow-2xl">
+              <h2 className="text-2xl font-bold text-foreground mb-8 uppercase tracking-tight">Technical Interface</h2>
+              <div className="grid md:grid-cols-2 gap-10 text-sm">
+                <div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Primary Channel</div>
+                  <a href="mailto:info@3kpro.services" className="text-lg text-foreground hover:opacity-80 transition-opacity font-bold">info@3kpro.services</a>
+                </div>
+                <div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Geographic Node</div>
+                  <div className="text-lg text-foreground font-bold">Tulsa // Oklahoma // USA</div>
+                </div>
+              </div>
+            </section>
+          </motion.div>
         </div>
-      </div>
+      </main>
+      
+      <Footer />
     </div>
   );
 }
+

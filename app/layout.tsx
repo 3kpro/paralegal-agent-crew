@@ -1,3 +1,5 @@
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import "@/lib/env"; // Validate environment variables at startup
@@ -65,7 +67,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({
@@ -74,11 +76,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className={`scroll-smooth ${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <head>
         <StructuredData />
       </head>
-      <body className="bg-tron-dark text-tron-text antialiased">
+      <body className="bg-background text-foreground antialiased font-sans">
         <DomainTransitionBanner />
         <ErrorBoundary>{children}</ErrorBoundary>
         <Analytics />

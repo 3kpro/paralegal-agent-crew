@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  SquaresFour as LayoutDashboard,
-  Lightning as Zap,
-  Robot as Bot,
-  Gear as Settings,
-  SignOut as LogOut,
+  LayoutDashboard,
+  Zap,
+  Bot,
+  Settings,
+  LogOut,
   CreditCard,
-  List as Menu,
+  Menu,
   X,
   Plus,
-  Lifebuoy as LifeBuoy,
-} from "@phosphor-icons/react";
+  LifeBuoy,
+} from "lucide-react";
 import { useState } from "react";
 import { XeloraLogo } from "@/components/XeloraLogo";
 
@@ -54,9 +54,9 @@ export function Sidebar({ onLogout }: SidebarProps) {
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
-              <Menu className="w-5 h-5" weight="duotone" />
+              <Menu className="w-5 h-5" />
             ) : (
-              <X className="w-5 h-5" weight="duotone" />
+              <X className="w-5 h-5" />
             )}
           </button>
         </div>
@@ -81,7 +81,6 @@ export function Sidebar({ onLogout }: SidebarProps) {
               >
                 <Icon
                   className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-coral-400" : ""}`}
-                  weight="duotone"
                 />
                 {!isCollapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
@@ -100,7 +99,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
             }`}
             title={isCollapsed ? "Upgrade" : undefined}
           >
-            <CreditCard className="w-5 h-5 flex-shrink-0" weight="duotone" />
+            <CreditCard className="w-5 h-5 flex-shrink-0" />
             {!isCollapsed && <span className="text-sm font-medium">Upgrade</span>}
           </Link>
           <Link
@@ -110,7 +109,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
             }`}
             title={isCollapsed ? "Support" : undefined}
           >
-            <LifeBuoy className="w-5 h-5 flex-shrink-0" weight="duotone" />
+            <LifeBuoy className="w-5 h-5 flex-shrink-0" />
             {!isCollapsed && <span className="text-sm font-medium">Support</span>}
           </Link>
           <button
@@ -120,7 +119,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
             }`}
             title={isCollapsed ? "Logout" : undefined}
           >
-            <LogOut className="w-5 h-5 flex-shrink-0" weight="duotone" />
+            <LogOut className="w-5 h-5 flex-shrink-0" />
             {!isCollapsed && <span className="text-sm font-medium">Logout</span>}
           </button>
         </div>
@@ -166,7 +165,7 @@ export function MobileNav({ onLogout }: SidebarProps) {
                   : "text-gray-500 hover:text-gray-300"
               }`}
             >
-              <Icon className="w-5 h-5" weight={isActive ? "fill" : "duotone"} />
+              <Icon className="w-5 h-5" />
               <span className="text-[10px] font-medium">{item.label}</span>
             </Link>
           );

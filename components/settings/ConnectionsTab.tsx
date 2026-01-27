@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Plus, WarningCircle as AlertCircle } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import ConnectionGrid, { SocialProvider, UserConnection } from "./ConnectionGrid"
 import AddConnectionModal from "./AddConnectionModal"
 
@@ -77,7 +77,7 @@ export default function ConnectionsTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <BouncingDots className="bg-tron-cyan" />
+        <OrbitalLoader className="w-10 h-10 text-tron-cyan" />
       </div>
     )
   }

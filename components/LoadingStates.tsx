@@ -1,13 +1,12 @@
 "use client";
 
-import { BouncingDots } from "@/components/ui/bouncing-dots";
-import { LumaSpin } from "@/components/ui/luma-spin";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface LoadingStateProps {
   message?: string;
   size?: "sm" | "md" | "lg";
   fullScreen?: boolean;
-  variant?: "default" | "luma";
+  variant?: "default" | "luma"; // Keeping variant prop for compatibility but treating them same or mapping if needed
 }
 
 export function LoadingState({
@@ -16,33 +15,16 @@ export function LoadingState({
   fullScreen = false,
   variant = "default",
 }: LoadingStateProps) {
-  const sizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-8 h-8",
-    lg: "w-12 h-12",
-  };
+  // Map size to something if needed, OrbitalLoader has fixed size but we can style it via className if needed.
+  // The default OrbitalLoader is w-16 h-16.
+  // We can pass className to scale it.
 
-  if (variant === "luma") {
-    return (
-      <div className={`flex flex-col items-center justify-center gap-6 ${fullScreen ? "min-h-screen bg-[#2b2b2b]" : "p-8"}`}>
-        <LumaSpin />
-        {message && (
-          <p className="text-gray-400 text-sm animate-pulse tracking-wider font-medium">{message}</p>
-        )}
-      </div>
-    );
-  }
+  let scaleClass = "";
+  if (size === "sm") scaleClass = "scale-50";
+  if (size === "lg") scaleClass = "scale-150";
 
   const content = (
-    <div className="flex flex-col items-center justify-center gap-4">
-      <BouncingDots
-        dots={3}
-        className={`${size === "sm" ? "w-2 h-2" : size === "lg" ? "w-4 h-4" : "w-3 h-3"} bg-tron-cyan`}
-      />
-      {message && (
-        <p className="text-tron-text-muted text-sm animate-pulse">{message}</p>
-      )}
-    </div>
+    <OrbitalLoader message={message} className={scaleClass} />
   );
 
   if (fullScreen) {
@@ -53,8 +35,10 @@ export function LoadingState({
     );
   }
 
-  return <div className="p-8">{content}</div>;
+  return <div className="p-8 flex justify-center">{content}</div>;
 }
+
+
 
 // Skeleton loaders for different components
 export function CampaignCardSkeleton() {

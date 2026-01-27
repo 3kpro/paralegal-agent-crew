@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, WarningCircle as AlertCircle, Play, Lock, Users, Chat as MessageSquare, Copy, Scissors, CurrencyDollar as DollarSign, TiktokLogo } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface TikTokCreatorInfo {
   creator_avatar_url: string;
@@ -135,7 +135,7 @@ export default function TikTokPublishModal({
 
             {loading && (
               <div className="text-center py-8">
-                <BouncingDots className="bg-tron-cyan" />
+                <OrbitalLoader className="w-10 h-10 text-tron-cyan mx-auto" />
                 <p className="text-gray-400">Loading creator info...</p>
               </div>
             )}

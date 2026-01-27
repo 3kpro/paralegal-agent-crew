@@ -20,7 +20,7 @@ import {
   ShareNetwork
 } from "@phosphor-icons/react";
 import { ScheduledPost, ContentTemplate } from "../campaigns/create/types";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 export default function ContentFlowPage() {
   const router = useRouter();
@@ -116,7 +116,7 @@ export default function ContentFlowPage() {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <BouncingDots className="bg-coral-500" />
+          <OrbitalLoader className="w-10 h-10 text-coral-500" />
           <p className="text-gray-300">Loading ContentFlow...</p>
         </div>
       </div>
