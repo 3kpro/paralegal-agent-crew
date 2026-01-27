@@ -10,17 +10,58 @@ This file lists XELORA product-specific tasks only.
 
 ---
 
+## DEVELOPMENT WORKFLOW
+
+**Critical: Human-Controlled Dev Servers**
+
+All agents (Gemini, Claude, opencode, etc.) working on XELORA MUST follow these rules:
+
+1. **NEVER run `npm run dev`** - Dev server control is reserved for the human
+2. **NEVER start/stop dev servers** - Human manages XELORA dev server using:
+   - `C:\DEV\3K-Pro-Services\landing-page\3000.bat` - Starts XELORA on localhost:3000
+3. **Focus on code changes only** - Write, edit, and commit code; let human test
+4. **Assume server is running** - Human will restart as needed to see changes
+
+**Why:** Human is multitasking across XELORA and 3kpro.services. Agents starting/stopping servers creates conflicts.
+
+---
+
+**Git Workflow: Human-in-Loop Approval**
+
+After completing requested work, agents MUST follow this workflow:
+
+1. **Complete the work** - Make all requested code changes
+2. **Verify the result** - Review changes to ensure they match requirements
+3. **Ask for approval** - Present summary and ask: "Work complete. Ready to commit and push to production? (Y/N)"
+4. **On "Y" confirmation:**
+   - Run `git status` to show what changed
+   - Run `git add -A` to stage all changes
+   - Run `git commit -m "descriptive message"` (message based on work completed)
+   - Run `git push` to current branch
+   - Report success with commit hash and branch
+5. **On "N":** Wait for further instructions or clarifications
+
+**Why:** This keeps human in control of production deployments while reducing friction. Agent handles git mechanics after receiving explicit approval.
+
+---
+
 ## NOW
+read
+C:\DEV\3K-Pro-Services\landing-page\docs\SYSTEM\TASKS.md
+implement
 
-- [ ] **Verify Theme Upgrade & UI Polish**
-      - **Goal:** Ensure new XELORA premium theme is applied correctly across known UI components.
-      - **Action:**
-        - Check landing page, dashboard, and campaign wizard for visual regressions.
-        - Verify dark mode/light mode consistency (if applicable).
-        - Update any hardcoded colors found during audit.
+- [ ] **Consolidate Landing Page Configuration** 🏗️
+      - **Goal:** Point `app/page.tsx` to the updated `ModernHero`, `ModernFeatures`, `StatsSection`, and `FAQSection` to reflect the full rebrand.
+      - **Action:** Update imports in `app/page.tsx`. Ensure all page metadata and routing is correct.
+      - **Assigned:** Antigravity
 
+- [ ] **3kpro.services Visual Rebrand: Light Mode Alignment** 🎨
+      - **Goal:** Update the company site (`3kpro.services`) to match the new minimalist Light Mode aesthetic of XELORA.
+      - **Action:** Apply the same global theme inversion and structural vector principles to the `3kpro-website` workspace.
+      - **Priority:** MEDIUM
 
 - [x] **XELORA Theme Upgrade** 🎨 ✅
+
       - **Goal:** Modernize design system with premium color/font variables.
       - **Action:**
         - Updated `app/globals.css` with new CSS variables.
@@ -578,6 +619,75 @@ This file lists XELORA product-specific tasks only.
 ---
 
 ## COMPLETED
+
+- [x] **Website Aesthetic Alignment** 🎨 ✅
+      - **Completion Date:** 2026-01-27
+      - **Details:** Refactored Demo, About, Pricing, Privacy, and Terms pages to match "Structural Vector" Light Mode.
+      - **Result:** Unified visual language across the entire XELORA platform.
+
+- [x] **Landing Page Copy Update: Align with Current Product Reality** ✅
+      - **Completion Date:** 2026-01-27
+      - **Details:** Updated Hero, Features, Stats, and FAQ sections with Light Mode styles and accurate product copy (V1 Discovery + Validate focus).
+      - **Result:** Honest and high-density marketing funnel.
+
+- [x] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 ✅
+      - **Goal:** Transform XELORA from coral/tron theme to engineering-focused Linear/Vercel aesthetic with Geist fonts and HSL design tokens.
+      - **Specification:** `docs/upgrades/Xelora_Full_Polish.md`
+      - **Critical Focus:** CSS architecture (globals.css + tailwind.config.js)
+      - **Action Items:**
+        1. Install Geist fonts package (`npm install geist`)
+        2. Update `app/globals.css`:
+           - Replace Google Fonts with Geist Sans/Mono
+           - Convert CSS variables to HSL format (Zinc palette)
+           - Update background to #09090b rich black
+           - Add grid pattern overlay definitions
+           - Refactor glass-panel component classes
+        3. Update `tailwind.config.js`:
+           - Configure Geist font families (var(--font-geist-sans), var(--font-geist-mono))
+           - Implement HSL-based color system (background, foreground, border, primary, muted, accent)
+           - Add grid-pattern background image utility
+           - Remove coral/tron legacy mappings
+        4. Component updates:
+           - Refactor landing page (Hero, Bento Grid, Pricing)
+           - Update portal components for consistency
+           - Apply new design tokens throughout
+        5. Testing:
+           - Visual regression check (landing + portal)
+           - Verify grid patterns render correctly
+           - Confirm Geist fonts load properly
+      - **Design Philosophy:**
+        - Information density over white space
+        - Tactile buttons with subtle bevels/borders
+        - Heavy but subtle glassmorphism (backdrop-blur)
+        - Strict adherence to Geist typography
+      - **Key CSS Requirements:**
+        - ALL colors must use HSL format: `hsl(var(--variable))`
+        - Geist fonts must be imported in root layout.tsx
+        - Grid patterns via CSS background-image, not SVG
+        - Maintain backdrop-blur but adjust to Zinc palette
+        - Keep prefers-reduced-motion accessibility
+      - **Reference Sites:** linear.app, vercel.com, 21st.dev
+      - **Priority:** HIGH
+      - **Branch:** `feature/xelora-full-rebrand`
+      - **Assigned:** Gemini
+
+- [x] **Refactor Landing Page Theme** 🎨 ✅
+      - **Goal:** Update the public Landing Page components (Hero, Features, Pricing) to use semantic theme variables.
+      - **Action:**
+        - Audit `ModernHero.tsx`, `ModernFeatures.tsx`, etc. for hardcoded dark/tron colors.
+        - Replace specific hexes with `bg-background`, `text-foreground`, `primary`, etc.
+        - Ensure Landing Page looks good in both Light and Dark modes.
+      - **Assigned:** Antigravity
+- [x] **Verify Theme Upgrade & UI Polish** ✅
+      - **Goal:** Ensure new XELORA premium theme is applied correctly across known UI components.
+      - **Action:**
+        - Check landing page, dashboard, and campaign wizard for visual regressions.
+        - Verify dark mode/light mode consistency (if applicable).
+        - Update any hardcoded colors found during audit.
+      - **Completion Notes:**
+        - Refactored `PortalLayout` and `CampaignsClient` to use semantic theme variables.
+        - Standardized Campaign Wizard (Cards 1-6) on the new "Primary/Card" theme, removing legacy Tron/Coral hexes.
+        - Configured `BGPattern` to adapt to theme context.
 - [x] **Configure Apify Viral Data Collector** ✅
       - **Goal:** Switch from raw scraping to "Safe" Apify API integration.
       - **Results:**
@@ -612,16 +722,11 @@ This file lists XELORA product-specific tasks only.
       - **Status:** WORKING - Test payments now successfully upgrade user tier
       - **Reference:** See `docs/SYSTEM/STRIPE_TESTING.md` for full details
 
-- [x] **Standardize Spinner: Use BouncingDots Everywhere** ✅
-      - **Problem:** Multiple spinner styles exist (rotating circles with fire, etc.). Inconsistent UX.
-      - **Solution:** Replace ALL loading spinners with the BouncingDots component (three bouncing dots)
-      - **Component:** `components/ui/bouncing-dots.tsx`
-      - **Files to Audit:**
-        - Campaign creation wizard (loading states)
-        - Trend discovery loading
-        - Content generation loading
-        - Any other loading states throughout the app
-      - **Requirement:** BouncingDots is the ONLY spinner for user-facing loading states
+- [x] **Standardize Spinner: Use OrbitalLoader Everywhere** ✅
+      - **Problem:** Multiple spinner styles exist. Inconsistent UX.
+      - **Solution:** Replaced BouncingDots with the premium OrbitalLoader component.
+      - **Component:** `components/ui/orbital-loader.tsx`
+      - **Action:** Migrated all instances of BouncingDots to OrbitalLoader.
 
 - [x] **Campaign Creation Aesthetics Upgrade** ✅
       - **Problem:** Campaign wizard needed capitalization on premium SaaS feel.
@@ -661,24 +766,6 @@ This file lists XELORA product-specific tasks only.
       - Added Promote as 3rd option on Card 3 ("Which direction do you want to go?")
       - Added Card 8 for PromoteInput wizard
       - Updated generateContent() and saveCampaign() for promote campaigns
-- [x] **Landing Page Copy Update: Align with Current Product Reality** ✅
-      - **Problem:** Landing page makes publishing promises that are currently DISABLED. Missing new features (Promote, Google Drive).
-      - **Files to Update:**
-        - `components/sections/StatsSection.tsx`
-        - `components/sections/FAQSection.tsx`
-        - `components/sections/ModernFeatures.tsx`
-        - `components/sections/ModernHero.tsx`
-      - **Requirements:**
-        - [] **StatsSection.tsx:** Change "100% Automated Publishing" to something honest (e.g., "100% AI-Powered" or "Full Campaign Creation")
-        - [] **FAQSection.tsx:** Update "Which platforms does it support?" answer - remove publishing claims, focus on content creation + scheduling coming soon
-        - [] **FAQSection.tsx:** Update "Can I schedule content in advance?" - soften to "coming soon" or remove
-        - [] **FAQSection.tsx:** Review all answers for publishing promises and update to reflect current reality
-        - [] **ModernFeatures.tsx:** ContentFlow™ claims "One-click publishing to 6 platforms" - mark as "Coming Soon" or update description
-        - [] **ModernHero.tsx:** Consider adding "Promote" feature mention (AI-powered content creation with media analysis)
-        - [] **Optional:** Add Google Drive integration / media analysis as a feature highlight
-        - [] **Optional:** Mention guided wizard UX as a selling point
-      - **Guiding Principle:** Be honest about current capabilities. Use "Coming Soon" badges where appropriate. Highlight what DOES work: trend discovery, AI content generation, Promote feature, Viral Score predictions.
-      - **Reference:** See `docs/SYSTEM/VISION.md` for current feature status
 
 - [x] **Promote UX: Target Audience Preset Options** ✅
       - **File:** `app/(portal)/campaigns/create/components/PromoteInput.tsx`
