@@ -1,23 +1,116 @@
-# TASKS.md - XELORA Product
+# TASKS.md - 3KPRO.Services Company Website
 Last Updated: 2026-01-11
+
+**Task Organization:**
+- **Root Tasks (this file):** Project-level coordination and company initiatives
+- **XELORA Tasks:** `landing-page/docs/SYSTEM/TASKS.md` (Product development, design system)
+- **Company Tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Website, marketplace, SEO)
+- **Dev/Products:** `Dev/products/[product]/TASKS.md` (Per-product tasks)
+
+---
+
+## DEVELOPMENT WORKFLOW
+
+**Critical: Human-Controlled Dev Servers**
+
+All agents (Gemini, Claude, opencode, etc.) MUST follow these rules:
+
+1. **NEVER run `npm run dev`** - Dev server control is reserved for the human
+2. **NEVER start/stop dev servers** - Humans manage server lifecycle using:
+   - `C:\DEV\3K-Pro-Services\landing-page\3000.bat` - XELORA on localhost:3000
+   - `C:\DEV\3K-Pro-Services\3001.bat` - 3kpro.services on localhost:3001
+3. **Focus on code changes only** - Write, edit, and commit code; let human test
+4. **Assume servers are running** - Humans will restart as needed to see changes
+
+**Why:** Human is multitasking across both projects. Agents starting/stopping servers creates conflicts and interrupts workflow.
+
+---
+
+**Git Workflow: Human-in-Loop Approval**
+
+After completing requested work, agents MUST follow this workflow:
+
+1. **Complete the work** - Make all requested code changes
+2. **Verify the result** - Review changes to ensure they match requirements
+3. **Ask for approval** - Present summary and ask: "Work complete. Ready to commit and push to production? (Y/N)"
+4. **On "Y" confirmation:**
+   - Run `git status` to show what changed
+   - Run `git add -A` to stage all changes
+   - Run `git commit -m "descriptive message"` (message based on work completed)
+   - Run `git push` to current branch
+   - Report success with commit hash and branch
+5. **On "N":** Wait for further instructions or clarifications
+
+**Why:** This keeps human in control of production deployments while reducing friction. Agent handles git mechanics after receiving explicit approval.
+
+---
+
+## NOW
+
+**Active Work Across Project:**
+
+- [ ] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 (See `landing-page/docs/SYSTEM/TASKS.md`)
+      - **Status:** In Planning/Review
+      - **Goal:** Transform XELORA from coral/tron theme to engineering-focused Linear/Vercel aesthetic with Geist fonts and HSL design tokens.
+      - **Specification:** `landing-page/docs/upgrades/Xelora_Full_Polish.md`
+      - **Critical Focus:** CSS architecture (globals.css + tailwind.config.js)
+      - **Assigned:** Gemini
+      - **Priority:** HIGH
+
+- [ ] **3kpro.services Full Visual Rebrand** 🎨 (See `3kpro-website/docs/SYSTEM/TASKS.md`)
+      - **Status:** In Planning/Review
+      - **Goal:** Transform 3kpro.services from standard SaaS site to modern, professional services portal with bold, interactive design.
+      - **Specification:** `docs/upgrades/3kpro_polish.md`
+      - **Focus Areas:** Hero section, services cards, visual identity, interactive elements
+      - **Design Philosophy:** Professional, modern, effective brand identity
+      - **Assigned:** Gemini
+      - **Priority:** HIGH
+
+- [ ] **XELORA OrbitalLoader Spinner Migration** 🔄 (See `landing-page/docs/upgrades/Xelora_Spinner.md`)
+      - **Status:** Ready for Implementation
+      - **Goal:** Migrate all loading spinners to new OrbitalLoader component for consistent, modern UX.
+      - **Key Tasks:**
+        1. Install dependencies: `motion`, `class-variance-authority`
+        2. Create `/components/ui/orbital-loader.tsx` component
+        3. Replace all `<BouncingDots />` usage with `<OrbitalLoader />`
+        4. Update spinner locations: campaign creation, dashboard loading, trend discovery
+        5. Deprecate and delete `components/ui/bouncing-dots.tsx`
+      - **Locations to Update:**
+        - `app/(portal)/campaigns/create/page.tsx` - Trend discovery & content generation loading
+        - Dashboard data fetching states
+        - Generic loading states throughout portal
+      - **Priority:** MEDIUM
+      - **Reference:** `landing-page/docs/upgrades/Xelora_Spinner.md` (full implementation guide)
+
+---
+
+
+
+---
+##BackLog
 
 This file lists XELORA product-specific tasks only.
 
 **Task Organization:**
-- **XELORA tasks:** This file (landing-page/docs/SYSTEM/TASKS.md)
 - **Company tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Google setup, marketplace, SEO)
-- **Dev/ products:** `Dev/products/[product]/TASKS.md` (per-product tasks)
-
----
-
-
 
 
 ---
-
 
 
 ## COMPLETED
+
+- [x] **Update 3KPRO.Services Business profile** ✅
+      - **Account:** james.lawson@gmail.com
+      - **Updates:**
+        - **Phone:** 918.280.8644
+        - **Email:** info@3pro.services (Reflected in Contact info)
+        - **Address:** Service Area Business (No local address)
+        - **Services Promoted:** Website Development, Cloud Solutions, Custom Development, Data Management, Cybersecurity, Mobile Solutions, Process Automation.
+      - **Implementation:** Manual update performed (CLI script blocked by Google API Zero-Quota policy).
+      - **Script:** Preserved `scripts/update_gbp_profile.py` for future use.
+      - **Documentation:** See `3kpro-website/docs/SYSTEM/GOOGLE_BUSINESS_PROFILE_UPDATE.md` for execution guide.
+      - **Assigned:** Antigravity
 
 - [x] **Migrate Demo Video to Cloud Storage** ☁️ ✅
       - **Goal:** Host the demo video on cloud storage (Supabase) to enable production access and reduce repo size.
