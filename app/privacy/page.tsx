@@ -1,20 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Privacy Policy | XELORA",
-  description:
-    "Read XELORA's privacy policy to understand how we collect, use, and protect your personal information and data.",
-  openGraph: {
-    title: "Privacy Policy | XELORA",
-    description:
-      "Read XELORA's privacy policy to understand how we collect, use, and protect your personal information.",
-    url: "https://getxelora.com/privacy",
-  },
-  alternates: {
-    canonical: "https://getxelora.com/privacy",
-  },
-};
-
 "use client";
 
 import { Navigation } from "@/components/Navigation";

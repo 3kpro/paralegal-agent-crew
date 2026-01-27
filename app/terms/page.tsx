@@ -1,20 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Terms of Service | XELORA",
-  description:
-    "Read XELORA's terms of service to understand the rules and guidelines for using our AI-powered social media management platform.",
-  openGraph: {
-    title: "Terms of Service | XELORA",
-    description:
-      "Read XELORA's terms of service to understand the rules and guidelines for using our platform.",
-    url: "https://getxelora.com/terms",
-  },
-  alternates: {
-    canonical: "https://getxelora.com/terms",
-  },
-};
-
 "use client";
 
 import { Navigation } from "@/components/Navigation";
