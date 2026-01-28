@@ -1504,7 +1504,7 @@ ${targetPlatforms.map(platform => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex flex-col items-center justify-center gap-4">
         <LoadingState variant="luma" message="" />
-        <p className="text-zinc-500 text-lg">Loading campaign data...</p>
+        <p className="text-zinc-300 text-lg">Loading campaign data...</p>
       </div>
     );
   }
@@ -1556,7 +1556,7 @@ ${targetPlatforms.map(platform => {
         }
       `}</style>
       
-    <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden p-4 md:p-8">
+    <div className="relative min-h-screen bg-background overflow-hidden p-1 md:p-3">
       <BGPattern
         variant="dots"
         mask="fade-center"
@@ -1565,7 +1565,7 @@ ${targetPlatforms.map(platform => {
         className="absolute inset-0 z-0 h-full w-full opacity-100"
         style={{ zIndex: 0 }}
       />
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-4xl mx-auto">
         {/* Card-based navigation - single focused card at a time */}
         <AnimatePresence mode="wait" custom={cardDirection}>
           
@@ -1578,14 +1578,14 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
               <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-12">
-                <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
+                <div className="flex items-center justify-center gap-3 mb-4">
                   <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                     Setup
                   </span>
@@ -1594,10 +1594,10 @@ ${targetPlatforms.map(platform => {
                     Free Plan: 5 campaigns/mo
                   </span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Name your campaign
                 </h2>
-                <p className="text-gray-400 max-w-md mx-auto">
+                <p className="text-gray-200 max-w-md mx-auto">
                   Give your idea a unique identity. This helps you track performance later.
                 </p>
               </div>
@@ -1644,20 +1644,20 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
               <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-12">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Choose Your Platforms
                 </span>
-                <h2 className="text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Choose Content Formats
                 </h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-200 text-lg max-w-2xl mx-auto">
                   Select which social media formats you want to create content for. Each format will be optimized for its platform's style and character limits.
                 </p>
 
@@ -1729,7 +1729,7 @@ ${targetPlatforms.map(platform => {
                           className={`w-8 h-8 transition-colors ${
                             targetPlatforms.includes(platform.id)
                               ? "text-white"
-                              : "text-gray-500 group-hover:text-white"
+                              : "text-gray-300 group-hover:text-white"
                           }`}
                           strokeWidth={1.5}
                         />
@@ -1737,7 +1737,7 @@ ${targetPlatforms.map(platform => {
                       <h3 className="font-semibold mb-1 text-white text-sm">
                         {platform.name}
                       </h3>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-gray-200">
                         {platform.limit}
                       </p>
                     </motion.button>
@@ -1791,17 +1791,17 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-12 shadow-2xl"
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-10">
-                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
+                 <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Discovery
                 </span>
-                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-3 tracking-tight">
                   Choose your starting point
                 </h2>
                 
@@ -1816,7 +1816,7 @@ ${targetPlatforms.map(platform => {
                 </div>
               </div>
 
-              <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative z-10 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Discover Viral Button */}
                 <motion.button
                   onClick={loadTrendingTopics}
@@ -1836,24 +1836,24 @@ ${targetPlatforms.map(platform => {
                       </h3>
                     </div>
 
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
                        Don't guess. Browse concepts that are <strong>mathematically predicted</strong> to go viral right now based on current trends.
                     </p>
 
                     {/* Example Output Preview */}
                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
-                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Example Output</p>
+                      <p className="text-[10px] text-gray-300 uppercase tracking-wider font-bold mb-2">Example Output</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Hook Strategy</span>
+                           <span className="text-gray-200">Hook Strategy</span>
                            <span className="text-coral-300">"Contrarian Truth"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Primary Emotion</span>
+                           <span className="text-gray-200">Primary Emotion</span>
                            <span className="text-coral-300">"Curiosity"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Value Prop</span>
+                           <span className="text-gray-200">Value Prop</span>
                            <span className="text-coral-300">"Insider Knowledge"</span>
                         </div>
                       </div>
@@ -1884,24 +1884,24 @@ ${targetPlatforms.map(platform => {
                       </h3>
                     </div>
 
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
                       Have a topic? We'll analyze its <strong>Viral potential</strong> and give you specific instructions to increase its reach before you create.
                     </p>
 
                     {/* Example Output Preview */}
                      <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
-                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
+                      <p className="text-[10px] text-gray-300 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Viral Prediction</span>
+                           <span className="text-gray-200">Viral Prediction</span>
                            <span className="text-coral-300 font-mono font-bold">76/100</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Optimization</span>
+                           <span className="text-gray-200">Optimization</span>
                            <span className="text-coral-300">"Make hook more urgent"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Format Match</span>
+                           <span className="text-gray-200">Format Match</span>
                            <span className="text-coral-300">"Perfect for LinkedIn"</span>
                         </div>
                       </div>
@@ -1919,7 +1919,7 @@ ${targetPlatforms.map(platform => {
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="text-gray-400 hover:text-white text-sm font-medium transition-colors py-2 px-4"
+                  className="text-gray-200 hover:text-white text-sm font-medium transition-colors py-2 px-4"
                 >
                   ← Go Back
                 </motion.button>
@@ -1936,7 +1936,7 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-12 shadow-2xl"
+              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               <div className="text-center mb-12">
                 <motion.div
@@ -1947,10 +1947,10 @@ ${targetPlatforms.map(platform => {
                 >
                   <TrendingUp className="w-10 h-10 text-white" />
                 </motion.div>
-                <h2 className="text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   What is the focus of your campaign?
                 </h2>
-                <p className="text-zinc-500 text-lg">
+                <p className="text-zinc-300 text-lg">
                   Search for topics, keywords, or niches that matter to you
                 </p>
               </div>
@@ -1978,7 +1978,7 @@ ${targetPlatforms.map(platform => {
                       onClick={() => setSearchQuery("")}
                       className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
                     >
-                      <X className="w-5 h-5 text-zinc-500" />
+                      <X className="w-5 h-5 text-zinc-300" />
                     </motion.button>
                   )}
                 </div>
@@ -2031,10 +2031,10 @@ ${targetPlatforms.map(platform => {
               ) : (
                 <>
                   <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-white mb-4">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                       Pick your trends
                     </h2>
-                    <p className="text-zinc-500 text-lg">
+                    <p className="text-zinc-300 text-lg">
                       {selectedTrends.length > 0
                         ? `${selectedTrends.length} trend${selectedTrends.length > 1 ? 's' : ''} selected`
                         : 'Select one or more trending topics'}
@@ -2053,7 +2053,7 @@ ${targetPlatforms.map(platform => {
                             <h4 className="text-sm font-bold text-white mb-1">
                               Viral Score™ Prediction
                             </h4>
-                            <p className="text-xs text-gray-400 leading-relaxed max-w-xl">
+                            <p className="text-xs text-gray-200 leading-relaxed max-w-xl">
                               Trends are scored (0-100) based on search volume, platform validation, and freshness.
                               <span className="text-white ml-1">Higher scores indicate stronger viral potential.</span>
                             </p>
@@ -2070,7 +2070,7 @@ ${targetPlatforms.map(platform => {
                           {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
                         </motion.button>
                       </div>
-                      <p className="text-[10px] text-gray-500 mt-2 ml-12">
+                      <p className="text-[10px] text-gray-300 mt-2 ml-12">
                         💡 Scores vary based on AI analysis. Not happy with these? Click &quot;New Suggestions&quot; to get fresh trend ideas with updated scores.
                       </p>
                     </div>
@@ -2101,7 +2101,7 @@ ${targetPlatforms.map(platform => {
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <h3 className={`font-semibold ${
-                                  isSelected ? "text-white" : "text-zinc-500"
+                                  isSelected ? "text-white" : "text-zinc-300"
                                 }`}>
                                   {trend.title}
                                 </h3>
@@ -2112,7 +2112,7 @@ ${targetPlatforms.map(platform => {
                                         ? 'bg-green-500/10 text-green-400'
                                         : trend.viralPotential === 'medium'
                                         ? 'bg-yellow-500/10 text-yellow-400'
-                                        : 'bg-gray-700 text-gray-400'
+                                        : 'bg-gray-700 text-gray-200'
                                     }`}
                                   >
                                     {trend.viralPotential === 'high' ? (
@@ -2127,7 +2127,7 @@ ${targetPlatforms.map(platform => {
                                 )}
                               </div>
                               {trend.formattedTraffic && (
-                                <p className="text-xs text-zinc-500">
+                                <p className="text-xs text-zinc-300">
                                   {trend.formattedTraffic}
                                 </p>
                               )}
@@ -2183,7 +2183,7 @@ ${targetPlatforms.map(platform => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-zinc-500">No trends found. Try a different search.</p>
+                    <p className="text-zinc-300">No trends found. Try a different search.</p>
                   </div>
                 )}
 
@@ -2229,13 +2229,13 @@ ${targetPlatforms.map(platform => {
                 <h2 className="text-3xl font-bold text-white mb-2">
                   Shape your content
                 </h2>
-                <p className="text-zinc-500">
+                <p className="text-zinc-300">
                   Customize how your content will be generated
                 </p>
 
               </div>
 
-              <div className="max-w-5xl mx-auto space-y-6">
+              <div className="max-w-4xl mx-auto space-y-6">
                 {/* AI Optimize & Viral Score Section */}
                 <div className="flex items-center gap-4 mb-4">
                   <motion.button
@@ -2251,10 +2251,10 @@ ${targetPlatforms.map(platform => {
                   <div className="flex items-center gap-3 bg-[#2b2b2b] border border-gray-700/50 rounded-lg px-4 py-2">
                     <Flame className={`w-5 h-5 ${
                       (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
-                      (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-gray-400"
+                      (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-gray-200"
                     }`} />
                     <div>
-                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                      <div className="text-[10px] text-gray-200 uppercase tracking-wider font-bold">
                         {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
                       </div>
                       <div className="text-xl font-bold text-white font-mono">
@@ -2304,7 +2304,7 @@ ${targetPlatforms.map(platform => {
                         <div className={`relative w-10 h-5 rounded-full transition-colors ${!customizePerPlatform ? 'bg-coral-500' : 'bg-gray-600'}`}>
                           <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${!customizePerPlatform ? 'left-0.5' : 'left-5'}`} />
                         </div>
-                        <span className="text-sm text-zinc-500 group-hover:text-white transition-colors">
+                        <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
                           {!customizePerPlatform ? 'Same for all' : 'Per platform'}
                         </span>
                       </button>
@@ -2399,15 +2399,15 @@ ${targetPlatforms.map(platform => {
                               return (
                                 <>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Tone</span>
+                                    <span className="text-gray-300">Tone</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.tone}</span>
                                   </div>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Length</span>
+                                    <span className="text-gray-300">Length</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.length}</span>
                                   </div>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Focus</span>
+                                    <span className="text-gray-300">Focus</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.contentFocus}</span>
                                   </div>
                                 </>
@@ -2417,7 +2417,7 @@ ${targetPlatforms.map(platform => {
 
                           {/* Click hint for multi-platform */}
                           {!customizePerPlatform && targetPlatforms.length > 1 && (
-                            <div className="mt-3 pt-2 border-t border-gray-700/50 text-[10px] text-gray-500">
+                            <div className="mt-3 pt-2 border-t border-gray-700/50 text-[10px] text-gray-300">
                               Click to customize just this platform
                             </div>
                           )}
@@ -2448,7 +2448,7 @@ ${targetPlatforms.map(platform => {
                   {/* Quick Presets */}
                   <div className="mt-4 pt-4 border-t border-gray-700/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-gray-500 uppercase tracking-wide">Quick Presets</span>
+                      <span className="text-xs text-gray-300 uppercase tracking-wide">Quick Presets</span>
                       {customizePerPlatform && activePlatformTab && (
                         <span className="text-xs text-white capitalize">for {activePlatformTab}</span>
                       )}
@@ -2458,7 +2458,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("tiktok")}
-                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#00f2ea] hover:text-[#00f2ea] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
                         >
                           <Music className="w-3 h-3" />
                           TikTok Viral
@@ -2478,7 +2478,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("linkedin")}
-                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
                         >
                           <Linkedin className="w-3 h-3" />
                           LinkedIn Pro
@@ -2570,7 +2570,7 @@ ${targetPlatforms.map(platform => {
                     {/* Tone with Tooltips */}
                     <div>
                       <label className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
-                        Tone <span className="text-xs text-zinc-500">(Press 1-3)</span>
+                        Tone <span className="text-xs text-zinc-300">(Press 1-3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {['professional', 'casual', 'friendly'].map((t) => (
@@ -2585,7 +2585,7 @@ ${targetPlatforms.map(platform => {
                             {/* Tooltip */}
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
                               <div className="font-bold text-white mb-0.5">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
-                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2595,7 +2595,7 @@ ${targetPlatforms.map(platform => {
                     {/* Length Slider */}
                     <div>
                       <label htmlFor="content-length-slider" className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
-                        Content Length <span className="text-xs text-zinc-500">(Press S/M/L)</span>
+                        Content Length <span className="text-xs text-zinc-300">(Press S/M/L)</span>
                       </label>
                       <div className="space-y-3">
                         <input
@@ -2612,7 +2612,7 @@ ${targetPlatforms.map(platform => {
                           aria-label="Select content length"
                           className="w-full h-2 bg-zinc-950/50 rounded-lg appearance-none cursor-pointer range-slider"
                         />
-                        <div className="flex justify-between text-xs text-zinc-500">
+                        <div className="flex justify-between text-xs text-zinc-300">
                           <span className={controls.length === 'short' ? 'text-white font-semibold' : ''}>Short (280 chars)</span>
                           <span className={controls.length === 'standard' ? 'text-white font-semibold' : ''}>Standard (500 chars)</span>
                           <span className={controls.length === 'long' ? 'text-white font-semibold' : ''}>Long (1000+ chars)</span>
@@ -2635,7 +2635,7 @@ ${targetPlatforms.map(platform => {
                             />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
                               <div className="font-bold text-white mb-0.5">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
-                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2648,7 +2648,7 @@ ${targetPlatforms.map(platform => {
                     {/* Target Audience - Multi-Select (NO "general") */}
                     <div>
                       <label className="block text-white font-semibold mb-2 text-sm">
-                        Target Audience <span className="text-xs text-zinc-500">(Select up to 3)</span>
+                        Target Audience <span className="text-xs text-zinc-300">(Select up to 3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists', 'parents'].map((a) => (
@@ -2666,13 +2666,13 @@ ${targetPlatforms.map(platform => {
                             />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
                               <div className="font-bold text-white mb-0.5">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
-                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
                             </div>
                           </div>
                         ))}
                       </div>
                       {selectedAudiences.length > 0 && (
-                        <div className="mt-2 text-xs text-zinc-500">
+                        <div className="mt-2 text-xs text-zinc-300">
                           Selected: {selectedAudiences.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}
                         </div>
                       )}
@@ -2693,7 +2693,7 @@ ${targetPlatforms.map(platform => {
                             />
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
                               <div className="font-bold text-white mb-0.5">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
-                              <div className="text-gray-400 text-[11px] leading-relaxed">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2717,7 +2717,7 @@ ${targetPlatforms.map(platform => {
                         className="text-left px-3 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-white/30 hover:bg-white/10 transition-all active:scale-[0.98]"
                       >
                         <div className="text-xs font-semibold text-white mb-1">{combo.name}</div>
-                        <div className="flex items-center gap-2 text-xs text-zinc-500">
+                        <div className="flex items-center gap-2 text-xs text-zinc-300">
                           <span className="text-green-400">{combo.successRate}</span>
                           <span>•</span>
                           <span>{combo.uses} uses</span>
@@ -2728,7 +2728,7 @@ ${targetPlatforms.map(platform => {
                 </div>
 
                 {/* Keyboard Shortcuts Hint */}
-                <div className="text-center text-xs text-zinc-500">
+                <div className="text-center text-xs text-zinc-300">
                   💡 Tip: Use keyboard shortcuts - 1-3 for tone, S/M/L for length, A for AI optimize
                 </div>
 
@@ -2807,7 +2807,7 @@ ${targetPlatforms.map(platform => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className={generatingContent ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
+              className={generatingContent ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl max-w-4xl mx-auto'}
             >
               {generatingContent ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
@@ -2824,13 +2824,13 @@ ${targetPlatforms.map(platform => {
                       className="text-3xl font-bold text-white mb-2 bg-transparent border-2 border-transparent hover:border-white/10 focus:border-white/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
                     />
                     {generatedContent && (
-                      <p className="text-zinc-500">
+                      <p className="text-zinc-300">
                         Edit and publish your campaign
                       </p>
                     )}
                   </div>
 
-                  <div className="max-w-5xl mx-auto">
+                  <div className="max-w-4xl mx-auto">
                     {generatedContent ? (
                   <>
                     {/* Platform Switcher Toolbar */}
@@ -2844,7 +2844,7 @@ ${targetPlatforms.map(platform => {
                           className={`flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all ${
                             activePlatformView === platform && !viewAllContent
                               ? "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg"
-                              : "text-zinc-500 hover:text-white hover:bg-white/10"
+                              : "text-zinc-300 hover:text-white hover:bg-white/10"
                           }`}
                         >
                           {platform.charAt(0).toUpperCase() + platform.slice(1)}
@@ -2858,7 +2858,7 @@ ${targetPlatforms.map(platform => {
                         className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-white/10 ml-2 ${
                           viewAllContent
                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                            : "text-zinc-500 hover:text-white hover:bg-purple-500/10"
+                            : "text-zinc-300 hover:text-white hover:bg-purple-500/10"
                         }`}
                       >
                         View All
@@ -2874,15 +2874,15 @@ ${targetPlatforms.map(platform => {
                             <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-2">Viral DNA&trade; Analysis</h4>
                             <div className="flex flex-wrap gap-4">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-zinc-500">Hook:</span>
+                                <span className="text-xs text-zinc-300">Hook:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.hookType}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-zinc-500">Emotion:</span>
+                                <span className="text-xs text-zinc-300">Emotion:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.primaryEmotion}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-zinc-500">Value:</span>
+                                <span className="text-xs text-zinc-300">Value:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.valueProp}</span>
                               </div>
                             </div>
@@ -2911,7 +2911,7 @@ ${targetPlatforms.map(platform => {
                                   <Copy className="w-3 h-3" /> Copy
                                 </button>
                               </div>
-                              <p className="text-zinc-500 text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
+                              <p className="text-zinc-300 text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
                             </motion.div>
                           );
                         })}
@@ -2935,7 +2935,7 @@ ${targetPlatforms.map(platform => {
                                   <h3 className="text-xl font-bold text-white">
                                     {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
                                   </h3>
-                                  <p className="text-sm text-zinc-500">
+                                  <p className="text-sm text-zinc-300">
                                     {typeof generatedContent[activePlatformView] === 'string'
                                       ? generatedContent[activePlatformView].length
                                       : generatedContent[activePlatformView]?.content?.length || 0} characters
@@ -3029,7 +3029,7 @@ ${targetPlatforms.map(platform => {
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-zinc-500">No content generated yet.</p>
+                    <p className="text-zinc-300">No content generated yet.</p>
                   </div>
                 )}
                   </div>
@@ -3121,7 +3121,7 @@ ${targetPlatforms.map(platform => {
                         className={`w-6 h-6 ${
                           isActive
                             ? "text-white"
-                            : "text-zinc-500"
+                            : "text-zinc-300"
                         }`}
                       />
                     )}
@@ -3150,7 +3150,7 @@ ${targetPlatforms.map(platform => {
               {step === 2 && "Discover Trending Topics"}
               {step === 3 && "Generate Content"}
             </h2>
-            <p className="text-zinc-500">
+            <p className="text-zinc-300">
               {step === 1 && "Choose a name and select target platforms"}
               {step === 2 && "Find the perfect trending topic for your campaign"}
               {step === 3 && "Customize and generate AI-powered content"}
@@ -3171,8 +3171,8 @@ ${targetPlatforms.map(platform => {
             >
               {/* Campaign Name Input */}
               <div className="space-y-3">
-                <label htmlFor="campaign-name" className="block text-sm font-medium text-zinc-500">
-                  Campaign Name <span className="text-zinc-500">*</span>
+                <label htmlFor="campaign-name" className="block text-sm font-medium text-zinc-300">
+                  Campaign Name <span className="text-zinc-300">*</span>
                 </label>
                 <input
                   type="text"
@@ -3201,9 +3201,9 @@ ${targetPlatforms.map(platform => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-white">
-                      Target Platforms <span className="text-zinc-500">*</span>
+                      Target Platforms <span className="text-zinc-300">*</span>
                     </h3>
-                    <p className="text-sm text-zinc-500 mt-1">
+                    <p className="text-sm text-zinc-300 mt-1">
                       {targetPlatforms.length > 0 
                         ? `${targetPlatforms.length} platform${targetPlatforms.length > 1 ? 's' : ''} selected`
                         : 'Select at least one platform'}
@@ -3262,7 +3262,7 @@ ${targetPlatforms.map(platform => {
                         className={`w-12 h-12 mb-4 mx-auto transition-all duration-300 ${
                           isSelected
                             ? "text-white"
-                            : "text-zinc-500 group-hover:text-white"
+                            : "text-zinc-300 group-hover:text-white"
                         }`}
                         style={{
                           filter: isSelected
@@ -3291,7 +3291,7 @@ ${targetPlatforms.map(platform => {
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-sm text-zinc-500 text-center mb-4"
+                    className="text-sm text-zinc-300 text-center mb-4"
                   >
                     Enter a campaign name and select at least one platform to continue
                   </motion.p>
@@ -3323,7 +3323,7 @@ ${targetPlatforms.map(platform => {
             >
               {/* Search Bar with Better UX */}
               <div className="space-y-3">
-                <label htmlFor="search-trends" className="block text-sm font-medium text-zinc-500">
+                <label htmlFor="search-trends" className="block text-sm font-medium text-zinc-300">
                   Search Keywords
                 </label>
                 <div className="flex gap-3">
@@ -3347,7 +3347,7 @@ ${targetPlatforms.map(platform => {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         onClick={() => setSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-zinc-500 hover:text-white transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-zinc-300 hover:text-white transition-colors"
                         aria-label="Clear search"
                       >
                         <X className="w-5 h-5" />
@@ -3393,7 +3393,7 @@ ${targetPlatforms.map(platform => {
                     <h3 className="text-lg font-semibold text-white">
                       Trending Topics
                     </h3>
-                    <span className="text-sm text-zinc-500">
+                    <span className="text-sm text-zinc-300">
                       {trends.length} results
                     </span>
                   </div>
@@ -3449,7 +3449,7 @@ ${targetPlatforms.map(platform => {
                           )}
                         </div>
                         <div className="flex items-center gap-4 text-sm">
-                          <span className="text-zinc-500">
+                          <span className="text-zinc-300">
                             {trend.formattedTraffic || "Trending"}
                           </span>
                           {trend.relatedQueries && (
@@ -3473,13 +3473,13 @@ ${targetPlatforms.map(platform => {
                 >
                   <div className="mb-6 flex justify-center">
                     <div className="p-6 bg-zinc-900/30 rounded-full">
-                      <TrendingUp className="w-16 h-16 text-zinc-500" />
+                      <TrendingUp className="w-16 h-16 text-zinc-300" />
                     </div>
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3">
                     No trends found
                   </h3>
-                  <p className="text-zinc-500 max-w-md mx-auto">
+                  <p className="text-zinc-300 max-w-md mx-auto">
                     Try different keywords or search terms
                   </p>
                 </motion.div>
@@ -3511,7 +3511,7 @@ ${targetPlatforms.map(platform => {
                   <h3 className="text-xl font-semibold text-white mb-3">
                     Discover Trending Topics
                   </h3>
-                  <p className="text-zinc-500 max-w-md mx-auto mb-8">
+                  <p className="text-zinc-300 max-w-md mx-auto mb-8">
                     Enter keywords to find the hottest trends and content ideas powered by AI
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
@@ -3617,7 +3617,7 @@ ${targetPlatforms.map(platform => {
                       Generated Posts
                     </h3>
                     <span
-                      className="text-sm text-zinc-500"
+                      className="text-sm text-zinc-300"
                       aria-live="polite"
                     >
                       {Object.keys(generatedContent).filter((k) => k !== "hashtags")

@@ -174,11 +174,11 @@ export default function DashboardClient() {
             className="flex flex-col md:flex-row md:items-center justify-between gap-6"
           >
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
                 {profile?.full_name || "Welcome Back"}
               </h1>
-              <p className="text-gray-300 text-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-400" />
+              <p className="text-muted-foreground text-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
                 {campaigns.length === 0 ? (
                   "Ready to create your first campaign?"
                 ) : campaigns.length === 1 ? (
@@ -193,7 +193,7 @@ export default function DashboardClient() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-3 text-lg shadow-lg border-2 border-transparent hover:border-indigo-400/50"
+                className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-3 text-lg shadow-lg border border-border"
               >
                 <Plus className="w-6 h-6" />
                 New Campaign
@@ -219,19 +219,19 @@ export default function DashboardClient() {
                 >
                   {/* Gradient glow effect on hover */}
                   {/* Gradient glow effect on hover - Removed for cleaner look, handled by card hover states */}
-                  
-                  <div className={`relative p-6 bg-[#0a0a0a]/40 backdrop-blur-xl border border-white/5 rounded-2xl hover:border-${stat.color.split('-')[1]}-500/30 transition-all duration-300 group-hover:shadow-lg hover:shadow-${stat.color.split('-')[1]}-500/10`}>
+
+                  <div className="relative p-6 bg-card backdrop-blur-xl border border-border rounded-2xl hover:border-primary/30 transition-all duration-300 group-hover:shadow-lg">
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         {/* New Minimal Header Layout */}
-                        <div className="text-sm text-gray-400 font-medium mb-1">
+                        <div className="text-sm text-muted-foreground font-medium mb-1">
                           {stat.label}
                         </div>
-                        <div className="text-3xl font-bold text-white tracking-tight">
+                        <div className="text-3xl font-bold text-foreground tracking-tight">
                           {stat.value}
                         </div>
                       </div>
-                      
+
                       {/* Modern Icon Container */}
                       <div
                         className={`p-3 rounded-xl ${stat.bg} ${stat.border} border`}
@@ -243,7 +243,7 @@ export default function DashboardClient() {
                     <div className="flex items-center gap-2">
                        {/* Subtle Progress Bar or Trend Metric could go here, for now just subtitle */}
                        {stat.subtitle && (
-                        <div className="flex items-center gap-2 text-xs font-medium text-gray-500">
+                        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                            <div className={`w-1.5 h-1.5 rounded-full ${stat.color.replace('text-', 'bg-')}`} />
                            {stat.subtitle}
                         </div>
@@ -272,12 +272,12 @@ export default function DashboardClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="lg:col-span-2 p-8 bg-[#343a40] backdrop-blur-xl border-2 border-slate-700/50 rounded-3xl"
+              className="lg:col-span-2 p-8 bg-card backdrop-blur-xl border border-border rounded-3xl"
             >
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-indigo-500/10 rounded-xl">
-                  <Sparkles className="w-6 h-6 text-indigo-500" />
+              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                <div className="p-2 bg-muted rounded-xl">
+                  <Sparkles className="w-6 h-6 text-foreground" />
                 </div>
                 Recent Campaigns
               </h2>
@@ -286,7 +286,7 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="text-sm text-indigo-500 hover:text-indigo-400 transition-colors flex items-center gap-2"
+                    className="text-sm text-foreground hover:text-primary transition-colors flex items-center gap-2"
                   >
                     View All
                     <ArrowRight className="w-4 h-4" />
@@ -307,31 +307,31 @@ export default function DashboardClient() {
                     className="group"
                   >
                     <Link href={`/campaigns/${campaign.id}`}>
-                      <div className="p-6 bg-slate-800 backdrop-blur border-2 border-slate-700/50 hover:border-indigo-500/50 rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-indigo-500/20">
+                      <div className="p-6 bg-background backdrop-blur border border-border hover:border-primary rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-lg">
                         <div className="flex-1">
-                          <div className="font-semibold text-white text-lg mb-2 group-hover:text-indigo-400 transition-colors">
+                          <div className="font-semibold text-foreground text-lg mb-2 group-hover:text-primary transition-colors">
                             {campaign.name}
                           </div>
-                          <div className="text-sm text-gray-300 flex items-center gap-3">
+                          <div className="text-sm text-muted-foreground flex items-center gap-3">
                             <span className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
                               campaign.status === 'published'
-                                ? 'bg-green-500/10 border border-green-500/30 text-green-400'
+                                ? 'bg-green-500/10 border border-green-500/30 text-green-600'
                                 : campaign.status === 'scheduled'
-                                ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
-                                : 'bg-slate-500/10 border border-slate-500/30 text-slate-400'
+                                ? 'bg-amber-500/10 border border-amber-500/30 text-amber-600'
+                                : 'bg-muted border border-border text-muted-foreground'
                             }`}>
                               {campaign.status}
                             </span>
                             {campaign.target_platforms && campaign.target_platforms.length > 0 && (
                               <>
-                                <span className="text-gray-600">•</span>
+                                <span className="text-muted-foreground">•</span>
                                 <span className="flex items-center gap-1">
                                   <Layers className="w-3 h-3" />
                                   {campaign.target_platforms.length} {campaign.target_platforms.length === 1 ? 'platform' : 'platforms'}
                                 </span>
                               </>
                             )}
-                            <span className="text-gray-600">•</span>
+                            <span className="text-muted-foreground">•</span>
                             <span className="text-xs">
                               {new Date(campaign.created_at).toLocaleDateString('en-US', {
                                 month: 'short',
@@ -344,9 +344,9 @@ export default function DashboardClient() {
                         <motion.div
                           initial={{ x: -10, opacity: 0 }}
                           whileHover={{ x: 0, opacity: 1 }}
-                          className="p-2 bg-indigo-500/10 rounded-full"
+                          className="p-2 bg-muted rounded-full"
                         >
-                          <ArrowRight className="w-5 h-5 text-indigo-500" />
+                          <ArrowRight className="w-5 h-5 text-foreground" />
                         </motion.div>
                       </div>
                     </Link>
@@ -362,8 +362,8 @@ export default function DashboardClient() {
               >
                 {/* Getting Started Checklist */}
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-coral-400" />
+                  <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-foreground" />
                     Getting Started
                   </h3>
                   <div className="space-y-3">
@@ -378,19 +378,19 @@ export default function DashboardClient() {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.6 + idx * 0.1 }}
-                          className="flex items-center gap-4 p-4 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 hover:border-coral-500/30 rounded-xl transition-all group cursor-pointer"
+                          className="flex items-center gap-4 p-4 bg-muted/50 hover:bg-muted border border-border hover:border-primary rounded-xl transition-all group cursor-pointer"
                         >
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                             item.done
-                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                              : 'bg-coral-500/20 text-coral-400 border border-coral-500/30'
+                              ? 'bg-green-500/20 text-green-600 border border-green-500/30'
+                              : 'bg-primary/10 text-foreground border border-border'
                           }`}>
                             {item.step}
                           </div>
-                          <span className="text-gray-300 group-hover:text-white transition-colors flex-1">
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1">
                             {item.label}
                           </span>
-                          <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-coral-400 transition-colors" />
+                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                         </motion.div>
                       </Link>
                     ))}
@@ -403,13 +403,13 @@ export default function DashboardClient() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
+                      className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-3 mx-auto text-lg shadow-lg border border-border"
                     >
                       <Plus className="w-6 h-6" />
                       Create First Campaign
                     </motion.button>
                   </Link>
-                  <p className="text-gray-500 text-sm mt-4">
+                  <p className="text-muted-foreground text-sm mt-4">
                     Takes less than 2 minutes with AI assistance
                   </p>
                 </div>

@@ -28,11 +28,11 @@ export function PortalHeader({
   onWhatsNewOpen,
 }: PortalHeaderProps) {
   return (
-    <header className="bg-[#0a0a0a] border-b border-gray-800 px-4 md:px-8 py-3 relative z-20 flex-shrink-0">
+    <header className="bg-background border-b border-border px-4 md:px-8 py-3 relative z-20 flex-shrink-0">
       <div className="flex items-center justify-between w-full">
         {/* Logo - only show on mobile since desktop has sidebar */}
         <div className="flex items-center gap-3 md:hidden">
-          <span className="text-lg font-bold text-white uppercase tracking-wide">
+          <span className="text-lg font-bold text-foreground uppercase tracking-wide">
             XELORA
           </span>
           <XeloraLogo className="w-8 h-8" />
@@ -45,7 +45,7 @@ export function PortalHeader({
           {/* What's New Button */}
           <button
             onClick={onWhatsNewOpen}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
           >
             <Bell className="w-4 h-4" weight="duotone" />
             <span className="hidden md:inline">What's New</span>

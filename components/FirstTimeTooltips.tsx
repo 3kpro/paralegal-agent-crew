@@ -186,7 +186,7 @@ export function FirstTimeHelpBanner() {
           </p>
           <button
             onClick={handleTakeTour}
-            className="text-sm px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 rounded-lg text-tron-cyan hover:text-white transition-colors"
+            className="text-sm px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/50 rounded-lg text-foreground hover:text-primary transition-colors"
           >
             Take Product Tour →
           </button>

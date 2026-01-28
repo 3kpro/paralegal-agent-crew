@@ -72,8 +72,8 @@ export function PricingSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "relative p-12 bg-white flex flex-col group",
-                plan.popular && "z-10 bg-zinc-50/50"
+                "relative p-12 bg-white flex flex-col group transition-all duration-300 hover:bg-muted/50 hover:scale-[1.01] hover:z-20",
+                plan.popular && "z-10 shadow-[0_0_20px_rgba(0,0,0,0.05)]"
               )}
             >
               {plan.popular && (

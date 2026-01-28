@@ -15,7 +15,7 @@ import { WhatsNewModal } from "@/components/portal/WhatsNewModal";
 
 // Constants
 const THEME = {
-  bg: "bg-[#0a0a0a]",
+  bg: "bg-background dark",
 };
 
 const DEFAULT_USER_NAME = "User";
@@ -116,10 +116,10 @@ function PortalLayoutContent({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className={`min-h-screen ${THEME.bg} flex items-center justify-center relative overflow-hidden`}>
-        <BGPattern variant="dots" mask="fade-center" size={24} fill="rgba(255,255,255,0.15)" className="z-0" style={{ zIndex: 0 }} />
-        <div className="text-white z-10 relative flex flex-col items-center gap-3">
-             <div className="w-6 h-6 border-2 border-coral-500 border-t-transparent rounded-full animate-spin" />
-             <span className="text-sm text-gray-400">Loading XELORA...</span>
+        <BGPattern variant="grid" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" style={{ zIndex: 0 }} />
+        <div className="text-foreground z-10 relative flex flex-col items-center gap-3">
+             <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+             <span className="text-sm text-muted-foreground">Loading XELORA...</span>
         </div>
       </div>
     );
@@ -128,10 +128,10 @@ function PortalLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className={`h-screen ${THEME.bg} flex relative overflow-hidden`}>
       <BGPattern
-        variant="dots"
+        variant="grid"
         mask="fade-center"
         size={24}
-        fill="rgba(255,255,255,0.15)"
+        fill="rgba(255,255,255,0.05)"
         className="z-0 fixed inset-0 pointer-events-none"
         style={{ zIndex: 0 }}
       />

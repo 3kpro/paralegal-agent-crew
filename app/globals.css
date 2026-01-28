@@ -4,6 +4,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light mode - for landing pages */
   :root {
     --background: 0 0% 100%;    /* #ffffff */
     --foreground: 240 10% 3.9%; /* #09090b */
@@ -24,6 +25,30 @@
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
+    --radius: 0rem;
+  }
+
+  /* Dark mode - for portal and auth pages */
+  .dark {
+    --background: 240 10% 3.9%;    /* #09090b - rich black */
+    --foreground: 0 0% 98%;         /* #fafafa - light text */
+    --card: 240 10% 5%;             /* #0d0d0f - slightly lighter than background */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 5%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;            /* Light primary for dark backgrounds */
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;    /* #27272a - zinc-800 */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;        /* #27272a */
+    --muted-foreground: 240 5% 64.9%; /* #a1a1aa - zinc-400 */
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;       /* #27272a */
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
     --radius: 0rem;
   }
 }

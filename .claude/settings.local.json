@@ -123,7 +123,11 @@
       "Bash(npm ls:*)",
       "Bash(npm audit:*)",
       "Bash(node:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(if exist .next rmdir /s /q .next)",
+      "Bash(stripe:*)",
+      "Bash(where:*)",
+      "Bash(scoop install:*)"
     ],
     "deny": [],
     "ask": []

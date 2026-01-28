@@ -37,7 +37,7 @@ export function UserMenuDropdown({
             {user?.full_name || "User"}
           </div>
         </div>
-        <ChevronDown className="w-4 h-4 text-gray-400 hidden md:block" weight="duotone" />
+        <ChevronDown className="w-4 h-4 text-gray-200 hidden md:block" weight="duotone" />
       </button>
 
       {/* User Dropdown Menu */}
@@ -47,7 +47,7 @@ export function UserMenuDropdown({
             <div className="text-sm font-medium text-gray-900">
               {user?.full_name || "User"}
             </div>
-            <div className="text-xs text-gray-500">{user?.email}</div>
+            <div className="text-xs text-gray-300">{user?.email}</div>
           </div>
           
           <button

@@ -18,18 +18,18 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, title, description, checklist }: FeatureCardProps) {
   return (
-    <div className="bg-[#2b2b2b] border border-gray-700/50 rounded-lg p-5">
+    <div className="bg-muted border border-border rounded-lg p-5">
       <div className="flex items-start gap-3 mb-3">
         <span className="text-2xl">{icon}</span>
         <div>
-          <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
-          <p className="text-gray-300 text-sm mb-3">{description}</p>
+          <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
+          <p className="text-muted-foreground text-sm mb-3">{description}</p>
           {checklist && (
             <div className="space-y-2">
               {checklist.map((item, index) => (
                 <div key={index} className="flex items-start gap-2">
-                  <span className="text-cyan-400 mt-0.5">✓</span>
-                  <span className="text-sm text-gray-300">{item}</span>
+                  <span className="text-foreground mt-0.5">✓</span>
+                  <span className="text-sm text-muted-foreground">{item}</span>
                 </div>
               ))}
             </div>
@@ -45,21 +45,21 @@ export function WhatsNewModal({ isOpen, onClose }: WhatsNewModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#343a40] border-2 border-coral-500/50 rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
+      <div className="bg-card border-2 border-border rounded-xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col">
         {/* Modal Header */}
-        <div className="bg-gradient-to-r from-coral-500/20 to-purple-500/20 border-b border-coral-500/30 p-6">
+        <div className="bg-muted border-b border-border p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Bell className="w-6 h-6 text-coral-400" weight="duotone" />
-              <h2 className="text-2xl font-bold text-white">What's New</h2>
-              <span className="text-xs px-2 py-1 bg-coral-500/20 border border-coral-500/30 rounded-full text-coral-300">
+              <Bell className="w-6 h-6 text-foreground" weight="duotone" />
+              <h2 className="text-2xl font-bold text-foreground">What's New</h2>
+              <span className="text-xs px-2 py-1 bg-primary/10 border border-border rounded-full text-foreground">
                 {LATEST_UPDATE_DATE}
               </span>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Close What's New modal"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,11 +107,11 @@ export function WhatsNewModal({ isOpen, onClose }: WhatsNewModalProps) {
         </div>
 
         {/* Modal Footer */}
-        <div className="border-t border-gray-700/50 p-4 bg-[#2b2b2b]">
+        <div className="border-t border-border p-4 bg-muted">
           <button
             type="button"
             onClick={onClose}
-            className="w-full bg-coral-500 hover:bg-coral-600 text-white px-6 py-2.5 rounded-lg font-semibold transition-colors"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg font-semibold transition-colors"
           >
             Got it!
           </button>

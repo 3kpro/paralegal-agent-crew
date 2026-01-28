@@ -294,7 +294,7 @@ export default function CalendarView() {
              </div>
              <div>
                  <h2 className="text-xl font-bold text-white">Smart Schedule</h2>
-                 <p className="text-gray-400 text-sm">Drag and drop to reschedule content</p>
+                 <p className="text-gray-200 text-sm">Drag and drop to reschedule content</p>
              </div>
          </div>
          
@@ -318,7 +318,7 @@ export default function CalendarView() {
           {/* Week days header */}
           <div className="grid grid-cols-7 border-b border-gray-700/50 bg-gray-800/30">
               {weekDays.map(day => (
-                  <div key={day} className="py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  <div key={day} className="py-2 text-center text-xs font-semibold text-gray-300 uppercase tracking-wider">
                       {day}
                   </div>
               ))}

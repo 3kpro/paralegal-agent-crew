@@ -36,21 +36,21 @@ export function Sidebar({ onLogout }: SidebarProps) {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:flex flex-col fixed left-0 top-0 h-full bg-[#1a1a1a] border-r border-gray-800 z-40 transition-all duration-300 ${
+        className={`hidden md:flex flex-col fixed left-0 top-0 h-full bg-card border-r border-border z-40 transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-56"
         }`}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-gray-800">
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border">
           {!isCollapsed && (
             <Link href="/dashboard" className="flex items-center gap-2">
               <XeloraLogo className="w-8 h-8" />
-              <span className="font-bold text-white">XELORA</span>
+              <span className="font-bold text-foreground">XELORA</span>
             </Link>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
@@ -74,13 +74,13 @@ export function Sidebar({ onLogout }: SidebarProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                   isActive
-                    ? "bg-coral-500/20 text-coral-400 border-l-2 border-coral-500"
-                    : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+                    ? "bg-accent text-accent-foreground border-l-2 border-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 } ${isCollapsed ? "justify-center" : ""}`}
                 title={isCollapsed ? item.label : undefined}
               >
                 <Icon
-                  className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-coral-400" : ""}`}
+                  className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-foreground" : ""}`}
                 />
                 {!isCollapsed && (
                   <span className="text-sm font-medium">{item.label}</span>
@@ -91,10 +91,10 @@ export function Sidebar({ onLogout }: SidebarProps) {
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-gray-800 py-4 px-2 space-y-1">
+        <div className="border-t border-border py-4 px-2 space-y-1">
           <Link
             href="/pricing"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800/50 transition-all ${
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all ${
               isCollapsed ? "justify-center" : ""
             }`}
             title={isCollapsed ? "Upgrade" : undefined}
@@ -104,7 +104,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
           </Link>
           <Link
             href="/support"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all ${
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all ${
               isCollapsed ? "justify-center" : ""
             }`}
             title={isCollapsed ? "Support" : undefined}
@@ -114,7 +114,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
           </Link>
           <button
             onClick={onLogout}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all ${
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all ${
               isCollapsed ? "justify-center" : ""
             }`}
             title={isCollapsed ? "Logout" : undefined}
@@ -148,7 +148,7 @@ export function MobileNav({ onLogout }: SidebarProps) {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-gray-800 z-40 safe-area-pb">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-40 safe-area-pb">
       <div className="flex items-center justify-around py-2">
         {mobileItems.map((item) => {
           const Icon = item.icon;
@@ -161,8 +161,8 @@ export function MobileNav({ onLogout }: SidebarProps) {
               href={item.href}
               className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
                 isActive
-                  ? "text-coral-400"
-                  : "text-gray-500 hover:text-gray-300"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Icon className="w-5 h-5" />

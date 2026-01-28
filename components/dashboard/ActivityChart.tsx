@@ -57,7 +57,7 @@ export default function ActivityChart({ data }: ActivityChartProps) {
             </div>
             Activity This Week
           </h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-gray-200 mt-1">
             Your content creation journey
           </p>
         </div>

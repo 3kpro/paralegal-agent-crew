@@ -8,6 +8,12 @@ This file lists XELORA product-specific tasks only.
 - **Company tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Google setup, marketplace, SEO)
 - **Dev/ products:** `Dev/products/[product]/TASKS.md` (per-product tasks)
 
+
+## NOW
+on
+https://getxelora.com/ 
+- [x] landing page.  the membership cards are off.  they should highlight on mouse roll over.  as it stands, Pro is stuck highlighted. ✅
+
 ---
 
 ## DEVELOPMENT WORKFLOW
@@ -31,17 +37,18 @@ All agents (Gemini, Claude, opencode, etc.) working on XELORA MUST follow these 
 After completing requested work, agents MUST follow this workflow:
 
 1. **Complete the work** - Make all requested code changes
-2. **Verify the result** - Review changes to ensure they match requirements
-3. **Ask for approval** - Present summary and ask: "Work complete. Ready to commit and push to production? (Y/N)"
-4. **On "Y" confirmation:**
+2. **Verify build** - Run `npm run build` to catch any build errors
+3. **Fix if needed** - If build fails, fix errors and repeat step 2
+4. **Ask for approval** - Present summary and ask: "Work complete. Build passed. Ready to commit and push to production? (Y/N)"
+5. **On "Y" confirmation:**
    - Run `git status` to show what changed
    - Run `git add -A` to stage all changes
    - Run `git commit -m "descriptive message"` (message based on work completed)
    - Run `git push` to current branch
    - Report success with commit hash and branch
-5. **On "N":** Wait for further instructions or clarifications
+6. **On "N":** Wait for further instructions or clarifications
 
-**Why:** This keeps human in control of production deployments while reducing friction. Agent handles git mechanics after receiving explicit approval.
+**Why:** This keeps human in control of production deployments while reducing friction. Build verification prevents broken code from reaching production. Agent handles git mechanics after receiving explicit approval.
 
 ---
 
@@ -50,12 +57,12 @@ read
 C:\DEV\3K-Pro-Services\landing-page\docs\SYSTEM\TASKS.md
 implement
 
-- [ ] **Consolidate Landing Page Configuration** 🏗️
+- [x] **Consolidate Landing Page Configuration** 🏗️ ✅
       - **Goal:** Point `app/page.tsx` to the updated `ModernHero`, `ModernFeatures`, `StatsSection`, and `FAQSection` to reflect the full rebrand.
       - **Action:** Update imports in `app/page.tsx`. Ensure all page metadata and routing is correct.
       - **Assigned:** Antigravity
 
-- [ ] **3kpro.services Visual Rebrand: Light Mode Alignment** 🎨
+- [x] **3kpro.services Visual Rebrand: Light Mode Alignment** 🎨 ✅
       - **Goal:** Update the company site (`3kpro.services`) to match the new minimalist Light Mode aesthetic of XELORA.
       - **Action:** Apply the same global theme inversion and structural vector principles to the `3kpro-website` workspace.
       - **Priority:** MEDIUM
