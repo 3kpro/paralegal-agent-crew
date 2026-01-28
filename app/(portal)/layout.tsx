@@ -116,7 +116,7 @@ function PortalLayoutContent({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className={`min-h-screen ${THEME.bg} flex items-center justify-center relative overflow-hidden`}>
-        <BGPattern variant="grid" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" style={{ zIndex: 0 }} />
+        <BGPattern variant="dots" mask="fade-center" size={24} fill="rgba(255,255,255,0.05)" className="z-0" style={{ zIndex: 0 }} />
         <div className="text-foreground z-10 relative flex flex-col items-center gap-3">
              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
              <span className="text-sm text-muted-foreground">Loading XELORA...</span>
@@ -128,7 +128,7 @@ function PortalLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className={`h-screen ${THEME.bg} flex relative overflow-hidden`}>
       <BGPattern
-        variant="grid"
+        variant="dots"
         mask="fade-center"
         size={24}
         fill="rgba(255,255,255,0.05)"
