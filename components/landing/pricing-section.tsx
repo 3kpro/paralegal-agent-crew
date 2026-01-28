@@ -87,7 +87,7 @@ export function PricingSection() {
                 <h3 className="text-2xl font-bold uppercase tracking-tighter mb-6">{plan.name}</h3>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-bold tracking-tighter">
-                    ${billing === "monthly" ? plan.price.monthly : plan.price.yearly / 12}
+                    ${billing === "monthly" ? plan.price.monthly : Math.round(plan.price.yearly / 12)}
                   </span>
                   <span className="text-xs font-bold uppercase tracking-tighter opacity-40">/mo</span>
                 </div>
