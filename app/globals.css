@@ -149,8 +149,9 @@
 
 /* Structural Vector Utilities - Dots Pattern for XELORA */
 .bg-grid {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1.5px, transparent 1.5px) !important;
+  background-size: 32px 32px !important;
+  background-position: 0 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
