@@ -1842,19 +1842,19 @@ ${targetPlatforms.map(platform => {
 
                     {/* Example Output Preview */}
                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
-                      <p className="text-[10px] text-gray-300 uppercase tracking-wider font-bold mb-2">Example Output</p>
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Example Output</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Hook Strategy</span>
-                           <span className="text-coral-300">"Contrarian Truth"</span>
+                           <span className="text-zinc-100">Hook Strategy</span>
+                           <span className="text-white">"Contrarian Truth"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Primary Emotion</span>
-                           <span className="text-coral-300">"Curiosity"</span>
+                           <span className="text-zinc-100">Primary Emotion</span>
+                           <span className="text-white">"Curiosity"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Value Prop</span>
-                           <span className="text-coral-300">"Insider Knowledge"</span>
+                           <span className="text-zinc-100">Value Prop</span>
+                           <span className="text-white">"Insider Knowledge"</span>
                         </div>
                       </div>
                     </div>
@@ -1890,19 +1890,19 @@ ${targetPlatforms.map(platform => {
 
                     {/* Example Output Preview */}
                      <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
-                      <p className="text-[10px] text-gray-300 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Viral Prediction</span>
-                           <span className="text-coral-300 font-mono font-bold">76/100</span>
+                           <span className="text-zinc-100">Viral Prediction</span>
+                           <span className="text-white font-mono font-bold">76/100</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Optimization</span>
-                           <span className="text-coral-300">"Make hook more urgent"</span>
+                           <span className="text-zinc-100">Optimization</span>
+                           <span className="text-white">"Make hook more urgent"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-200">Format Match</span>
-                           <span className="text-coral-300">"Perfect for LinkedIn"</span>
+                           <span className="text-zinc-100">Format Match</span>
+                           <span className="text-white">"Perfect for LinkedIn"</span>
                         </div>
                       </div>
                     </div>

@@ -627,6 +627,10 @@ implement
 
 ## COMPLETED
 
+- [x] **Campaign Creation: Text Visibility Fix** 🔍 ✅ (2026-01-28)
+      - **Details:** Lightened labels and values in "Example Output" and "Analysis Preview" boxes on the campaign discovery page. Replaced invalid/dark classes with `text-white` and `text-zinc-100`.
+      - **Result:** Drastically improved readability for discovery card previews.
+
 - [x] **Revert Background Pattern to Dots** 🏁 ✅ (2026-01-28)
       - **Details:** Reverted `BGPattern` from `grid` to `dots` in all sections (`ModernHero`, `ModernFeatures`, `DemoVideoSection`, `StatsSection`, `FAQSection`). Set `dots` as default in `BGPattern` component.
       - **Result:** Restored brand-consistent dotted background while keeping the Zinc aesthetic.

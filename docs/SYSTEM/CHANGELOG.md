@@ -1,3 +1,14 @@
+## 2026-01-28 — UI/UX: Campaign Creation Text Visibility Fix 🔍
+
+**Improved visibility of example output text in the campaign creation flow for better readability in dark mode.**
+
+**Summary of Actions:**
+- **Contrast Optimization**: Updated the "Example Output" and "Analysis Preview" boxes in the campaign discovery stage to use higher-contrast text.
+- **Accessibility Fix**: Replaced dark/invalid `text-coral-300` values with `text-white` and lightened labels from `gray-200` to `zinc-100`.
+- **Consistency**: Ensured both "Discover Viral" and "Validate Idea" preview cards share the same improved readability standards.
+
+---
+
 ## 2026-01-28 — Branding Reversion: Dotted Background Pattern 🏁
 
 **Reverted the structural background pattern from grid to dots across the entire landing page based on brand consistency requirements.**
