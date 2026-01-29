@@ -24,7 +24,7 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 pt-24 overflow-hidden bg-white bg-grid">
+    <section className="relative flex flex-col items-center justify-center min-h-[90vh] px-4 pt-24 overflow-hidden bg-white bg-dots-xelora">
       <div className="z-10 flex flex-col items-center max-w-5xl text-center space-y-12">
         <motion.div
             initial={{ opacity: 0, y: 20 }}
