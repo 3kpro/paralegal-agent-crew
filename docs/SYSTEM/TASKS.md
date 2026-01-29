@@ -10,9 +10,9 @@ This file lists XELORA product-specific tasks only.
 
 
 ## NOW
-- [ ] **Visual Audit: Light Mode Contrast & Icon Consistency** 🎨
-      - **Goal:** Audit all landing page sections (Hero, Features, Stats, Pricing, FAQ) to ensure no white-on-white text remains in Light Mode.
-      - **Action:** Check all `text-white`, `text-gray-100`, etc. and replace with semantic theme variables. Ensure icons represent "Intelligence" consistently.
+- [ ] **UX Audit: Mobile Responsiveness & Touch Targets** 📱
+      - **Goal:** Ensure the high-density "Structural Vector" design remains usable on mobile.
+      - **Action:** Check all landing page sections for overlapping elements, text scaling issues, and ensuring CTA buttons have adequate touch targets (min 44px).
       - **Assigned:** TBD
 
 
@@ -626,6 +626,10 @@ implement
 ---
 
 ## COMPLETED
+
+- [x] **Visual Audit: Light Mode Contrast & Icon Consistency** 🎨 ✅ (2026-01-28)
+      - **Details:** Audited all landing page sections. Updated PricingSection to semantic variables. Refactored DemoVideoSection to Zinc palette and re-integrated into page.tsx. Standardized AI icons.
+      - **Result:** Fully consistent Light Mode aesthetic across the entire landing page.
 
 - [x] **Fix Landing Page Text Visibility & Icons** 🎨 ✅ (2026-01-28)
       - **Details:** Resolved white-on-white text visibility for Viral DNA™ and Strategy text. Replaced Lightning icons with Brain icons for AI branding.

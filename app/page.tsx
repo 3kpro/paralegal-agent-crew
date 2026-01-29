@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import ModernHero from "@/components/sections/ModernHero";
 import ModernFeatures from "@/components/sections/ModernFeatures";
+import DemoVideoSection from "@/components/sections/DemoVideoSection";
 import { StatsSection } from "@/components/sections/StatsSection";
 import { PricingSection } from "@/components/landing/pricing-section";
 import FAQSection from "@/components/sections/FAQSection";
@@ -15,6 +16,7 @@ export default function Home() {
       <main className="flex-1">
         <ModernHero />
         <ModernFeatures />
+        <DemoVideoSection />
         <StatsSection />
         <PricingSection />
         <FAQSection />

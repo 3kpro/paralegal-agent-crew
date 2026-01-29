@@ -211,7 +211,7 @@ export default function ModernHero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3, delay: 0.35 + index * 0.05 }}
-                    className="px-4 py-2 bg-[#00C7F2]/10 rounded-full text-sm font-medium text-[#00C7F2] shadow-sm border border-[#00C7F2]/30 hover:border-[#00C7F2]/60 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-default uppercase tracking-wide"
+                    className="px-4 py-2 bg-muted rounded-none text-sm font-bold text-foreground shadow-sm border border-border hover:border-foreground transition-all duration-200 cursor-default uppercase tracking-wide"
                   >
                     {feature}
                   </motion.div>

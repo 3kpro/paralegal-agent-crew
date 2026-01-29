@@ -1,3 +1,18 @@
+## 2026-01-28 — Visual Audit & Design Consistency (Zinc Light Mode) 🎨
+
+**Completed a comprehensive visual audit of the landing page to ensure Light Mode contrast and icon consistency.**
+
+**Summary of Actions:**
+- **Visual Audit & Fix**: Scanned all landing page sections for white-on-white text issues in Light Mode.
+- **Pricing Section Refactor**: Migrated `PricingSection` from hardcoded black/white hexes to semantic theme variables (`foreground`, `background`, `border`, `muted`).
+- **Demo Section Recovery**: Completely refactored `DemoVideoSection` to match the "Structural Vector" Zinc aesthetic, replacing legacy "Tron" classes with `BGPattern` grids and high-contrast typography. Integrated the section back into the main landing page.
+- **Icon Standardization**: Normalized "Intelligence" icons across `ModernFeatures` and `StatsSection` to use `Brain` for core AI capabilities.
+- **Hero Polish**: Cleaned up hardcoded cyan hexes in `ModernHero` capability pills, standardizing on the Zinc palette.
+
+**Status:** ✅ **Implemented & Verified**
+
+---
+
 ## 2026-01-28 — Landing Page Visibility Fix & Icon Upgrade 🎨
 
 **Resolved contrast issues in the Hero section and modernized branding icons.**

@@ -30,23 +30,23 @@ export function PricingSection() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
   return (
-    <section className="py-32 border-t border-black bg-dots-xelora" id="pricing">
+    <section className="py-32 border-t border-foreground bg-dots-xelora" id="pricing">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center px-3 py-1 border border-black mb-8">
+            <div className="inline-flex items-center px-3 py-1 border border-foreground mb-8">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Allocation Matrix</span>
             </div>
             <h2 className="text-5xl md:text-7xl font-bold tracking-tighter uppercase mb-8">SYSTEM <br/> ACCESS.</h2>
-            <p className="text-lg text-black/60 font-medium leading-relaxed uppercase tracking-widest">Structural flat-rate indices for multi-platform intelligence.</p>
+            <p className="text-lg text-muted-foreground font-medium leading-relaxed uppercase tracking-widest">Structural flat-rate indices for multi-platform intelligence.</p>
           </div>
           
-          <div className="flex items-center gap-2 p-1 border border-black bg-white mb-2">
+          <div className="flex items-center gap-2 p-1 border border-foreground bg-background mb-2">
             <button 
               onClick={() => setBilling("monthly")}
               className={cn(
                 "px-6 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
-                billing === "monthly" ? "bg-black text-white" : "text-black/40 hover:text-black"
+                billing === "monthly" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
               )}
             >
               Monthly
@@ -55,7 +55,7 @@ export function PricingSection() {
               onClick={() => setBilling("yearly")}
               className={cn(
                 "px-6 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
-                billing === "yearly" ? "bg-black text-white" : "text-black/40 hover:text-black"
+                billing === "yearly" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
               )}
             >
               Yearly
@@ -63,7 +63,7 @@ export function PricingSection() {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black border border-black overflow-hidden shadow-[30px_30px_0px_0px_rgba(0,0,0,0.05)]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-foreground border border-foreground overflow-hidden shadow-[30px_30px_0px_0px_rgba(0,0,0,0.05)]">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -72,12 +72,12 @@ export function PricingSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "relative p-12 bg-white flex flex-col group transition-all duration-300 hover:bg-muted/50 hover:scale-[1.01] hover:z-20",
+                "relative p-12 bg-background flex flex-col group transition-all duration-300 hover:bg-muted/50 hover:scale-[1.01] hover:z-20",
                 plan.popular && "z-10 shadow-[0_0_20px_rgba(0,0,0,0.05)]"
               )}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 w-full h-1 bg-black" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-foreground" />
               )}
               
               <div className="mb-12">
@@ -98,8 +98,8 @@ export function PricingSection() {
               
               <div className="space-y-4 mb-20 flex-grow">
                 {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-center text-[10px] font-bold uppercase tracking-widest opacity-60">
-                    <div className="w-1 h-1 bg-black mr-4" />
+                  <div key={feature} className="flex items-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    <div className="w-1 h-1 bg-foreground mr-4" />
                     {feature}
                   </div>
                 ))}
@@ -107,8 +107,8 @@ export function PricingSection() {
               
               <button 
                 className={cn(
-                  "w-full py-6 text-[10px] font-bold uppercase tracking-[0.3em] transition-all border border-black",
-                  plan.popular ? "bg-black text-white hover:bg-black/90" : "bg-white text-black hover:bg-black hover:text-white"
+                  "w-full py-6 text-[10px] font-bold uppercase tracking-[0.3em] transition-all border border-foreground",
+                  plan.popular ? "bg-foreground text-background hover:bg-foreground/90" : "bg-background text-foreground hover:bg-foreground hover:text-background"
                 )}
               >
                 Initialize Protocol

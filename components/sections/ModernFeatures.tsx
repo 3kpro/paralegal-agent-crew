@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import {
-  TrendUp as TrendingUp,
+  Brain,
   Sparkle as Sparkles,
   Layout,
   Clock,
@@ -13,7 +13,7 @@ import { BGPattern } from "@/components/ui/bg-pattern";
 
 const features = [
   {
-    icon: TrendingUp,
+    icon: Brain,
     title: "Viral Score™ + Viral DNA™",
     subtitle: "Predictive Viral Analysis",
     description:
@@ -81,24 +81,24 @@ export default function ModernFeatures() {
             const statusConfig = {
               available: {
                 label: "✓ Available Now",
-                bgColor: "bg-green-500/10",
-                borderColor: "border-green-500/30",
-                textColor: "text-green-400",
-                dotColor: "bg-green-500"
+                bgColor: "bg-muted",
+                borderColor: "border-border",
+                textColor: "text-foreground",
+                dotColor: "bg-foreground"
               },
               beta: {
                 label: "Beta Access",
-                bgColor: "bg-blue-500/10",
-                borderColor: "border-blue-500/30",
-                textColor: "text-blue-400",
-                dotColor: "bg-blue-500"
+                bgColor: "bg-muted",
+                borderColor: "border-border",
+                textColor: "text-foreground",
+                dotColor: "bg-foreground"
               },
               "coming-soon": {
                 label: "Coming Soon",
-                bgColor: "bg-gray-700/30",
-                borderColor: "border-gray-600/40",
-                textColor: "text-gray-400",
-                dotColor: "bg-gray-500"
+                bgColor: "bg-muted",
+                borderColor: "border-border",
+                textColor: "text-muted-foreground",
+                dotColor: "bg-muted-foreground"
               },
             };
             const status = statusConfig[feature.status];
