@@ -1,11 +1,12 @@
-## 2026-01-28 — UI/UX: Campaign Creation Text Visibility Fix 🔍
+## 2026-01-28 — UI/UX: Campaign Creation Refinements 🔍
 
-**Improved visibility of example output text in the campaign creation flow for better readability in dark mode.**
+**Enhanced the campaign creation flow with better visibility and a cleaner layout for discovery results.**
 
 **Summary of Actions:**
-- **Contrast Optimization**: Updated the "Example Output" and "Analysis Preview" boxes in the campaign discovery stage to use higher-contrast text.
-- **Accessibility Fix**: Replaced dark/invalid `text-coral-300` values with `text-white` and lightened labels from `gray-200` to `zinc-100`.
-- **Consistency**: Ensured both "Discover Viral" and "Validate Idea" preview cards share the same improved readability standards.
+- **Contrast Optimization**: Fixed "black on black" text issue in the Score Breakdown expansion by replacing legacy `tron-text-muted` classes with high-contrast `zinc-400` and `white`.
+- **UI Refinement**: Redesigned the "New Suggestions" button in the trend discovery banner for better alignment, better padding, and a cleaner "Zinc" aesthetic using backdrop blurs.
+- **Accessibility Fix**: Lightened various text elements in the breakthrough cards (`ViralScoreBreakdown.tsx`) to ensure 100% legibility in dark mode.
+- **Consistency**: Standardized trend card previews with improved spacing and contrast.
 
 ---
 

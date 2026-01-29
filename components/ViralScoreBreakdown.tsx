@@ -38,9 +38,9 @@ export function ViralScoreBreakdown({
           e.stopPropagation();
           setIsExpanded(!isExpanded);
         }}
-        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-tron-grid/30 transition-colors text-sm"
+        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/5 transition-colors text-sm"
       >
-        <span className="text-tron-text-muted flex items-center gap-2">
+        <span className="text-zinc-400 flex items-center gap-2">
           <Lightbulb className="w-4 h-4" weight="duotone" />
           {isExpanded ? "Hide" : "Show"} Score Breakdown
         </span>
@@ -48,7 +48,7 @@ export function ViralScoreBreakdown({
           animate={{ rotate: isExpanded ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDown className="w-4 h-4 text-tron-text-muted" weight="duotone" />
+          <ChevronDown className="w-4 h-4 text-zinc-400" weight="duotone" />
         </motion.div>
       </button>
 
@@ -62,7 +62,7 @@ export function ViralScoreBreakdown({
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="mt-3 space-y-4 p-4 bg-tron-grid/20 rounded-lg border border-tron-cyan/20">
+            <div className="mt-3 space-y-4 p-4 bg-zinc-900/50 rounded-lg border border-white/10">
 
               {/* What's Working Section */}
               {insights.working.length > 0 && (
@@ -73,7 +73,7 @@ export function ViralScoreBreakdown({
                   </h4>
                   <ul className="space-y-1.5">
                     {insights.working.map((item, idx) => (
-                      <li key={idx} className="text-xs text-tron-text-muted flex items-start gap-2">
+                      <li key={idx} className="text-xs text-zinc-300 flex items-start gap-2">
                         <span className="text-green-400 mt-0.5">✓</span>
                         <span>{item}</span>
                       </li>
@@ -91,7 +91,7 @@ export function ViralScoreBreakdown({
                   </h4>
                   <ul className="space-y-1.5">
                     {insights.improvements.map((item, idx) => (
-                      <li key={idx} className="text-xs text-tron-text-muted flex items-start gap-2">
+                      <li key={idx} className="text-xs text-zinc-300 flex items-start gap-2">
                         <span className="text-yellow-400 mt-0.5">⚠</span>
                         <span>{item}</span>
                       </li>
@@ -101,8 +101,8 @@ export function ViralScoreBreakdown({
               )}
 
               {/* Factor Breakdown */}
-              <div className="pt-3 border-t border-tron-cyan/10">
-                <h4 className="text-xs font-semibold text-tron-text-muted mb-3">Score Components</h4>
+              <div className="pt-3 border-t border-white/5">
+                <h4 className="text-xs font-semibold text-zinc-400 mb-3">Score Components</h4>
                 <div className="space-y-2">
                   <FactorBar
                     icon={<Users className="w-3 h-3" weight="duotone" />}
@@ -144,9 +144,9 @@ export function ViralScoreBreakdown({
 
               {/* AI Reasoning */}
               {aiReasoning && (
-                <div className="pt-3 border-t border-tron-cyan/10">
-                  <p className="text-xs text-tron-text-muted italic">
-                    <span className="font-semibold text-tron-cyan">AI Insight:</span> {aiReasoning}
+                <div className="pt-3 border-t border-white/5">
+                  <p className="text-xs text-zinc-300 italic">
+                    <span className="font-semibold text-white">AI Insight:</span> {aiReasoning}
                   </p>
                 </div>
               )}
@@ -185,15 +185,15 @@ function FactorBar({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 text-tron-text-muted">
+        <div className="flex items-center gap-1.5 text-zinc-400">
           {icon}
           <span>{label}</span>
         </div>
-        <span className="text-tron-text font-mono">
+        <span className="text-white font-mono">
           {score}/{max}
         </span>
       </div>
-      <div className="h-1.5 bg-tron-grid rounded-full overflow-hidden">
+      <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}

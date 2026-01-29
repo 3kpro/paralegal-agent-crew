@@ -2044,31 +2044,31 @@ ${targetPlatforms.map(platform => {
                   {/* Viral Score Education Banner */}
                   {trends.length > 0 && (
                     <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-4">
-                          <div className="p-2 bg-gray-800 rounded-lg">
-                            <Activity className="w-5 h-5 text-white" />
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-2 bg-gray-800 rounded-lg">
+                              <Activity className="w-5 h-5 text-zinc-100" />
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-bold text-white mb-1">
+                                Viral Score™ Prediction
+                              </h4>
+                              <p className="text-xs text-zinc-300 leading-relaxed max-w-xl">
+                                Trends are scored (0-100) based on search volume, platform validation, and freshness.
+                                <span className="text-white ml-1">Higher scores indicate stronger viral potential.</span>
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="text-sm font-bold text-white mb-1">
-                              Viral Score™ Prediction
-                            </h4>
-                            <p className="text-xs text-gray-200 leading-relaxed max-w-xl">
-                              Trends are scored (0-100) based on search volume, platform validation, and freshness.
-                              <span className="text-white ml-1">Higher scores indicate stronger viral potential.</span>
-                            </p>
-                          </div>
-                        </div>
-                        <motion.button
-                          onClick={searchQuery.trim() ? searchTrends : loadTrendingTopics}
-                          disabled={loadingTrends}
-                          whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-white text-sm font-medium hover:bg-white/20 transition-all disabled:opacity-50"
-                        >
-                          <RefreshCw className={`w-4 h-4 ${loadingTrends ? 'animate-spin' : ''}`} />
-                          {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
-                        </motion.button>
+                          <motion.button
+                            onClick={searchQuery.trim() ? searchTrends : loadTrendingTopics}
+                            disabled={loadingTrends}
+                            whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm font-bold hover:bg-white/20 transition-all disabled:opacity-50 shadow-xl backdrop-blur-md whitespace-nowrap"
+                          >
+                            <RefreshCw className={`w-4 h-4 ${loadingTrends ? 'animate-spin' : ''}`} />
+                            {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
+                          </motion.button>
                       </div>
                       <p className="text-[10px] text-gray-300 mt-2 ml-12">
                         💡 Scores vary based on AI analysis. Not happy with these? Click &quot;New Suggestions&quot; to get fresh trend ideas with updated scores.
