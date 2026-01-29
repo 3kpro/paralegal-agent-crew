@@ -628,11 +628,12 @@ implement
 ## COMPLETED
 
 - [x] **Campaign Creation: UI/UX & Alignment Refinements** 🔍 ✅ (2026-01-28)
-      - **Details:** Fixed text visibility, refined the 'New Suggestions' button, and optimized card alignment.
+      - **Details:** Fixed text visibility, refined the 'New Suggestions' button, optimized card alignment, and modernized the config panel.
       - **Actions:** 
         - Replaced legacy `tron-text-muted` in `ViralScoreBreakdown.tsx` with high-contrast `zinc-400`.
-        - Redesigned the "New Suggestions" banner button for better layout and premium feel.
-        - **Alignment:** Applied `flex-col` + `mt-auto` to trend cards to ensure "Show Score Breakdown" aligns perfectly across rows.
+        - Redesigned "New Suggestions" and "Viral Score" components with premium glassmorphism.
+        - **Alignment:** Applied `flex-col` + `mt-auto` to trend cards for perfect scorecard alignment.
+        - **Refinement:** Cleaned up "Save as Template" button and Viral Score indicator in the config step.
       - **Result:** Balanced and accessible UI for the campaign discovery flow.
 
 - [x] **Revert Background Pattern to Dots** 🏁 ✅ (2026-01-28)

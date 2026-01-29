@@ -43,6 +43,7 @@ import {
   Download,
   Home,
   RefreshCw,
+  Bookmark,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
@@ -2248,28 +2249,33 @@ ${targetPlatforms.map(platform => {
                     AI Optimize (A)
                   </motion.button>
 
-                  <div className="flex items-center gap-3 bg-[#2b2b2b] border border-gray-700/50 rounded-lg px-4 py-2">
-                    <Flame className={`w-5 h-5 ${
-                      (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
-                      (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-gray-200"
-                    }`} />
+                  <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-2.5 shadow-xl">
+                    <div className="p-2 bg-white/5 rounded-lg">
+                      <Flame className={`w-5 h-5 ${
+                        (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
+                        (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-zinc-400"
+                      }`} />
+                    </div>
                     <div>
-                      <div className="text-[10px] text-gray-200 uppercase tracking-wider font-bold">
+                      <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-black mb-0.5">
                         {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
                       </div>
-                      <div className="text-xl font-bold text-white font-mono">
+                      <div className="text-2xl font-black text-white font-mono leading-none">
                         {selectedTrends[0]?.viralScore || predictedViralScore}
                       </div>
                     </div>
                   </div>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setShowSaveTemplateDialog(true)}
-                    className="ml-auto px-4 py-2 bg-zinc-950/70 border border-white/10 rounded-lg text-sm text-white hover:bg-white/10 transition-all"
+                    className="ml-auto px-5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition-all shadow-lg backdrop-blur-md flex items-center gap-2"
                   >
+                    <Bookmark className="w-4 h-4" />
                     Save as Template
-                  </button>
+                  </motion.button>
                 </div>
 
                 {/* Platform Cards - Visual Overview */}
