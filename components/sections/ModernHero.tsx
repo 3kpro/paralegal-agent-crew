@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lightning as Zap, ArrowRight } from "@phosphor-icons/react";
+import { Brain, ArrowRight } from "@phosphor-icons/react";
 import Link from "next/link";
 import { BGPattern } from "@/components/ui/bg-pattern";
 
@@ -88,7 +88,7 @@ export default function ModernHero() {
                 transition={{ duration: 0.5, delay: 0 }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-muted backdrop-blur-sm border border-border hover:border-foreground transition-all duration-300 mb-10"
               >
-                <Zap className="w-4 h-4 text-foreground" weight="bold" />
+                <Brain className="w-4 h-4 text-foreground" weight="bold" />
                 <span className="text-[10px] font-bold text-foreground uppercase tracking-[0.2em]">
                   XELORA PROTOCOL • PREDICTIVE INTELLIGENCE
                 </span>
@@ -165,26 +165,26 @@ export default function ModernHero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.25 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-700 mt-16"
+                className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-muted-foreground mt-16"
               >
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
+                  <Brain className="w-5 h-5 text-foreground" weight="duotone" />
                   <span>
-                    <strong className="text-[#F5F7FA]">Viral DNA™</strong> decoded
+                    <strong className="text-foreground">Viral DNA™</strong> decoded
                   </span>
                 </div>
-                <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
+                <div className="hidden sm:block w-px h-6 bg-border" />
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#A17CF9]" weight="duotone" />
+                  <Brain className="w-5 h-5 text-foreground" weight="duotone" />
                   <span>
-                    <strong className="text-[#F5F7FA]">Hook + Emotion + Value</strong> analysis
+                    <strong className="text-foreground">Hook + Emotion + Value</strong> analysis
                   </span>
                 </div>
-                <div className="hidden sm:block w-px h-6 bg-[#00C7F2]/30" />
+                <div className="hidden sm:block w-px h-6 bg-border" />
                 <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
+                  <Brain className="w-5 h-5 text-foreground" weight="duotone" />
                   <span>
-                    <strong className="text-[#F5F7FA]">Know WHY</strong> before you post
+                    <strong className="text-foreground">Know WHY</strong> before you post
                   </span>
                 </div>
               </motion.div>

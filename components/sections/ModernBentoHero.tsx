@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MagicWand, Lightning as Zap, TrendUp as TrendingUp, ArrowRight, Play, Users, ChartBar as BarChart3, TwitterLogo as Twitter, LinkedinLogo as Linkedin, InstagramLogo as Instagram, VideoCamera as Video } from "@phosphor-icons/react";
+import { MagicWand, Brain, TrendUp as TrendingUp, ArrowRight, Play, Users, ChartBar as BarChart3, TwitterLogo as Twitter, LinkedinLogo as Linkedin, InstagramLogo as Instagram, VideoCamera as Video } from "@phosphor-icons/react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -134,7 +134,7 @@ export default function ModernBentoHero() {
               transition={{ delay: 0.5 }}
               className="glass-panel p-5 flex flex-col justify-between group hover:border-yellow-500/30 transition-colors"
             >
-              <Zap className="w-8 h-8 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" weight="duotone" />
+              <Brain className="w-8 h-8 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" weight="duotone" />
               <div>
                 <div className="text-2xl font-bold text-white">10x</div>
                 <div className="text-xs text-gray-400">Faster Workflow</div>

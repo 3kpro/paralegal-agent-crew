@@ -10,11 +10,11 @@ This file lists XELORA product-specific tasks only.
 
 
 ## NOW
-on
-https://getxelora.com/ 
-- [x] landing page.  the membership cards are off.  they should highlight on mouse roll over.  as it stands, Pro is stuck highlighted. ✅
+- [ ] **Visual Audit: Light Mode Contrast & Icon Consistency** 🎨
+      - **Goal:** Audit all landing page sections (Hero, Features, Stats, Pricing, FAQ) to ensure no white-on-white text remains in Light Mode.
+      - **Action:** Check all `text-white`, `text-gray-100`, etc. and replace with semantic theme variables. Ensure icons represent "Intelligence" consistently.
+      - **Assigned:** TBD
 
----
 
 ## DEVELOPMENT WORKFLOW
 
@@ -626,6 +626,10 @@ implement
 ---
 
 ## COMPLETED
+
+- [x] **Fix Landing Page Text Visibility & Icons** 🎨 ✅ (2026-01-28)
+      - **Details:** Resolved white-on-white text visibility for Viral DNA™ and Strategy text. Replaced Lightning icons with Brain icons for AI branding.
+      - **Result:** Improved readability and brand alignment on the landing page.
 
 - [x] **Website Aesthetic Alignment** 🎨 ✅
       - **Completion Date:** 2026-01-27

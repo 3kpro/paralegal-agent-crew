@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Users, Lightning as Zap, Clock, Star } from "@phosphor-icons/react";
+import { Users, Brain, Clock, Star } from "@phosphor-icons/react";
 import { BGPattern } from "@/components/ui/bg-pattern";
 
 interface StatItem {
@@ -24,7 +24,7 @@ const stats: StatItem[] = [
   {
     value: "6",
     label: "Platform Integrations",
-    icon: Zap,
+    icon: Brain,
     color: "text-[#00C7F2]",
     animatedValue: 6,
   },

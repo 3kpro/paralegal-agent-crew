@@ -1,3 +1,16 @@
+## 2026-01-28 — Landing Page Visibility Fix & Icon Upgrade 🎨
+
+**Resolved contrast issues in the Hero section and modernized branding icons.**
+
+**Summary of Actions:**
+- **UI/UX Fix**: Fixed "invisible text" issue on the landing page where Viral DNA™ and Strategy text elements were white on a white background in Light Mode. Standardized to `text-foreground`.
+- **Branding Update**: Replaced `Lightning/Zap` icons with `Brain` icons across `ModernHero`, `StatsSection`, and `ModernBentoHero` to better reflect AI intelligence and "Predictive Momentum" vision.
+- **Section Polish**: Updated `ModernHero` key features section with `text-muted-foreground` for sub-labels and `text-foreground` for core metrics, improving readability and hierarchy.
+
+**Status:** ✅ **Implemented & Verified**
+
+---
+
 ## 2026-01-26 — XELORA/3KPRO Cross-Platform Sync & UI Polish 🔄
 
 **Synchronized the visual rebrand across workspaces and polished landing page interactivity.**
