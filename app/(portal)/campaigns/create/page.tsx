@@ -55,6 +55,7 @@ import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
 import UpgradeModal from "@/components/UpgradeModal";
 
+import { jsPDF } from "jspdf";
 import { ViralScoreBreakdown } from "@/components/ViralScoreBreakdown";
 import {
   Platform,
@@ -210,6 +211,7 @@ export default function NewCampaignPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<"campaigns" | "generations" | "features">("campaigns");
   const [usageData, setUsageData] = useState<{ campaigns: number; campaignLimit: number } | undefined>();
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // NEW: Per-platform controls map
   interface PlatformSpecificSettings extends ContentControls {
@@ -309,39 +311,140 @@ export default function NewCampaignPage() {
       });
   }, [editedContent, generatedContent, targetPlatforms, showToast]);
 
-  // NEW: Export campaign as markdown file
-  const exportCampaign = useCallback(() => {
+  // NEW: Export campaign in multiple formats (Markdown, TXT, PDF)
+  const exportCampaign = useCallback((format: 'md' | 'txt' | 'pdf' = 'md') => {
     if (!generatedContent || Object.keys(generatedContent).length === 0) {
       showToast("No content to export", "error");
       return;
     }
 
-    const trendInfo = selectedTrends.length > 0
-      ? `Trend: ${selectedTrends[0]?.title || 'N/A'}\nViral Score: ${selectedTrends[0]?.viralScore || 'N/A'}\n\n`
-      : '';
+    const timestamp = new Date().toLocaleDateString();
+    const title = campaignName || 'Untitled Campaign';
+    const baseFileName = (campaignName || 'campaign').toLowerCase().replace(/\s+/g, '-');
 
-    const exportContent = `# ${campaignName || 'Untitled Campaign'}
-Generated: ${new Date().toLocaleDateString()}
-${trendInfo}
-${targetPlatforms.map(platform => {
-      const content = editedContent[platform] ||
-        (typeof generatedContent[platform] === 'string'
-          ? generatedContent[platform]
-          : (generatedContent[platform] as ContentData)?.content || '');
-      return `## ${platform.charAt(0).toUpperCase() + platform.slice(1)}\n\n${content}`;
-    }).join('\n\n---\n\n')}
-`;
+    if (format === 'pdf') {
+      const doc = new jsPDF();
+      let yOffset = 20;
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.width;
+      const contentWidth = pageWidth - (margin * 2);
 
-    const blob = new Blob([exportContent], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(campaignName || 'campaign').toLowerCase().replace(/\s+/g, '-')}-content.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast("Campaign exported!", "success");
+      // Title
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text(title, margin, yOffset);
+      yOffset += 12;
+
+      // Meta info
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      doc.text(`Generated: ${timestamp}`, margin, yOffset);
+      yOffset += 8;
+
+      if (selectedTrends.length > 0) {
+        doc.text(`Trend: ${selectedTrends[0]?.title || 'N/A'}`, margin, yOffset);
+        yOffset += 5;
+        doc.text(`Viral Score: ${selectedTrends[0]?.viralScore || 'N/A'}`, margin, yOffset);
+        yOffset += 15;
+      } else {
+        yOffset += 7;
+      }
+
+      // Content for each platform
+      targetPlatforms.forEach((platform) => {
+        const contentData = generatedContent[platform];
+        const content = editedContent[platform] ||
+          (typeof contentData === 'string'
+            ? contentData
+            : (contentData as any)?.content || '');
+
+        if (!content) return;
+
+        // Check for page break before platform header
+        if (yOffset > doc.internal.pageSize.height - 40) {
+          doc.addPage();
+          yOffset = 20;
+        }
+
+        // Platform Header
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text(platform.toUpperCase(), margin, yOffset);
+        yOffset += 8;
+
+        // Divider
+        doc.setDrawColor(200);
+        doc.line(margin, yOffset, pageWidth - margin, yOffset);
+        yOffset += 10;
+
+        // Content body
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(50);
+        
+        const splitText = doc.splitTextToSize(content, contentWidth);
+        
+        // Handle multi-page content for a single platform
+        splitText.forEach((line: string) => {
+          if (yOffset > doc.internal.pageSize.height - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+          doc.text(line, margin, yOffset);
+          yOffset += 6;
+        });
+
+        yOffset += 15; // Gap between platforms
+      });
+
+      doc.save(`${baseFileName}-content.pdf`);
+    } else {
+      let exportContent = '';
+      let fileExt = '';
+      let mimeType = '';
+
+      const trendInfo = selectedTrends.length > 0
+        ? `Trend: ${selectedTrends[0]?.title || 'N/A'}\nViral Score: ${selectedTrends[0]?.viralScore || 'N/A'}\n\n`
+        : '';
+
+      if (format === 'md') {
+        fileExt = 'md';
+        mimeType = 'text/markdown';
+        exportContent = `# ${title}\nGenerated: ${timestamp}\n${trendInfo}${targetPlatforms.map(platform => {
+          const contentData = generatedContent[platform];
+          const content = editedContent[platform] ||
+            (typeof contentData === 'string'
+              ? contentData
+              : (contentData as any)?.content || '');
+          return `## ${platform.charAt(0).toUpperCase() + platform.slice(1)}\n\n${content}`;
+        }).join('\n\n---\n\n')}\n`;
+      } else {
+        fileExt = 'txt';
+        mimeType = 'text/plain';
+        exportContent = `${title}\nGenerated: ${timestamp}\n${trendInfo}${targetPlatforms.map(platform => {
+          const contentData = generatedContent[platform];
+          const content = editedContent[platform] ||
+            (typeof contentData === 'string'
+              ? contentData
+              : (contentData as any)?.content || '');
+          return `${platform.toUpperCase()}\n${'='.repeat(platform.length)}\n\n${content}`;
+        }).join('\n\n' + '-'.repeat(40) + '\n\n')}\n`;
+      }
+
+      const blob = new Blob([exportContent], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseFileName}-content.${fileExt}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    showToast(`Campaign exported as ${format.toUpperCase()}!`, "success");
   }, [campaignName, editedContent, generatedContent, selectedTrends, targetPlatforms, showToast]);
 
   // Memoized platform list to prevent recreating on every render
@@ -3022,15 +3125,50 @@ ${targetPlatforms.map(platform => {
                         <Copy className="w-4 h-4" />
                         Copy All
                       </motion.button>
-                      <motion.button
-                        onClick={exportCampaign}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-zinc-950/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        Export
-                      </motion.button>
+                      <div className="relative">
+                        <motion.button
+                          onClick={() => setShowExportMenu(!showExportMenu)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="px-6 py-3 bg-zinc-950/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Export
+                        </motion.button>
+
+                        <AnimatePresence>
+                          {showExportMenu && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                              className="absolute bottom-full right-0 mb-2 w-48 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden z-20"
+                            >
+                              <button
+                                onClick={() => { exportCampaign('md'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-purple-500/20 text-purple-400 rounded text-[10px] font-bold">MD</span>
+                                Markdown
+                              </button>
+                              <button
+                                onClick={() => { exportCampaign('txt'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-blue-500/20 text-blue-400 rounded text-[10px] font-bold">TXT</span>
+                                Plain Text
+                              </button>
+                              <button
+                                onClick={() => { exportCampaign('pdf'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">PDF</span>
+                                PDF Document
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
                   </>
                 ) : (

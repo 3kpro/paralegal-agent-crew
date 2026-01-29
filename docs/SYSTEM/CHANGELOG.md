@@ -1,11 +1,12 @@
-## 2026-01-28 — UI/UX: Configuration Panel Refinement 💎
+## 2026-01-28 — Feature: Multi-Format Campaign Export 📄
 
-**Polished the "Shape your content" configuration panel with premium glassmorphism and improved typography.**
+**Enhanced the campaign export functionality to support professional documentation formats.**
 
 **Summary of Actions:**
-- **Visual Modernization**: Redesigned the "Viral Score" indicator with a backdrop-blur glass panel, heavy tracking for titles, and improved font weights.
-- **Button Cleanup**: Refined the "Save as Template" button by adding rounded corners (`rounded-xl`), an icon indicator, and a backdrop-blur effect.
-- **Improved Hierarchy**: Standardized spacing and alignment across the configuration header to eliminate visual "clunkiness".
+- **Multiple Formats**: Added support for `.txt` (Plain Text) and `.pdf` (PDF Document) exports in addition to the existing `.md` (Markdown).
+- **PDF Generation**: Integrated `jsPDF` for high-quality, client-side PDF generation with automatic page breaks and platform-specific headers.
+- **Export UI**: Replaced the single "Export" button with a premium, animated dropdown menu for format selection.
+- **Visual Feedback**: Added distinct color-coded badges (MD, TXT, PDF) to the export menu for better recognition.
 
 ---
 

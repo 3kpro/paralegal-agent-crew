@@ -627,6 +627,14 @@ implement
 
 ## COMPLETED
 
+- [x] **Campaign Content: Multi-Format Export (TXT/PDF/MD)** 📄 ✅ (2026-01-28)
+      - **Details:** Integrated multi-format export capabilities for generated campaign content.
+      - **Actions:** 
+        - Installed `jsPDF` for client-side PDF generation.
+        - Implemented format-specific logic for Markdown, Plain Text, and PDF.
+        - Created a premium dropdown UI for choosing the export format.
+      - **Result:** Users can now download their campaigns in the format that best fits their workflow.
+
 - [x] **Campaign Creation: UI/UX & Alignment Refinements** 🔍 ✅ (2026-01-28)
       - **Details:** Fixed text visibility, refined the 'New Suggestions' button, optimized card alignment, and modernized the config panel.
       - **Actions:** 
