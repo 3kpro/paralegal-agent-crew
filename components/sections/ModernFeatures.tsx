@@ -66,7 +66,7 @@ export default function ModernFeatures() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-4 text-foreground uppercase tracking-tighter">
+          <h2 className="text-3xl md:text-6xl font-bold mb-4 text-foreground uppercase tracking-tighter">
             Architect for <span className="text-muted-foreground">Attention.</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">

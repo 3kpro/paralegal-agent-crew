@@ -37,7 +37,7 @@ export function PricingSection() {
             <div className="inline-flex items-center px-3 py-1 border border-foreground mb-8">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Allocation Matrix</span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter uppercase mb-8">SYSTEM <br/> ACCESS.</h2>
+            <h2 className="text-4xl md:text-7xl font-bold tracking-tighter uppercase mb-8">SYSTEM <br/> ACCESS.</h2>
             <p className="text-lg text-muted-foreground font-medium leading-relaxed uppercase tracking-widest">Structural flat-rate indices for multi-platform intelligence.</p>
           </div>
           

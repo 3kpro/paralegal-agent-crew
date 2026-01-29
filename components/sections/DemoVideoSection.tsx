@@ -42,7 +42,7 @@ export default function DemoVideoSection() {
               </span>
             </div>
 
-            <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 uppercase tracking-tighter">
+            <h2 className="text-3xl md:text-6xl font-bold text-foreground mb-6 uppercase tracking-tighter">
               Watch How It <span className="text-muted-foreground">Works.</span>
             </h2>
 

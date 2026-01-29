@@ -24,7 +24,7 @@ export const Navigation = () => {
             </button>
           </Link>
           <Link href="/signup">
-             <button className="px-6 py-2 border border-black bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+             <button className="px-6 py-3 border border-black bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
                Get Started
              </button>
           </Link>

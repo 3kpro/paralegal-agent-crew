@@ -1,12 +1,11 @@
-## 2026-01-28 — Feature: Multi-Format Campaign Export 📄
+## 2026-01-28 — UX: Mobile Responsiveness Audit 📱
 
-**Enhanced the campaign export functionality to support professional documentation formats.**
+**Optimized typography and touch targets across the landing page for better mobile usability.**
 
 **Summary of Actions:**
-- **Multiple Formats**: Added support for `.txt` (Plain Text) and `.pdf` (PDF Document) exports in addition to the existing `.md` (Markdown).
-- **PDF Generation**: Integrated `jsPDF` for high-quality, client-side PDF generation with automatic page breaks and platform-specific headers.
-- **Export UI**: Replaced the single "Export" button with a premium, animated dropdown menu for format selection.
-- **Visual Feedback**: Added distinct color-coded badges (MD, TXT, PDF) to the export menu for better recognition.
+- **Typography Scaling**: Adjusted H1 and H2 font sizes on mobile to prevent overflow and improve readability (e.g., Hero H1 reduced from `6xl` to `5xl` on small screens).
+- **Touch Targets**: Increased padding for the Navigation "Get Started" button to meet minimum target size requirements.
+- **Section Polish**: Refined mobile layouts for Features, Demo, and Pricing sections.
 
 ---
 
