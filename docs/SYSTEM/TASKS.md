@@ -627,12 +627,12 @@ implement
 
 ## COMPLETED
 
-- [x] **Campaign Creation: UI/UX Refinements** 🔍 ✅ (2026-01-28)
-      - **Details:** Fixed text visibility in discovery results and refined the 'New Suggestions' button.
+- [x] **Campaign Creation: UI/UX & Alignment Refinements** 🔍 ✅ (2026-01-28)
+      - **Details:** Fixed text visibility, refined the 'New Suggestions' button, and optimized card alignment.
       - **Actions:** 
         - Replaced legacy `tron-text-muted` in `ViralScoreBreakdown.tsx` with high-contrast `zinc-400`.
         - Redesigned the "New Suggestions" banner button for better layout and premium feel.
-        - Lightened preview text in discovery cards for dark mode legibility.
+        - **Alignment:** Applied `flex-col` + `mt-auto` to trend cards to ensure "Show Score Breakdown" aligns perfectly across rows.
       - **Result:** Balanced and accessible UI for the campaign discovery flow.
 
 - [x] **Revert Background Pattern to Dots** 🏁 ✅ (2026-01-28)

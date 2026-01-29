@@ -2091,7 +2091,7 @@ ${targetPlatforms.map(platform => {
                           transition={{ delay: idx * 0.05 }}
                           onClick={() => toggleTrendSelection(trend)}
                           whileTap={{ scale: 0.98 }}
-                          className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
+                          className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left flex flex-col h-full ${
                             isSelected
                               ? "bg-primary/10 border-primary shadow-[0_0_15px_-3px_var(--primary)] text-foreground"
                               : "bg-muted/30 border-border hover:border-primary/50 hover:bg-muted/50 hover:shadow-lg"
@@ -2166,9 +2166,9 @@ ${targetPlatforms.map(platform => {
                             </div>
                           )}
 
-                          {/* Viral Score Breakdown */}
+                          {/* Viral Score Breakdown - Pinned to bottom */}
                           {trend.viralFactors && trend.viralScore !== undefined && (
-                            <div className="mt-3 px-3">
+                            <div className="mt-auto pt-6">
                               <ViralScoreBreakdown
                                 score={trend.viralScore}
                                 potential={trend.viralPotential || 'low'}
