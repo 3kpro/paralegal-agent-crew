@@ -627,6 +627,10 @@ implement
 
 ## COMPLETED
 
+- [x] **Revert Background Pattern to Dots** 🏁 ✅ (2026-01-28)
+      - **Details:** Reverted `BGPattern` from `grid` to `dots` in all sections (`ModernHero`, `ModernFeatures`, `DemoVideoSection`, `StatsSection`, `FAQSection`). Set `dots` as default in `BGPattern` component.
+      - **Result:** Restored brand-consistent dotted background while keeping the Zinc aesthetic.
+
 - [x] **Visual Audit: Light Mode Contrast & Icon Consistency** 🎨 ✅ (2026-01-28)
       - **Details:** Audited all landing page sections. Updated PricingSection to semantic variables. Refactored DemoVideoSection to Zinc palette and re-integrated into page.tsx. Standardized AI icons.
       - **Result:** Fully consistent Light Mode aesthetic across the entire landing page.

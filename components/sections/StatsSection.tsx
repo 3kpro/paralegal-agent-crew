@@ -98,7 +98,7 @@ export const StatsSection: React.FC = () => {
     <section className="py-20 bg-background relative overflow-hidden border-y border-border">
       {/* Background Pattern */}
       <BGPattern
-        variant="grid"
+        variant="dots"
         mask="fade-center"
         size={24}
         fill="rgba(0,0,0,0.05)"

@@ -49,7 +49,7 @@ export default function ModernFeatures() {
     >
       {/* Background Pattern */}
       <BGPattern
-        variant="grid"
+        variant="dots"
         mask="fade-edges"
         size={24}
         fill="rgba(0,0,0,0.05)"

@@ -44,7 +44,7 @@ export default function ModernHero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background pt-20">
       {/* Background Pattern */}
       <BGPattern
-        variant="grid"
+        variant="dots"
         mask="fade-center"
         size={24}
         fill="rgba(0,0,0,0.05)"

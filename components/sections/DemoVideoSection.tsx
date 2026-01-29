@@ -18,7 +18,7 @@ export default function DemoVideoSection() {
     <section id="demo" className="py-24 bg-background relative overflow-hidden border-t border-border">
       {/* Background Pattern */}
       <BGPattern
-        variant="grid"
+        variant="dots"
         mask="fade-center"
         size={24}
         fill="rgba(0,0,0,0.05)"
