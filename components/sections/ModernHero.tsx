@@ -165,7 +165,7 @@ export default function ModernHero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.25 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400 mt-16"
+                className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-700 mt-16"
               >
                 <div className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-[#00C7F2]" weight="duotone" />
