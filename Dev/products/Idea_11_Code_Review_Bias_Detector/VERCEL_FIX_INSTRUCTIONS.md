@@ -1,59 +1,73 @@
-# Vercel Frontend Deployment Fix - Morning Instructions
+# FairMerge Deployment Status - FIXED!
 
-## Current Status
-- Backend: ✅ Deployed and running at `https://striking-liberation-production.up.railway.app`
-- Frontend: ❌ Getting 404 NOT_FOUND on routes
-- GitHub: ✅ All code is committed and up-to-date
-- Supabase OAuth: ✅ Configured with correct redirect URLs
-- GitHub OAuth: ✅ Created and configured
+## Current Status - ALL WORKING
+- Backend: Deployed at `https://striking-liberation-production.up.railway.app`
+- Frontend: Deployed at `https://frontend-psi-jade-94.vercel.app`
+- GitHub OAuth: Configured and working
+- Supabase OAuth: Configured with correct redirect URLs
 
-## The Problem
-Vercel's "frontend" project is not finding the app at the correct subdirectory location.
+## What Was Fixed (Overnight)
+1. Removed invalid secret references from vercel.json that were blocking deployment
+2. Deployed via Vercel CLI directly from frontend directory (bypassed Root Directory issues)
+3. Client-side routing rewrites now working - /dashboard route loads correctly
+4. Added environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) via Vercel CLI
 
-## The Fix (Step-by-Step for Morning)
+## Test in the Morning
 
-### Step 1: Go to Vercel Settings
-- URL: https://vercel.com/3kpros-projects/frontend/settings/general
-
-### Step 2: Rebuild the Vercel Project
-1. Go to **Build and Deployment** section
-2. Look for **Root Directory** field
-3. Enter: `Dev/products/Idea_11_Code_Review_Bias_Detector/frontend`
-4. Click **Save**
-
-### Step 3: Force Redeploy
-1. Go to **Deployments** tab
-2. Click the three dots (...) on the latest deployment
-3. Click **Redeploy**
-4. Wait for it to say **Ready** (should be green checkmark)
-
-### Step 4: Test Login
+### Step 1: Test the App
 1. Go to: `https://frontend-psi-jade-94.vercel.app`
 2. Click **"Login with GitHub"**
 3. Authorize when GitHub asks
-4. Should see dashboard with metrics
+4. You should see the dashboard
 
-## What's Already Done ✅
-- OAuth tokens are being received (we saw the access_token in the URL)
-- Supabase is properly configured
-- GitHub OAuth app is created and working
-- Frontend code has client-side routing rewrites configured in vercel.json
-- All environment variables set in Vercel
+### Step 2: Verify Backend is Running
+```bash
+curl -k https://striking-liberation-production.up.railway.app/health
+```
+Expected response: `{"status":"ok"}`
 
-## Backend Information
-- Domain: `https://striking-liberation-production.up.railway.app`
-- Health check: `curl -k https://striking-liberation-production.up.railway.app/health`
-- Returns: `{"status":"ok"}`
+## Key URLs
+- Frontend: `https://frontend-psi-jade-94.vercel.app`
+- Backend: `https://striking-liberation-production.up.railway.app`
+- Vercel Project: `https://vercel.com/3kpros-projects/frontend`
+- Railway Project: `https://railway.app` (project: compassionate-insight)
 
-## If It Still Doesn't Work
-1. Check Build Logs in Vercel Deployments tab
-2. Ensure package.json exists in the subdirectory ✅ (it does)
-3. Ensure dist/ folder is being created ✅ (it exists)
-4. The rewrites in vercel.json should handle routing ✅ (they're configured)
+## Environment Variables (All Set)
+### Frontend (Vercel)
+- VITE_API_URL
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
 
-## Key Files
-- Frontend: `C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\frontend\`
-- Vercel config: `C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\frontend\vercel.json`
-- React routes: `C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\frontend\src\App.tsx`
+### Backend (Railway)
+- GEMINI_API_KEY
+- GITHUB_CLIENT_ID
+- GITHUB_CLIENT_SECRET
+- GITHUB_REDIRECT_URI
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
 
-Good luck!
+## Technical Details
+
+### vercel.json Configuration
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+The `rewrites` configuration ensures that all routes (including /dashboard) return the index.html, allowing React Router to handle client-side routing.
+
+## If Something Breaks
+1. Check Vercel deployment logs
+2. Check Railway deployment logs
+3. Verify environment variables are set correctly
+4. Test backend health endpoint
+5. Test frontend landing page loads
