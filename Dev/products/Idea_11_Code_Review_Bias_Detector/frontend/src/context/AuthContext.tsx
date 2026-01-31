@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: window.location.origin + '/dashboard',
+        redirectTo: 'https://frontend-psi-jade-94.vercel.app/dashboard',
         scopes: 'repo read:user user:email'
       }
     });
