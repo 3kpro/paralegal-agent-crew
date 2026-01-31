@@ -17,9 +17,11 @@
 - `STRIPE_WEBHOOK_SECRET` = `whsec_9G2zInBldWYkO6nAfq2yKf80gAnh2d5U` (test webhook)
 
 **Webhook Configuration:**
-- Endpoint URL: `https://xelora.app/api/stripe/webhook`
+- Endpoint URL: `https://getxelora.com/api/stripe/webhook`
 - Events listening: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
 - Status: Active in Stripe test mode
+- Webhook ID: `we_1Sjvi4RqaU7f53FzOPzY5QOo`
+- Last Updated: 2026-01-28 (Domain migration: xelora.app → getxelora.com)
 
 ---
 
@@ -108,7 +110,7 @@ When testing is complete:
    - `STRIPE_PUBLISHABLE_KEY` = `pk_live_...`
    - `STRIPE_PRO_MONTHLY_PRICE_ID` = `price_live_...`
    - `STRIPE_WEBHOOK_SECRET` = `whsec_live_...`
-3. Create live webhook endpoint pointing to `https://xelora.app/api/stripe/webhook`
+3. Create live webhook endpoint pointing to `https://getxelora.com/api/stripe/webhook`
 4. Redeploy to production
 
 ---

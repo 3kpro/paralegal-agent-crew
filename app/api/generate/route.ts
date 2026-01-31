@@ -6,6 +6,7 @@ import { redis, withCache, cacheKeys } from "@/lib/redis";
 import { rateLimit, RateLimitPresets } from "@/lib/rate-limit";
 import { generateContentSchema } from "@/lib/validations";
 import { ZodError, ZodIssue } from "zod";
+import { getGeminiModel } from "@/lib/gemini";
 
 const CACHE_TTL = 900; // 15 minutes in seconds
 
@@ -394,7 +395,12 @@ async function generateWithGemini(
   promoteData?: any,
   perPlatformControls?: Record<string, any>,
 ) {
-  const model = config.model || "gemini-2.0-flash";
+  const modelName = config.model || "gemini-2.0-flash";
+  const geminiModel = getGeminiModel(modelName);
+
+  if (!geminiModel) {
+    throw new Error("Failed to initialize Gemini model via Vertex AI");
+  }
 
   const content: GeneratedContent = {};
   let totalTokens = 0;
@@ -412,35 +418,31 @@ async function generateWithGemini(
 
       const prompt = getPromptForFormat(format, topic, formatTone, formatLength, formatAudience, formatFocus, formatCta, promoteData);
 
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature,
-              maxOutputTokens: 2000,
-            },
-          }),
-        },
-      );
+      try {
+        const result = await geminiModel.generateContent({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature,
+            maxOutputTokens: 2000,
+          },
+        });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || "Gemini API error");
+        const candidates = result.response.candidates;
+        const generatedText = candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!generatedText) {
+          throw new Error("No text content in Vertex AI response");
+        }
+
+        return {
+          format,
+          generatedText,
+          promptLength: prompt.length,
+          responseLength: generatedText.length,
+        };
+      } catch (error: any) {
+        throw new Error(error.message || "Gemini Vertex AI error");
       }
-
-      const data = await response.json();
-      const generatedText = data.candidates[0].content.parts[0].text;
-
-      return {
-        format,
-        generatedText,
-        promptLength: prompt.length,
-        responseLength: generatedText.length,
-      };
     })
   );
 

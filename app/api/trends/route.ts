@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from '@/lib/gemini';
 import { createClient } from "@/lib/supabase/server";
 import { redis, withCache, cacheKeys, isRedisConnected } from "@/lib/redis";
 import { performance } from "perf_hooks";
@@ -211,14 +211,20 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 
     // Calculate viral scores for all trends
     if (trendsData.trending && Array.isArray(trendsData.trending)) {
-      trendsData.trending = await Promise.all(trendsData.trending.map(async (trend: any) =>
-        await calculateViralScore({
+      const scoredTrends = [];
+      // Process sequentially to avoid AI Rate Limits (429)
+      for (const trend of trendsData.trending) {
+        const scoredTrend = await calculateViralScore({
           title: trend.title,
           formattedTraffic: trend.formattedTraffic || '0K searches',
           sources: [source], // Single source for now
           firstSeenAt: new Date() // Current time as first seen
-        })
-      ));
+        });
+        scoredTrends.push(scoredTrend);
+        // Add delay to respect API rate limits (avoid 429 - 15 RPM limit = 4s/req)
+        await new Promise(resolve => setTimeout(resolve, 4000));
+      }
+      trendsData.trending = scoredTrends;
 
       // Sort by viral score (highest first)
       trendsData.trending = sortByViralScore(trendsData.trending);
@@ -245,81 +251,65 @@ async function getRealTrendingData(keyword: string, userId: string, source: stri
 async function generateTrendsWithGemini(keyword: string, _userId: string) {
   const startTime = performance.now();
 
+  // Get the model with JSON mode enabled
+  // using gemini-2.0-flash for stability and availability
+  const model = getGeminiModel('gemini-2.0-flash', true);
+
+  if (!model) {
+     // This will be caught by the calling function and trigger the next fallback.
+     throw new Error("Gemini client is not initialized (likely missing API key).");
+  }
+
   try {
-    const apiKey = process.env.GOOGLE_API_KEY;
-    
-    console.log('[Gemini] API Key loaded:', apiKey ? `${apiKey.substring(0, 20)}...` : 'MISSING');
-
-    if (!apiKey) {
-      throw new Error("No Google API key configured");
-    }
-    const genAI = new GoogleGenerativeAI(apiKey);
-
-    // Use gemini-2.0-flash (stable, fast model - 1.5 retired April 2025)
-    // Available models: gemini-2.0-flash, gemini-2.5-flash, gemini-2.5-pro
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    console.log('[Gemini] Using model: gemini-2.0-flash');
-
     const prompt = `You are a content marketing expert. Generate 6 highly engaging, specific content ideas related to "${keyword}".
 
 These should be:
-- Unique angles or perspectives on ${keyword}
+- Unique angles or perspectives
 - Actionable content topics that would perform well on social media
-- Relevant to current trends and audience interests
-- Specific enough to create engaging posts
+- Relevant to current trends
 
-For each idea, provide:
-- title: A compelling, specific content angle (3-6 words, not generic)
-- formattedTraffic: Estimated monthly interest (format: "XXK searches" where XX is 50-300)
-- relatedQueries: 3 specific, searchable phrases people would use to find this content
+For each idea, provide a title, estimated traffic, and related queries.
 
-IMPORTANT: Make titles SPECIFIC and ACTIONABLE, not generic categories.
-Good examples: "Morning Routines for Busy Parents", "Budget-Friendly Car Features to Look For"
-Bad examples: "Parenting Tips", "Car Shopping"
-
-Format as JSON array:
+Your response MUST be a valid JSON array of objects with the following structure. Do not include any other text or markdown.
 [
   {
-    "title": "Specific Content Angle",
+    "title": "A Specific and Compelling Content Angle",
     "formattedTraffic": "XXK searches",
     "relatedQueries": ["specific query 1", "specific query 2", "specific query 3"]
   }
-]
-
-Return ONLY the JSON array, no markdown formatting or explanations.`;
+]`;
 
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    
+    const candidates = result.response.candidates;
+    const responseText = candidates?.[0]?.content?.parts?.[0]?.text;
 
-    // Clean up markdown if present
-    const jsonText = text
-      .replace(/```json\n?/g, "")
-      .replace(/```\n?/g, "")
-      .trim();
-    const trends = JSON.parse(jsonText);
+    if (!responseText) {
+      throw new Error("No text content in Vertex AI response");
+    }
+
+    // Directly parse the response, now guaranteed to be JSON
+    // Strip code blocks if present
+    const cleanedText = responseText.replace(/```json\n|\n```/g, '').replace(/```/g, '');
+    const trends = JSON.parse(cleanedText);
 
     const duration = performance.now() - startTime;
     console.log(`[Gemini] ✓ Generated ${trends.length} keyword-optimized trends in ${Math.round(duration)}ms`);
 
-    // Calculate viral scores for Gemini-generated trends
-    const trendsWithScores = await Promise.all(trends.map(async (trend: any) =>
-      await calculateViralScore({
-        title: trend.title,
-        formattedTraffic: trend.formattedTraffic || '0K searches',
-        sources: ['gemini-ai'], // Mark as AI-generated
-        firstSeenAt: new Date()
-      })
-    ));
+    // Return trends directly - scoring is handled sequentially in the main handler
+    const rawTrends = trends.map((trend: any) => ({
+      title: trend.title,
+      formattedTraffic: trend.formattedTraffic || '0K searches',
+      source: 'gemini-ai',
+      url: '#', // Placeholder
+      publishedAt: new Date().toISOString()
+    }));
 
-    // Sort by viral score
-    const sortedTrends = sortByViralScore(trendsWithScores);
-
-    console.log(`[Viral Score] ✓ Scored ${sortedTrends.length} Gemini trends (top score: ${sortedTrends[0]?.viralScore || 0})`);
+    console.log(`[Gemini] ✓ Generated ${rawTrends.length} trends (scoring deferred to main handler)`);
 
     return {
-      trending: sortedTrends,
-      relatedQueries: [
+      trending: rawTrends,
+       relatedQueries: [
         { query: `${keyword} ideas 2025`, value: 100, formattedValue: "100%" },
         { query: `how to ${keyword}`, value: 85, formattedValue: "85%" },
         { query: `best ${keyword} tips`, value: 70, formattedValue: "70%" },
@@ -334,10 +324,11 @@ Return ONLY the JSON array, no markdown formatting or explanations.`;
     };
   } catch (error: any) {
     const duration = performance.now() - startTime;
-    console.error(
-      `[Gemini Fallback] Error generating trends after ${Math.round(duration)}ms:`,
-      error.message,
-    );
+    console.error(`[Gemini Trends Error] Failed to generate trends after ${Math.round(duration)}ms`, {
+        keyword,
+        errorMessage: error.message,
+    });
+    // Re-throw the error to allow the calling function's fallback logic to engage
     throw error;
   }
 }
@@ -408,28 +399,52 @@ export async function GET(request: NextRequest) {
           return NextResponse.json(result, { headers });
         } catch (error) {
           console.error(
-            "[Trends API] PowerShell service unavailable, using mock data",
+            "[Trends API] Real trends unavailable, falling back to Gemini AI",
           );
-          // Fallback to mock data if PowerShell service is down
-          const result = {
-            success: true,
-            mode: "trending",
-            source: "mock-fallback",
-            data: mockTrendingTopics,
-            meta: {
-              totalResults: mockTrendingTopics.length,
-              timestamp: new Date().toISOString(),
-              cached: false,
-              response_time_ms: Math.round(performance.now() - startTime),
-            },
-          };
+          // Fallback to Gemini AI if real trends fail
+          try {
+            const geminiResult = await generateTrendsWithGemini("trending topics", userId);
+            const result = {
+              success: true,
+              mode: "trending",
+              source: "gemini-ai-fallback",
+              data: geminiResult,
+              meta: {
+                totalResults: geminiResult.trending?.length || 0,
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
 
-          // If Redis is available, update the cache for future requests
-          if (redisAvailable && !bypassCache) {
-            updateCacheAsync(cacheKey, result, CACHE_TTL); // 🚀 OPTIMIZATION: Fire-and-forget cache write
+            // If Redis is available, update the cache for future requests
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL);
+            }
+
+            return NextResponse.json(result, { headers });
+          } catch (geminiError) {
+            console.error("[Trends API] Gemini also unavailable, using mock data");
+            // Final fallback to mock data
+            const result = {
+              success: true,
+              mode: "trending",
+              source: "mock-fallback",
+              data: mockTrendingTopics,
+              meta: {
+                totalResults: mockTrendingTopics.length,
+                timestamp: new Date().toISOString(),
+                cached: false,
+                response_time_ms: Math.round(performance.now() - startTime),
+              },
+            };
+
+            if (redisAvailable && !bypassCache) {
+              updateCacheAsync(cacheKey, result, CACHE_TTL);
+            }
+
+            return NextResponse.json(result, { headers });
           }
-
-          return NextResponse.json(result, { headers });
         }
       }
 

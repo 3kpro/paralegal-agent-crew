@@ -56,6 +56,11 @@ export interface Trend {
     keywordBoost: number;
     aiAnalysis: number;
   };
+  viralDNA?: {
+    hookType?: string;
+    primaryEmotion?: string;
+    valueProp?: string;
+  };
   aiReasoning?: string;
   sources?: string[];
 }
@@ -153,6 +158,18 @@ export interface ProductDetails {
 /**
  * Promote Campaign Data
  */
+export interface DriveFile {
+  id: string;
+  name: string;
+  embedUrl: string;
+  mimeType: string;
+  iconUrl: string;
+  url: string;
+}
+
+/**
+ * Promote Campaign Data
+ */
 export interface PromoteData {
   productName: string;
   productType: "product" | "service" | "content" | "saas" | "other";
@@ -164,6 +181,8 @@ export interface PromoteData {
   driveLink?: string;
   contentFocus?: string;
   uploadedFiles?: File[]; // For UI state only
+  driveFiles?: DriveFile[];
+  accessToken?: string;
 }
 
 

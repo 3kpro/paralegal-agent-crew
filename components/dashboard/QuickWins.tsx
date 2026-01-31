@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MagicWand, Trophy } from "@phosphor-icons/react";
+import { Wand2, Trophy } from "lucide-react";
 
 interface QuickWinsProps {
   wins: string[];
@@ -19,7 +19,7 @@ export default function QuickWins({ wins }: QuickWinsProps) {
     >
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-gradient-to-br from-coral-500 to-purple-500 rounded-xl">
-          <Trophy className="w-5 h-5 text-white" weight="duotone" />
+          <Trophy className="w-5 h-5 text-white" />
         </div>
         <h2 className="text-xl font-bold text-white">Quick Wins</h2>
       </div>
@@ -33,7 +33,7 @@ export default function QuickWins({ wins }: QuickWinsProps) {
             transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
             className="flex items-start gap-3 p-3 bg-[#343a40]/50 rounded-xl border border-gray-700/30"
           >
-            <MagicWand className="w-4 h-4 text-coral-500 mt-0.5 flex-shrink-0" weight="duotone" />
+            <Wand2 className="w-4 h-4 text-coral-500 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-gray-200 leading-relaxed">{win}</p>
           </motion.div>
         ))}

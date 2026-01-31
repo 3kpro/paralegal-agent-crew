@@ -12,102 +12,52 @@ const faqs = [
       {
         question: "How does XELORA work?",
         answer:
-          "XELORA uses our XELORA™ technology to discover trending topics in your industry, then AI Cascade™ generates professional content in multiple formats (Twitter threads, LinkedIn posts, emails), and finally OmniFormat™ formats it perfectly for all your channels. The entire process takes under 60 seconds.",
+          "XELORA discovers trending topics with real search volume data, scores them with our Viral Score™ algorithm (0-100), and reveals the Viral DNA™ (Hook, Emotion, Value) behind each trend. You then generate platform-optimized content variations for all major platforms. The entire process is engineered to move from data to draft in under 60 seconds.",
       },
       {
         question: "Do I need any technical skills to use it?",
         answer:
-          "Not at all! XELORA is designed for creators, not developers. If you can post on social media, you can use our platform. Our onboarding wizard walks you through connecting your accounts and launching your first campaign in under 5 minutes.",
+          "Not at all. XELORA is designed for creators and strategists. The interface is high-density but intuitive: browse trends, analyze the DNA, select platforms, and generate. No prompt engineering or coding required.",
       },
       {
-        question: "Which platforms does it support?",
+        question: "Which platforms are supported?",
         answer:
-          "We generate optimized content for Twitter, LinkedIn, and Email. We are adding support for Instagram, Facebook, TikTok, and YouTube formats in Q2 2025. Direct publishing and scheduling integrations are coming soon.",
-      },
-    ],
-  },
-  {
-    category: "AI & Content Quality",
-    questions: [
-      {
-        question: "Will the AI content sound like my voice?",
-        answer:
-          "Yes! Our BrandGuard™ technology learns your writing style from your previous content. You can also set tone preferences (professional, casual, technical, etc.) and the AI adapts accordingly. Most users can't tell the difference between AI and human-written content after the initial setup.",
-      },
-      {
-        question: "Can I edit the content before publishing?",
-        answer:
-          "Absolutely! All content goes through our preview system where you can edit, refine, or completely rewrite before scheduling or publishing. We recommend reviewing content initially as the AI learns your preferences.",
-      },
-      {
-        question: "How original is the AI-generated content?",
-        answer:
-          "Each piece of content is uniquely generated based on trending topics and your brand voice. Our AI doesn't copy or plagiarize—it creates original content inspired by trends. We also include a plagiarism checker for peace of mind.",
-      },
-      {
-        question: "What if my industry is very niche?",
-        answer:
-          "XELORA™ works across all industries! You can specify your niche during setup (SaaS, coaching, e-commerce, etc.) and our trend discovery focuses on your specific market. The more specific you are, the better your results.",
+          "Currently, XELORA generates high-performance content for Twitter, LinkedIn, Facebook, Instagram, TikTok, and Reddit. Each output is uniquely tailored to the specific character limits and psychological drivers of that platform.",
       },
     ],
   },
   {
-    category: "Pricing & Plans",
+    category: "Strategy & Performance",
     questions: [
       {
-        question: "Is there a free trial?",
+        question: "Can I customize the AI's output?",
         answer:
-          "Yes! We offer a 14-day free trial with full access to all features. No credit card required. You can generate up to 50 pieces of content and connect 2 channels during your trial.",
+          "Yes. You have full control over tone, content focus, target audience, and length. You can also use platform-specific presets like 'LinkedIn Authority' or 'Twitter Viral Hook' to guide the engine.",
       },
       {
-        question: "Can I cancel anytime?",
+        question: "Can I schedule content directly?",
         answer:
-          "Yes, you can cancel your subscription anytime with one click. No contracts, no cancellation fees. Your account remains active until the end of your billing period.",
+          "Native scheduling and one-click publishing are currently in development as part of our Phase 2 roadmap. For now, XELORA provides a seamless 'Copy to Draft' workflow to get your campaigns into your favorite management tools instantly.",
       },
       {
-        question: "Do you offer refunds?",
+        question: "What is Viral Score™?",
         answer:
-          "We offer a 30-day money-back guarantee on all plans. If you're not satisfied with XELORA, contact us within 30 days for a full refund.",
+          "Our algorithm scores trends 0-100 by benchmarking them against a database of 10k+ proven viral hits. It analyzes sentiment, keyword velocity, and psychometric alignment to predict engagement before you post.",
       },
     ],
   },
   {
-    category: "Security & Data",
+    category: "Features",
     questions: [
       {
-        question: "Is my data safe and secure?",
+        question: "What is Viral DNA™?",
         answer:
-          "Security is our top priority. We use enterprise-grade encryption, SOC 2 compliance, and never store your social media passwords. We only access the minimum permissions needed to analyze trends and generate content.",
+          "Viral DNA™ reveals the psychological mechanics of a trend. We break every viral topic down into its Hook (Attention), Emotion (Trigger), and Value (Promise). Understanding the DNA allows you to repeat success predictably.",
       },
       {
-        question: "Do you store my content?",
+        question: "Can I validate my own ideas?",
         answer:
-          "We temporarily store generated content for 30 days to enable editing and rescheduling. After that, it's automatically deleted. You own 100% of your content—we never use it for training or other purposes.",
-      },
-      {
-        question: "Can I disconnect my accounts anytime?",
-        answer:
-          "Yes, you can disconnect any connected account with one click. This immediately revokes our access. Your content history remains in your dashboard for reference.",
-      },
-    ],
-  },
-  {
-    category: "Features & Limits",
-    questions: [
-      {
-        question: "How much content can I generate?",
-        answer:
-          "It depends on your plan: Starter (50/month), Pro (unlimited), Agency (unlimited). Most users on Pro create 5-10 pieces per day. There are no hidden limits or throttling.",
-      },
-      {
-        question: "Can I schedule content in advance?",
-        answer:
-          "SmartScheduler™ is coming soon! Currently, you can generate and export content instantly. We are building direct scheduling integration for Q2 2025 to let you plan weeks in advance.",
-      },
-      {
-        question: "Do you provide analytics?",
-        answer:
-          "Pro and Agency plans include ImpactMetrics™ with detailed analytics: engagement rates, best-performing content, audience growth, and ROI tracking. You can export reports for clients or internal use.",
+          "Yes. The 'Promote Your Idea' feature allows you to bypass trend discovery and input your own product, service, or concept. XELORA will apply the same Viral DNA™ analysis to engineer content for your specific offering.",
       },
     ],
   },
@@ -122,13 +72,13 @@ export default function FAQSection() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-[#2b2b2b] relative overflow-hidden">
+    <section id="faq" className="py-24 bg-background relative overflow-hidden border-t border-border">
       {/* Background Pattern */}
       <BGPattern
         variant="dots"
         mask="fade-center"
         size={24}
-        fill="rgba(255,255,255,0.12)"
+        fill="rgba(0,0,0,0.05)"
         className="z-0"
         style={{ zIndex: 0 }}
       />
@@ -141,28 +91,19 @@ export default function FAQSection() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-coral-500/20 rounded-full mb-6 border border-coral-500/30">
-              <HelpCircle className="w-4 h-4 text-coral-400" weight="duotone" />
-              <span className="text-sm font-semibold text-coral-400">
-                Frequently Asked Questions
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-none mb-6">
+              <HelpCircle className="w-4 h-4 text-foreground" weight="duotone" />
+              <span className="text-sm font-bold text-foreground">
+                FREQUENTLY ASKED QUESTIONS
               </span>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Everything You Need to Know
+            <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 uppercase tracking-tighter">
+              The Intelligence <span className="text-muted-foreground">Layer.</span>
             </h2>
 
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Got questions? We've got answers. If you can't find what you're
-              looking for,
-              <a
-                href="#contact"
-                className="text-coral-500 hover:text-coral-400 font-semibold"
-              >
-                {" "}
-                reach out to our team
-              </a>
-              .
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Insights on how we decode viral momentum and engineer content.
             </p>
           </motion.div>
 
@@ -175,11 +116,11 @@ export default function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
               >
-                <h3 className="text-2xl font-bold text-white mb-6 pb-3 border-b-2 border-coral-500/50">
+                <h3 className="text-sm font-bold text-foreground mb-6 pb-2 border-b border-border uppercase tracking-widest">
                   {category.category}
                 </h3>
 
-                <div className="space-y-4">
+                <div className="space-y-0 border-x border-t border-border">
                   {category.questions.map((faq, questionIndex) => {
                     const isOpen =
                       openItems[`${categoryIndex}-${questionIndex}`];
@@ -187,22 +128,22 @@ export default function FAQSection() {
                     return (
                       <div
                         key={questionIndex}
-                        className="bg-[#343a40] rounded-xl shadow-sm border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200 overflow-hidden"
+                        className="bg-card border-b border-border transition-all duration-200 overflow-hidden"
                       >
                         <button
                           onClick={() =>
                             toggleItem(categoryIndex, questionIndex)
                           }
-                          className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-[#3a4046] transition-colors duration-200"
+                          className="w-full px-8 py-6 text-left flex items-center justify-between hover:bg-muted transition-colors duration-200"
                         >
-                          <span className="font-semibold text-white text-lg pr-8">
+                          <span className="font-bold text-foreground text-lg pr-8 tracking-tight">
                             {faq.question}
                           </span>
                           <div className="flex-shrink-0">
                             {isOpen ? (
-                              <Minus className="w-6 h-6 text-coral-500" weight="duotone" />
+                              <Minus className="w-5 h-5 text-foreground" weight="bold" />
                             ) : (
-                              <Plus className="w-6 h-6 text-gray-400" weight="duotone" />
+                              <Plus className="w-5 h-5 text-muted-foreground" weight="bold" />
                             )}
                           </div>
                         </button>
@@ -216,8 +157,8 @@ export default function FAQSection() {
                               transition={{ duration: 0.3, ease: "easeInOut" }}
                               className="overflow-hidden"
                             >
-                              <div className="px-6 pb-6">
-                                <p className="text-gray-300 leading-relaxed">
+                              <div className="px-8 pb-8 pt-0">
+                                <p className="text-muted-foreground leading-relaxed font-medium">
                                   {faq.answer}
                                 </p>
                               </div>
@@ -237,36 +178,20 @@ export default function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-center mt-16 bg-[#343a40] rounded-2xl p-12 border-2 border-gray-700/50 hover:border-coral-500/50 transition-all duration-200"
+            className="text-center mt-20 p-12 bg-muted border border-border"
           >
-            <h3 className="text-2xl font-bold mb-4 text-white">
+            <h3 className="text-2xl font-bold mb-4 text-foreground uppercase tracking-tighter">
               Still Have Questions?
             </h3>
-            <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-              Our team is here to help! Book a free 15-minute consultation to
-              discuss your content strategy and see if XELORA is
-              right for you.
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto font-medium">
+              Our team is ready to discuss your specific content engineering needs and how XELORA can optimize your workflow.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => {
-                  const contactElement = document.getElementById("contact");
-                  if (contactElement) {
-                    contactElement.scrollIntoView({ behavior: "smooth" });
-                  }
+                  window.location.href = "mailto:support@xelora.app";
                 }}
-                className="px-8 py-4 bg-coral-500 text-white rounded-xl font-semibold text-lg shadow-xl hover:shadow-coral-500/20 transition-all duration-200"
-              >
-                Book Free Consultation
-              </button>
-              <button
-                onClick={() => {
-                  const contactElement = document.getElementById("contact");
-                  if (contactElement) {
-                    contactElement.scrollIntoView({ behavior: "smooth" });
-                  }
-                }}
-                className="px-8 py-4 bg-transparent text-white rounded-xl font-semibold text-lg border-2 border-gray-700/70 hover:border-coral-500/50 transition-all duration-200"
+                className="px-10 py-4 bg-foreground text-background font-bold text-lg border border-foreground hover:bg-background hover:text-foreground transition-all duration-200 uppercase tracking-tighter"
               >
                 Contact Support
               </button>
@@ -275,5 +200,6 @@ export default function FAQSection() {
         </div>
       </div>
     </section>
+
   );
 }

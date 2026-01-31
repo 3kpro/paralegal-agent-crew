@@ -19,7 +19,7 @@ import {
   InstagramLogo as Instagram,
   MusicNote as Music,
 } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 export default function AnalyticsPage() {
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function AnalyticsPage() {
     return (
       <div className="min-h-screen bg-tron-dark flex items-center justify-center">
         <div className="text-center">
-          <BouncingDots className="bg-tron-cyan" />
+          <OrbitalLoader className="w-10 h-10 text-tron-cyan" />
           <p className="text-tron-text-muted">Loading Analytics...</p>
         </div>
       </div>

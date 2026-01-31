@@ -1,5 +1,6 @@
-import { XeloraLogo } from "./XeloraLogo";
-import { TwitterLogo, LinkedinLogo, Envelope } from "@phosphor-icons/react";
+"use client";
+
+import Link from "next/link";
 
 export const Footer: React.FC = () => {
   const scrollToSection = (sectionId: string) => {
@@ -10,194 +11,67 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-tron-dark text-white py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <span className="text-xl font-bold">XELORA</span>
-              <XeloraLogo className="w-10 h-10" />
+    <footer className="bg-white border-t border-black py-24 text-black font-sans">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid md:grid-cols-4 gap-12 mb-20">
+          <div className="space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 border border-black flex items-center justify-center font-bold text-xs">3K</div>
+              <span className="text-xl font-bold uppercase tracking-tighter">XELORA</span>
             </div>
-            <p className="text-tron-text-muted">
-              AI-powered content marketing platform for modern businesses.
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 leading-relaxed">
+              The predictive intelligence layer for creators. Stop guessing. Start engineering momentum.
             </p>
-            <div className="mt-6">
-              <a
-                href="https://www.producthunt.com/posts/xelora?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-xelora"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1049670&theme=dark&t=1765658239336"
-                  alt="XELORA - XELORA: Predict Momentum. Engineer Virality. | Product Hunt"
-                  style={{ width: '250px', height: '54px' }}
-                  width="250"
-                  height="54"
-                />
-              </a>
-            </div>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
-            <ul className="space-y-2 text-tron-text-muted">
-              <li>
-                <button
-                  onClick={() => scrollToSection("services")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Features
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("pricing")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Pricing
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  API
-                </button>
-              </li>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8 opacity-40">System Access</h3>
+            <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+              <li><button onClick={() => scrollToSection("services")} className="hover:opacity-60 transition-opacity">Decomposition Matrix</button></li>
+              <li><button onClick={() => scrollToSection("pricing")} className="hover:opacity-60 transition-opacity">Allocation Indices</button></li>
+              <li><button onClick={() => scrollToSection("about")} className="hover:opacity-60 transition-opacity">Technical Docs</button></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
-            <ul className="space-y-2 text-tron-text-muted">
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  About
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Blog
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Careers
-                </button>
-              </li>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8 opacity-40">Organization</h3>
+            <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+               <li><button onClick={() => scrollToSection("about")} className="hover:opacity-60 transition-opacity">Engineering Blog</button></li>
+               <li><button onClick={() => scrollToSection("about")} className="hover:opacity-60 transition-opacity">Secure Channels</button></li>
+               <li><button onClick={() => scrollToSection("about")} className="hover:opacity-60 transition-opacity">Operational Status</button></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-tron-text-muted">
-              <li>
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Help Center
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("contact")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Contact
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("faq")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  FAQ
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection("about")}
-                  className="hover:text-tron-cyan transition-colors"
-                >
-                  Status
-                </button>
-              </li>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] mb-8 opacity-40">Engagement</h3>
+            <ul className="space-y-4 text-[10px] font-bold uppercase tracking-widest leading-relaxed">
+               <li><button onClick={() => scrollToSection("contact")} className="hover:opacity-60 transition-opacity">Initiate Protocol</button></li>
+               <li><a href="/privacy" className="hover:opacity-60 transition-opacity">Privacy Shield</a></li>
+               <li><a href="/terms" className="hover:opacity-60 transition-opacity">Terms of Use</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-tron-grid mt-12 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <p className="text-tron-text-muted">
-                &copy; 2025 XELORA by{" "}
-                <a
-                  href="https://3kpro.services"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-tron-cyan hover:text-tron-cyan/80 transition-colors"
-                >
-                  3KPRO.SERVICES
-                </a>
-                . All rights reserved.
-              </p>
-              <div className="flex gap-4 text-sm">
-                <a
-                  href="/privacy"
-                  className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                >
-                  Privacy Policy
-                </a>
-                <span className="text-tron-text-muted">•</span>
-                <a
-                  href="/terms"
-                  className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                >
-                  Terms of Service
-                </a>
-              </div>
-            </div>
-
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a
-                href="https://x.com/3KPRO_SAAS"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                aria-label="Follow us on X (formerly Twitter)"
-              >
-                <TwitterLogo className="w-6 h-6" weight="duotone" />
+        <div className="border-t border-black/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <p className="text-[10px] font-bold uppercase tracking-widest opacity-40">
+              © {new Date().getFullYear()} XELORA.SYSTEMS_BY_{" "}
+              <a href="https://3kpro.services" target="_blank" rel="noopener noreferrer" className="text-black hover:underline underline-offset-4">
+                3KPRO.ENGINEERING
               </a>
+            </p>
+          </div>
 
-              <a
-                href="https://linkedin.com/company/3k-pro-services"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                aria-label="Connect with us on LinkedIn"
-              >
-                <LinkedinLogo className="w-6 h-6" weight="duotone" />
-              </a>
-
-              <a
-                href="mailto:info@3kpro.services"
-                className="text-tron-text-muted hover:text-tron-cyan transition-colors"
-                aria-label="Email us"
-              >
-                <Envelope className="w-6 h-6" weight="duotone" />
-              </a>
-            </div>
+          <div className="flex items-center gap-10">
+             <a href="https://x.com/3KPRO_SAAS" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+               Terminal_X
+             </a>
+             <a href="https://linkedin.com/company/3k-pro-services" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+               Direct_In
+             </a>
+             <a href="mailto:info@3kpro.services" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+               Secure_Mail
+             </a>
           </div>
         </div>
       </div>

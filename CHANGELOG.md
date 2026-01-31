@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-26] - Dashboard & Icon System Modernization 🎨
+
+### Improved
+- **Visual Consistency & Modernization**:
+  - **Icon System Upgrade**: Migrated the entire Dashboard ecosystem from `@phosphor-icons/react` to `lucide-react`, aligning with modern shadcn/ui aesthetics.
+  - **Component Updates**: Refactored `DashboardClient`, `UsageMeter`, `QuickWins`, `ProgressTracker`, `FirstTimeTooltips`, `CalendarView`, `ActivityChart`, and `Sidebar`.
+  - **Aesthetic Cleanup**: Removed legacy "duotone" and "fill" icon weights in favor of clean, professional strokes (outline style).
+  - **Sidebar**: Updated navigation icons to clearer, more recognizable Lucide equivalents (`LayoutDashboard`, `Zap`, `Bot`, `Settings`).
+  - **Professional Icon Refinement**: Replaced "childish" icons (Rocket, Zap) with business-oriented equivalents (Megaphone, Timer, FileStack) based on user feedback.
+  - **Premium Loading States**: 
+    - **OrbitalLoader Integration**: Replaced the legacy `BouncingDots` component with a new, high-fidelity `OrbitalLoader` using a multi-ring CSS/Framer Motion animation.
+    - **Global Migration**: Updated 20+ files including `CampaignCreate`, `Onboarding`, `PublishButton`, and `WaitlistSection` to use the new premium spinner.
+    - **Deprecation**: Safely removed `components/ui/bouncing-dots.tsx` after ensuring all references were migrated.
+
+## [2026-01-25] - Tailwind Configuration Refactor 🎨
+
+### Improved
+- **Codebase Quality**:
+  - **Magic Numbers Removal**: Extracted animation values (distances, sizes, durations) into named constants in `tailwind.config.js`.
+  - **Color Deduplication**: Unified `coral` and `primary` color palettes to single source of truth.
+  - **Documentation**: Added comments explaining animation durations and choices.
+  - **Cleanup**: Processed and removed `docs/handoffs/upgrade_to_xelora.md`.
+
+## [2026-01-24] - Portal Layout Refactor 🎨
+
+### Improved
+- **Portal Layout Architecture**:
+  - **Component Extraction**: Split the massive `PortalLayout` into focused sub-components (`PortalHeader`, `UserMenuDropdown`, `WhatsNewModal`) to improve maintainability and performance.
+  - **Context Isolation**: Created a clear separation between `Provider` wrappers and content consumers, enabling proper usage of hooks like `useToast` within layout logic.
+  - **Error Handling**: Added robust error feedback for user actions like Logout and Profile Fetch failures using the toast system.
+  - **Code Quality**: Reduced nesting depth, eliminated magic numbers, and consolidated duplicate logic for a cleaner, more readable codebase.
+
 ## [2026-01-06] - Campaign Scheduling & UX Refinements
 
 ### Improved

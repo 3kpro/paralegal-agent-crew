@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import logoImg from '../public/media/LOGO/images/LogoFinal_v2.png';
+import logoImg from '../public/media/LOGO/images/WH_TR_LOGO.png';
 
 export function XeloraLogo({ className = "w-16 h-16", showText = false }: { className?: string, showText?: boolean }) {
   return (

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 import { Plus, Check, X, Users, Trash as Trash2, TwitterLogo as Twitter, LinkedinLogo as Linkedin, FacebookLogo as Facebook, InstagramLogo as Instagram, MusicNotes as Music, YoutubeLogo as Youtube } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface SocialAccount {
   id: string;
@@ -204,7 +204,7 @@ export function SocialAccountSetup({
     return (
       <div className="flex items-center justify-center p-8">
         <div className="text-center">
-          <BouncingDots className="bg-tron-cyan" />
+          <OrbitalLoader className="w-10 h-10 text-tron-cyan" />
           <p className="text-tron-text-muted">Loading social accounts...</p>
         </div>
       </div>
@@ -238,7 +238,7 @@ export function SocialAccountSetup({
                 <platform.icon className="w-4 h-4" weight="duotone" />
                 Connect {platform.name}
                 {connecting === platform.id && (
-                  <BouncingDots className="bg-white w-1.5 h-1.5" />
+                  <OrbitalLoader className="w-5 h-5" />
                 )}
               </motion.button>
             ))}
@@ -314,7 +314,7 @@ export function SocialAccountSetup({
                   >
                     {connecting === platform.id ? (
                       <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full">
-                        <BouncingDots className="bg-white w-1.5 h-1.5" />
+                        <OrbitalLoader className="w-5 h-5" />
                       </div>
                     ) : (
                       <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-white font-medium hover:bg-white/30 transition-colors">
@@ -475,7 +475,7 @@ export function SocialAccountSetup({
                           {platform.name}
                         </h4>
                         {connecting === platform.id && (
-                          <BouncingDots className="bg-tron-cyan w-1.5 h-1.5" />
+                          <OrbitalLoader className="w-5 h-5 text-tron-cyan" />
                         )}
                       </div>
 

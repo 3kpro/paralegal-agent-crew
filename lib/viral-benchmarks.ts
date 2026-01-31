@@ -22,7 +22,7 @@ export interface ViralBenchmark {
  * Uses full-text search (or vector search if enabled later) to find matches.
  */
 export async function findSimilarViralHooks(topic: string, limit: number = 3): Promise<ViralBenchmark[]> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Clean the topic for text search
   const cleanTerm = topic.replace(/[^\w\s]/g, '').trim().split(/\s+/).join(' | ');

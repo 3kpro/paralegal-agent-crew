@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Fire as Flame, Lightning as Zap, ChartBar as BarChart3, TrendUp as TrendingUp, MagnifyingGlass as Search } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { LoadingState } from "@/components/LoadingStates";
 
 interface TrendingTopic {
@@ -198,7 +198,7 @@ export default function TrendDiscovery() {
             >
               {loading ? (
                 <>
-                  <BouncingDots className="bg-white w-1.5 h-1.5" />
+                  <OrbitalLoader className="w-5 h-5" />
                   Searching...
                 </>
               ) : (
@@ -215,7 +215,7 @@ export default function TrendDiscovery() {
             >
               {loading ? (
                 <>
-                  <BouncingDots className="bg-white w-1.5 h-1.5" />
+                  <OrbitalLoader className="w-5 h-5" />
                   Loading...
                 </>
               ) : (

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { PaperPlaneRight as Send, Lock } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import TikTokPublishModal, { TikTokPublishMetadata } from "./TikTokPublishModal";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface PublishButtonProps {
   content?: string;
@@ -155,7 +155,7 @@ export default function PublishButton({
         `}
       >
         {loading ? (
-          <BouncingDots className="bg-white w-1.5 h-1.5" />
+          <OrbitalLoader className="w-5 h-5" />
         ) : (
           <Send className="w-4 h-4" weight="duotone" />
         )}

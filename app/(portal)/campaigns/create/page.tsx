@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import Fireworks from "@/components/Fireworks";
 import { GenerationResponse, ValidationError, RateLimitError, SetupRequiredError } from "@/lib/types/api";
+import { useHelix } from "@/context/HelixContext";
 
 // Type guards for API responses
 function isSetupRequiredError(data: GenerationResponse): data is SetupRequiredError {
@@ -36,22 +37,25 @@ import {
   BarChart3,
   Flame,
   Copy,
-  Layout,
   Search,
   Activity,
   BrainCircuit,
   Download,
   Home,
+  RefreshCw,
+  Bookmark,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import { BGPattern } from "@/components/ui/bg-pattern";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ContentSettings from "./components/ContentSettings";
 import GeneratedContentCard from "./components/GeneratedContentCard";
 import Toast from "./components/Toast";
+import UpgradeModal from "@/components/UpgradeModal";
 
+import { jsPDF } from "jspdf";
 import { ViralScoreBreakdown } from "@/components/ViralScoreBreakdown";
 import {
   Platform,
@@ -66,6 +70,7 @@ import {
 } from "./types";
 import PromoteInput from "./components/PromoteInput";
 import { TransferMasterclass } from "@/components/TransferMasterclass";
+import ControlOptionButton from "./components/ControlOptionButton";
 
 // Interface for AI provider data
 interface AIProvider {
@@ -100,6 +105,8 @@ export default function NewCampaignPage() {
   // Per-platform customization state
   const [customizePerPlatform, setCustomizePerPlatform] = useState(false);
   const [activePlatformTab, setActivePlatformTab] = useState<string | null>(null);
+
+  const { updateContext, registerAction } = useHelix();
 
   console.log("[EDIT MODE] editId:", editId, "isEditMode:", isEditMode);
 
@@ -196,7 +203,15 @@ export default function NewCampaignPage() {
   // Post-generation editing
   const [editingContent, setEditingContent] = useState<Record<string, boolean>>({});
   const [editedContent, setEditedContent] = useState<Record<string, string>>({});
+
+  // NEW: View All content toggle
   const [viewAllContent, setViewAllContent] = useState(false);
+
+  // NEW: Upgrade modal state
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<"campaigns" | "generations" | "features">("campaigns");
+  const [usageData, setUsageData] = useState<{ campaigns: number; campaignLimit: number } | undefined>();
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // NEW: Per-platform controls map
   interface PlatformSpecificSettings extends ContentControls {
@@ -216,6 +231,33 @@ export default function NewCampaignPage() {
       }));
     }
   }, [controls, selectedAudiences, customizePerPlatform, activePlatformTab]);
+
+
+  // NEW: Sync Helix Context with Campaign State
+  useEffect(() => {
+    updateContext({
+      page: "campaign-create",
+      pageContent: `
+        Current Step: ${currentCard}
+        Campaign Name: ${campaignName}
+        Selected Platforms: ${targetPlatforms.join(", ")}
+        Selected Trends: ${selectedTrends.map(t => `${t.title} (Score: ${t.viralScore})`).join(", ")}
+        Visible Trends: ${trends.slice(0, 5).map(t => t.title).join(", ")}
+        Available Actions: select_highest_trend, optimize_settings
+      `,
+      data: {
+        trends: trends,
+        selectedTrends: selectedTrends,
+        platforms: targetPlatforms
+      },
+      selections: {
+        trendId: selectedTrends[0]?.id,
+        platformIds: targetPlatforms
+      }
+    });
+  }, [currentCard, campaignName, targetPlatforms, selectedTrends, trends, updateContext]);
+
+
 
 
   // Track toast timeout to prevent stacking
@@ -243,6 +285,167 @@ export default function NewCampaignPage() {
     },
     []
   );
+
+  // NEW: Copy all content to clipboard
+  const copyAllContent = useCallback(() => {
+    if (!generatedContent || Object.keys(generatedContent).length === 0) {
+      showToast("No content to copy", "error");
+      return;
+    }
+
+    const allContent = targetPlatforms.map(platform => {
+      const content = editedContent[platform] ||
+        (typeof generatedContent[platform] === 'string'
+          ? generatedContent[platform]
+          : (generatedContent[platform] as ContentData)?.content || '');
+      return `=== ${platform.toUpperCase()} ===\n${content}`;
+    }).join('\n\n');
+
+    navigator.clipboard.writeText(allContent)
+      .then(() => {
+        showToast(`All ${targetPlatforms.length} platform posts copied!`, "success");
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        showToast("Failed to copy content", "error");
+      });
+  }, [editedContent, generatedContent, targetPlatforms, showToast]);
+
+  // NEW: Export campaign in multiple formats (Markdown, TXT, PDF)
+  const exportCampaign = useCallback((format: 'md' | 'txt' | 'pdf' = 'md') => {
+    if (!generatedContent || Object.keys(generatedContent).length === 0) {
+      showToast("No content to export", "error");
+      return;
+    }
+
+    const timestamp = new Date().toLocaleDateString();
+    const title = campaignName || 'Untitled Campaign';
+    const baseFileName = (campaignName || 'campaign').toLowerCase().replace(/\s+/g, '-');
+
+    if (format === 'pdf') {
+      const doc = new jsPDF();
+      let yOffset = 20;
+      const margin = 20;
+      const pageWidth = doc.internal.pageSize.width;
+      const contentWidth = pageWidth - (margin * 2);
+
+      // Title
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text(title, margin, yOffset);
+      yOffset += 12;
+
+      // Meta info
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      doc.text(`Generated: ${timestamp}`, margin, yOffset);
+      yOffset += 8;
+
+      if (selectedTrends.length > 0) {
+        doc.text(`Trend: ${selectedTrends[0]?.title || 'N/A'}`, margin, yOffset);
+        yOffset += 5;
+        doc.text(`Viral Score: ${selectedTrends[0]?.viralScore || 'N/A'}`, margin, yOffset);
+        yOffset += 15;
+      } else {
+        yOffset += 7;
+      }
+
+      // Content for each platform
+      targetPlatforms.forEach((platform) => {
+        const contentData = generatedContent[platform];
+        const content = editedContent[platform] ||
+          (typeof contentData === 'string'
+            ? contentData
+            : (contentData as any)?.content || '');
+
+        if (!content) return;
+
+        // Check for page break before platform header
+        if (yOffset > doc.internal.pageSize.height - 40) {
+          doc.addPage();
+          yOffset = 20;
+        }
+
+        // Platform Header
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text(platform.toUpperCase(), margin, yOffset);
+        yOffset += 8;
+
+        // Divider
+        doc.setDrawColor(200);
+        doc.line(margin, yOffset, pageWidth - margin, yOffset);
+        yOffset += 10;
+
+        // Content body
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(50);
+        
+        const splitText = doc.splitTextToSize(content, contentWidth);
+        
+        // Handle multi-page content for a single platform
+        splitText.forEach((line: string) => {
+          if (yOffset > doc.internal.pageSize.height - 20) {
+            doc.addPage();
+            yOffset = 20;
+          }
+          doc.text(line, margin, yOffset);
+          yOffset += 6;
+        });
+
+        yOffset += 15; // Gap between platforms
+      });
+
+      doc.save(`${baseFileName}-content.pdf`);
+    } else {
+      let exportContent = '';
+      let fileExt = '';
+      let mimeType = '';
+
+      const trendInfo = selectedTrends.length > 0
+        ? `Trend: ${selectedTrends[0]?.title || 'N/A'}\nViral Score: ${selectedTrends[0]?.viralScore || 'N/A'}\n\n`
+        : '';
+
+      if (format === 'md') {
+        fileExt = 'md';
+        mimeType = 'text/markdown';
+        exportContent = `# ${title}\nGenerated: ${timestamp}\n${trendInfo}${targetPlatforms.map(platform => {
+          const contentData = generatedContent[platform];
+          const content = editedContent[platform] ||
+            (typeof contentData === 'string'
+              ? contentData
+              : (contentData as any)?.content || '');
+          return `## ${platform.charAt(0).toUpperCase() + platform.slice(1)}\n\n${content}`;
+        }).join('\n\n---\n\n')}\n`;
+      } else {
+        fileExt = 'txt';
+        mimeType = 'text/plain';
+        exportContent = `${title}\nGenerated: ${timestamp}\n${trendInfo}${targetPlatforms.map(platform => {
+          const contentData = generatedContent[platform];
+          const content = editedContent[platform] ||
+            (typeof contentData === 'string'
+              ? contentData
+              : (contentData as any)?.content || '');
+          return `${platform.toUpperCase()}\n${'='.repeat(platform.length)}\n\n${content}`;
+        }).join('\n\n' + '-'.repeat(40) + '\n\n')}\n`;
+      }
+
+      const blob = new Blob([exportContent], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseFileName}-content.${fileExt}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    showToast(`Campaign exported as ${format.toUpperCase()}!`, "success");
+  }, [campaignName, editedContent, generatedContent, selectedTrends, targetPlatforms, showToast]);
 
   // Memoized platform list to prevent recreating on every render
   const platforms = useMemo<Platform[]>(
@@ -546,6 +749,23 @@ export default function NewCampaignPage() {
     calculatePredictedViralScore(primaryPreset.tone, primaryPreset.contentFocus, primaryPreset.audiences, primaryPreset.callToAction);
 
   }, [targetPlatforms, platformPresets, controls, showToast, activePlatformTab, calculatePredictedViralScore]);
+
+  // Register Helix Actions (moved here to access function definitions)
+  useEffect(() => {
+    registerAction("select_highest_trend", () => {
+       if (trends.length > 0) {
+          const sorted = [...trends].sort((a,b) => (b.viralScore || 0) - (a.viralScore || 0));
+          if (sorted[0]) {
+             toggleTrendSelection(sorted[0]);
+             showToast(`Selected highest intent trend: ${sorted[0].title}`, "success");
+          }
+       }
+    });
+
+    registerAction("optimize_settings", () => {
+       handleAIOptimize();
+    });
+  }, [trends, toggleTrendSelection, handleAIOptimize, registerAction]);
 
 
 
@@ -1165,7 +1385,7 @@ export default function NewCampaignPage() {
    * Save campaign (as draft or scheduled)
    */
   const saveCampaign = useCallback(
-    async (publishNow = false) => {
+    async (publishNow = false): Promise<boolean> => {
       console.log("[SAVE CAMPAIGN] Function called. publishNow:", publishNow, "generatedContent exists:", !!generatedContent);
       setLoading(true);
       try {
@@ -1179,19 +1399,50 @@ export default function NewCampaignPage() {
           console.error("[SAVE CAMPAIGN] No user - redirecting to login");
           showToast("Please log in to save campaigns", "error");
           router.push("/login");
-          return;
+          return false;
         }
 
         if (!generatedContent) {
           console.error("[SAVE CAMPAIGN] No generated content - aborting save");
           showToast("No content to save. Please generate content first.", "error");
-          return;
+          return false;
         }
 
-        // Save campaign metadata
-        const campaignPayload: CampaignPayload = {
-          user_id: user.id,
+        // Check usage limits before saving (only for new campaigns, not edits)
+        if (!isEditMode || !editId) {
+          try {
+            const usageRes = await fetch("/api/usage");
+            const usageJson = await usageRes.json();
+
+            if (usageJson.success) {
+              const { tier, limits, usage } = usageJson;
+
+              // Check if user has exceeded monthly campaign limit
+              if (tier === "free" && limits.monthly_campaigns !== -1) {
+                if (usage.campaigns >= limits.monthly_campaigns) {
+                  setUsageData({
+                    campaigns: usage.campaigns,
+                    campaignLimit: limits.monthly_campaigns,
+                  });
+                  setUpgradeReason("campaigns");
+                  setShowUpgradeModal(true);
+                  setLoading(false);
+                  return false;
+                }
+              }
+            }
+          } catch (err) {
+            console.error("[SAVE CAMPAIGN] Usage check failed:", err);
+            // Continue with save even if usage check fails
+          }
+        }
+
+        // Prepare campaign data for RPC
+        const campaignData = {
+          id: (isEditMode && editId) ? editId : undefined,
+          user_id: user.id, // Included for completeness, though RPC verifies auth
           name: campaignName,
+          description: "", // Schema has description, defaulted to empty
           target_platforms: targetPlatforms,
           status: publishNow ? "scheduled" : "draft",
           campaign_type: campaignType,
@@ -1216,39 +1467,8 @@ export default function NewCampaignPage() {
           tone: controls.tone,
         };
 
-        let campaign;
-        let campaignError;
-
-        if (isEditMode && editId) {
-          // UPDATE existing campaign
-          const { data, error } = await supabase
-            .from("campaigns")
-            .update(campaignPayload)
-            .eq("id", editId)
-            .select()
-            .single();
-          campaign = data;
-          campaignError = error;
-        } else {
-          // INSERT new campaign
-          console.log("[Campaign Save] Payload:", campaignPayload);
-          const { data, error } = await supabase
-            .from("campaigns")
-            .insert(campaignPayload)
-            .select()
-            .single();
-          campaign = data;
-          campaignError = error;
-          console.log("[Campaign Save] Result:", { data, error });
-        }
-
-        if (campaignError) {
-          console.error("[Campaign Save] Error:", campaignError);
-          throw campaignError;
-        }
-
-        // Save generated content for each platform
-        const postsToInsert: ScheduledPost[] = [];
+        // Prepare posts data for RPC
+        const postsData = [];
         for (const [platform, contentData] of Object.entries(generatedContent)) {
           if (platform === "hashtags") continue;
 
@@ -1265,9 +1485,7 @@ export default function NewCampaignPage() {
             ? new Date(Date.now() + 60000).toISOString() // 1 minute from now for scheduled
             : new Date().toISOString(); // Current time for drafts
 
-          postsToInsert.push({
-            user_id: user.id,
-            campaign_id: campaign.id,
+          postsData.push({
             title: selectedTrend?.title || searchQuery,
             content: content,
             platform: platform,
@@ -1277,21 +1495,22 @@ export default function NewCampaignPage() {
           });
         }
 
-        if (postsToInsert.length > 0) {
-          // If editing, delete old posts first
-          if (isEditMode && editId) {
-            await supabase
-              .from("scheduled_posts")
-              .delete()
-              .eq("campaign_id", editId);
-          }
+        // Call the Atomic RPC Function
+        console.log("[Campaign Save] Calling RPC upsert_campaign_with_posts", { campaignData, postsCount: postsData.length });
+        
+        const { data, error } = await supabase.rpc('upsert_campaign_with_posts', {
+          campaign_data: campaignData,
+          posts_data: postsData
+        });
 
-          // Insert new/updated posts
-          const { error: postsError } = await supabase
-            .from("scheduled_posts")
-            .insert(postsToInsert);
+        if (error) {
+          console.error("[Campaign Save] RPC Error:", error);
+          throw error;
+        }
 
-          if (postsError) throw postsError;
+        if (data && data.success === false) {
+           console.error("[Campaign Save] logic failure:", data.error);
+           throw new Error(data.error || "Save failed");
         }
 
         const successMessage = isEditMode
@@ -1321,6 +1540,8 @@ export default function NewCampaignPage() {
             router.push(`/campaigns?action=published&name=${encodeURIComponent(campaignName)}`);
           }, 6500);
         }
+
+        return true;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
         console.error("Error saving campaign:", error);
@@ -1328,6 +1549,7 @@ export default function NewCampaignPage() {
           `Failed to save campaign: ${errorMessage}`,
           "error"
         );
+        return false;
       } finally {
         setLoading(false);
       }
@@ -1343,6 +1565,12 @@ export default function NewCampaignPage() {
       searchQuery,
       controls,
       aiProvider,
+      isEditMode,
+      editId,
+      campaignType,
+      promoteData,
+      selectedTrends,
+      selectedAudiences
     ]
   );
 
@@ -1375,76 +1603,12 @@ export default function NewCampaignPage() {
       });
   }, [editedContent, generatedContent, showToast]);
 
-  /**
-   * Copy ALL platform content to clipboard
-   */
-  const copyAllContent = useCallback(() => {
-    if (!generatedContent || Object.keys(generatedContent).length === 0) {
-      showToast("No content to copy", "error");
-      return;
-    }
-
-    const allContent = targetPlatforms.map(platform => {
-      const content = editedContent[platform] ||
-        (typeof generatedContent[platform] === 'string'
-          ? generatedContent[platform]
-          : generatedContent[platform]?.content || '');
-      return `=== ${platform.toUpperCase()} ===\n${content}`;
-    }).join('\n\n');
-
-    navigator.clipboard.writeText(allContent)
-      .then(() => {
-        showToast(`All ${targetPlatforms.length} platform posts copied!`, "success");
-      })
-      .catch((err) => {
-        console.error("Failed to copy:", err);
-        showToast("Failed to copy content", "error");
-      });
-  }, [editedContent, generatedContent, targetPlatforms, showToast]);
-
-  /**
-   * Export campaign as a text file
-   */
-  const exportCampaign = useCallback(() => {
-    if (!generatedContent || Object.keys(generatedContent).length === 0) {
-      showToast("No content to export", "error");
-      return;
-    }
-
-    const trendInfo = selectedTrends.length > 0
-      ? `Trend: ${selectedTrends[0]?.title || 'N/A'}\nViral Score: ${selectedTrends[0]?.viralScore || 'N/A'}\n\n`
-      : '';
-
-    const exportContent = `# ${campaignName || 'Untitled Campaign'}
-Generated: ${new Date().toLocaleDateString()}
-${trendInfo}
-${targetPlatforms.map(platform => {
-      const content = editedContent[platform] ||
-        (typeof generatedContent[platform] === 'string'
-          ? generatedContent[platform]
-          : generatedContent[platform]?.content || '');
-      return `## ${platform.charAt(0).toUpperCase() + platform.slice(1)}\n\n${content}`;
-    }).join('\n\n---\n\n')}
-`;
-
-    const blob = new Blob([exportContent], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${(campaignName || 'campaign').toLowerCase().replace(/\s+/g, '-')}-content.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast("Campaign exported!", "success");
-  }, [campaignName, editedContent, generatedContent, selectedTrends, targetPlatforms, showToast]);
-
   // Show loading screen while loading campaign data in edit mode
   if (loadingCampaignData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-tron-dark via-tron-grid to-tron-dark flex flex-col items-center justify-center gap-4">
         <LoadingState variant="luma" message="" />
-        <p className="text-tron-text-muted text-lg">Loading campaign data...</p>
+        <p className="text-zinc-300 text-lg">Loading campaign data...</p>
       </div>
     );
   }
@@ -1496,7 +1660,7 @@ ${targetPlatforms.map(platform => {
         }
       `}</style>
       
-    <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden p-4 md:p-8">
+    <div className="relative min-h-screen bg-background overflow-hidden p-1 md:p-3">
       <BGPattern
         variant="dots"
         mask="fade-center"
@@ -1505,7 +1669,7 @@ ${targetPlatforms.map(platform => {
         className="absolute inset-0 z-0 h-full w-full opacity-100"
         style={{ zIndex: 0 }}
       />
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full max-w-4xl mx-auto">
         {/* Card-based navigation - single focused card at a time */}
         <AnimatePresence mode="wait" custom={cardDirection}>
           
@@ -1514,24 +1678,30 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-1"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute top-0 -left-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -right-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-12">
-                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
-                  Setup
-                </span>
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <span className="inline-block px-4 py-1.5 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
+                    Setup
+                  </span>
+                  {/* Free/Pro Quota Indicator */}
+                  <span className="inline-block px-3 py-1.5 text-xs font-medium text-emerald-400 bg-emerald-500/10 rounded-full border border-emerald-500/30">
+                    Free Plan: 5 campaigns/mo
+                  </span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Name your campaign
                 </h2>
-                <p className="text-gray-400 max-w-md mx-auto">
+                <p className="text-gray-200 max-w-md mx-auto">
                   Give your idea a unique identity. This helps you track performance later.
                 </p>
               </div>
@@ -1548,7 +1718,7 @@ ${targetPlatforms.map(platform => {
                   }}
                   placeholder="e.g., Summer Launch 2026"
                   autoFocus
-                  className="w-full px-6 py-5 bg-gray-800/50 border border-gray-700 rounded-xl focus:outline-none focus:border-coral-500 focus:ring-1 focus:ring-coral-500 text-white text-xl text-center placeholder:text-gray-500 transition-all"
+                  className="w-full px-6 py-5 bg-muted/50 border border-input rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-foreground text-xl text-center placeholder:text-muted-foreground transition-all"
                 />
 
                 <motion.button
@@ -1558,8 +1728,8 @@ ${targetPlatforms.map(platform => {
                   whileTap={{ scale: 0.98 }}
                   className={`w-full mt-6 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
                     !campaignName.trim()
-                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
                   }`}
                 >
                   Continue
@@ -1574,28 +1744,25 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-2"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-coral-500/10 blur-[100px] rounded-full" />
+              <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-white/5 blur-[100px] rounded-full" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-12">
-                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
+                <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Choose Your Platforms
                 </span>
-                <h2 className="text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   Choose Content Formats
                 </h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-200 text-lg max-w-2xl mx-auto">
                   Select which social media formats you want to create content for. Each format will be optimized for its platform's style and character limits.
-                </p>
-                <p className="text-coral-400/60 text-sm mt-2">
-                  💡 Note: This is for content generation only. Social publishing features coming soon!
                 </p>
 
                 <button
@@ -1608,7 +1775,7 @@ ${targetPlatforms.map(platform => {
                       setTargetPlatforms(allIds);
                     }
                   }}
-                  className="mt-6 px-4 py-2 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 rounded-full text-xs font-medium text-coral-400 transition-all flex items-center gap-2 mx-auto"
+                  className="mt-6 px-4 py-2 bg-white/5 hover:bg-coral-500/20 border border-white/10 rounded-full text-xs font-medium text-white transition-all flex items-center gap-2 mx-auto"
                 >
                   {["twitter", "linkedin", "facebook", "instagram", "tiktok", "reddit"].every((id) =>
                     targetPlatforms.includes(id)
@@ -1646,10 +1813,10 @@ ${targetPlatforms.map(platform => {
                       }}
                       whileHover={{ scale: 1.05, y: -5 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`relative p-4 rounded-2xl border transition-all ${
+                      className={`relative p-4 rounded-2xl border transition-all cursor-pointer group ${
                         targetPlatforms.includes(platform.id)
-                          ? "bg-coral-500/10 border-coral-500/50 shadow-lg shadow-coral-500/20"
-                          : "bg-gray-800/50 border-gray-700 hover:border-coral-500/30"
+                          ? "bg-white/5 border-coral-500/50 shadow-lg shadow-coral-500/20 ring-2 ring-coral-500/30"
+                          : "bg-gray-800/50 border-gray-700 hover:border-coral-500/50 hover:bg-coral-500/5 hover:shadow-lg hover:shadow-coral-500/10"
                       }`}
                     >
                       {targetPlatforms.includes(platform.id) && (
@@ -1663,10 +1830,10 @@ ${targetPlatforms.map(platform => {
                       )}
                       <div className="flex items-center justify-center mb-2">
                         <Icon
-                          className={`w-8 h-8 ${
+                          className={`w-8 h-8 transition-colors ${
                             targetPlatforms.includes(platform.id)
-                              ? "text-coral-400"
-                              : "text-gray-500"
+                              ? "text-white"
+                              : "text-gray-300 group-hover:text-white"
                           }`}
                           strokeWidth={1.5}
                         />
@@ -1674,7 +1841,7 @@ ${targetPlatforms.map(platform => {
                       <h3 className="font-semibold mb-1 text-white text-sm">
                         {platform.name}
                       </h3>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-gray-200">
                         {platform.limit}
                       </p>
                     </motion.button>
@@ -1697,7 +1864,7 @@ ${targetPlatforms.map(platform => {
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-gray-800/50 border border-gray-700 rounded-xl font-semibold text-gray-300 hover:border-coral-500/30 hover:text-coral-400 transition-all text-lg"
+                  className="px-8 py-4 bg-gray-800/50 border border-gray-700 rounded-xl font-semibold text-gray-300 hover:border-white/10 hover:text-white transition-all text-lg"
                 >
                   ← Back
                 </motion.button>
@@ -1708,8 +1875,8 @@ ${targetPlatforms.map(platform => {
                   whileTap={{ scale: 0.98 }}
                   className={`flex-1 px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all ${
                     targetPlatforms.length === 0
-                      ? "bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700"
-                      : "bg-coral-500 text-white hover:bg-coral-600 shadow-lg shadow-coral-500/25"
+                      ? "bg-muted text-muted-foreground cursor-not-allowed border border-border"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25"
                   }`}
                 >
                   Continue
@@ -1724,36 +1891,36 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-3"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-coral-500/30 rounded-3xl p-12 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="relative overflow-hidden bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               {/* Subtle coral gradient background */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-coral-500/10 blur-[120px] rounded-full pointer-events-none" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 blur-[120px] rounded-full pointer-events-none" />
               <div className="absolute bottom-0 -left-1/4 w-1/2 h-1/2 bg-coral-600/10 blur-[100px] rounded-full" />
 
-              <div className="relative z-10 text-center mb-10">
-                 <span className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-wider text-coral-400 uppercase bg-coral-500/10 rounded-full border border-coral-500/30">
+              <div className="relative z-10 text-center mb-6 md:mb-8">
+                 <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-wider text-white uppercase bg-white/5 rounded-full border border-white/10">
                   Discovery
                 </span>
-                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-4 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-3 tracking-tight">
                   Choose your starting point
                 </h2>
                 
                 {/* Mini-Explainer */}
                 <div className="max-w-xl mx-auto mb-8 bg-gray-800/40 border border-gray-700/50 rounded-lg p-3 flex items-center gap-3 backdrop-blur-sm">
-                  <div className="p-2 bg-coral-500/10 rounded-md">
-                    <BrainCircuit className="w-5 h-5 text-coral-400" />
+                  <div className="p-2 bg-white/5 rounded-md">
+                    <BrainCircuit className="w-5 h-5 text-white" />
                   </div>
                   <p className="text-sm text-gray-300 text-left leading-relaxed">
-                    <span className="text-coral-400 font-bold">Viral DNA™ Science:</span> We analyze the psychological triggers (Hooks, Emotions, Values) behind 10M+ viral posts to predict success.
+                    <span className="text-white font-bold">Viral DNA™ Science:</span> We analyze the psychological triggers (Hooks, Emotions, Values) behind 10M+ viral posts to predict success.
                   </p>
                 </div>
               </div>
 
-              <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative z-10 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Discover Viral Button */}
                 <motion.button
                   onClick={loadTrendingTopics}
@@ -1765,38 +1932,38 @@ ${targetPlatforms.map(platform => {
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-coral-500/10 border border-coral-500/30 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
-                        <Flame className="w-6 h-6 text-coral-400 group-hover:text-white transition-colors" />
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Flame className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-coral-400 transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                         Discover Viral
                       </h3>
                     </div>
 
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
                        Don't guess. Browse concepts that are <strong>mathematically predicted</strong> to go viral right now based on current trends.
                     </p>
 
                     {/* Example Output Preview */}
                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
-                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Example Output</p>
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Example Output</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Hook Strategy</span>
-                           <span className="text-coral-300">"Contrarian Truth"</span>
+                           <span className="text-zinc-100">Hook Strategy</span>
+                           <span className="text-white">"Contrarian Truth"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Primary Emotion</span>
-                           <span className="text-coral-300">"Curiosity"</span>
+                           <span className="text-zinc-100">Primary Emotion</span>
+                           <span className="text-white">"Curiosity"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Value Prop</span>
-                           <span className="text-coral-300">"Insider Knowledge"</span>
+                           <span className="text-zinc-100">Value Prop</span>
+                           <span className="text-white">"Insider Knowledge"</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-coral-400 transition-colors mt-auto">
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-white transition-colors mt-auto">
                       Launch Discovery <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
@@ -1807,44 +1974,44 @@ ${targetPlatforms.map(platform => {
                   onClick={() => goToNextCard()}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-tron-cyan/20 rounded-3xl overflow-hidden hover:border-tron-cyan/40 hover:shadow-2xl hover:shadow-tron-cyan/10 transition-all duration-300 h-full flex flex-col"
+                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-tron-cyan/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative z-10 flex flex-col h-full">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-tron-cyan/10 border border-tron-cyan/30 flex items-center justify-center group-hover:bg-tron-cyan group-hover:text-white transition-colors duration-300">
-                        <Search className="w-6 h-6 text-tron-cyan group-hover:text-white transition-colors" />
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Search className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-tron-cyan transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
                         Validate Idea
                       </h3>
                     </div>
 
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
                       Have a topic? We'll analyze its <strong>Viral potential</strong> and give you specific instructions to increase its reach before you create.
                     </p>
 
                     {/* Example Output Preview */}
-                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-tron-cyan/20 transition-colors">
-                      <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
+                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Viral Prediction</span>
-                           <span className="text-tron-cyan font-mono font-bold">82/100</span>
+                           <span className="text-zinc-100">Viral Prediction</span>
+                           <span className="text-white font-mono font-bold">76/100</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Optimization</span>
-                           <span className="text-tron-cyan">"Make hook more urgent"</span>
+                           <span className="text-zinc-100">Optimization</span>
+                           <span className="text-white">"Make hook more urgent"</span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                           <span className="text-gray-400">Format Match</span>
-                           <span className="text-tron-cyan">"Perfect for LinkedIn"</span>
+                           <span className="text-zinc-100">Format Match</span>
+                           <span className="text-white">"Perfect for LinkedIn"</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-tron-cyan transition-colors mt-auto">
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-white transition-colors mt-auto">
                        Start Validation <ChevronRight className="w-4 h-4 ml-1" />
                     </div>
                   </div>
@@ -1856,7 +2023,7 @@ ${targetPlatforms.map(platform => {
                   onClick={goToPrevCard}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="text-gray-400 hover:text-coral-400 text-sm font-medium transition-colors py-2 px-4"
+                  className="text-gray-200 hover:text-white text-sm font-medium transition-colors py-2 px-4"
                 >
                   ← Go Back
                 </motion.button>
@@ -1869,25 +2036,25 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-4"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
               <div className="text-center mb-12">
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-tron-cyan/30 mb-6"
+                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-white/10 mb-6"
                 >
-                  <TrendingUp className="w-10 h-10 text-tron-cyan" />
+                  <TrendingUp className="w-10 h-10 text-white" />
                 </motion.div>
-                <h2 className="text-4xl font-bold text-tron-text mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                   What is the focus of your campaign?
                 </h2>
-                <p className="text-tron-text-muted text-lg">
+                <p className="text-zinc-300 text-lg">
                   Search for topics, keywords, or niches that matter to you
                 </p>
               </div>
@@ -1906,16 +2073,16 @@ ${targetPlatforms.map(platform => {
                     }}
                     placeholder="e.g., artificial intelligence, sustainable fashion, gaming..."
                     autoFocus
-                    className="w-full px-8 py-6 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                    className="w-full px-8 py-6 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
                   />
                   {searchQuery && (
                     <motion.button
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 1, scale: 1 }}
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-tron-cyan/10 rounded-full transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
                     >
-                      <X className="w-5 h-5 text-tron-text-muted" />
+                      <X className="w-5 h-5 text-zinc-300" />
                     </motion.button>
                   )}
                 </div>
@@ -1925,7 +2092,7 @@ ${targetPlatforms.map(platform => {
                     onClick={goToPrevCard}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                    className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
                   >
                     ← Back
                   </motion.button>
@@ -1955,11 +2122,11 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-5"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={loadingTrends ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-12 shadow-2xl'}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className={loadingTrends ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-12 shadow-2xl'}
             >
               {loadingTrends ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
@@ -1968,10 +2135,10 @@ ${targetPlatforms.map(platform => {
               ) : (
                 <>
                   <div className="text-center mb-8">
-                    <h2 className="text-4xl font-bold text-tron-text mb-4">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
                       Pick your trends
                     </h2>
-                    <p className="text-tron-text-muted text-lg">
+                    <p className="text-zinc-300 text-lg">
                       {selectedTrends.length > 0
                         ? `${selectedTrends.length} trend${selectedTrends.length > 1 ? 's' : ''} selected`
                         : 'Select one or more trending topics'}
@@ -1980,19 +2147,36 @@ ${targetPlatforms.map(platform => {
 
                   {/* Viral Score Education Banner */}
                   {trends.length > 0 && (
-                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl flex items-start gap-4">
-                      <div className="p-2 bg-gray-800 rounded-lg">
-                        <Activity className="w-5 h-5 text-coral-400" />
+                    <div className="max-w-4xl mx-auto mb-6 p-4 bg-gray-900/50 border border-gray-800 rounded-xl">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-2 bg-gray-800 rounded-lg">
+                              <Activity className="w-5 h-5 text-zinc-100" />
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-bold text-white mb-1">
+                                Viral Score™ Prediction
+                              </h4>
+                              <p className="text-xs text-zinc-300 leading-relaxed max-w-xl">
+                                Trends are scored (0-100) based on search volume, platform validation, and freshness.
+                                <span className="text-white ml-1">Higher scores indicate stronger viral potential.</span>
+                              </p>
+                            </div>
+                          </div>
+                          <motion.button
+                            onClick={searchQuery.trim() ? searchTrends : loadTrendingTopics}
+                            disabled={loadingTrends}
+                            whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex-shrink-0 flex items-center gap-2 px-5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm font-bold hover:bg-white/20 transition-all disabled:opacity-50 shadow-xl backdrop-blur-md whitespace-nowrap"
+                          >
+                            <RefreshCw className={`w-4 h-4 ${loadingTrends ? 'animate-spin' : ''}`} />
+                            {loadingTrends ? 'Refreshing...' : 'New Suggestions'}
+                          </motion.button>
                       </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-white mb-1">
-                          Viral Score™ Prediction
-                        </h4>
-                        <p className="text-xs text-gray-400 leading-relaxed max-w-2xl">
-                          Trends are scored (0-100) based on search volume, platform validation, and freshness. 
-                          <span className="text-coral-400 ml-1">Higher scores indicate stronger viral potential.</span>
-                        </p>
-                      </div>
+                      <p className="text-[10px] text-gray-300 mt-2 ml-12">
+                        💡 Scores vary based on AI analysis. Not happy with these? Click &quot;New Suggestions&quot; to get fresh trend ideas with updated scores.
+                      </p>
                     </div>
                   )}
 
@@ -2011,17 +2195,17 @@ ${targetPlatforms.map(platform => {
                           transition={{ delay: idx * 0.05 }}
                           onClick={() => toggleTrendSelection(trend)}
                           whileTap={{ scale: 0.98 }}
-                          className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left ${
+                          className={`cursor-pointer p-6 rounded-xl backdrop-blur-xl border-2 transition-all text-left flex flex-col h-full ${
                             isSelected
-                              ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-lg"
-                              : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-md hover:shadow-tron-cyan/20"
+                              ? "bg-primary/10 border-primary shadow-[0_0_15px_-3px_var(--primary)] text-foreground"
+                              : "bg-muted/30 border-border hover:border-primary/50 hover:bg-muted/50 hover:shadow-lg"
                           }`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
                                 <h3 className={`font-semibold ${
-                                  isSelected ? "text-tron-text" : "text-tron-text-muted"
+                                  isSelected ? "text-white" : "text-zinc-300"
                                 }`}>
                                   {trend.title}
                                 </h3>
@@ -2032,7 +2216,7 @@ ${targetPlatforms.map(platform => {
                                         ? 'bg-green-500/10 text-green-400'
                                         : trend.viralPotential === 'medium'
                                         ? 'bg-yellow-500/10 text-yellow-400'
-                                        : 'bg-gray-700 text-gray-400'
+                                        : 'bg-gray-700 text-gray-200'
                                     }`}
                                   >
                                     {trend.viralPotential === 'high' ? (
@@ -2047,7 +2231,7 @@ ${targetPlatforms.map(platform => {
                                 )}
                               </div>
                               {trend.formattedTraffic && (
-                                <p className="text-xs text-tron-text-muted">
+                                <p className="text-xs text-zinc-300">
                                   {trend.formattedTraffic}
                                 </p>
                               )}
@@ -2057,7 +2241,7 @@ ${targetPlatforms.map(platform => {
                                 <motion.div
                                   initial={{ scale: 0 }}
                                   animate={{ scale: 1 }}
-                                  className="w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                                  className="w-6 h-6 bg-white rounded-full flex items-center justify-center"
                                 >
                                   <Check className="w-4 h-4 text-white" />
                                 </motion.div>
@@ -2065,9 +2249,30 @@ ${targetPlatforms.map(platform => {
                             </div>
                           </div>
 
-                          {/* Viral Score Breakdown */}
+                          {/* Viral DNA Tags - NEW */}
+                          {trend.viralDNA && (
+                            <div className="flex flex-wrap gap-2 mb-3 mt-2">
+                              {trend.viralDNA.hookType && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                                  🪝 {trend.viralDNA.hookType}
+                                </span>
+                              )}
+                              {trend.viralDNA.primaryEmotion && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                                  ❤️ {trend.viralDNA.primaryEmotion}
+                                </span>
+                              )}
+                              {trend.viralDNA.valueProp && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                  💎 {trend.viralDNA.valueProp}
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Viral Score Breakdown - Pinned to bottom */}
                           {trend.viralFactors && trend.viralScore !== undefined && (
-                            <div className="mt-3 px-3">
+                            <div className="mt-auto pt-6">
                               <ViralScoreBreakdown
                                 score={trend.viralScore}
                                 potential={trend.viralPotential || 'low'}
@@ -2082,7 +2287,7 @@ ${targetPlatforms.map(platform => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-tron-text-muted">No trends found. Try a different search.</p>
+                    <p className="text-zinc-300">No trends found. Try a different search.</p>
                   </div>
                 )}
 
@@ -2092,7 +2297,7 @@ ${targetPlatforms.map(platform => {
                       onClick={() => goToCard(3)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all text-lg"
+                      className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
                     >
                       ← Back
                     </motion.button>
@@ -2101,7 +2306,7 @@ ${targetPlatforms.map(platform => {
                       disabled={selectedTrends.length === 0}
                       whileHover={{ scale: selectedTrends.length === 0 ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                      className="flex-1 px-8 py-5 bg-primary rounded-2xl font-semibold text-primary-foreground shadow-lg shadow-primary/25 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
                     >
                       Continue
                     </motion.button>
@@ -2118,23 +2323,23 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-6"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-8 shadow-2xl"
             >
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-bold text-tron-text mb-2">
+                <h2 className="text-3xl font-bold text-white mb-2">
                   Shape your content
                 </h2>
-                <p className="text-tron-text-muted">
+                <p className="text-zinc-300">
                   Customize how your content will be generated
                 </p>
 
               </div>
 
-              <div className="max-w-5xl mx-auto space-y-6">
+              <div className="max-w-4xl mx-auto space-y-6">
                 {/* AI Optimize & Viral Score Section */}
                 <div className="flex items-center gap-4 mb-4">
                   <motion.button
@@ -2147,32 +2352,37 @@ ${targetPlatforms.map(platform => {
                     AI Optimize (A)
                   </motion.button>
 
-                  <div className="flex items-center gap-3 bg-[#2b2b2b] border border-gray-700/50 rounded-lg px-4 py-2">
-                    <Flame className={`w-5 h-5 ${
-                      (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
-                      (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-gray-400"
-                    }`} />
+                  <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-2.5 shadow-xl">
+                    <div className="p-2 bg-white/5 rounded-lg">
+                      <Flame className={`w-5 h-5 ${
+                        (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
+                        (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-zinc-400"
+                      }`} />
+                    </div>
                     <div>
-                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">
+                      <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-black mb-0.5">
                         {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
                       </div>
-                      <div className="text-xl font-bold text-white font-mono">
+                      <div className="text-2xl font-black text-white font-mono leading-none">
                         {selectedTrends[0]?.viralScore || predictedViralScore}
                       </div>
                     </div>
                   </div>
 
-                  <button
+                  <motion.button
                     type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setShowSaveTemplateDialog(true)}
-                    className="ml-auto px-4 py-2 bg-tron-dark/70 border border-tron-cyan/30 rounded-lg text-sm text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                    className="ml-auto px-5 py-2.5 bg-white/10 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/20 transition-all shadow-lg backdrop-blur-md flex items-center gap-2"
                   >
+                    <Bookmark className="w-4 h-4" />
                     Save as Template
-                  </button>
+                  </motion.button>
                 </div>
 
                 {/* Platform Cards - Visual Overview */}
-                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                <div className="bg-zinc-950/30 border border-white/5 rounded-xl p-4">
                   {/* Header with sync toggle */}
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-white">Your Platforms</h3>
@@ -2203,7 +2413,7 @@ ${targetPlatforms.map(platform => {
                         <div className={`relative w-10 h-5 rounded-full transition-colors ${!customizePerPlatform ? 'bg-coral-500' : 'bg-gray-600'}`}>
                           <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${!customizePerPlatform ? 'left-0.5' : 'left-5'}`} />
                         </div>
-                        <span className="text-sm text-tron-text-muted group-hover:text-white transition-colors">
+                        <span className="text-sm text-zinc-300 group-hover:text-white transition-colors">
                           {!customizePerPlatform ? 'Same for all' : 'Per platform'}
                         </span>
                       </button>
@@ -2263,7 +2473,7 @@ ${targetPlatforms.map(platform => {
                           disabled={targetPlatforms.length === 1}
                           className={`relative p-4 rounded-xl border-2 transition-all text-left ${
                             isEditing
-                              ? 'border-tron-cyan bg-tron-cyan/10 ring-2 ring-tron-cyan/30'
+                              ? 'border-white bg-white/10 ring-2 ring-tron-cyan/30'
                               : !customizePerPlatform
                                 ? 'border-coral-500/50 bg-coral-500/5'
                                 : 'border-gray-700 bg-gray-800/30 hover:border-gray-500'
@@ -2271,7 +2481,7 @@ ${targetPlatforms.map(platform => {
                         >
                           {/* Editing badge */}
                           {isEditing && (
-                            <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-tron-cyan text-black text-[10px] font-bold rounded-full">
+                            <div className="absolute -top-3 right-4 px-3 py-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full shadow-lg border border-primary-foreground/20 z-10">
                               EDITING
                             </div>
                           )}
@@ -2298,15 +2508,15 @@ ${targetPlatforms.map(platform => {
                               return (
                                 <>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Tone</span>
+                                    <span className="text-gray-300">Tone</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.tone}</span>
                                   </div>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Length</span>
+                                    <span className="text-gray-300">Length</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.length}</span>
                                   </div>
                                   <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Focus</span>
+                                    <span className="text-gray-300">Focus</span>
                                     <span className="text-white capitalize font-medium">{displaySettings.contentFocus}</span>
                                   </div>
                                 </>
@@ -2316,7 +2526,7 @@ ${targetPlatforms.map(platform => {
 
                           {/* Click hint for multi-platform */}
                           {!customizePerPlatform && targetPlatforms.length > 1 && (
-                            <div className="mt-3 pt-2 border-t border-gray-700/50 text-[10px] text-gray-500">
+                            <div className="mt-3 pt-2 border-t border-gray-700/50 text-[10px] text-gray-300">
                               Click to customize just this platform
                             </div>
                           )}
@@ -2327,10 +2537,10 @@ ${targetPlatforms.map(platform => {
 
                   {/* Editing indicator */}
                   {customizePerPlatform && activePlatformTab && (
-                    <div className="mt-4 p-3 bg-tron-cyan/10 border border-tron-cyan/30 rounded-lg flex items-center justify-between">
+                    <div className="mt-4 p-3 bg-white/10 border border-white/10 rounded-lg flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-tron-cyan rounded-full animate-pulse" />
-                        <span className="text-sm text-tron-cyan">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                        <span className="text-sm text-white">
                           Settings below apply to <span className="font-bold capitalize">{activePlatformTab}</span> only
                         </span>
                       </div>
@@ -2347,9 +2557,9 @@ ${targetPlatforms.map(platform => {
                   {/* Quick Presets */}
                   <div className="mt-4 pt-4 border-t border-gray-700/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs text-gray-500 uppercase tracking-wide">Quick Presets</span>
+                      <span className="text-xs text-gray-300 uppercase tracking-wide">Quick Presets</span>
                       {customizePerPlatform && activePlatformTab && (
-                        <span className="text-xs text-tron-cyan capitalize">for {activePlatformTab}</span>
+                        <span className="text-xs text-white capitalize">for {activePlatformTab}</span>
                       )}
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -2357,7 +2567,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("tiktok")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#00f2ea] hover:text-[#00f2ea] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
                         >
                           <Music className="w-3 h-3" />
                           TikTok Viral
@@ -2367,7 +2577,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("twitter")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1DA1F2] hover:text-[#1DA1F2] transition-all flex items-center gap-1.5"
                         >
                           <Twitter className="w-3 h-3" />
                           Twitter Thread
@@ -2377,7 +2587,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("linkedin")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
                         >
                           <Linkedin className="w-3 h-3" />
                           LinkedIn Pro
@@ -2387,7 +2597,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("facebook")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1877F2] hover:text-[#1877F2] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#1877F2] hover:text-[#1877F2] transition-all flex items-center gap-1.5"
                         >
                           <Facebook className="w-3 h-3" />
                           Facebook Story
@@ -2397,7 +2607,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("instagram")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#E4405F] hover:text-[#E4405F] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#E4405F] hover:text-[#E4405F] transition-all flex items-center gap-1.5"
                         >
                           <Instagram className="w-3 h-3" />
                           Instagram Caption
@@ -2407,7 +2617,7 @@ ${targetPlatforms.map(platform => {
                         <button
                           type="button"
                           onClick={() => applyPlatformPreset("reddit")}
-                          className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#FF4500] hover:text-[#FF4500] transition-all flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-[#FF4500] hover:text-[#FF4500] transition-all flex items-center gap-1.5"
                         >
                           <MessageSquare className="w-3 h-3" />
                           Reddit Post
@@ -2416,14 +2626,14 @@ ${targetPlatforms.map(platform => {
                       <button
                         type="button"
                         onClick={() => setControls({ ...controls, tone: 'casual', contentFocus: 'tips', length: 'short' })}
-                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                        className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-white transition-all"
                       >
                         Quick & Casual
                       </button>
                       <button
                         type="button"
                         onClick={() => setControls({ ...controls, tone: 'professional', contentFocus: 'informative', length: 'long' })}
-                        className="px-3 py-1.5 bg-tron-dark/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-coral-400 transition-all"
+                        className="px-3 py-1.5 bg-zinc-950/50 border border-gray-600 rounded-lg text-xs text-gray-300 hover:border-coral-500 hover:text-white transition-all"
                       >
                         Long-form Pro
                       </button>
@@ -2468,27 +2678,23 @@ ${targetPlatforms.map(platform => {
                   <div className="space-y-5">
                     {/* Tone with Tooltips */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
-                        Tone <span className="text-xs text-tron-text-muted">(Press 1-3)</span>
+                      <label className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
+                        Tone <span className="text-xs text-zinc-300">(Press 1-3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {['professional', 'casual', 'friendly'].map((t) => (
                           <div key={t} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, tone: t })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.tone === t
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {t.charAt(0).toUpperCase() + t.slice(1)}
-                            </button>
+                            <ControlOptionButton
+                              id={t}
+                              label={t.charAt(0).toUpperCase() + t.slice(1)}
+                              isSelected={controls.tone === t}
+                              onClick={(id) => setControls({ ...controls, tone: id })}
+                              className="w-full"
+                            />
                             {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.tone[t as keyof typeof engagementData.tone]?.boost} engagement</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.tone[t as keyof typeof engagementData.tone]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2497,8 +2703,8 @@ ${targetPlatforms.map(platform => {
 
                     {/* Length Slider */}
                     <div>
-                      <label htmlFor="content-length-slider" className="block text-tron-text font-semibold mb-2 text-sm flex items-center gap-2">
-                        Content Length <span className="text-xs text-tron-text-muted">(Press S/M/L)</span>
+                      <label htmlFor="content-length-slider" className="block text-white font-semibold mb-2 text-sm flex items-center gap-2">
+                        Content Length <span className="text-xs text-zinc-300">(Press S/M/L)</span>
                       </label>
                       <div className="space-y-3">
                         <input
@@ -2513,36 +2719,32 @@ ${targetPlatforms.map(platform => {
                             setControls({ ...controls, length: val === 0 ? 'short' : val === 1 ? 'standard' : 'long' });
                           }}
                           aria-label="Select content length"
-                          className="w-full h-2 bg-tron-dark/50 rounded-lg appearance-none cursor-pointer range-slider"
+                          className="w-full h-2 bg-zinc-950/50 rounded-lg appearance-none cursor-pointer range-slider"
                         />
-                        <div className="flex justify-between text-xs text-tron-text-muted">
-                          <span className={controls.length === 'short' ? 'text-tron-cyan font-semibold' : ''}>Short (280 chars)</span>
-                          <span className={controls.length === 'standard' ? 'text-tron-cyan font-semibold' : ''}>Standard (500 chars)</span>
-                          <span className={controls.length === 'long' ? 'text-tron-cyan font-semibold' : ''}>Long (1000+ chars)</span>
+                        <div className="flex justify-between text-xs text-zinc-300">
+                          <span className={controls.length === 'short' ? 'text-white font-semibold' : ''}>Short (280 chars)</span>
+                          <span className={controls.length === 'standard' ? 'text-white font-semibold' : ''}>Standard (500 chars)</span>
+                          <span className={controls.length === 'long' ? 'text-white font-semibold' : ''}>Long (1000+ chars)</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Content Focus with Tooltips */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Content Focus</label>
+                      <label className="block text-white font-semibold mb-2 text-sm">Content Focus</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['informative', 'discussion', 'opinion', 'news', 'tips', 'story', 'walkthrough'].map((f) => (
                           <div key={f} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, contentFocus: f })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.contentFocus === f
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {f.charAt(0).toUpperCase() + f.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
+                            <ControlOptionButton
+                              id={f}
+                              label={f.charAt(0).toUpperCase() + f.slice(1)}
+                              isSelected={controls.contentFocus === f}
+                              onClick={(id) => setControls({ ...controls, contentFocus: id })}
+                              className="w-full"
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.boost} engagement</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.contentFocus[f as keyof typeof engagementData.contentFocus]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2554,36 +2756,32 @@ ${targetPlatforms.map(platform => {
                   <div className="space-y-5">
                     {/* Target Audience - Multi-Select (NO "general") */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">
-                        Target Audience <span className="text-xs text-tron-text-muted">(Select up to 3)</span>
+                      <label className="block text-white font-semibold mb-2 text-sm">
+                        Target Audience <span className="text-xs text-zinc-300">(Select up to 3)</span>
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['professionals', 'entrepreneurs', 'creators', 'students', 'techies', 'gamers', 'hobbyists', 'parents'].map((a) => (
                           <div key={a} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => toggleAudience(a)}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 relative ${
-                                selectedAudiences.includes(a)
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              } ${selectedAudiences.length >= 3 && !selectedAudiences.includes(a) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                              disabled={selectedAudiences.length >= 3 && !selectedAudiences.includes(a)}
-                            >
-                              {selectedAudiences.includes(a) && (
-                                <Check className="w-4 h-4 absolute left-1 top-1/2 -translate-y-1/2" />
-                              )}
-                              {a.charAt(0).toUpperCase() + a.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
+                            <ControlOptionButton
+                              id={a}
+                              label={a.charAt(0).toUpperCase() + a.slice(1)}
+                              isSelected={selectedAudiences.includes(a)}
+                              onClick={() => {
+                                if (!(selectedAudiences.length >= 3 && !selectedAudiences.includes(a))) {
+                                  toggleAudience(a);
+                                }
+                              }}
+                              className={`w-full ${selectedAudiences.length >= 3 && !selectedAudiences.includes(a) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.boost} engagement</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.targetAudience[a as keyof typeof engagementData.targetAudience]?.desc}</div>
                             </div>
                           </div>
                         ))}
                       </div>
                       {selectedAudiences.length > 0 && (
-                        <div className="mt-2 text-xs text-tron-text-muted">
+                        <div className="mt-2 text-xs text-zinc-300">
                           Selected: {selectedAudiences.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}
                         </div>
                       )}
@@ -2591,24 +2789,20 @@ ${targetPlatforms.map(platform => {
 
                     {/* Call to Action with Tooltips (NO "none") */}
                     <div>
-                      <label className="block text-tron-text font-semibold mb-2 text-sm">Call to Action</label>
+                      <label className="block text-white font-semibold mb-2 text-sm">Call to Action</label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {['engage', 'share', 'comment', 'follow', 'learn'].map((c) => (
                           <div key={c} className="group relative">
-                            <button
-                              type="button"
-                              onClick={() => setControls({ ...controls, callToAction: c })}
-                              className={`w-full px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200 ${
-                                controls.callToAction === c
-                                  ? 'bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg'
-                                  : 'bg-tron-dark/50 border border-tron-cyan/30 text-tron-text hover:border-tron-cyan/50'
-                              }`}
-                            >
-                              {c.charAt(0).toUpperCase() + c.slice(1)}
-                            </button>
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10 w-48 bg-black/90 border border-tron-cyan/30 rounded-lg p-2 text-xs">
-                              <div className="font-semibold text-tron-cyan">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
-                              <div className="text-tron-text-muted">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
+                            <ControlOptionButton
+                              id={c}
+                              label={c.charAt(0).toUpperCase() + c.slice(1)}
+                              isSelected={controls.callToAction === c}
+                              onClick={(id) => setControls({ ...controls, callToAction: id })}
+                              className="w-full"
+                            />
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 w-48 bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl backdrop-blur-xl">
+                              <div className="font-bold text-white mb-0.5">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.boost} engagement</div>
+                              <div className="text-gray-200 text-[11px] leading-relaxed">{engagementData.callToAction[c as keyof typeof engagementData.callToAction]?.desc}</div>
                             </div>
                           </div>
                         ))}
@@ -2618,10 +2812,10 @@ ${targetPlatforms.map(platform => {
                 </div>
 
                 {/* Trending This Week */}
-                <div className="bg-tron-dark/30 border border-tron-cyan/20 rounded-xl p-4">
+                <div className="bg-zinc-950/30 border border-white/5 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <TrendingUp className="w-4 h-4 text-tron-cyan" />
-                    <div className="text-sm text-tron-text font-semibold">Trending This Week</div>
+                    <TrendingUp className="w-4 h-4 text-white" />
+                    <div className="text-sm text-white font-semibold">Trending This Week</div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {trendingCombinations.map((combo) => (
@@ -2629,10 +2823,10 @@ ${targetPlatforms.map(platform => {
                         type="button"
                         key={combo.name}
                         onClick={() => applyTrendingCombination(combo)}
-                        className="text-left px-3 py-2 bg-tron-dark/50 border border-tron-cyan/20 rounded-lg hover:border-tron-cyan/50 transition-all"
+                        className="text-left px-3 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-white/30 hover:bg-white/10 transition-all active:scale-[0.98]"
                       >
-                        <div className="text-xs font-semibold text-tron-text mb-1">{combo.name}</div>
-                        <div className="flex items-center gap-2 text-xs text-tron-text-muted">
+                        <div className="text-xs font-semibold text-white mb-1">{combo.name}</div>
+                        <div className="flex items-center gap-2 text-xs text-zinc-300">
                           <span className="text-green-400">{combo.successRate}</span>
                           <span>•</span>
                           <span>{combo.uses} uses</span>
@@ -2643,7 +2837,7 @@ ${targetPlatforms.map(platform => {
                 </div>
 
                 {/* Keyboard Shortcuts Hint */}
-                <div className="text-center text-xs text-tron-text-muted">
+                <div className="text-center text-xs text-zinc-300">
                   💡 Tip: Use keyboard shortcuts - 1-3 for tone, S/M/L for length, A for AI optimize
                 </div>
 
@@ -2653,7 +2847,7 @@ ${targetPlatforms.map(platform => {
                     onClick={goToPrevCard}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-6 py-4 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                    className="px-6 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/80 transition-all"
                   >
                     ← Back
                   </motion.button>
@@ -2665,7 +2859,7 @@ ${targetPlatforms.map(platform => {
                     }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-xl font-semibold text-white shadow-lg shadow-tron-cyan/30 transition-all"
+                    className="flex-1 px-6 py-4 bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border border-purple-500/30 rounded-xl font-semibold text-white shadow-lg shadow-purple-900/20 hover:border-purple-500/60 hover:shadow-purple-500/20 transition-all"
                   >
                     {generateButtonText}
                   </motion.button>
@@ -2679,15 +2873,15 @@ ${targetPlatforms.map(platform => {
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="bg-tron-dark border-2 border-tron-cyan/30 rounded-2xl p-6 max-w-md w-full mx-4"
+                    className="bg-zinc-950 border-2 border-white/10 rounded-2xl p-6 max-w-md w-full mx-4"
                   >
-                    <h3 className="text-xl font-bold text-tron-text mb-4">Save as Template</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">Save as Template</h3>
                     <input
                       type="text"
                       value={templateName}
                       onChange={(e) => setTemplateName(e.target.value)}
                       placeholder="Enter template name..."
-                      className="w-full px-4 py-3 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text outline-none focus:border-tron-cyan/50 mb-4"
+                      className="w-full px-4 py-3 bg-zinc-950/50 border border-white/10 rounded-lg text-white outline-none focus:border-white/50 mb-4"
                       autoFocus
                       onKeyPress={(e) => e.key === 'Enter' && handleSaveTemplate()}
                     />
@@ -2695,7 +2889,7 @@ ${targetPlatforms.map(platform => {
                       <button
                         type="button"
                         onClick={() => setShowSaveTemplateDialog(false)}
-                        className="flex-1 px-4 py-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-lg text-tron-text hover:bg-tron-cyan/10"
+                        className="flex-1 px-4 py-2 bg-zinc-950/50 border border-white/10 rounded-lg text-white hover:bg-white/10"
                       >
                         Cancel
                       </button>
@@ -2718,11 +2912,11 @@ ${targetPlatforms.map(platform => {
             <motion.div
               key="card-7"
               custom={cardDirection}
-              initial={{ x: cardDirection > 0 ? "100%" : "-100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: cardDirection > 0 ? "-100%" : "100%", opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={generatingContent ? '' : 'bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto'}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className={generatingContent ? '' : 'bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl max-w-4xl mx-auto'}
             >
               {generatingContent ? (
                 <div className="flex items-center justify-center min-h-[calc(100vh_-_4rem)]">
@@ -2736,30 +2930,30 @@ ${targetPlatforms.map(platform => {
                       value={campaignName}
                       onChange={(e) => setCampaignName(e.target.value)}
                       placeholder="Enter campaign name"
-                      className="text-3xl font-bold text-tron-text mb-2 bg-transparent border-2 border-transparent hover:border-tron-cyan/30 focus:border-tron-cyan/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
+                      className="text-3xl font-bold text-white mb-2 bg-transparent border-2 border-transparent hover:border-white/10 focus:border-white/50 rounded-lg px-4 py-2 text-center outline-none transition-all w-full max-w-2xl mx-auto"
                     />
                     {generatedContent && (
-                      <p className="text-tron-text-muted">
+                      <p className="text-zinc-300">
                         Edit and publish your campaign
                       </p>
                     )}
                   </div>
 
-                  <div className="max-w-5xl mx-auto">
+                  <div className="max-w-4xl mx-auto">
                     {generatedContent ? (
                   <>
                     {/* Platform Switcher Toolbar */}
-                    <div className="flex gap-2 mb-6 p-2 bg-tron-dark/50 border border-tron-cyan/30 rounded-xl">
+                    <div className="flex gap-2 mb-6 p-2 bg-zinc-950/50 border border-white/10 rounded-xl">
                       {targetPlatforms.map((platform) => (
                         <motion.button
                           key={platform}
-                          onClick={() => { setViewAllContent(false); setActivePlatformView(platform); }}
+                          onClick={() => { setActivePlatformView(platform); setViewAllContent(false); }}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           className={`flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-                            !viewAllContent && activePlatformView === platform
+                            activePlatformView === platform && !viewAllContent
                               ? "bg-gradient-to-r from-tron-cyan to-tron-magenta text-white shadow-lg"
-                              : "text-tron-text-muted hover:text-tron-text hover:bg-tron-cyan/10"
+                              : "text-zinc-300 hover:text-white hover:bg-white/10"
                           }`}
                         >
                           {platform.charAt(0).toUpperCase() + platform.slice(1)}
@@ -2770,58 +2964,63 @@ ${targetPlatforms.map(platform => {
                         onClick={() => setViewAllContent(!viewAllContent)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-tron-cyan/30 ml-2 ${
+                        className={`px-4 py-2.5 rounded-lg font-semibold text-sm transition-all border-l border-white/10 ml-2 ${
                           viewAllContent
                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                            : "text-tron-text-muted hover:text-tron-text hover:bg-purple-500/10"
+                            : "text-zinc-300 hover:text-white hover:bg-purple-500/10"
                         }`}
                       >
                         View All
                       </motion.button>
                     </div>
 
-                    {/* View All Content Display */}
+                    {/* View All Content OR Single Platform View */}
                     {viewAllContent ? (
                       <div className="space-y-4 mb-6">
                         {/* Viral DNA Display */}
                         {selectedTrends[0]?.viralDNA && (
                           <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4 mb-4">
-                            <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-2">Viral DNA™ Analysis</h4>
+                            <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-2">Viral DNA&trade; Analysis</h4>
                             <div className="flex flex-wrap gap-4">
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Hook:</span>
+                                <span className="text-xs text-zinc-300">Hook:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.hookType}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Emotion:</span>
+                                <span className="text-xs text-zinc-300">Emotion:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.primaryEmotion}</span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-tron-text-muted">Value:</span>
+                                <span className="text-xs text-zinc-300">Value:</span>
                                 <span className="text-sm font-semibold text-white">{selectedTrends[0].viralDNA.valueProp}</span>
                               </div>
                             </div>
                           </div>
                         )}
+                        {/* All Platform Content Cards */}
                         {targetPlatforms.map((platform) => {
                           const content = editedContent[platform] ||
                             (typeof generatedContent[platform] === 'string'
                               ? generatedContent[platform]
-                              : generatedContent[platform]?.content || '');
+                              : (generatedContent[platform] as ContentData)?.content || '');
                           return (
                             <motion.div
                               key={platform}
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-4"
+                              className="bg-zinc-950/50 border border-white/10 rounded-xl p-4"
                             >
-                              <div className="flex items-center justify-between mb-2">
-                                <h3 className="text-lg font-bold text-tron-text">
-                                  {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                                </h3>
-                                <span className="text-xs text-tron-text-muted">{content.length} chars</span>
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="font-bold text-white capitalize">{platform}</h4>
+                                <button
+                                  type="button"
+                                  onClick={() => copyContent(platform)}
+                                  className="px-3 py-1 text-xs bg-green-500/20 border border-green-500/30 rounded-lg text-green-400 hover:bg-green-500/30 transition-all flex items-center gap-1"
+                                >
+                                  <Copy className="w-3 h-3" /> Copy
+                                </button>
                               </div>
-                              <p className="text-tron-text whitespace-pre-wrap text-sm">{content}</p>
+                              <p className="text-zinc-300 text-sm whitespace-pre-wrap line-clamp-4">{content}</p>
                             </motion.div>
                           );
                         })}
@@ -2837,15 +3036,15 @@ ${targetPlatforms.map(platform => {
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20 }}
                               transition={{ duration: 0.3 }}
-                              className="bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl p-6 mb-6"
+                              className="bg-zinc-950/50 border-2 border-white/10 rounded-xl p-6 mb-6"
                             >
                               {/* Header with Platform Name */}
                               <div className="flex items-center justify-between mb-4">
                                 <div>
-                                  <h3 className="text-xl font-bold text-tron-text">
+                                  <h3 className="text-xl font-bold text-white">
                                     {activePlatformView.charAt(0).toUpperCase() + activePlatformView.slice(1)} Post
                                   </h3>
-                                  <p className="text-sm text-tron-text-muted">
+                                  <p className="text-sm text-zinc-300">
                                     {typeof generatedContent[activePlatformView] === 'string'
                                       ? generatedContent[activePlatformView].length
                                       : generatedContent[activePlatformView]?.content?.length || 0} characters
@@ -2859,11 +3058,11 @@ ${targetPlatforms.map(platform => {
                                   value={editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
                                   onChange={(e) => setEditedContent({ ...editedContent, [activePlatformView]: e.target.value })}
                                   placeholder="Edit your content..."
-                                  className="w-full h-64 px-4 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl text-tron-text focus:ring-2 focus:ring-tron-cyan/50 focus:border-tron-cyan resize-none"
+                                  className="w-full h-64 px-4 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl text-white focus:ring-2 focus:ring-tron-cyan/50 focus:border-white resize-none"
                                 />
                               ) : (
-                                <div className="bg-tron-dark/30 border border-tron-grid rounded-xl p-4">
-                                  <p className="text-tron-text whitespace-pre-wrap">
+                                <div className="bg-zinc-950/30 border border-zinc-800 rounded-xl p-4">
+                                  <p className="text-white whitespace-pre-wrap">
                                     {editedContent[activePlatformView] || (typeof generatedContent[activePlatformView] === 'string' ? generatedContent[activePlatformView] : generatedContent[activePlatformView]?.content || '')}
                                   </p>
                                 </div>
@@ -2885,81 +3084,113 @@ ${targetPlatforms.map(platform => {
                       </>
                     )}
 
-                    {/* Navigation - Back, Copy, and Edit */}
+                    {/* Navigation - Back, Copy, Edit, and Bulk Actions */}
                     <div className="flex flex-wrap gap-3">
                       <motion.button
                         onClick={goToPrevCard}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                        className="px-6 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
                       >
                         ← Back
                       </motion.button>
-
-                      {/* Bulk Actions - Always visible when content exists */}
-                      <motion.button
-                        onClick={copyAllContent}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
-                      >
-                        <Copy className="w-4 h-4" />
-                        Copy All
-                      </motion.button>
-                      <motion.button
-                        onClick={exportCampaign}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-6 py-3 bg-tron-dark/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
-                      >
-                        <Download className="w-4 h-4" />
-                        Export
-                      </motion.button>
-
-                      {/* Single Platform Actions - Only when not in View All mode */}
                       {!viewAllContent && activePlatformView && generatedContent[activePlatformView] && (
                         <>
                           <motion.button
                             onClick={() => copyContent(activePlatformView)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all flex items-center gap-2"
+                            className="px-6 py-3 bg-zinc-950/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
                           >
                             <Copy className="w-4 h-4" />
-                            Copy This
+                            Copy Content
                           </motion.button>
                           <motion.button
                             onClick={() => setEditingContent({ ...editingContent, [activePlatformView]: !editingContent[activePlatformView] })}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="px-6 py-3 bg-tron-dark/50 border-2 border-tron-cyan/30 rounded-xl font-semibold text-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                            className="px-6 py-3 bg-zinc-950/50 border-2 border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
                           >
-                            {editingContent[activePlatformView] ? "Save Edits" : "Edit"}
+                            {editingContent[activePlatformView] ? "Save Edits" : "Edit Content"}
                           </motion.button>
                         </>
                       )}
+                      {/* Bulk Actions - Always visible when content exists */}
+                      <motion.button
+                        onClick={copyAllContent}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-6 py-3 bg-zinc-950/50 border-2 border-green-500/30 rounded-xl font-semibold text-green-400 hover:bg-green-500/10 hover:border-green-500 transition-all flex items-center gap-2"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy All
+                      </motion.button>
+                      <div className="relative">
+                        <motion.button
+                          onClick={() => setShowExportMenu(!showExportMenu)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="px-6 py-3 bg-zinc-950/50 border-2 border-purple-500/30 rounded-xl font-semibold text-purple-400 hover:bg-purple-500/10 hover:border-purple-500 transition-all flex items-center gap-2"
+                        >
+                          <Download className="w-4 h-4" />
+                          Export
+                        </motion.button>
+
+                        <AnimatePresence>
+                          {showExportMenu && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                              className="absolute bottom-full right-0 mb-2 w-48 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden z-20"
+                            >
+                              <button
+                                onClick={() => { exportCampaign('md'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-purple-500/20 text-purple-400 rounded text-[10px] font-bold">MD</span>
+                                Markdown
+                              </button>
+                              <button
+                                onClick={() => { exportCampaign('txt'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-blue-500/20 text-blue-400 rounded text-[10px] font-bold">TXT</span>
+                                Plain Text
+                              </button>
+                              <button
+                                onClick={() => { exportCampaign('pdf'); setShowExportMenu(false); }}
+                                className="w-full px-4 py-3 text-left text-sm text-zinc-300 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors flex items-center gap-3"
+                              >
+                                <span className="p-1 px-1.5 bg-red-500/20 text-red-400 rounded text-[10px] font-bold">PDF</span>
+                                PDF Document
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-tron-text-muted">No content generated yet.</p>
+                    <p className="text-zinc-300">No content generated yet.</p>
                   </div>
                 )}
                   </div>
 
                   {/* Campaign Save Buttons */}
                   {generatedContent && Object.keys(generatedContent).length > 0 && (
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <motion.button
                         onClick={() => saveCampaign(false)}
                         disabled={loading || campaignSaved}
                         whileHover={{ scale: loading || campaignSaved ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-4 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        className="px-6 py-4 bg-zinc-900/50 backdrop-blur-xl border-2 border-white/50 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                         aria-label="Save campaign as draft"
                       >
                         {loading ? (
-                          <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                          <OrbitalLoader className="w-5 h-5" />
                         ) : (
                           <>
                             <Check className="w-5 h-5" />
@@ -2968,26 +3199,27 @@ ${targetPlatforms.map(platform => {
                         )}
                       </motion.button>
                       <motion.button
-                        onClick={async () => { await saveCampaign(false); router.push('/campaigns'); }}
+                        type="button"
+                        onClick={async () => {
+                          const success = await saveCampaign(false);
+                          if (success) {
+                            router.push('/campaigns');
+                          }
+                        }}
                         disabled={loading}
                         whileHover={{ scale: loading ? 1 : 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl font-semibold text-white shadow-lg disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                        aria-label="Save and view campaigns"
+                        className="px-6 py-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl font-semibold text-white shadow-lg shadow-green-500/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                        aria-label="Save and return to dashboard"
                       >
-                        <Home className="w-5 h-5" />
-                        Save & View All
-                      </motion.button>
-                      <motion.button
-                        onClick={() => saveCampaign(true)}
-                        disabled={loading}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="px-6 py-4 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                        aria-label="Schedule campaign"
-                      >
-                        <Calendar className="w-5 h-5" />
-                        Schedule
+                        {loading ? (
+                          <OrbitalLoader className="w-5 h-5" />
+                        ) : (
+                          <>
+                            <Home className="w-5 h-5" />
+                            Save & Dashboard
+                          </>
+                        )}
                       </motion.button>
                     </div>
                   )}
@@ -3020,20 +3252,20 @@ ${targetPlatforms.map(platform => {
                   <div
                     className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isActive
-                        ? "bg-gradient-to-br from-tron-cyan to-tron-magenta shadow-lg shadow-tron-cyan/50 ring-4 ring-tron-cyan/20"
+                        ? "bg-gradient-to-br from-tron-cyan to-tron-magenta shadow-lg shadow-white/20 ring-4 ring-white/10"
                         : isCompleted
-                          ? "bg-tron-cyan/20 border-2 border-tron-cyan"
-                          : "bg-tron-grid border-2 border-tron-grid"
+                          ? "bg-white/20 border-2 border-white"
+                          : "bg-zinc-900 border-2 border-zinc-800"
                     }`}
                   >
                     {isCompleted ? (
-                      <Check className="w-6 h-6 text-tron-cyan" />
+                      <Check className="w-6 h-6 text-white" />
                     ) : (
                       <Icon
                         className={`w-6 h-6 ${
                           isActive
                             ? "text-white"
-                            : "text-tron-text-muted"
+                            : "text-zinc-300"
                         }`}
                       />
                     )}
@@ -3041,7 +3273,7 @@ ${targetPlatforms.map(platform => {
                   {idx < stepConfig.length - 1 && (
                     <div
                       className={`w-20 h-0.5 transition-all duration-500 ${
-                        isCompleted ? "bg-tron-cyan" : "bg-tron-grid"
+                        isCompleted ? "bg-white" : "bg-zinc-900"
                       }`}
                     />
                   )}
@@ -3057,12 +3289,12 @@ ${targetPlatforms.map(platform => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center"
           >
-            <h2 className="text-3xl font-bold text-tron-text mb-2">
+            <h2 className="text-3xl font-bold text-white mb-2">
               {step === 1 && "Setup Your Campaign"}
               {step === 2 && "Discover Trending Topics"}
               {step === 3 && "Generate Content"}
             </h2>
-            <p className="text-tron-text-muted">
+            <p className="text-zinc-300">
               {step === 1 && "Choose a name and select target platforms"}
               {step === 2 && "Find the perfect trending topic for your campaign"}
               {step === 3 && "Customize and generate AI-powered content"}
@@ -3083,8 +3315,8 @@ ${targetPlatforms.map(platform => {
             >
               {/* Campaign Name Input */}
               <div className="space-y-3">
-                <label htmlFor="campaign-name" className="block text-sm font-medium text-tron-text-muted">
-                  Campaign Name <span className="text-tron-magenta">*</span>
+                <label htmlFor="campaign-name" className="block text-sm font-medium text-zinc-300">
+                  Campaign Name <span className="text-zinc-300">*</span>
                 </label>
                 <input
                   type="text"
@@ -3094,13 +3326,13 @@ ${targetPlatforms.map(platform => {
                   placeholder="e.g., Summer Product Launch"
                   aria-label="Campaign name"
                   aria-required="true"
-                  className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-xl font-light placeholder-tron-text-muted/50 transition-all"
+                  className="w-full px-6 py-4 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl font-light placeholder-tron-text-muted/50 transition-all"
                 />
                 {campaignName && (
                   <motion.p 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-sm text-tron-cyan flex items-center gap-2"
+                    className="text-sm text-white flex items-center gap-2"
                   >
                     <Check className="w-4 h-4" />
                     Looking good!
@@ -3112,18 +3344,18 @@ ${targetPlatforms.map(platform => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-tron-text">
-                      Target Platforms <span className="text-tron-magenta">*</span>
+                    <h3 className="text-lg font-semibold text-white">
+                      Target Platforms <span className="text-zinc-300">*</span>
                     </h3>
-                    <p className="text-sm text-tron-text-muted mt-1">
+                    <p className="text-sm text-zinc-300 mt-1">
                       {targetPlatforms.length > 0 
                         ? `${targetPlatforms.length} platform${targetPlatforms.length > 1 ? 's' : ''} selected`
                         : 'Select at least one platform'}
                     </p>
                   </div>
                   {connectedPlatforms.length > 0 && (
-                    <div className="flex items-center gap-2 text-sm text-tron-cyan">
-                      <div className="w-2 h-2 rounded-full bg-tron-cyan animate-pulse" />
+                    <div className="flex items-center gap-2 text-sm text-white">
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                       {connectedPlatforms.length} connected
                     </div>
                   )}
@@ -3143,8 +3375,8 @@ ${targetPlatforms.map(platform => {
                       whileTap={{ scale: 0.95 }}
                       className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 group ${
                         isSelected
-                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl shadow-tron-cyan/30 ring-2 ring-tron-cyan/20"
-                          : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                          ? "bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-white shadow-xl shadow-tron-cyan/30 ring-2 ring-white/10"
+                          : "bg-zinc-950/50 border-zinc-800 hover:border-white/50 hover:shadow-lg"
                       }`}
                     >
                       {/* Selection Checkmark */}
@@ -3152,7 +3384,7 @@ ${targetPlatforms.map(platform => {
                         <motion.div
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
-                          className="absolute top-3 left-3 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center shadow-lg"
+                          className="absolute top-3 left-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
                         >
                           <Check className="w-4 h-4 text-white" />
                         </motion.div>
@@ -3162,19 +3394,19 @@ ${targetPlatforms.map(platform => {
                       <div className="absolute top-3 right-3">
                         {isConnected ? (
                           <div className="relative">
-                            <div className="w-3 h-3 rounded-full bg-tron-cyan shadow-lg shadow-tron-cyan/50 animate-pulse" />
-                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-tron-cyan animate-ping" />
+                            <div className="w-3 h-3 rounded-full bg-white shadow-lg shadow-white/20 animate-pulse" />
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-white animate-ping" />
                           </div>
                         ) : (
-                          <div className="w-3 h-3 rounded-full bg-tron-grid border border-tron-text-muted/30" />
+                          <div className="w-3 h-3 rounded-full bg-zinc-900 border border-tron-text-muted/30" />
                         )}
                       </div>
 
                       <Icon
                         className={`w-12 h-12 mb-4 mx-auto transition-all duration-300 ${
                           isSelected
-                            ? "text-tron-cyan"
-                            : "text-tron-text-muted group-hover:text-tron-cyan"
+                            ? "text-white"
+                            : "text-zinc-300 group-hover:text-white"
                         }`}
                         style={{
                           filter: isSelected
@@ -3183,12 +3415,12 @@ ${targetPlatforms.map(platform => {
                         }}
                       />
                       <div className={`font-semibold text-center transition-colors ${
-                        isSelected ? "text-tron-cyan" : "text-tron-text"
+                        isSelected ? "text-white" : "text-white"
                       }`}>
                         {platform.name}
                       </div>
                       {isConnected && (
-                        <div className="text-xs text-tron-cyan mt-1 text-center">
+                        <div className="text-xs text-white mt-1 text-center">
                           Connected
                         </div>
                       )}
@@ -3203,7 +3435,7 @@ ${targetPlatforms.map(platform => {
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-sm text-tron-text-muted text-center mb-4"
+                    className="text-sm text-zinc-300 text-center mb-4"
                   >
                     Enter a campaign name and select at least one platform to continue
                   </motion.p>
@@ -3235,7 +3467,7 @@ ${targetPlatforms.map(platform => {
             >
               {/* Search Bar with Better UX */}
               <div className="space-y-3">
-                <label htmlFor="search-trends" className="block text-sm font-medium text-tron-text-muted">
+                <label htmlFor="search-trends" className="block text-sm font-medium text-zinc-300">
                   Search Keywords
                 </label>
                 <div className="flex gap-3">
@@ -3252,14 +3484,14 @@ ${targetPlatforms.map(platform => {
                       placeholder="e.g., AI productivity tools, healthy recipes..."
                       aria-label="Search trending topics"
                       aria-describedby="search-help"
-                      className="w-full px-6 py-4 bg-tron-dark/50 backdrop-blur-xl border-2 border-tron-cyan/30 rounded-2xl focus:ring-4 focus:ring-tron-cyan/20 focus:border-tron-cyan text-tron-text text-lg placeholder-tron-text-muted/50 transition-all"
+                      className="w-full px-6 py-4 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-lg placeholder-tron-text-muted/50 transition-all"
                     />
                     {searchQuery && (
                       <motion.button
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         onClick={() => setSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-tron-text-muted hover:text-tron-cyan transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-zinc-300 hover:text-white transition-colors"
                         aria-label="Clear search"
                       >
                         <X className="w-5 h-5" />
@@ -3302,10 +3534,10 @@ ${targetPlatforms.map(platform => {
               {trends.length > 0 && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-tron-text">
+                    <h3 className="text-lg font-semibold text-white">
                       Trending Topics
                     </h3>
-                    <span className="text-sm text-tron-text-muted">
+                    <span className="text-sm text-zinc-300">
                       {trends.length} results
                     </span>
                   </div>
@@ -3320,22 +3552,22 @@ ${targetPlatforms.map(platform => {
                         whileHover={{ scale: 1.01 }}
                         className={`relative p-6 rounded-2xl backdrop-blur-xl border-2 cursor-pointer transition-all ${
                           selectedTrend === trend
-                            ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-tron-cyan shadow-xl ring-2 ring-tron-cyan/20"
-                            : "bg-tron-dark/50 border-tron-grid hover:border-tron-cyan/50 hover:shadow-lg"
+                            ? "bg-gradient-to-r from-tron-cyan/20 to-tron-magenta/20 border-white shadow-xl ring-2 ring-white/10"
+                            : "bg-zinc-950/50 border-zinc-800 hover:border-white/50 hover:shadow-lg"
                         }`}
                       >
                         {selectedTrend === trend && (
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="absolute top-4 right-4 w-6 h-6 bg-tron-cyan rounded-full flex items-center justify-center"
+                            className="absolute top-4 right-4 w-6 h-6 bg-white rounded-full flex items-center justify-center"
                           >
                             <Check className="w-4 h-4 text-white" />
                           </motion.div>
                         )}
                         <div className="flex items-center gap-2 mb-2">
                           <div className={`font-semibold text-lg ${
-                            selectedTrend === trend ? "text-tron-cyan" : "text-tron-text"
+                            selectedTrend === trend ? "text-white" : "text-white"
                           }`}>
                             {trend.title}
                           </div>
@@ -3361,11 +3593,11 @@ ${targetPlatforms.map(platform => {
                           )}
                         </div>
                         <div className="flex items-center gap-4 text-sm">
-                          <span className="text-tron-text-muted">
+                          <span className="text-zinc-300">
                             {trend.formattedTraffic || "Trending"}
                           </span>
                           {trend.relatedQueries && (
-                            <span className="text-tron-cyan">
+                            <span className="text-white">
                               +{trend.relatedQueries.length} related topics
                             </span>
                           )}
@@ -3384,14 +3616,14 @@ ${targetPlatforms.map(platform => {
                   className="text-center py-16 px-4"
                 >
                   <div className="mb-6 flex justify-center">
-                    <div className="p-6 bg-tron-grid/30 rounded-full">
-                      <TrendingUp className="w-16 h-16 text-tron-text-muted" />
+                    <div className="p-6 bg-zinc-900/30 rounded-full">
+                      <TrendingUp className="w-16 h-16 text-zinc-300" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                  <h3 className="text-xl font-semibold text-white mb-3">
                     No trends found
                   </h3>
-                  <p className="text-tron-text-muted max-w-md mx-auto">
+                  <p className="text-zinc-300 max-w-md mx-auto">
                     Try different keywords or search terms
                   </p>
                 </motion.div>
@@ -3417,13 +3649,13 @@ ${targetPlatforms.map(platform => {
                       }}
                       className="p-6 bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 rounded-full"
                     >
-                      <Sparkles className="w-16 h-16 text-tron-cyan" />
+                      <Sparkles className="w-16 h-16 text-white" />
                     </motion.div>
                   </div>
-                  <h3 className="text-xl font-semibold text-tron-text mb-3">
+                  <h3 className="text-xl font-semibold text-white mb-3">
                     Discover Trending Topics
                   </h3>
-                  <p className="text-tron-text-muted max-w-md mx-auto mb-8">
+                  <p className="text-zinc-300 max-w-md mx-auto mb-8">
                     Enter keywords to find the hottest trends and content ideas powered by AI
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
@@ -3434,7 +3666,7 @@ ${targetPlatforms.map(platform => {
                           setSearchQuery(suggestion);
                           setTimeout(() => searchTrends(), 100);
                         }}
-                        className="px-4 py-2 bg-tron-grid/50 border border-tron-cyan/30 rounded-xl text-tron-text hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all text-sm"
+                        className="px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-white hover:border-white hover:bg-white/10 transition-all text-sm"
                       >
                         {suggestion}
                       </button>
@@ -3449,7 +3681,7 @@ ${targetPlatforms.map(platform => {
                   onClick={() => setStep(1)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 transition-all"
+                  className="px-8 py-4 bg-zinc-900/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
                 >
                   Back
                 </motion.button>
@@ -3491,7 +3723,7 @@ ${targetPlatforms.map(platform => {
                 disabled={generatingContent || selectedTrends.length === 0}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-8 py-6 bg-tron-cyan text-tron-dark font-bold rounded-xl hover:bg-tron-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
+                className="w-full px-8 py-6 bg-white text-tron-dark font-bold rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
               >
                 {generatingContent ? (
                   <>
@@ -3524,12 +3756,12 @@ ${targetPlatforms.map(platform => {
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-tron-text flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-tron-cyan" />
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-white" />
                       Generated Posts
                     </h3>
                     <span
-                      className="text-sm text-tron-text-muted"
+                      className="text-sm text-zinc-300"
                       aria-live="polite"
                     >
                       {Object.keys(generatedContent).filter((k) => k !== "hashtags")
@@ -3584,11 +3816,11 @@ ${targetPlatforms.map(platform => {
                       disabled={loading}
                       whileHover={{ scale: loading ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="px-8 py-5 bg-tron-grid/50 backdrop-blur-xl border-2 border-tron-cyan/50 rounded-2xl font-semibold text-tron-cyan hover:border-tron-cyan hover:bg-tron-cyan/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                      className="px-8 py-5 bg-zinc-900/50 backdrop-blur-xl border-2 border-white/50 rounded-2xl font-semibold text-white hover:border-white hover:bg-white/10 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                       aria-label="Save campaign as draft"
                     >
                       {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-tron-cyan" />
+                        <OrbitalLoader className="w-5 h-5" />
                       ) : (
                         <>
                           <Check className="w-5 h-5" />
@@ -3606,7 +3838,7 @@ ${targetPlatforms.map(platform => {
                       aria-label="Schedule campaign"
                     >
                       {loading ? (
-                        <BouncingDots dots={3} className="w-2 h-2 bg-white" />
+                        <OrbitalLoader className="w-5 h-5" />
                       ) : (
                         <>
                           <Calendar className="w-5 h-5" />
@@ -3624,7 +3856,7 @@ ${targetPlatforms.map(platform => {
                   onClick={() => setStep(2)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-tron-grid/50 border-2 border-tron-cyan/30 rounded-2xl font-semibold text-tron-cyan"
+                  className="px-8 py-4 bg-zinc-900/50 border-2 border-white/10 rounded-2xl font-semibold text-white"
                 >
                   Back
                 </motion.button>
@@ -3635,6 +3867,14 @@ ${targetPlatforms.map(platform => {
 
         {/* Toast Notification - using refactored component */}
         <Toast toast={toast} />
+
+        {/* Upgrade Modal */}
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          reason={upgradeReason}
+          currentUsage={usageData}
+        />
       </div>
 
       </div>

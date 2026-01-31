@@ -7,20 +7,22 @@ import { DashboardSkeleton } from "./SkeletonLoader";
 import { motion } from "framer-motion";
 import UsageMeter from "./UsageMeter";
 import {
-  Lightning as Zap,
-  TrendUp as TrendingUp,
-  Target,
-  CurrencyDollar as DollarSign,
+  Megaphone,
+  Timer,
+  Share2,
+  DollarSign,
   Plus,
   ArrowRight,
-  Sparkle as Sparkles,
-  Article,
-} from "@phosphor-icons/react";
+  Sparkles,
+  FileStack,
+  Layers,
+} from "lucide-react";
 import { FirstTimeHelpBanner } from "./FirstTimeTooltips";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import ActivityChart from "./dashboard/ActivityChart";
 import QuickWins from "./dashboard/QuickWins";
 import ProgressTracker from "./dashboard/ProgressTracker";
+// import CalendarView from "./dashboard/CalendarView";
 
 interface Campaign {
   id: string;
@@ -35,7 +37,9 @@ interface StatCard {
   value: number | string;
   label: string;
   subtitle?: string;
-  gradient: string;
+  color: string;
+  bg: string;
+  border: string;
 }
 
 interface Profile {
@@ -115,34 +119,47 @@ export default function DashboardClient() {
 
   const { profile, campaigns } = data;
 
+  // Calculate content metrics
+  const totalPlatformPosts = campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0);
+  const estimatedContentPieces = campaigns.length * 4;
+  const estimatedTimeSaved = campaigns.length > 0 ? `${campaigns.length * 2}h saved` : "Ready to save time";
+
   const stats = [
     {
-      icon: Zap,
+      icon: Megaphone,
       value: campaigns.length,
       label: "Campaigns Created",
-      subtitle: campaigns.length === 0 ? "Start creating!" : campaigns.length === 1 ? "First one done!" : "Building momentum",
-      gradient: "from-coral-500 to-coral-600",
+      subtitle: campaigns.length === 0 ? "Create your first!" : "Building momentum",
+      color: "text-indigo-400",
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/20",
     },
     {
-      icon: Article,
-      value: campaigns.length * 4, // Estimate 4 content pieces per campaign
+      icon: FileStack,
+      value: estimatedContentPieces,
       label: "Content Pieces",
-      subtitle: campaigns.length > 0 ? `$${campaigns.length * 4 * 10} saved` : "AI-powered content",
-      gradient: "from-purple-500 to-purple-600",
+      subtitle: campaigns.length > 0 ? `~$${estimatedContentPieces * 10} value` : "AI-generated",
+      color: "text-violet-400",
+      bg: "bg-violet-500/10",
+      border: "border-violet-500/20",
     },
     {
-      icon: Target,
-      value: campaigns.reduce((acc, c) => acc + (c.target_platforms?.length || 0), 0),
+      icon: Share2,
+      value: totalPlatformPosts,
       label: "Platform Posts",
-      subtitle: campaigns.length > 0 ? "Multi-channel reach" : "Cross-platform ready",
-      gradient: "from-blue-500 to-blue-600",
+      subtitle: campaigns.length > 0 ? "Multi-channel reach" : "6 platforms ready",
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/20",
     },
     {
-      icon: TrendingUp,
-      value: "Day 1+",
-      label: "Building Your Brand",
-      subtitle: campaigns.length > 0 ? "Keep going!" : "Just getting started",
-      gradient: "from-green-400 to-green-500",
+      icon: Timer,
+      value: estimatedTimeSaved,
+      label: "Time Efficiency",
+      subtitle: campaigns.length > 0 ? "vs manual creation" : "Start saving today",
+      color: "text-blue-400",
+      bg: "bg-blue-500/10",
+      border: "border-blue-500/20",
     },
   ];
 
@@ -157,11 +174,11 @@ export default function DashboardClient() {
             className="flex flex-col md:flex-row md:items-center justify-between gap-6"
           >
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
                 {profile?.full_name || "Welcome Back"}
               </h1>
-              <p className="text-gray-300 text-lg flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-coral-500" weight="duotone" />
+              <p className="text-muted-foreground text-lg flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
                 {campaigns.length === 0 ? (
                   "Ready to create your first campaign?"
                 ) : campaigns.length === 1 ? (
@@ -176,9 +193,9 @@ export default function DashboardClient() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
+                className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-3 text-lg shadow-lg border border-border"
               >
-                <Plus className="w-6 h-6" weight="duotone" />
+                <Plus className="w-6 h-6" />
                 New Campaign
               </motion.button>
             </Link>
@@ -201,37 +218,37 @@ export default function DashboardClient() {
                   className="relative group"
                 >
                   {/* Gradient glow effect on hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-2xl blur-xl`} />
-                  
-                  <div className="relative p-6 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-2xl group-hover:border-coral-500/50 group-hover:shadow-xl group-hover:shadow-coral-500/20 transition-all duration-300">
-                    <div className="flex items-center justify-between mb-4">
+                  {/* Gradient glow effect on hover - Removed for cleaner look, handled by card hover states */}
+
+                  <div className="relative p-6 bg-card backdrop-blur-xl border border-border rounded-2xl hover:border-primary/30 transition-all duration-300 group-hover:shadow-lg">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        {/* New Minimal Header Layout */}
+                        <div className="text-sm text-muted-foreground font-medium mb-1">
+                          {stat.label}
+                        </div>
+                        <div className="text-3xl font-bold text-foreground tracking-tight">
+                          {stat.value}
+                        </div>
+                      </div>
+
+                      {/* Modern Icon Container */}
                       <div
-                        className={`p-3 bg-gradient-to-br ${stat.gradient} rounded-xl shadow-lg`}
+                        className={`p-3 rounded-xl ${stat.bg} ${stat.border} border`}
                       >
-                        <Icon className="w-6 h-6 text-white" weight="duotone" />
+                        <Icon className={`w-6 h-6 ${stat.color}`} strokeWidth={1.5} />
                       </div>
-                      {/* Trend indicator */}
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 + 0.3 }}
-                        className="text-xs text-green-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <TrendingUp className="w-3 h-3" weight="duotone" />
-                        <span>+0%</span>
-                      </motion.div>
                     </div>
-                    <div className="text-3xl font-bold text-white mb-1">
-                      {stat.value}
+
+                    <div className="flex items-center gap-2">
+                       {/* Subtle Progress Bar or Trend Metric could go here, for now just subtitle */}
+                       {stat.subtitle && (
+                        <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                           <div className={`w-1.5 h-1.5 rounded-full ${stat.color.replace('text-', 'bg-')}`} />
+                           {stat.subtitle}
+                        </div>
+                      )}
                     </div>
-                    <div className="text-sm text-gray-300 font-medium">
-                      {stat.label}
-                    </div>
-                    {stat.subtitle && (
-                      <div className="text-xs text-gray-400 mt-1">
-                        {stat.subtitle}
-                      </div>
-                    )}
                   </div>
                 </motion.div>
               );
@@ -255,12 +272,12 @@ export default function DashboardClient() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="lg:col-span-2 p-8 bg-[#343a40] backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl"
+              className="lg:col-span-2 p-8 bg-card backdrop-blur-xl border border-border rounded-3xl"
             >
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-coral-500/10 rounded-xl">
-                  <Sparkles className="w-6 h-6 text-coral-500" weight="duotone" />
+              <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+                <div className="p-2 bg-muted rounded-xl">
+                  <Sparkles className="w-6 h-6 text-foreground" />
                 </div>
                 Recent Campaigns
               </h2>
@@ -269,10 +286,10 @@ export default function DashboardClient() {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="text-sm text-coral-500 hover:text-coral-400 transition-colors flex items-center gap-2"
+                    className="text-sm text-foreground hover:text-primary transition-colors flex items-center gap-2"
                   >
                     View All
-                    <ArrowRight className="w-4 h-4" weight="duotone" />
+                    <ArrowRight className="w-4 h-4" />
                   </motion.button>
                 </Link>
               )}
@@ -290,28 +307,34 @@ export default function DashboardClient() {
                     className="group"
                   >
                     <Link href={`/campaigns/${campaign.id}`}>
-                      <div className="p-6 bg-[#2b2b2b] backdrop-blur border-2 border-gray-700/50 hover:border-coral-500/50 rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-xl hover:shadow-coral-500/20">
+                      <div className="p-6 bg-background backdrop-blur border border-border hover:border-primary rounded-2xl transition-all duration-300 flex items-center justify-between hover:shadow-lg">
                         <div className="flex-1">
-                          <div className="font-semibold text-white text-lg mb-2 group-hover:text-coral-400 transition-colors">
+                          <div className="font-semibold text-foreground text-lg mb-2 group-hover:text-primary transition-colors">
                             {campaign.name}
                           </div>
-                          <div className="text-sm text-gray-300 flex items-center gap-3">
-                            <span className="px-3 py-1 bg-coral-500/10 border border-coral-500/30 rounded-full text-coral-400 capitalize text-xs font-medium">
+                          <div className="text-sm text-muted-foreground flex items-center gap-3">
+                            <span className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
+                              campaign.status === 'published'
+                                ? 'bg-green-500/10 border border-green-500/30 text-green-600'
+                                : campaign.status === 'scheduled'
+                                ? 'bg-amber-500/10 border border-amber-500/30 text-amber-600'
+                                : 'bg-muted border border-border text-muted-foreground'
+                            }`}>
                               {campaign.status}
                             </span>
                             {campaign.target_platforms && campaign.target_platforms.length > 0 && (
                               <>
-                                <span className="text-gray-600">•</span>
+                                <span className="text-muted-foreground">•</span>
                                 <span className="flex items-center gap-1">
-                                  <Target className="w-3 h-3" weight="duotone" />
+                                  <Layers className="w-3 h-3" />
                                   {campaign.target_platforms.length} {campaign.target_platforms.length === 1 ? 'platform' : 'platforms'}
                                 </span>
                               </>
                             )}
-                            <span className="text-gray-600">•</span>
+                            <span className="text-muted-foreground">•</span>
                             <span className="text-xs">
-                              {new Date(campaign.created_at).toLocaleDateString('en-US', { 
-                                month: 'short', 
+                              {new Date(campaign.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
                                 day: 'numeric',
                                 year: 'numeric'
                               })}
@@ -321,9 +344,9 @@ export default function DashboardClient() {
                         <motion.div
                           initial={{ x: -10, opacity: 0 }}
                           whileHover={{ x: 0, opacity: 1 }}
-                          className="p-2 bg-coral-500/10 rounded-full"
+                          className="p-2 bg-muted rounded-full"
                         >
-                          <ArrowRight className="w-5 h-5 text-coral-500" weight="duotone" />
+                          <ArrowRight className="w-5 h-5 text-foreground" />
                         </motion.div>
                       </div>
                     </Link>
@@ -335,41 +358,61 @@ export default function DashboardClient() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
-                className="text-center py-16"
+                className="py-8"
               >
-                <div className="mb-6 flex justify-center">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="p-6 bg-coral-500/20 rounded-full"
-                  >
-                    <Sparkles className="w-16 h-16 text-coral-500" weight="duotone" />
-                  </motion.div>
+                {/* Getting Started Checklist */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-foreground" />
+                    Getting Started
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      { step: 1, label: "Create your first campaign", done: false, href: "/campaigns/create" },
+                      { step: 2, label: "Discover trending topics", done: false, href: "/campaigns/create" },
+                      { step: 3, label: "Generate AI content", done: false, href: "/campaigns/create" },
+                      { step: 4, label: "Schedule or publish", done: false, href: "/campaigns" },
+                    ].map((item, idx) => (
+                      <Link key={item.step} href={item.href}>
+                        <motion.div
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.6 + idx * 0.1 }}
+                          className="flex items-center gap-4 p-4 bg-muted/50 hover:bg-muted border border-border hover:border-primary rounded-xl transition-all group cursor-pointer"
+                        >
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            item.done
+                              ? 'bg-green-500/20 text-green-600 border border-green-500/30'
+                              : 'bg-primary/10 text-foreground border border-border'
+                          }`}>
+                            {item.step}
+                          </div>
+                          <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1">
+                            {item.label}
+                          </span>
+                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-3">
-                  No campaigns yet
-                </h3>
-                <p className="text-gray-300 mb-8 max-w-md mx-auto leading-relaxed">
-                  Start creating amazing content campaigns with AI-powered
-                  generation. Your first campaign is just a click away!
-                </p>
-                <Link href="/campaigns/create">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 bg-coral-500 text-white font-bold rounded-xl hover:bg-coral-600 transition-colors flex items-center gap-3 mx-auto text-lg shadow-xl border-2 border-transparent hover:border-coral-400/50"
-                  >
-                    <Plus className="w-6 h-6" weight="duotone" />
-                    Create First Campaign
-                  </motion.button>
-                </Link>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <Link href="/campaigns/create">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-8 py-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center gap-3 mx-auto text-lg shadow-lg border border-border"
+                    >
+                      <Plus className="w-6 h-6" />
+                      Create First Campaign
+                    </motion.button>
+                  </Link>
+                  <p className="text-muted-foreground text-sm mt-4">
+                    Takes less than 2 minutes with AI assistance
+                  </p>
+                </div>
               </motion.div>
             )}
           </motion.div>
@@ -392,6 +435,14 @@ export default function DashboardClient() {
               <ProgressTracker progress={analyticsData.progress} />
             </div>
           )}
+
+          {/* Smart Scheduling Calendar - Hidden until implemented */
+/*
+          <div className="mt-8">
+            <CalendarView />
+          </div>
+*/
+}
         </div>
       </div>
   );

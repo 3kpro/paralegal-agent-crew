@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+httpx
+python-multipart
+sqlalchemy
+psycopg2-binary
+pandas
+numpy
+python-dotenv
+anthropic
+pydantic
+python-jose[cryptography]

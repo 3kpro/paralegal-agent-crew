@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import { getGeminiModel } from '@/lib/gemini';
 import { createClient } from '@/lib/supabase/server';
 
 // Define the shape of a Tool
@@ -17,34 +17,27 @@ interface AgentState {
 }
 
 export class HelixAgentManager {
-  private genAI: GoogleGenerativeAI;
   private model: any;
   private tools: Map<string, HelixTool>;
 
   constructor() {
-    // Initialize Gemini AI with API Key
+    // Initialize using centralized helper
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    if (!apiKey) {
-      throw new Error("API key not set in environment variables. Please set GOOGLE_GENERATIVE_AI_API_KEY, GEMINI_API_KEY, or GOOGLE_API_KEY.");
+    
+    // We can't really use this.genAI anymore as it was GoogleGenerativeAI class. 
+    // We will just store the model.
+    // However, the class definition has private genAI: GoogleGenerativeAI. We should remove that property or ignore it.
+    // Let's rely on getGeminiModel from lib.
+    
+    // Import helper dynamically or assume it's available (I will add import).
+    // Actually, I can just use getGeminiModel('gemini-2.0-flash').
+    
+    // Changing implementation to use getGeminiModel
+    this.model = getGeminiModel('gemini-2.0-flash');
+    
+    if (!this.model) {
+        throw new Error("Failed to initialize Gemini model via Vertex AI");
     }
-
-    this.genAI = new GoogleGenerativeAI(apiKey);
-
-    // Use Gemini 1.5 Flash for speed and reliability
-    this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      generationConfig: {
-        maxOutputTokens: 8192,
-        temperature: 0.7,
-        topP: 0.95,
-      },
-      safetySettings: [
-        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-        { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-        { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE }
-      ],
-    });
 
     this.tools = new Map();
     this.registerCoreTools();

@@ -7,7 +7,7 @@ import { BGPattern } from "@/components/ui/bg-pattern";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 const AI_PROVIDERS = [
   { name: "OpenAI", logo: "/brands/openai.png" },
@@ -64,7 +64,7 @@ export default function ReactorPage() {
              style={{ zIndex: 0 }}
          />
          <div className="text-center relative z-10">
-           <BouncingDots className="bg-coral-500" />
+            <OrbitalLoader className="w-10 h-10 text-coral-500 mx-auto" />
            <p className="text-gray-500 mt-4">Loading Reactor...</p>
          </div>
        </div>

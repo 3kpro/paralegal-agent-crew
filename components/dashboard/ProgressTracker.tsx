@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle as CheckCircle2, Circle, RocketLaunch as Rocket } from "@phosphor-icons/react";
+import { CheckCircle2, Circle, Megaphone } from "lucide-react";
 
 interface ProgressTrackerProps {
   progress: {
@@ -51,11 +51,11 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-3">
             <div className="p-2 bg-blue-500/10 rounded-xl">
-              <Rocket className="w-5 h-5 text-blue-500" weight="duotone" />
+              <Megaphone className="w-5 h-5 text-blue-500" />
             </div>
             Your Progress
           </h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-gray-200 mt-1">
             {completedCount} of {totalMilestones} milestones completed
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
             className="bg-gradient-to-r from-coral-500 to-purple-500 h-full rounded-full"
           />
         </div>
-        <p className="text-xs text-gray-400 mt-2 text-right">
+        <p className="text-xs text-gray-200 mt-2 text-right">
           {Math.round(progressPercentage)}% complete
         </p>
       </div>
@@ -94,19 +94,19 @@ export default function ProgressTracker({ progress }: ProgressTrackerProps) {
               }`}
             >
               {isCompleted ? (
-                <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" weight="duotone" />
+                <CheckCircle2 className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
               ) : (
-                <Circle className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" weight="duotone" />
+                <Circle className="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" />
               )}
               <div className="flex-1">
                 <p
                   className={`text-sm font-medium ${
-                    isCompleted ? "text-white" : "text-gray-400"
+                    isCompleted ? "text-white" : "text-gray-200"
                   }`}
                 >
                   {milestone.label}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-gray-300 mt-0.5">
                   {milestone.description}
                 </p>
               </div>

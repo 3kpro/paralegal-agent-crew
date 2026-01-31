@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Skeleton } from '@/components/SkeletonLoader'
-import { BouncingDots } from '@/components/ui/bouncing-dots'
+import { OrbitalLoader } from '@/components/ui/orbital-loader'
 import './test-components.css'
 
 // Mock components to test theme consistency
@@ -357,19 +357,19 @@ describe('Tron Theme Integration E2E Tests', () => {
   })
 
   describe('Theme Integration with Loading States', () => {
-    test('loading spinners (BouncingDots) use Tron theme colors', () => {
+    test('loading spinners (OrbitalLoader) use Tron theme colors', () => {
       const mockLoadingComponent = () => (
         <div className="flex items-center justify-center p-8">
-          <BouncingDots className="bg-tron-cyan" />
+          <OrbitalLoader className="text-tron-cyan" />
           <span className="ml-3 text-tron-text">Loading...</span>
         </div>
       )
 
       render(mockLoadingComponent())
 
-      // BouncingDots renders 3 dots by default, all should have the theme color
-      const dots = document.querySelectorAll('.bg-tron-cyan')
-      expect(dots.length).toBe(3)
+      // OrbitalLoader renders as a SVG spinner, verify it's in the document with the theme color
+      const loader = document.querySelector('.text-tron-cyan')
+      expect(loader).toBeInTheDocument()
       
       // Verify parent container structure if needed, but primary check is the color application
       expect(screen.getByText('Loading...')).toHaveClass('text-tron-text')

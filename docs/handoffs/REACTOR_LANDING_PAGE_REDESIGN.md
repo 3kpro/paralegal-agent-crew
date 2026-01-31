@@ -286,7 +286,7 @@ From current page, DELETE:
 ## What to Keep
 
 - Auth check (redirect to login if not authenticated)
-- Loading state with BouncingDots
+- Loading state with OrbitalLoader
 - BGPattern component usage
 - Provider logo images (just display them simpler)
 

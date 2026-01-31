@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { headers } from "next/headers";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getGeminiModel } from "@/lib/gemini";
 
 // Initialize Rate Limiter
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -23,8 +23,6 @@ if (redisUrl && redisToken) {
   });
 }
 
-// Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || "");
 
 export async function POST(request: Request) {
   try {
@@ -70,7 +68,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No targets found" }, { status: 404 });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = getGeminiModel("gemini-2.0-flash");
+
+    if (!model) {
+      throw new Error("Failed to initialize AI model"); 
+    }
 
     // Generate Content for each target using Gemini
     const generatedResults = await Promise.all(targets.map(async (target) => {
@@ -145,7 +147,8 @@ export async function POST(request: Request) {
 
       try {
         const result = await model.generateContent(prompt);
-        const responseText = result.response.text();
+        const candidates = result.response.candidates;
+        const responseText = candidates?.[0]?.content?.parts?.[0]?.text || "{}";
         
         // Clean up markdown code blocks if present
         const cleanJson = responseText.replace(/```json\n?|\n?```/g, "").trim();

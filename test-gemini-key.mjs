@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const apiKey = 'AIzaSyBwFeOnxvd41Gj1fQAKr5ai7SasRZaP07Q';
+const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GOOGLE_API_KEY;
+
+if (!apiKey) {
+  console.error('❌ Error: No API key found!');
+  console.error('Set GOOGLE_GENERATIVE_AI_API_KEY or GOOGLE_API_KEY environment variable');
+  process.exit(1);
+}
 
 console.log('Testing Gemini API key...');
 console.log('API Key:', apiKey.substring(0, 20) + '...');

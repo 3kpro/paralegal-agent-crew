@@ -40,6 +40,6 @@ export default function robots(): MetadataRoute.Robots {
         "/clip",
       ],
     },
-    sitemap: "https://xelora.app/sitemap.xml",
+    sitemap: "https://getxelora.com/sitemap.xml",
   };
 }

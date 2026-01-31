@@ -2,17 +2,59 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useHelix } from "@/context/HelixContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Robot as Bot, 
-  Paperclip, 
-  Command, 
+import {
+  Robot as Bot,
+  Paperclip,
+  Command,
   PaperPlaneRight as SendIcon,
   MagicWand,
   ArrowUp,
   Copy,
-  Check
+  Check,
+  TrendUp,
+  Lightbulb,
+  ChartLineUp,
+  MagnifyingGlass,
+  Sparkle
 } from "@phosphor-icons/react";
+
+// Suggested prompts for new users
+const suggestedPrompts = [
+  {
+    icon: TrendUp,
+    label: "Find trending topics",
+    prompt: "What are the top trending topics in tech and business right now?",
+    color: "text-coral-400",
+    bgColor: "bg-coral-500/10",
+    borderColor: "border-coral-500/30"
+  },
+  {
+    icon: Lightbulb,
+    label: "Validate content idea",
+    prompt: "Can you help me validate if this content idea has viral potential?",
+    color: "text-[#00C7F2]",
+    bgColor: "bg-[#00C7F2]/10",
+    borderColor: "border-[#00C7F2]/30"
+  },
+  {
+    icon: ChartLineUp,
+    label: "Analyze my campaigns",
+    prompt: "Show me insights about my recent campaign performance",
+    color: "text-purple-400",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/30"
+  },
+  {
+    icon: Sparkle,
+    label: "Generate content hooks",
+    prompt: "Generate 5 viral hook ideas for a post about AI productivity tools",
+    color: "text-amber-400",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30"
+  }
+];
 import dynamic from 'next/dynamic';
 
 const AnalystCharts = dynamic(() => import('@/components/analyst/AnalystCharts'), { 
@@ -56,6 +98,7 @@ export default function HelixChatInterface({
   user 
 }: HelixChatInterfaceProps) {
   const pathname = usePathname();
+  const { context: helixContext } = useHelix();
   const [localInput, setLocalInput] = useState("");
   const [hasStarted, setHasStarted] = useState(initialMessages.length > 0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -81,7 +124,7 @@ export default function HelixChatInterface({
         body: JSON.stringify({
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
           sessionId,
-          context: { currentPath: pathname }
+          context: { ...helixContext, currentPath: pathname }
         })
       });
 
@@ -230,7 +273,42 @@ export default function HelixChatInterface({
                       </div>
                    )}
                    <div className="whitespace-pre-wrap">
-                      {msg.content || (msg.toolData?.explanation && !msg.toolData?.data?.length ? msg.toolData.explanation : '')}
+                      {(() => {
+                          const rawContent = msg.content || (msg.toolData?.explanation && !msg.toolData?.data?.length ? msg.toolData.explanation : '') || '';
+                          const actionRegex = /\[ACTION:([a-zA-Z0-9_]+)\|([^\]]+)\]/g;
+                          const actions: {action: string, label: string}[] = [];
+                          const cleanContent = rawContent.replace(actionRegex, (match: string, action: string, label: string) => {
+                             actions.push({ action, label });
+                             return '';
+                          });
+
+                          return (
+                            <>
+                              {cleanContent}
+                              {actions.length > 0 && (
+                                <div className="mt-4 flex flex-wrap gap-3">
+                                  {actions.map((act, i) => (
+                                    <button
+                                      key={i}
+                                      onClick={() => {
+                                        if (helixContext.actions && helixContext.actions[act.action]) {
+                                           helixContext.actions[act.action]();
+                                        } else {
+                                           console.warn(`Action ${act.action} not found`, helixContext.actions);
+                                        }
+                                      }}
+                                      className="flex items-center gap-2 px-4 py-2 bg-coral-500/10 hover:bg-coral-500/20 border border-coral-500/30 text-coral-300 text-sm rounded-lg transition-colors font-medium"
+                                    >
+                                      <MagicWand className="w-4 h-4" />
+                                      {act.label}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </>
+                          );
+                      })()}
+                   
                       {!msg.content && !msg.toolData && (
                         <span className="flex items-center gap-2 text-gray-400 italic animate-pulse">
                           Thinking...
@@ -272,7 +350,7 @@ export default function HelixChatInterface({
 
       {/* Input Container - Centers initially, then fixes to bottom */}
       <div 
-        className={`fixed left-0 right-0 z-30 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col items-center justify-center px-4 ${
+        className={`fixed left-0 right-0 z-30 transition-all duration-700 ease-out flex flex-col items-center justify-center px-4 ${
           !hasStarted 
             ? "top-0 bottom-0" 
             : "bottom-8 top-auto"
@@ -343,9 +421,37 @@ export default function HelixChatInterface({
             </div>
           </div>
 
-          {/* Buttons placeholder - explicitly empty as requested */}
+          {/* Suggested Prompts - shown when chat hasn't started */}
           {!hasStarted && (
-             <div className="h-10 w-full mt-6" /> 
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-6 grid grid-cols-2 gap-3"
+            >
+              {suggestedPrompts.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.button
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 + index * 0.05 }}
+                    onClick={() => {
+                      setLocalInput(item.prompt);
+                    }}
+                    className={`flex items-center gap-3 p-3 ${item.bgColor} border ${item.borderColor} rounded-xl text-left hover:scale-[1.02] transition-all group`}
+                  >
+                    <div className={`p-2 rounded-lg ${item.bgColor} ${item.color}`}>
+                      <Icon className="w-4 h-4" weight="duotone" />
+                    </div>
+                    <span className={`text-sm font-medium ${item.color} group-hover:text-white transition-colors`}>
+                      {item.label}
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </motion.div>
           )}
 
         </div>

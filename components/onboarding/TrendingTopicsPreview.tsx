@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { TrendUp as TrendingUp, WarningCircle as AlertCircle, MagicWand } from "@phosphor-icons/react";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 import type { Interest } from "./InterestSelection";
 import { getViralScoreEmoji, formatViralScore } from "@/lib/viral-score-utils";
 
@@ -138,7 +138,7 @@ export default function TrendingTopicsPreview({
               {/* Loading State */}
               {interestTrend.loading && (
                 <div className="flex items-center justify-center py-8">
-                  <BouncingDots className="bg-coral-400" />
+                  <OrbitalLoader className="w-10 h-10 text-coral-400" />
                   <span className="ml-2 text-gray-400">
                     Finding trending topics...
                   </span>

@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { trackSignup } from "@/lib/analytics";
 
-import { BGPattern } from "@/components/ui/bg-pattern";
-
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -75,34 +73,23 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] overflow-hidden flex items-center justify-center px-4 py-12">
-      <BGPattern
-        variant="dots"
-        mask="fade-center"
-        size={24}
-        fill="rgba(255,255,255,0.15)"
-        className="absolute inset-0 z-0 h-full w-full opacity-100"
-        style={{ zIndex: 0 }}
-      />
-      <div className="relative z-10 max-w-md w-full">
+    <div className="flex items-center justify-center min-h-screen px-4 py-12">
+      <div className="max-w-md w-full">
         {/* Logo & Tagline */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-coral-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">3K</span>
-            </div>
-            <span className="text-2xl font-bold text-white">
+          <Link href="/" className="inline-flex items-center justify-center mb-4">
+            <span className="text-3xl font-bold text-foreground uppercase tracking-wider">
               XELORA
             </span>
           </Link>
-          <p className="text-gray-300 mt-2">
-            Create professional content in minutes
+          <p className="text-muted-foreground mt-2">
+            Predict Momentum. Engineer Virality.
           </p>
         </div>
 
         {/* Signup Card */}
-        <div className="bg-[#343a40] rounded-2xl shadow-xl p-8 border-2 border-gray-700/50">
-          <h1 className="text-2xl font-bold text-white mb-6">
+        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+          <h1 className="text-2xl font-bold text-foreground mb-6">
             Create your account
           </h1>
 
@@ -117,7 +104,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="fullName"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-muted-foreground mb-2"
               >
                 Full Name
               </label>
@@ -127,7 +114,7 @@ export default function SignupPage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
+                className="w-full h-12 px-4 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring focus:outline-none text-foreground placeholder-muted-foreground"
                 placeholder="John Doe"
               />
             </div>
@@ -136,7 +123,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-muted-foreground mb-2"
               >
                 Email
               </label>
@@ -146,7 +133,7 @@ export default function SignupPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
+                className="w-full h-12 px-4 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring focus:outline-none text-foreground placeholder-muted-foreground"
                 placeholder="you@example.com"
               />
             </div>
@@ -155,7 +142,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-muted-foreground mb-2"
               >
                 Password
               </label>
@@ -165,7 +152,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
+                className="w-full h-12 px-4 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring focus:outline-none text-foreground placeholder-muted-foreground"
                 placeholder="••••••••"
               />
             </div>
@@ -174,7 +161,7 @@ export default function SignupPage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300 mb-2"
+                className="block text-sm font-medium text-muted-foreground mb-2"
               >
                 Confirm Password
               </label>
@@ -184,7 +171,7 @@ export default function SignupPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full h-12 px-4 bg-[#2b2b2b] border-2 border-gray-700/50 rounded-lg focus:ring-2 focus:ring-coral-500/50 focus:border-coral-500/50 focus:outline-none text-white placeholder-gray-400"
+                className="w-full h-12 px-4 bg-input border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-ring focus:outline-none text-foreground placeholder-muted-foreground"
                 placeholder="••••••••"
               />
             </div>
@@ -195,20 +182,20 @@ export default function SignupPage() {
                 id="terms"
                 type="checkbox"
                 required
-                className="mt-1 h-4 w-4 text-coral-500 focus:ring-coral-500 border-gray-700 rounded bg-[#2b2b2b]"
+                className="mt-1 h-4 w-4 text-primary focus:ring-ring border-border rounded bg-input"
               />
-              <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
+              <label htmlFor="terms" className="ml-2 text-sm text-muted-foreground">
                 I agree to the{" "}
                 <Link
                   href="/terms"
-                  className="text-coral-500 hover:text-coral-400"
+                  className="text-primary hover:text-primary/80"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   href="/privacy"
-                  className="text-coral-500 hover:text-coral-400"
+                  className="text-primary hover:text-primary/80"
                 >
                   Privacy Policy
                 </Link>
@@ -219,7 +206,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-14 bg-coral-500 hover:bg-coral-600 disabled:bg-coral-500/50 text-white font-semibold rounded-lg transition-colors shadow-xl border-2 border-transparent hover:border-coral-400/50"
+              className="w-full h-14 bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-primary-foreground font-semibold rounded-lg transition-colors shadow-xl"
             >
               {loading ? "Creating account..." : "Create account"}
             </button>
@@ -227,15 +214,15 @@ export default function SignupPage() {
 
           {/* Divider */}
           <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-700/50"></div>
-            <span className="px-4 text-sm text-gray-400">OR</span>
-            <div className="flex-1 border-t border-gray-700/50"></div>
+            <div className="flex-1 border-t border-border"></div>
+            <span className="px-4 text-sm text-muted-foreground">OR</span>
+            <div className="flex-1 border-t border-border"></div>
           </div>
 
           {/* Google Signup */}
           <button
             onClick={handleGoogleSignup}
-            className="w-full h-12 border-2 border-gray-700/50 hover:border-coral-500/50 hover:bg-[#2b2b2b]/50 text-white font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
+            className="w-full h-12 border border-border hover:border-primary hover:bg-accent text-foreground font-medium rounded-lg transition-colors flex items-center justify-center space-x-2"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -259,11 +246,11 @@ export default function SignupPage() {
           </button>
 
           {/* Login Link */}
-          <p className="mt-6 text-center text-sm text-gray-400">
+          <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-coral-500 hover:text-coral-400 font-medium"
+              className="text-primary hover:text-primary/80 font-medium"
             >
               Sign in
             </Link>

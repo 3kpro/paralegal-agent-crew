@@ -1,6 +1,6 @@
-# TrendPulse - AI-Powered Social Media Management Platform
+# Xelora - AI-Powered Social Media Management Platform
 
-TrendPulse is a B2B SaaS platform that helps businesses discover trending topics, generate AI-powered content, and publish to multiple social media platforms from a single dashboard.
+Xelora is a B2B SaaS platform that helps businesses discover trending topics, generate AI-powered content, and publish to multiple social media platforms from a single dashboard.
 
 ## 🚀 Features
 

@@ -52,7 +52,7 @@ function geBgImage(variant: BGVariantType, fill: string, size: number) {
 }
 
 const BGPattern = ({
-	variant = 'grid',
+	variant = 'dots',
 	mask = 'none',
 	size = 24,
 	fill = '#252525',

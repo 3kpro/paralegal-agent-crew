@@ -40,6 +40,56 @@
       "source": "/home",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "xelora.app"
+        }
+      ],
+      "destination": "https://getxelora.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.xelora.app"
+        }
+      ],
+      "destination": "https://getxelora.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "xelorahq.com"
+        }
+      ],
+      "destination": "https://getxelora.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.xelorahq.com"
+        }
+      ],
+      "destination": "https://getxelora.com/:path*",
+      "permanent": true
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/process-schedule",
+      "schedule": "0 0 * * *"
     }
   ],
   "github": {

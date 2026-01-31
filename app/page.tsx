@@ -1,44 +1,26 @@
 "use client";
 
-import {
-  ModernHero,
-  ModernFeatures,
-  ModernPricing,
-  StatsSection,
-  ServicesGrid,
-  FAQSection,
-  WaitlistSection,
-} from "../components/sections";
-import { Navigation, Footer, ContactSection } from "../components";
+import { Navigation } from "@/components/Navigation";
+import { Footer } from "@/components/Footer";
+import ModernHero from "@/components/sections/ModernHero";
+import ModernFeatures from "@/components/sections/ModernFeatures";
+import DemoVideoSection from "@/components/sections/DemoVideoSection";
+import { StatsSection } from "@/components/sections/StatsSection";
+import { PricingSection } from "@/components/landing/pricing-section";
+import FAQSection from "@/components/sections/FAQSection";
 
-export default function ModernLandingPage() {
-  const handleContactClick = () => {
-    const contactElement = document.getElementById("contact");
-    if (contactElement) {
-      contactElement.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen">
-      <Navigation onContactClick={handleContactClick} />
-
-      <ModernHero />
-
-      <ModernFeatures />
-
-      <StatsSection />
-
-      <ServicesGrid />
-
-      <ModernPricing />
-
-      <FAQSection />
-
-      <WaitlistSection />
-
-      <ContactSection />
-
+    <div className="min-h-screen bg-background flex flex-col font-sans">
+      <Navigation />
+      <main className="flex-1">
+        <ModernHero />
+        <ModernFeatures />
+        <DemoVideoSection />
+        <StatsSection />
+        <PricingSection />
+        <FAQSection />
+      </main>
       <Footer />
     </div>
   );

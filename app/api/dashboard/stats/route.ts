@@ -15,6 +15,7 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
+      console.log("Dashboard stats: Unauthorized");
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
@@ -81,11 +82,12 @@ export async function GET() {
     const previousCampaigns = campaignsPrevious7Days.data || [];
 
     // Now fetch content pieces using campaign IDs
-    let content = [];
+    let content: any[] = [];
     if (campaigns.length > 0) {
       const campaignIds = campaigns.map(c => c.id);
+      // Corrected table name from campaign_content to scheduled_posts
       const contentData = await supabase
-        .from("campaign_content")
+        .from("scheduled_posts")
         .select("id, campaign_id")
         .in("campaign_id", campaignIds);
 
@@ -102,10 +104,25 @@ export async function GET() {
     let viralScoreCount = 0;
 
     campaigns.forEach((campaign) => {
-      if (campaign.source_data && typeof campaign.source_data === 'object') {
-        const viralScore = (campaign.source_data as any).viralScore;
-        if (typeof viralScore === 'number') {
-          totalViralScore += viralScore;
+      const sourceData = campaign.source_data as any;
+      if (sourceData) {
+        // Check for viral score in singular trend
+        if (sourceData.trend?.viralScore) {
+          totalViralScore += sourceData.trend.viralScore;
+          viralScoreCount++;
+        }
+        // Check for viral scores in trends array
+        else if (Array.isArray(sourceData.trends)) {
+          sourceData.trends.forEach((t: any) => {
+            if (t.viralScore) {
+              totalViralScore += t.viralScore;
+              viralScoreCount++;
+            }
+          });
+        }
+        // Legacy check
+        else if (typeof sourceData.viralScore === 'number') {
+          totalViralScore += sourceData.viralScore;
           viralScoreCount++;
         }
       }

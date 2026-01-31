@@ -1,472 +1,308 @@
-# Security Hardening Strategy: XELORA & 3K-Pro-Services
+# Security Hardening & Incident Log
 
-**Date:** 2026-01-18
-**Status:** ACTIVE - HUMAN-IN-LOOP ENFORCEMENT
-**Last Reviewed:** 2026-01-18
+**Repository:** 3K-Pro-Services/landing-page (Xelora)
+**Last Updated:** 2026-01-18
+**Status:** Active Monitoring
+
+## Security Incidents
+
+### [2026-01-18] GitHub Token Leak via Raw URL Parameters
+
+**Severity:** CRITICAL
+**Status:** REMEDIATED
+**Reporter:** Root Agent (CTO)
+
+#### Incident Summary
+During code review, raw GitHub file URLs were generated containing live Fine-grained Personal Access Tokens (PAT) in query parameters.
+
+**Leaked Pattern:**
+```
+https://raw.githubusercontent.com/.../file.json?token=GHSAT0AAAA...
+```
+
+**Risk Assessment:**
+- **Exposure Level:** High - Token grants authenticated repository access
+- **Scope:** Dependent on token permissions (potentially read/write access to code, secrets, settings)
+- **Attack Vector:** Anyone with the URL could access private repository content
+
+#### Remediation Steps Completed
+
+1. ✅ **Token Verification** - Confirmed no active fine-grained tokens in GitHub account
+2. ✅ **Codebase Scan** - No tokens found in current codebase
+3. ✅ **Git History Scan** - No tokens committed to repository history
+4. ✅ **Security Protocol Documentation** - Created secure URL generation guidelines
+
+#### Root Cause
+Raw GitHub URLs copied from browser while authenticated included session/temporary tokens as query parameters.
+
+#### Prevention Protocol
+
+**❌ WRONG - Do Not Use:**
+```
+https://raw.githubusercontent.com/owner/repo/main/file.json?token=GHSAT0AAAA...
+```
+*Copying from browser address bar after clicking "Raw" while logged in*
+
+**✅ CORRECT - Use This Format:**
+```
+https://raw.githubusercontent.com/owner/repo/main/file.json
+```
+*Manually construct URL or strip query parameters*
+
+**Standard Format:**
+```
+https://raw.githubusercontent.com/<OWNER>/<REPO>/<BRANCH>/<PATH_TO_FILE>
+```
+
+#### Agent Instructions
+For any agent generating GitHub raw file URLs:
+> "When providing raw GitHub file URLs, ALWAYS strip query parameters (especially `?token=`). Output ONLY the base `raw.githubusercontent.com` path."
 
 ---
 
-## EXECUTIVE SUMMARY
+### [2026-01-18] Stripe API Key Rotation
 
-**Security Audit Result:** ✅ NO ACTIVE EXPOSURE
-- `.env` files are **NOT tracked in Git** (properly gitignored)
-- **No hardcoded secrets** in source code (all using `process.env`)
-- Both repos follow proper .env segregation
-- All OAuth/Stripe credentials externalized to environment variables
+**Severity:** HIGH
+**Status:** COMPLETED
+**Type:** Preventive Security Maintenance
 
-**Critical Risk Mitigated:** ✅
-Stripe keys and OAuth secrets are only exposed locally (your machine) and in Vercel environment variables (encrypted at rest).
-
----
-
-## SECURITY AUDIT FINDINGS
-
-### Landing-Page Repository (`landing-page/`)
-
-**Local Files (Not in Git):**
-- `.env` ✅ (gitignored)
-- `.env.local` ✅ (gitignored)
-- `.env.production` ✅ (gitignored)
-- `.env.production.local` ✅ (gitignored)
-- `.env.vercel` ✅ (gitignored)
-- `.env.vercel.production` ✅ (gitignored) - **CONTAINS REAL SECRETS**
-- `.vercel/.env.preview.local` ✅ (gitignored)
-
-**Code Analysis:**
-- ✅ No hardcoded API keys in source
-- ✅ No hardcoded Stripe keys in source
-- ✅ All secrets accessed via `process.env` only
-- ✅ Stripe client properly initialized from `process.env.STRIPE_SECRET_KEY`
-- ✅ Google API key properly accessed from `process.env.GOOGLE_API_KEY`
-- ✅ Test files use mock keys (e.g., `sk_test_mock_key`)
-
-**Git History:**
-- ✅ No `.env.*` files tracked in Git
-- ✅ `.gitignore` includes all sensitive patterns
-
-### 3K-Pro-Services Website (`3kpro-website/`)
-
-**Local Files (Not in Git):**
-- `.env.local` ✅ (gitignored) - **CONTAINS REAL SECRETS**
-
-**Code Analysis:**
-- ✅ No hardcoded secrets in source
-- ✅ All secrets accessed via `process.env`
-
-**Git History:**
-- ✅ No `.env.*` files tracked in Git
+#### Actions Taken
+1. ✅ Rotated production Stripe API key (old key expired 1 hour post-rotation)
+2. ✅ Separated test/live keys by environment:
+   - Production: Live keys
+   - Dev/Preview: Test keys
+3. ✅ Fixed local `.env` conflicts preventing test card usage
+4. ✅ Removed `.env.vercel.production` from filesystem
+5. ✅ Verified Vercel environment variable configuration
 
 ---
 
-## SECRETS INVENTORY
+### [2026-01-18] Environment Backup Files Committed to Git
 
-### Active Secrets in Environment
+**Severity:** CRITICAL
+**Status:** FULLY REMEDIATED ✅
+**Type:** Credential Exposure in Version Control
 
-**Stripe (CRITICAL):**
-```
-STRIPE_SECRET_KEY = sk_test_51SESLa...  [TESTMODE - NOT PRODUCTION]
-STRIPE_WEBHOOK_SECRET = whsec_mZiM7...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = pk_test_51SESLa...  [PUBLIC - OK]
-```
+#### Incident Summary
+During security audit, discovered `.env.production.backup` and `.env.production.local.backup` files were tracked by git and committed to repository history containing live production credentials.
 
-**Google/Gemini:**
-```
-GOOGLE_API_KEY = AIzaSyCxK1IWzcZMcuni...
-GEMINI_API_KEY = [alias for above]
-```
+**Exposed Credentials:**
+1. **Stripe Live Secret Key** - `sk_live_51SESLMRqaU7f53Fz...` (OLD rotated key from earlier session)
+2. **Facebook/Instagram OAuth Secrets** - Client ID & Secret
+3. **TikTok OAuth Credentials** - Client Key & Secret
+4. **Google API Keys** - Multiple keys (Generative AI, Maps/Services)
+5. **Vercel OIDC Tokens** - JWT tokens (time-limited, likely expired)
+6. **Webhook Secrets** - Stripe webhook signing secret
 
-**Supabase:**
-```
-NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGci...  [PUBLIC - OK]
-NEXT_PUBLIC_SUPABASE_URL = https://hvcmidkylzrhmrwyigqr.supabase.co  [PUBLIC - OK]
-```
+**Additional Findings:**
+- Hardcoded API keys found in test scripts:
+  - `test-gemini-key.mjs` - Contains live Google API key
+  - `test-models.mjs` - Contains live Google API key
+  - Both files tracked by git
 
-**OAuth Credentials:**
-```
-FACEBOOK_CLIENT_SECRET = 15c77c9...
-INSTAGRAM_CLIENT_SECRET = 15c77c9...
-LINKEDIN_CLIENT_SECRET = WPL_AP1...
-TWITTER_CLIENT_SECRET = 6QVXUiWzcl59...
-```
+**Git History Exposure:**
+- Files committed in: `e421de5` "Fix Gemini AI migration and campaign save error"
+- Credentials exposed in public/private repository history
+- API keys accessible to anyone with repository access
 
-**Other:**
-```
-ENCRYPTION_KEY = ee8d695a2f14e2d2...  (64 hex chars)
-RESEND_API_KEY = re_TSxJqPmQ_MA7N2TAiS5...
-```
+#### Remediation Steps Completed
+
+1. ✅ **Immediate Containment:**
+   - Removed `.env.production.backup` from git tracking
+   - Removed `.env.production.local.backup` from git tracking
+   - Deleted both files from filesystem
+
+2. ✅ **Prevention:**
+   - Updated `.gitignore` with comprehensive backup file patterns:
+     ```
+     .env*.backup
+     .env.*.backup
+     *.env.backup
+     .env.backup.*
+     ```
+
+3. ✅ **Documentation:**
+   - Created GITHUB_TOKEN_PROTOCOL.md
+   - Updated SECURITY_HARDENING.md with incident details
+
+#### Follow-up Actions
+
+**✅ COMPLETED (2026-01-18):**
+
+1. **Rotate ALL Exposed Credentials:** ✅
+   - [x] Facebook/Instagram OAuth Client Secret - ROTATED
+   - [x] TikTok OAuth Client Secret - ROTATED
+   - [x] Google API Keys (all 4 instances) - ROTATED
+   - [x] Stripe Webhook Secret - ROTATED
+   - [x] Vercel environment variables updated
+   - [x] Production deployment restarted
+
+2. **Git History Cleanup Decision:** ✅
+   - [x] Decision: Option A - Accept Risk (credentials rotated)
+   - [x] Rationale: All credentials invalidated, risk mitigated
+   - [x] Compensating controls in place
+   - Historical commits contain old (now invalid) credentials
+
+3. **Test File Security:** ✅
+   - [x] Remove hardcoded API keys from `test-gemini-key.mjs`
+   - [x] Remove hardcoded API keys from `test-models.mjs`
+   - [x] Update to use environment variables
+   - [x] Test files committed to git (commit: 0749621)
+
+**📋 RECOMMENDED (Future):**
+
+4. **Security Audit:**
+   - [ ] Review API access logs for unauthorized usage (next 7 days)
+   - [ ] Implement pre-commit hooks for secret scanning
+   - [ ] Schedule follow-up security audit (30 days)
+   - [ ] Verify all services functioning with new credentials
+
+#### Root Cause Analysis
+
+**Why It Happened:**
+1. Backup files created during environment configuration
+2. Files not covered by existing `.gitignore` patterns
+3. No pre-commit hooks to prevent credential commits
+4. Test scripts created with hardcoded keys for quick testing
+
+**Prevention Measures:**
+1. Comprehensive `.gitignore` patterns for all backup variations
+2. Pre-commit hook implementation (see security best practices section)
+3. Regular security audits using automated tools
+4. Team training on credential management
+
+#### Impact Assessment
+
+**Severity Justification - CRITICAL:**
+- Live production credentials exposed in version control
+- OAuth secrets allow third-party API access
+- API keys could incur costs or access user data
+- Webhook secrets could allow request forgery
+- Git history requires cleanup (non-trivial operation)
+
+**Blast Radius:**
+- All commits after `e421de5` contain credential exposure
+- Anyone with repository access (past or present) could extract keys
+- Public repository: Immediate credential compromise
+- Private repository: Risk from compromised accounts, ex-employees, etc.
 
 ---
 
-## RISK ASSESSMENT
+## Security Best Practices
 
-| Secret | Risk Level | Exposure | Mitigation |
-|--------|-----------|----------|-----------|
-| STRIPE_SECRET_KEY | 🔴 CRITICAL | Local + Vercel | Rotate regularly, Webhook signing |
-| STRIPE_WEBHOOK_SECRET | 🔴 CRITICAL | Local + Vercel | Rotate regularly, Webhook signing |
-| GOOGLE_API_KEY | 🟡 MEDIUM | Local + Vercel | Domain-restricted, API quota limits |
-| OAuth Secrets | 🟡 MEDIUM | Local + Vercel | Rotate after app verification |
-| SUPABASE_ANON_KEY | 🟢 LOW | Public by design | Row-level security enforced |
-| ENCRYPTION_KEY | 🔴 CRITICAL | Local only (never pushed) | Vercel encryption at rest |
+### Credential Management
 
----
+1. **Never commit credentials** to version control
+2. **Use environment variables** for all API keys and secrets
+3. **Rotate keys regularly** - especially after team changes
+4. **Separate environments** - different keys for dev/staging/production
+5. **Minimum permissions** - grant only necessary access scopes
 
-## ROTATION STRATEGY: "Human-In-Loop" Enforcement
+### GitHub Token Security
 
-### Phase 1: Stripe Keys (IMMEDIATE - Do This Today)
+1. **Use fine-grained tokens** with specific repository and permission scopes
+2. **Set expiration dates** - maximum 90 days for production tokens
+3. **Never share raw URLs** with query parameters
+4. **Revoke unused tokens** immediately
+5. **Audit token access** quarterly
 
-**Why:** Testmode keys can still be misused. Establish rotation practice NOW.
+### API Key Security
 
-**Steps:**
-
-1. **Go to Stripe Dashboard**
-   - URL: https://dashboard.stripe.com/
-   - Login: Your Stripe account
-   - Navigate: Settings → Developers → API Keys
-
-2. **Reveal and Copy Current Keys**
-   - Note the current `sk_test_` key
-   - Note the webhook signing secret
-
-3. **Create New Keys**
-   - Click "Roll key" or "Create restricted key"
-   - New key is created (old key remains active for 30 days)
-
-4. **Test with New Key in Local Environment**
-   ```bash
-   # In landing-page/.env.local or 3kpro-website/.env.local
-   STRIPE_SECRET_KEY="sk_test_NEW_KEY_HERE"
-
-   # Run local tests
-   npm test -- stripe
+1. **Environment-based keys**:
+   ```
+   Production → Live keys (Vercel env vars only)
+   Development → Test keys (local .env)
    ```
 
-5. **Update Vercel Secrets**
-   - Vercel Dashboard → landing-page → Settings → Environment Variables
-   - Edit `STRIPE_SECRET_KEY` with new value
-   - Repeat for `STRIPE_WEBHOOK_SECRET`
-   - Deploy: `vercel deploy --prod`
-
-6. **Verify Production Works**
-   - Test a stripe webhook or checkout flow
-   - Check Vercel logs: `vercel logs getxelora.com`
-   - Look for: `Stripe webhook successful` or similar
-
-7. **Retire Old Key**
-   - After 30 days or after confirming all tests pass
-   - Stripe Dashboard → Settings → Developers → API Keys → Revoke
-
----
-
-### Phase 2: Google API Key (1-2 weeks)
-
-**Why:** Less critical than Stripe, but limited by domain restriction. Rotate for hygiene.
-
-**Steps:**
-
-1. Go to Google Cloud Console: https://console.cloud.google.com/
-2. Project: `3K-Pro-Services`
-3. Navigate: Credentials → API Keys
-4. Find key: `Xelora V1`
-5. Restriction: Verify it's restricted to domain(s) only:
-   - `getxelora.com`
-   - `xelorahq.com`
-   - (NOT generic/unrestricted)
-6. If unrestricted → Edit → Set domain restrictions → Save
-7. Create new key with same restrictions
-8. Test locally with new key, update Vercel, verify, retire old key
-
----
-
-### Phase 3: OAuth Secrets (After LLC Registration)
-
-**Why:** Meta/Facebook requires business verification first. Hold off until verified.
-
-**Timeline:** After you complete LLC setup and Meta Business Verification
-
-**Steps:**
-1. Re-create OAuth keys in each provider's dashboard
-2. Update all clients
-3. Test the OAuth flow end-to-end
-4. Retire old keys
-
----
-
-## ENHANCED .gitignore: Both Repos
-
-**Add to BOTH `landing-page/.gitignore` AND `3kpro-website/.gitignore`:**
-
-```gitignore
-# ============================================
-# ENHANCED SECRETS & SENSITIVE DATA
-# ============================================
-
-# Environment Variables (ALL VARIANTS)
-.env
-.env.local
-.env.*.local
-.env.development
-.env.production
-.env.test
-.env.staging
-.env.vercel*
-.env.vercel.*
-
-# Secrets and Credentials
-.stripeclitorc
-stripe.json
-*.pem
-*.key
-*.cert
-*.secret
-*_TOKEN
-*_KEY
-*_SECRET
-
-# Stripe CLI
-.stripe/
-stripe-debug.log
-
-# Cloud Credentials
-.google-credentials.json
-.gcloud-credentials.json
-firebase-adminsdk-*.json
-service-account-key.json
-
-# SSH Keys
-~/.ssh/
-id_rsa
-id_rsa.pub
-
-# API Keys / Tokens (common naming)
-*.apikey
-*.token
-.token
-.apikey
-config/secrets.json
-
-# Logs that might contain secrets
-*.log
-*debug*.log
-lerna-debug.log
-
-# Credentials
-~/.aws/credentials
-~/.gcloud/
-credentials/
-
-# Node/NPM
-node_modules/
-npm-debug.log*
-yarn-error.log*
-.npm
-
-# Build & Cache
-.next/
-.vercel/
-dist/
-build/
-out/
-*.tsbuildinfo
-
-# IDE
-.vscode/settings.json
-.idea/workspace.xml
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-```
-
----
-
-## GITHUB ACTIONS / VERCEL SECRETS: "Human-In-Loop" Checks
-
-### For Every Secret Rotation:
-
-**CHECKLIST (Do This Every Time):**
-
-- [ ] Local `.env` file updated with new secret
-- [ ] Ran `npm test` or `vercel dev` locally to verify it works
-- [ ] Checked that old secret doesn't appear in logs
-- [ ] Vercel dashboard updated (Settings → Environment Variables)
-- [ ] Verified new secret is set to correct environment (Production/Preview/Development)
-- [ ] Ran `vercel deploy --prod` to trigger deployment
-- [ ] Checked Vercel logs: `vercel logs getxelora.com | grep -i "stripe\|error\|secret"`
-- [ ] Tested the feature that uses that secret (e.g., Stripe checkout)
-- [ ] Waited 5-10 minutes and tested again to confirm stability
-- [ ] Documented the rotation in this file (date, what was rotated, any issues)
-- [ ] Only THEN retired/revoked the old secret
-
-**Why This Matters:**
-
-The "human-in-loop" checklist prevents accidents like:
-- Updating only one environment (not Production)
-- Forgetting to test after rotation
-- Retiring old key before new one is confirmed working
-- Deploying with wrong secrets
-
----
-
-## STRIPE CLI BEST PRACTICES
-
-### Installation & Setup
-
-```bash
-# Install Stripe CLI
-brew install stripe/stripe-cli/stripe
-
-# Login to your account
-stripe login
-```
-
-### For Local Development (TESTMODE ONLY)
-
-```bash
-# Forward Stripe webhooks to your local dev server
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
-
-# Run tests with Stripe CLI
-stripe fixtures /path/to/fixtures.json
-```
-
-### Restrictions
-
-✅ **ALWAYS:**
-- Use testmode keys locally (`sk_test_*`)
-- Never commit Stripe CLI config (`.stripeclitorc`)
-- Verify webhook secrets match in code vs CLI
-
-❌ **NEVER:**
-- Use production keys locally (`sk_live_*`)
-- Share `.stripeclitorc` file
-- Commit webhook secrets to Git
-
----
-
-## VERCEL SECRETS MANAGEMENT
-
-### Best Practice: Environment-Specific Secrets
-
-**In Vercel Dashboard:**
-
-1. Settings → Environment Variables
-2. Add each secret with correct environment:
-   - **Production:** For `getxelora.com` live
-   - **Preview:** For pull request previews
-   - **Development:** For local dev (optional)
-
-3. For Stripe specifically:
-   - **Production:** `sk_live_*` keys (when ready)
-   - **Preview:** `sk_test_*` keys (safe for testing)
-   - **Development:** `sk_test_*` keys (safe for testing)
-
-4. **CRITICAL:** Preview and Development should NEVER have `sk_live_` keys
-
----
-
-## INCIDENT RESPONSE PLAN
-
-**IF Secret is Accidentally Committed to Git:**
-
-1. **Immediately rotate the secret** (don't wait)
-2. Run `git filter-branch` to remove from history
-   ```bash
-   git filter-branch --tree-filter 'rm -f .env.vercel.production' -- --all
-   git push origin --force --all
+2. **Gitignore patterns**:
    ```
-3. Notify anyone with access to the old repo
-4. Create a new issue: "Security: Rotated secrets after accidental commit"
+   .env
+   .env.*
+   !.env.example
+   ```
 
-**IF Secret is Exposed in Vercel Logs:**
+3. **Key rotation schedule**:
+   - Critical keys (payment, database): Every 90 days
+   - Standard keys (APIs, services): Every 180 days
+   - Development keys: Annually or on compromise
 
-1. Check Vercel log retention: Settings → Logs
-2. Set retention to minimum (7 days)
-3. Rotate the secret
-4. Update GitHub secret (if using GitHub Actions)
+### Code Review Checklist
 
-**IF Secret is Believed Compromised:**
-
-1. Rotate immediately (within 5 minutes)
-2. Check usage patterns in provider dashboard (Stripe, Google, etc.)
-3. File a security report if signs of misuse
-4. Add to breach notification log
-
----
-
-## MONITORING & AUDITING
-
-### Monthly Rotation Schedule
-
-- **Stripe:** Rotate every 90 days (mark calendar)
-- **Google API:** Rotate every 6 months
-- **OAuth:** Rotate after app verification + every 12 months
-- **Supabase:** Verify row-level security policies monthly
-
-### Audit Log Template
-
-```markdown
-## Secrets Rotation Log
-
-### [Date] — [Secret Name] Rotation
-- Old: [redacted]
-- New: [redacted]
-- Status: [✅/❌]
-- Notes: [any issues?]
-```
+Before sharing code or URLs:
+- [ ] No hardcoded credentials
+- [ ] No API keys in comments
+- [ ] No tokens in URLs
+- [ ] Environment variables properly configured
+- [ ] .env files in .gitignore
+- [ ] No sensitive data in logs
 
 ---
 
-## ACTUAL ROTATION LOG
+## Monitoring & Alerts
 
-### 2026-01-18 — Stripe Production Key Rotation (CRITICAL)
-- **Old**: `sk_live_51SESLa...` (51 days old, potentially exposed)
-- **New**: `sk_live_51SESLMRqaU7ff3Fz...` (rotated)
-- **Environment**: Production (getxelora.com)
-- **Status**: ✅ Rotated and deployed to Vercel
-- **Verification**:
-  - Vercel environment variables confirmed updated
-  - Code reads from `process.env.STRIPE_SECRET_KEY` correctly
-  - Old key still active (grace period: 30 days)
-- **Notes**:
-  - Fixed critical misconfiguration: All 3 environments were using LIVE keys
-  - Dev/Preview environments corrected to use `sk_test_...` keys
-  - User made initial errors (test key in prod, publishable vs secret key) - corrected successfully
-  - Old key scheduled for deletion after 7-30 day grace period
-- **Next Actions**:
-  - Delete local `.env.vercel.production` file
-  - Test checkout flow in production to confirm new key works
-  - Mark old key for deletion in Stripe Dashboard (date: 2026-02-18 or later)
+### Active Monitoring
+- GitHub Dependabot security alerts
+- Vercel deployment security logs
+- Supabase database access logs
+- Stripe webhook signature validation
+
+### Alert Triggers
+- Failed authentication attempts
+- Unusual API usage patterns
+- Unauthorized database access attempts
+- Webhook signature mismatches
 
 ---
 
-## CHECKLIST: Immediate Actions
+## Incident Response Protocol
 
-- [ ] **Today:** Rotate Stripe keys (follow Phase 1 above)
-- [ ] **This Week:** Add enhanced `.gitignore` to both repos
-- [ ] **This Week:** Document all current secrets in your password manager
-- [ ] **2 Weeks:** Rotate Google API key
-- [ ] **Monthly:** Review this document and update audit log
-- [ ] **After LLC:** Rotate OAuth secrets and re-verify Meta Business Verification
+### 1. Identification
+- Document the incident with timestamp
+- Assess severity level (LOW/MEDIUM/HIGH/CRITICAL)
+- Identify affected systems/data
+
+### 2. Containment
+- Revoke compromised credentials immediately
+- Block unauthorized access
+- Isolate affected systems if necessary
+
+### 3. Remediation
+- Deploy security patches
+- Update credentials
+- Scan for related vulnerabilities
+- Verify no persistence of compromise
+
+### 4. Documentation
+- Update this log with incident details
+- Document root cause analysis
+- Create prevention protocols
+- Update security training materials
+
+### 5. Review
+- Conduct post-incident review
+- Update security policies
+- Implement additional safeguards
+- Schedule follow-up security audit
 
 ---
 
-## REFERENCES
+## Security Contacts
 
-- Stripe Security: https://stripe.com/docs/security
-- Google Cloud Security: https://cloud.google.com/security/best-practices
-- GitHub Secrets Management: https://docs.github.com/en/actions/security-guides/encrypted-secrets
-- OWASP Secrets Management: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
+**Primary:** CTO (Root Agent)
+**Secondary:** Dev Team Lead
+**Emergency:** security@3kpro.services
 
 ---
 
-**Last Updated:** 2026-01-18 (Stripe Production Key Rotated)
+## Compliance & Standards
+
+- **OWASP Top 10** - Application security best practices
+- **PCI DSS** - Payment card data security (via Stripe)
+- **GDPR** - User data privacy and protection
+- **SOC 2 Type II** - (Target compliance: Q2 2026)
+
+---
+
+**Document Version:** 1.0
 **Next Review:** 2026-02-18
-**Owner:** James Lawson / 3K-Pro-Services
-
-**Rotation Status:**
-- ✅ Stripe Production Key: Rotated 2026-01-18 (Next rotation: 2026-04-18)
-- ⏳ Google API Key: Pending (Target: 2026-02-01)
-- ⏳ OAuth Secrets: Pending (After LLC registration)
+**Owner:** Security Team

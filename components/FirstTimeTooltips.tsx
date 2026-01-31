@@ -1,7 +1,7 @@
 "use client";
 
 import Tooltip from "./ui/Tooltip";
-import { MagicWand, TrendUp as TrendingUp, Lightning as Zap, Target, Question as HelpCircle } from "@phosphor-icons/react";
+import { Wand2, TrendingUp, Bot, Target, HelpCircle } from "lucide-react";
 
 /**
  * Pre-configured tooltips for first-time users
@@ -34,7 +34,7 @@ export function ViralScoreTooltip({ children }: { children?: React.ReactNode }) 
           </p>
         </div>
       }
-      icon={<MagicWand className="w-4 h-4" weight="duotone" />}
+      icon={<Wand2 className="w-4 h-4" />}
       storageKey="viral_score"
       dismissible={true}
     >
@@ -69,7 +69,7 @@ export function TrendingTopicsTooltip({ children }: { children?: React.ReactNode
           </p>
         </div>
       }
-      icon={<TrendingUp className="w-4 h-4" weight="duotone" />}
+      icon={<TrendingUp className="w-4 h-4" />}
       storageKey="trending_topics"
       dismissible={true}
     >
@@ -96,7 +96,7 @@ export function AIContentGeneratorTooltip({ children }: { children?: React.React
           </p>
         </div>
       }
-      icon={<Zap className="w-4 h-4" weight="duotone" />}
+      icon={<Bot className="w-4 h-4" />}
       storageKey="ai_content_generator"
       dismissible={true}
     >
@@ -121,7 +121,7 @@ export function PlatformTargetingTooltip({ children }: { children?: React.ReactN
           </p>
         </div>
       }
-      icon={<Target className="w-4 h-4" weight="duotone" />}
+      icon={<Target className="w-4 h-4" />}
       storageKey="platform_targeting"
       dismissible={true}
     >
@@ -178,7 +178,7 @@ export function FirstTimeHelpBanner() {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <MagicWand className="w-5 h-5 text-tron-cyan" weight="duotone" />
+            <Wand2 className="w-5 h-5 text-tron-cyan" />
             <h3 className="font-bold text-white">New to XELORA?</h3>
           </div>
           <p className="text-sm text-gray-300 mb-3">
@@ -186,7 +186,7 @@ export function FirstTimeHelpBanner() {
           </p>
           <button
             onClick={handleTakeTour}
-            className="text-sm px-4 py-2 bg-tron-cyan/20 hover:bg-tron-cyan/30 border border-tron-cyan/50 rounded-lg text-tron-cyan hover:text-white transition-colors"
+            className="text-sm px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/50 rounded-lg text-foreground hover:text-primary transition-colors"
           >
             Take Product Tour →
           </button>

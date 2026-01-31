@@ -33,7 +33,7 @@ export function SendToPhoneModal({
       setIsLocalhost(isLocal);
 
       // Use origin for URL generation
-      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://xelora.app";
+      const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://getxelora.com";
       const url = `${baseUrl}/clip?c=${encoded}&p=${platform.toLowerCase()}`;
       setQrUrl(url);
     }

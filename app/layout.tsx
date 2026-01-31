@@ -1,13 +1,20 @@
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import "@/lib/env"; // Validate environment variables at startup
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Analytics } from "@vercel/analytics/next";
 import { StructuredData } from "@/components/StructuredData";
+import { DomainTransitionBanner } from "@/components/DomainTransitionBanner";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://xelora.app'),
+  metadataBase: new URL('https://getxelora.com'),
   title: "XELORA - Predictive Intelligence for Creators",
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   description:
     "XELORA analyzes emerging signals to reveal what's about to rise. Predict momentum. Engineer virality. Real-time signal analysis, multi-platform optimization, 6+ platform integration.",
   keywords:
@@ -17,12 +24,12 @@ export const metadata: Metadata = {
     title: "XELORA - Predict Momentum. Engineer Virality.",
     description:
       "XELORA analyzes emerging signals across platforms to reveal what's about to rise. Before creators see it. Before the internet reacts to it.",
-    url: "https://xelora.app",
+    url: "https://getxelora.com",
     siteName: "XELORA",
     type: "website",
     images: [
       {
-        url: "https://xelora.app/og-image.png",
+        url: "https://getxelora.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "XELORA - Predictive intelligence platform for creators and brands.",
@@ -34,7 +41,7 @@ export const metadata: Metadata = {
     title: "XELORA - Predictive Intelligence",
     description:
       "Predict momentum. Engineer virality. XELORA analyzes signals before the internet reacts.",
-    images: ["https://xelora.app/og-image.png"],
+    images: ["https://getxelora.com/og-image.png"],
     creator: "@XELORA_APP",
   },
   robots: {
@@ -54,10 +61,13 @@ export const metadata: Metadata = {
       'msvalidate.01': process.env.NEXT_PUBLIC_BING_VERIFICATION || 'ADD_YOUR_BING_CODE_HERE',
     },
   },
+  alternates: {
+    canonical: 'https://getxelora.com',
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({
@@ -66,11 +76,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className={`scroll-smooth ${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <head>
         <StructuredData />
       </head>
-      <body className="bg-tron-dark text-tron-text antialiased">
+      <body className="bg-background text-foreground antialiased font-sans">
+        <DomainTransitionBanner />
         <ErrorBoundary>{children}</ErrorBoundary>
         <Analytics />
       </body>

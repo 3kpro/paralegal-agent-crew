@@ -1,37 +1,36 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel } from '@/lib/gemini';
 
 // Debug info
 console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('GOOGLE_API_KEY present:', !!process.env.GOOGLE_API_KEY);
+console.log('API Key present:', !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY));
 
 // AI Models
-export const AI_MODEL_TEXT = 'gemini-2.5-flash';
+export const AI_MODEL_TEXT = 'gemini-2.0-flash';
 export const AI_MODEL_IMAGE = 'imagen-4.0-generate-001';
-
-// Initialize Gemini - using Google AI endpoints (not Vertex AI) to support API Key authentication
-const getAiClient = () => {
-  if (!process.env.GOOGLE_API_KEY) {
-    throw new Error("GOOGLE_API_KEY environment variable not set");
-  }
-  // Removed `vertexai: true` to use Google AI endpoints which support API Key authentication
-  return new GoogleGenerativeAI({ 
-    apiKey: process.env.GOOGLE_API_KEY
-  });
-};
 
 export const aiConfig = {
   // Text generation for product descriptions, marketing content, etc.
   generateText: async (prompt: string) => {
     try {
-      const ai = getAiClient();
-      const response = await ai.models.generateContent({
-        model: AI_MODEL_TEXT,
-        contents: { 
-          role: 'user', 
-          parts: [{ text: prompt }] 
-        }
+      // Use JSON mode = false for general text generation
+      const model = getGeminiModel(AI_MODEL_TEXT, false);
+      
+      if (!model) {
+        throw new Error('Failed to initialize Gemini model (check API configuration)');
+      }
+
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
       });
-      return response.text;
+      
+      const candidates = result.response.candidates;
+      const text = candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (!text) {
+        throw new Error('No text generated from Gemini');
+      }
+      
+      return text;
     } catch (error: any) {
       console.error('Gemini API Error:', error);
       throw new Error(error.message || 'Failed to generate text');
@@ -40,44 +39,15 @@ export const aiConfig = {
 
   // Generate product campaign images
   generateImage: async (prompt: string, style?: string) => {
-    try {
-      const ai = getAiClient();
-      const imagePrompt = `Create a marketing image for: ${prompt}
-Style: ${style || 'Modern and professional'}
-Requirements:
-- High quality, visually appealing composition
-- Suitable for social media and marketing materials
-- Clean, professional aesthetic
-- Brand-appropriate imagery
-- No text overlay (will be added separately)
-- Optimized for digital display`;
-
-      const response = await ai.models.generateImages({
-        model: AI_MODEL_IMAGE,
-        prompt: imagePrompt,
-        config: { 
-          numberOfImages: 1,
-          outputMimeType: 'image/jpeg',
-          aspectRatio: '1:1'
-        }
-      });
-      
-      // Return base64 encoded image
-      if (response.generatedImages && response.generatedImages.length > 0 && response.generatedImages[0]?.image?.imageBytes) {
-        return `data:image/jpeg;base64,${response.generatedImages[0].image.imageBytes}`;
-      } else {
-        throw new Error('No images generated');
-      }
-    } catch (error: any) {
-      console.error('Image Generation Error:', error);
-      throw new Error(error.message || 'Failed to generate image');
-    }
+    // TODO: Implement proper Image Generation client (e.g. via separate API or Vertex SDK)
+    // The GoogleGenerativeAI SDK (Gemini) does not currently support `generateImages` in this way.
+    console.warn("generateImage not fully implemented for this SDK version");
+    throw new Error("Image generation not supported in current configuration");
   },
 
   // Generate social media variations
   generateSocialContent: async (prompt: string, platform: string) => {
     try {
-      const ai = getAiClient();
       const socialPrompt = `Create a ${platform}-optimized post for: ${prompt}
 Requirements:
 - Match ${platform}'s best practices and format
@@ -87,14 +57,24 @@ Requirements:
 - Professional tone
 - Optimized for ${platform}'s character limits and format`;
 
-      const response = await ai.models.generateContent({
-        model: AI_MODEL_TEXT,
-        contents: { 
-          role: 'user', 
-          parts: [{ text: socialPrompt }] 
-        }
+      const model = getGeminiModel(AI_MODEL_TEXT, false);
+
+      if (!model) {
+         throw new Error('Failed to initialize Gemini model');
+      }
+
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: socialPrompt }] }]
       });
-      return response.text;
+      
+      const candidates = result.response.candidates;
+      const text = candidates?.[0]?.content?.parts?.[0]?.text;
+      
+      if (!text) {
+        throw new Error('No text generated');
+      }
+      
+      return text;
     } catch (error: any) {
       console.error('Social Content Generation Error:', error);
       throw new Error(error.message || 'Failed to generate social content');

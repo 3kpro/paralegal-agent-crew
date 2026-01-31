@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 interface Platform {
   id: string;
@@ -185,7 +185,7 @@ export function PublishSettings({
               <span className="text-2xl">{platform.icon}</span>
               <span>{platform.name}</span>
               {connecting === platform.id && (
-                <BouncingDots className="bg-current w-1.5 h-1.5" />
+                <OrbitalLoader className="w-5 h-5" />
               )}
             </Button>
           ))}
@@ -221,9 +221,8 @@ export function PublishSettings({
         >
           {publishing ? (
             <div className="flex items-center gap-2">
-              <BouncingDots
-                dots={3}
-                className="w-2 h-2 bg-current"
+              <OrbitalLoader
+                className="w-5 h-5"
                 data-testid="loading-spinner"
               />
               <span>Publishing...</span>

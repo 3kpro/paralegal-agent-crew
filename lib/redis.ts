@@ -132,7 +132,7 @@ export const cacheKeys = {
 
   // Trends with better key structure
   trends: (query: string, mode?: string) =>
-    `trends:${mode || "default"}:${query.toLowerCase()}`,
+    `trends:v4:${mode || "default"}:${query.toLowerCase()}`,
 };
 
 // Simple hash function for long strings

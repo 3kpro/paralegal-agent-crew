@@ -1,28 +1,31 @@
-# TASKS.md - 3KPRO.Services Company Website
-Last Updated: 2026-01-11
+# TASKS.md - XELORA Product
+Last Updated: 2026-01-19
+
+This file lists XELORA product-specific tasks only.
 
 **Task Organization:**
-- **Root Tasks (this file):** Project-level coordination and company initiatives
-- **XELORA Tasks:** `landing-page/docs/SYSTEM/TASKS.md` (Product development, design system)
-- **Company Tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Website, marketplace, SEO)
-- **Dev/Products:** `Dev/products/[product]/TASKS.md` (Per-product tasks)
+- **XELORA tasks:** This file (landing-page/docs/SYSTEM/TASKS.md)
+- **Company tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Google setup, marketplace, SEO)
+- **Dev/ products:** `Dev/products/[product]/TASKS.md` (per-product tasks)
+
 
 ## NOW
 
-- [ ] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 (See `landing-page/docs/SYSTEM/TASKS.md`)
+
+
+## DEVELOPMENT WORKFLOW
 
 **Critical: Human-Controlled Dev Servers**
 
-All agents (Gemini, Claude, opencode, etc.) MUST follow these rules:
+All agents (Gemini, Claude, opencode, etc.) working on XELORA MUST follow these rules:
 
 1. **NEVER run `npm run dev`** - Dev server control is reserved for the human
-2. **NEVER start/stop dev servers** - Humans manage server lifecycle using:
-   - `C:\DEV\3K-Pro-Services\landing-page\3000.bat` - XELORA on localhost:3000
-   - `C:\DEV\3K-Pro-Services\3001.bat` - 3kpro.services on localhost:3001
+2. **NEVER start/stop dev servers** - Human manages XELORA dev server using:
+   - `C:\DEV\3K-Pro-Services\landing-page\3000.bat` - Starts XELORA on localhost:3000
 3. **Focus on code changes only** - Write, edit, and commit code; let human test
-4. **Assume servers are running** - Humans will restart as needed to see changes
+4. **Assume server is running** - Human will restart as needed to see changes
 
-**Why:** Human is multitasking across both projects. Agents starting/stopping servers creates conflicts and interrupts workflow.
+**Why:** Human is multitasking across XELORA and 3kpro.services. Agents starting/stopping servers creates conflicts.
 
 ---
 
@@ -47,75 +50,354 @@ After completing requested work, agents MUST follow this workflow:
 ---
 
 ## NOW
+read
+C:\DEV\3K-Pro-Services\landing-page\docs\SYSTEM\TASKS.md
+implement
 
-**Active Work Across Project:**
+- [x] **Consolidate Landing Page Configuration** 🏗️ ✅
+      - **Goal:** Point `app/page.tsx` to the updated `ModernHero`, `ModernFeatures`, `StatsSection`, and `FAQSection` to reflect the full rebrand.
+      - **Action:** Update imports in `app/page.tsx`. Ensure all page metadata and routing is correct.
+      - **Assigned:** Antigravity
 
-- [ ] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 (See `landing-page/docs/SYSTEM/TASKS.md`)
-      - **Status:** In Planning/Review
-      - **Goal:** Transform XELORA from coral/tron theme to engineering-focused Linear/Vercel aesthetic with Geist fonts and HSL design tokens.
-      - **Specification:** `landing-page/docs/upgrades/Xelora_Full_Polish.md`
-      - **Critical Focus:** CSS architecture (globals.css + tailwind.config.js)
-      - **Assigned:** Gemini
-      - **Priority:** HIGH
-
-- [ ] **3kpro.services Full Visual Rebrand** 🎨 (See `3kpro-website/docs/SYSTEM/TASKS.md`)
-      - **Status:** In Planning/Review
-      - **Goal:** Transform 3kpro.services from standard SaaS site to modern, professional services portal with bold, interactive design.
-      - **Specification:** `docs/upgrades/3kpro_polish.md`
-      - **Focus Areas:** Hero section, services cards, visual identity, interactive elements
-      - **Design Philosophy:** Professional, modern, effective brand identity
-      - **Assigned:** Gemini
-      - **Priority:** HIGH
-
-- [ ] **XELORA OrbitalLoader Spinner Migration** 🔄 (See `landing-page/docs/upgrades/Xelora_Spinner.md`)
-      - **Status:** Ready for Implementation
-      - **Goal:** Migrate all loading spinners to new OrbitalLoader component for consistent, modern UX.
-      - **Key Tasks:**
-        1. Install dependencies: `motion`, `class-variance-authority`
-        2. Create `/components/ui/orbital-loader.tsx` component
-        3. Replace all `<BouncingDots />` usage with `<OrbitalLoader />`
-        4. Update spinner locations: campaign creation, dashboard loading, trend discovery
-        5. Deprecate and delete `components/ui/bouncing-dots.tsx`
-      - **Locations to Update:**
-        - `app/(portal)/campaigns/create/page.tsx` - Trend discovery & content generation loading
-        - Dashboard data fetching states
-        - Generic loading states throughout portal
+- [x] **3kpro.services Visual Rebrand: Light Mode Alignment** 🎨 ✅
+      - **Goal:** Update the company site (`3kpro.services`) to match the new minimalist Light Mode aesthetic of XELORA.
+      - **Action:** Apply the same global theme inversion and structural vector principles to the `3kpro-website` workspace.
       - **Priority:** MEDIUM
-      - **Reference:** `landing-page/docs/upgrades/Xelora_Spinner.md` (full implementation guide)
 
----
+- [x] **XELORA Theme Upgrade** 🎨 ✅
+
+      - **Goal:** Modernize design system with premium color/font variables.
+      - **Action:**
+        - Updated `app/globals.css` with new CSS variables.
+        - Refactored `tailwind.config.js` to use variable mappings.
+        - Created branch `feature/xelora-theme-upgrade`.
+      - **Source:** `docs/upgrades/xelora_upgrades.md`
+      - **Assigned:** Antigravity
+
+- [x] **Cleanup Migration Files** 🧹 ✅
+      - **Goal:** Remove temporary files after secure migration.
+      - **Files:** `script.js`, `docs/handoffs/upgrade_to_xelora.md`.
+      - **Assigned:** Antigravity
+
+- [x] **Implement Code Suggestions from Handoff** ✅
+      - **Goal:** Improve `script.js` quality and ensure safe execution.
+      - **Action:**
+        - Refactored `script.js` with error handling, constants, and logging.
+        - Executed script to apply rate-limit import to `app/api/social/post/route.ts`.
+      - **Source:** `docs/handoffs/upgrade_to_xelora.md`
+      - **Assigned:** Antigravity
+
+- [x] **Refactor Portal Layout** 🎨 ✅
+      - **Goal:** Implement suggestions from `upgrade_to_layout.md` (reduce complexity, improve error handling).
+      - **Action:**
+        - Extracted `PortalHeader`, `UserMenuDropdown`, `WhatsNewModal` components.
+        - Refactored `PortalLayout` to support context providers (`useToast`).
+        - Fixed magic numbers and code duplication.
+      - **Location:** `app/(portal)/layout.tsx`
+      - **Assigned:** Antigravity
+
+- [x] **React Security Audit & Patch** 🛡️ ✅
+      - **Goal:** Verify codebase against "React2Shell" (CVE-2025-55182) and fix vulnerabilities.
+      - **Action:**
+        - Verified React (19.2.1) and Next.js (16.0.7).
+        - Confirmed clean `npm audit` for core frameworks.
+        - Patched `qs` vulnerability via `npm audit fix`.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Promote: Implement Drive Content Analysis** 🧠 ✅
+      - **Goal:** Allow AI to read content from selected Drive files to generate campaign copy.
+      - **Action:**
+        - Created `lib/google-drive.ts` backend service.
+        - Updated `generatePromoteCampaign` in `gemini-actions.ts` to fetch and use file content.
+        - Updated `PromoteInput.tsx` to capture access token.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Google Drive Integration for Promote** 📁 ✅
+      - **Goal:** Allow users to select files from Google Drive for Promote campaigns.
+      - **Action:**
+        - Created `driveFiles` metadata structure in `PromoteData`.
+        - Integrated `useDrivePicker` in `PromoteInput` component.
+        - Implemented "Select from Drive" UI with file listing.
+        - Verified metadata indexing without storage.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Workflow Automation Engine** ⚙️ ✅
+      - **Goal:** Build the backend engine to execute scheduled campaigns.
+      - **Action:**
+        - Set up Vercel Cron or ticking API.
+        - Implement task processor.
+        - Handle state transitions.
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Smart Scheduling Dashboard** 📅 ✅
+      - **Goal:** Visualize and manage scheduled campaigns on a drag-and-drop calendar.
+      - **Action:**
+        - Create `CalendarView` component in Dashboard.
+        - API route to fetch scheduled campaigns.
+        - Drag-and-drop to reschedule (update `scheduled_at`).
+      - **Priority:** HIGH
+      - **Assigned:** Antigravity
+
+- [x] **Campaign Command Center: Real AI Integration** 🧠 ✅
+      - **Problem:** "Supercharge" and "Viral Score" currently use mocks/heuristics. Users expect real AI intelligence.
+      - **Goal:** Connect the Command Center to the live Gemini 2.0 Flash API.
+      - **Action:**
+        - Replaced `setTimeout` mock in `SuperchargeButton` with `generateSuperchargeVariations` server action.
+        - Replaced fake AI score validation in `ContentEditor` with real `calculateRealViralScore` server action.
+        - Engineered prompts for viral variations (Provocative, Data, Story).
+      - **Assigned:** Antigravity
 
 
 
----
-##BackLog
+- [x] **Campaign Command Center: Supercharge & Media Integration** ⚡ ✅
+      - **Problem:** Command Center has core UI but lacks the AI "Supercharge" variations and Media Upload functionality.
+      - **Goal:** Enable users to generate AI variations and upload media files.
+      - **Action:**
+        - Implemented `SuperchargeButton` with 3-mode Variations Modal.
+        - Connected `MediaUploader` to campaign store.
+        - Finalized flow with `ActionPanel` (Draft/Schedule).
+      - **Assigned:** Antigravity
 
-This file lists XELORA product-specific tasks only.
+- [x] **Campaign Creation UI/UX: Command Center Overhaul (Phase 1)** 🚀 ✅
+      - **Problem:** Current campaign creation flow feels like a standard form. Users need to feel like they're engineering virality, not just filling out text boxes.
+      - **Goal:** Transform `/campaigns/create` into a "Viral Prediction Command Center" with real-time feedback, live previews, and instant AI scoring.
+      - **Action:**
+        - Built 3-column layout: Config | Editor | Preview+Score
+        - Implemented Viral Score Gauge with instant local heuristic scoring (0-100)
+        - Created live platform previews (Twitter/LinkedIn)
+        - Implemented Zustand state management for zero-latency updates
+        - Built mobile FAB for score display
+      - **Location:** `app/(portal)/campaigns/create/page.tsx`, `components/campaign/`
+      - **Assigned:** Antigravity
 
-**Task Organization:**
-- **Company tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Google setup, marketplace, SEO)
+- [x] **Final Gemini Model Sweep & Cleanup** 🧹 ✅
+      - **Problem:** Scattered references to legacy `gemini-1.5` and `vertex-ai` SDKs could cause inconsistency or future breakage.
+      - **Action:**
+        - Updated legacy scripts (`enrich-viral-data-vertex.ts`, `generate-training-data.ts`) to `gemini-2.0-flash`.
+        - Updated test scripts and Supabase default config.
+        - Verified production fix via debug endpoint (`gemini-2.0-flash` confirmed working).
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
+
+- [x] **Fix Gemini AI Model Rate Limits (429 Error)** 🤖 ✅
+      - **Problem:** `localhost:3000` was giving generic data due to `429 Too Many Requests` errors from the Gemini API. The code was attempting to use `gemini-2.5-flash` which is invalid or causing issues, and hitting rate limits on the free tier.
+      - **Action:**
+        - Updated `lib/gemini.ts`, `app/api/trends/route.ts`, `lib/viral-score.ts`, `app/api/generate/route.ts`, and `app/api/test-gemini/route.ts` to use `gemini-1.5-flash` (valid model).
+        - Increased rate limit delay in `app/api/trends/route.ts` from 1500ms to 4000ms to respect the 15 RPM limit of the free tier.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
+
+- [x] **Fix Data Inconsistency in Campaign Saving (Issue #1)** 💾 ✅
+      - **Problem:** Campaign saving involved multiple database calls, risking partial failures (zombie campaigns).
+      - **Action:**
+        - Created SQL RPC function `upsert_campaign_with_posts` for atomic transactions.
+        - Refactored `saveCampaign` in `app/(portal)/campaigns/create/page.tsx` to use the RPC.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+
+      - **Assigned:** Antigravity
+
+- [x] **Harden AI-Powered Features (Viral Score & Trend Generation)** 🛡️ ✅
+      - **Problem:** The Viral Score and AI-generated trends were fragile due to regex-based parsing and decentralized client logic.
+      - **Goal:** Make AI features resilient for beta users.
+      - **Action:**
+        - Created `lib/gemini.ts` for centralized client management with fail-fast logic.
+        - Refactored `viral-score.ts` and `app/api/trends/route.ts` to use Gemini JSON mode (`responseMimeType: "application/json"`).
+        - Improved error handling and fallback degradation (no more 20 vs 70 cliffs).
+      - **Reference:** `docs/GE_SUGGESTIONS.md` Issue #2
+      - **Assigned:** Gemini
+
+- [x] **Scaffold Idea 11: Code Review Bias Detector (ReviewLens)** 🛠️ ✅
+      - **Goal:** Initialize project structure and core stack for code review analysis.
+      - **Action:** Created `src/` (FastAPI), `dashboard` (React+Vite), `TRUTH.md`, and requirements.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **GitHub OAuth Integration for ReviewLens** 🐙 ✅
+      - **Goal:** Enable users to log in with GitHub to access their repositories.
+      - **Action:** Implemented OAuth endpoints in FastAPI and React auth flow.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **PR History Ingestion for ReviewLens** 📥 ✅
+      - **Goal:** Fetch and store pull request history for analysis.
+      - **Action:** Built `GitHubIngestor` service and `SQLAlchemy` models for PRs/Reviews/Comments.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Review Pattern Analysis for ReviewLens** 📊 ✅
+      - **Goal:** Calculate key metrics to identify review bottlenecks and potential bias.
+      - **Action:** Implemented `Analyzer` service with matrix generation and anomaly detection algorithms.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Comment Classifier for ReviewLens** 🧠 ✅
+      - **Goal:** Automatically categorize review comments and detect tone.
+      - **Action:** Integrated Anthropic API (Claude 3 Haiku) to classify comments (Nitpick vs. Architecture) and tone (Constructive vs. Harsh).
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Bias Detection Algorithm for ReviewLens** ⚖️ ✅
+      - **Goal:** Identify statistically significant bias in review patterns.
+      - **Action:** Implemented logic to detect "Nitpick Focus" and "Harsh Tone" anomalies between specific Reviewer-Author pairs.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Dashboard Visualizations for ReviewLens** 📈 ✅
+      - **Goal:** Provide actionable insights via a visual interface.
+      - **Action:** Built React dashboard with KPI cards, interaction charts, and a prioritized Risk Feed.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **GitLab Integration for ReviewLens** 🦊 ✅
+      - **Goal:** Expand support to GitLab repositories.
+      - **Action:** Implemented `GitLabIngestor` to normalize GitLab MRs/Notes into the ReviewLens schema using `httpx`.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Export Reports for ReviewLens** 📋 ✅
+      - **Goal:** Allow users to download audit data.
+      - **Action:** Created `ReportExporter` to serialize analysis results into CSV/JSON formats.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page\Dev\products\Idea_11_Code_Review_Bias_Detector`
+      - **Assigned:** Antigravity
+
+- [x] **Helix AI: Context-Aware Workflow Integration** 🤖 ✅
+      - **Problem:** Helix feels like a generic chatbot, not an intelligent assistant integrated into Xelora workflows.
+      - **Action:** 
+        - Created `HelixContext` to manage cross-application state.
+        - Wrapped Portal Layout in `HelixProvider`.
+        - Updated `HelixWidget.tsx` and `HelixChatInterface.tsx` to send rich context (selections, page content) and render Action Buttons.
+        - Updated `/api/helix/chat` to consume context and use it in system prompts.
+        - Implemented deep integration in `campaigns/create/page.tsx` with registered Actions (`select_highest_trend`, `optimize_settings`).
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
+
+- [x] **Fix Xelora Site Logo** 🎨 ✅
+      - **Problem:** Xelora.app was displaying an incorrect/outdated logo.
+      - **Action:** Updated `components/XeloraLogo.tsx` to use `WH_TR_LOGO.png`.
+      - **Location:** `C:\DEV\3K-Pro-Services\landing-page`
+      - **Assigned:** Antigravity
 
 
----
+- [x] **Contract Analyzer (Tool 2): Testing & UI Refinement** ✅
+      - **Goal:** Robustly test the AI risk analysis engine and polish the UI/UX for launch.
+      - **Action:** Implemented comprehensive test suite, multi-format parsing verification, and high-fidelity UI animations. Verified mobile responsiveness and legal disclaimer integration.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\idea_04_MICRO_SAAS_TOOLS\contract-analyzer`
+      - **Assigned:** Antigravity
 
+- [x] **Severity Filtering for Idea 10** ⚠️ ✅
+      - **Goal:** Filter noise to focus on critical changes.
+      - **Action:** Added backend query filtering and frontend UI controls.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
 
-## COMPLETED
+- [x] **Timeline Calendar UI for Idea 10** 📅 ✅
+      - **Goal:** Visualize change timeline for users.
+      - **Action:** Built React dashboard with Tailwind+Framer Motion.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
 
-- [x] **Fix Build Error localdev:3001** ✅
-      - **Completion Date:** 2026-01-26
-      - **Details:** Fixed Tailwind v4 `CssSyntaxError` by migrating theme to `@theme` block in `globals.css`.
-      - **Result:** Production build passing.
+- [x] **Slack Integration for Idea 10** 🔔 ✅
+      - **Goal:** Real-time alerts for breaking changes.
+      - **Action:** Implemented `SlackNotifier` with block-kit formatting.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
 
-- [x] **Update 3KPRO.Services Business profile** ✅
-      - **Account:** james.lawson@gmail.com
-      - **Updates:**
-        - **Phone:** 918.280.8644
-        - **Email:** info@3pro.services (Reflected in Contact info)
-        - **Address:** Service Area Business (No local address)
-        - **Services Promoted:** Website Development, Cloud Solutions, Custom Development, Data Management, Cybersecurity, Mobile Solutions, Process Automation.
-      - **Implementation:** Manual update performed (CLI script blocked by Google API Zero-Quota policy).
-      - **Script:** Preserved `scripts/update_gbp_profile.py` for future use.
-      - **Documentation:** See `3kpro-website/docs/SYSTEM/GOOGLE_BUSINESS_PROFILE_UPDATE.md` for execution guide.
+- [x] **GitHub Release Monitor for Idea 10** 🐙 ✅
+      - **Goal:** Direct monitoring of GitHub Releases for tech stack updates.
+      - **Action:** Implemented `GithubMonitor` interacting with GitHub's REST API.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **Classification Engine for Idea 10** 🧠 ✅
+      - **Goal:** AI-powered analysis of changelog entries to detect breaking changes.
+      - **Action:** Implemented `ChangeClassifier` using Claude 3 Haiku and integrated into pipeline.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **RSS Feed Parser for Idea 10** 📡 ✅
+      - **Goal:** Support standard RSS/Atom feeds for changelog monitoring.
+      - **Action:** Implemented `RssParser` and integrated it into the scan pipeline.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **Changelog Scraper for Idea 10** 🔍 ✅
+      - **Goal:** Extract changelog entries from standard HTML pages.
+      - **Action:** Implemented Playwright/BeautifulSoup scraper with header-based heuristics.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **API Registry Schema for Idea 10: API Deprecation Watchdog** 📊 ✅
+      - **Goal:** Define data models for APIs and their changes.
+      - **Action:** Implemented SQLAlchemy models (`ApiRegistry`, `ApiChange`) and FastAPI endpoints.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **Scaffold Idea 10: API Deprecation Watchdog (BreakingChange)** 🛡️ ✅
+      - **Goal:** Initialize project structure and core stack for API monitoring.
+      - **Action:** Created `src/backend` (FastAPI), `src/frontend` (React), `TRUTH.md`, and requirements.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_10_API_Deprecation_Watchdog`
+      - **Assigned:** Antigravity
+
+- [x] **Implement Dashboard Auth for Idea 06: Trial Recovery Engine (TrialRevive)** 🔐 ✅
+      - **Goal:** Secure the dashboard with a simple access control gateway.
+      - **Action:** Implemented `LoginGateway` component and auth state logic.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_06_Trial_Recovery_Engine`
+      - **Assigned:** Antigravity
+
+- [x] **Implement Custom Playbook Editor UI for Idea 06: Trial Recovery Engine (TrialRevive)** 🎨 ✅
+      - **Goal:** Allow product teams to customize recovery templates via dashboard.
+      - **Action:** Built `PlaybookEditor` React component with realtime preview.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_06_Trial_Recovery_Engine`
+      - **Assigned:** Antigravity
+
+- [x] **Implement Advanced Cohort Analysis for Idea 06: Trial Recovery Engine (TrialRevive)** 📉 ✅
+      - **Goal:** Group users by signup cohort to track long-term recovery LTV.
+      - **Action:** Implemented `CohortAnalyzer` and analytics endpoints.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_06_Trial_Recovery_Engine`
+      - **Assigned:** Antigravity
+
+- [x] **Implement Direct CRM Sync for Idea 06: Trial Recovery Engine (TrialRevive)** 🗄️ ✅
+
+- [x] **Implement Predictive Churn Scoring for Idea 06: Trial Recovery Engine (TrialRevive)** 🔮 ✅
+
+- [x] **Implement Self-Service Trial Extensions for Idea 06: Trial Recovery Engine (TrialRevive)** 🛠️ ✅
+
+- [x] **Implement Zapier/n8n Native Integration for Idea 06: Trial Recovery Engine (TrialRevive)** ⚡ ✅
+
+- [x] **Implement Automated Retries & Robustness for Idea 06: Trial Recovery Engine (TrialRevive)** 🔄 ✅
+
+- [x] **Implement Advanced ROI Dashboard for Idea 06: Trial Recovery Engine (TrialRevive)** 📊 ✅
+
+- [x] **Implement Direct Slack Interactive Triggers for Idea 06: Trial Recovery Engine (TrialRevive)** 💬 ✅
+
+- [x] **Implement Success Tracking & ROI loops for Idea 06: Trial Recovery Engine (TrialRevive)** 📈 ✅
+
+- [x] **Implement Multi-Org Support for Idea 06: Trial Recovery Engine (TrialRevive)** 🏢 ✅
+
+- [x] **Implement Advanced AI Personalization for Idea 06: Trial Recovery Engine (TrialRevive)** 🤖 ✅
+
+- [x] **Project Idea 06: Trial Recovery Engine (TrialRevive) — MVP COMPLETE** 🚀 ✅
+
+- [x] **Scaffold Idea 04: Invoice Generator (Tool 1)** ✅
+      - **Goal:** Build full-stack MVP for Invoice Generator.
+      - **Action:** Created Next.js app, implemented PDF Export (jspdf), Template System (5 themes), Email Delivery (Resend), and History (Supabase).
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\idea_04_MICRO_SAAS_TOOLS`
+      - **Assigned:** Antigravity
+
+- [x] **Scaffold Idea 04: Contract Analyzer (Tool 2)** ✅
+      - **Goal:** Build MVP of AI Contract Analyzer.
+      - **Action:** Created Next.js app, File Upload System (react-dropzone), and /analyze page.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\idea_04_MICRO_SAAS_TOOLS\contract-analyzer`
+      - **Assigned:** Antigravity
+
+- [x] **Scaffold Idea 08: Meeting Commitment Extractor (PactPull)** ✅
+      - **Goal:** Initialize and build MVP for meeting commitment extraction agent.
+      - **Action:** Created `src` structure, implemented Transcription (Deepgram), Extraction (Claude), and Integrations (Asana, Linear, Slack). Built React Dashboard.
+      - **Location:** `C:\DEV\3K-Pro-Services\Dev\products\Idea_08_Meeting_Commitment_Extractor`
       - **Assigned:** Antigravity
 
 - [x] **Migrate Demo Video to Cloud Storage** ☁️ ✅
@@ -336,9 +618,116 @@ This file lists XELORA product-specific tasks only.
       - **Why:** Delivers the "OMG" moment where the AI explains the psychology.
       - **Status:** Done. Interfaces updated, AI prompt enhanced, UI badges added.
 
+
+
 ---
 
 ## COMPLETED
+
+- [x] **UX Audit: Mobile Responsiveness & Touch Targets** 📱 ✅ (2026-01-28)
+      - **Details:** Optimized landing page for mobile devices.
+      - **Actions:** 
+        - Reduced H1/H2 font sizes on mobile for Hero, Features, Demo, and Pricing sections.
+        - Increased touch target padding for navigation buttons.
+      - **Result:** Improved readability and usability on small screens.
+
+- [x] **Campaign Content: Multi-Format Export (TXT/PDF/MD)** 📄 ✅ (2026-01-28)
+      - **Details:** Integrated multi-format export capabilities for generated campaign content.
+      - **Actions:** 
+        - Installed `jsPDF` for client-side PDF generation.
+        - Implemented format-specific logic for Markdown, Plain Text, and PDF.
+        - Created a premium dropdown UI for choosing the export format.
+      - **Result:** Users can now download their campaigns in the format that best fits their workflow.
+
+- [x] **Campaign Creation: UI/UX & Alignment Refinements** 🔍 ✅ (2026-01-28)
+      - **Details:** Fixed text visibility, refined the 'New Suggestions' button, optimized card alignment, and modernized the config panel.
+      - **Actions:** 
+        - Replaced legacy `tron-text-muted` in `ViralScoreBreakdown.tsx` with high-contrast `zinc-400`.
+        - Redesigned "New Suggestions" and "Viral Score" components with premium glassmorphism.
+        - **Alignment:** Applied `flex-col` + `mt-auto` to trend cards for perfect scorecard alignment.
+        - **Refinement:** Cleaned up "Save as Template" button and Viral Score indicator in the config step.
+      - **Result:** Balanced and accessible UI for the campaign discovery flow.
+
+- [x] **Revert Background Pattern to Dots** 🏁 ✅ (2026-01-28)
+      - **Details:** Reverted `BGPattern` from `grid` to `dots` in all sections (`ModernHero`, `ModernFeatures`, `DemoVideoSection`, `StatsSection`, `FAQSection`). Set `dots` as default in `BGPattern` component.
+      - **Result:** Restored brand-consistent dotted background while keeping the Zinc aesthetic.
+
+- [x] **Visual Audit: Light Mode Contrast & Icon Consistency** 🎨 ✅ (2026-01-28)
+      - **Details:** Audited all landing page sections. Updated PricingSection to semantic variables. Refactored DemoVideoSection to Zinc palette and re-integrated into page.tsx. Standardized AI icons.
+      - **Result:** Fully consistent Light Mode aesthetic across the entire landing page.
+
+- [x] **Fix Landing Page Text Visibility & Icons** 🎨 ✅ (2026-01-28)
+      - **Details:** Resolved white-on-white text visibility for Viral DNA™ and Strategy text. Replaced Lightning icons with Brain icons for AI branding.
+      - **Result:** Improved readability and brand alignment on the landing page.
+
+- [x] **Website Aesthetic Alignment** 🎨 ✅
+      - **Completion Date:** 2026-01-27
+      - **Details:** Refactored Demo, About, Pricing, Privacy, and Terms pages to match "Structural Vector" Light Mode.
+      - **Result:** Unified visual language across the entire XELORA platform.
+
+- [x] **Landing Page Copy Update: Align with Current Product Reality** ✅
+      - **Completion Date:** 2026-01-27
+      - **Details:** Updated Hero, Features, Stats, and FAQ sections with Light Mode styles and accurate product copy (V1 Discovery + Validate focus).
+      - **Result:** Honest and high-density marketing funnel.
+
+- [x] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 ✅
+      - **Goal:** Transform XELORA from coral/tron theme to engineering-focused Linear/Vercel aesthetic with Geist fonts and HSL design tokens.
+      - **Specification:** `docs/upgrades/Xelora_Full_Polish.md`
+      - **Critical Focus:** CSS architecture (globals.css + tailwind.config.js)
+      - **Action Items:**
+        1. Install Geist fonts package (`npm install geist`)
+        2. Update `app/globals.css`:
+           - Replace Google Fonts with Geist Sans/Mono
+           - Convert CSS variables to HSL format (Zinc palette)
+           - Update background to #09090b rich black
+           - Add grid pattern overlay definitions
+           - Refactor glass-panel component classes
+        3. Update `tailwind.config.js`:
+           - Configure Geist font families (var(--font-geist-sans), var(--font-geist-mono))
+           - Implement HSL-based color system (background, foreground, border, primary, muted, accent)
+           - Add grid-pattern background image utility
+           - Remove coral/tron legacy mappings
+        4. Component updates:
+           - Refactor landing page (Hero, Bento Grid, Pricing)
+           - Update portal components for consistency
+           - Apply new design tokens throughout
+        5. Testing:
+           - Visual regression check (landing + portal)
+           - Verify grid patterns render correctly
+           - Confirm Geist fonts load properly
+      - **Design Philosophy:**
+        - Information density over white space
+        - Tactile buttons with subtle bevels/borders
+        - Heavy but subtle glassmorphism (backdrop-blur)
+        - Strict adherence to Geist typography
+      - **Key CSS Requirements:**
+        - ALL colors must use HSL format: `hsl(var(--variable))`
+        - Geist fonts must be imported in root layout.tsx
+        - Grid patterns via CSS background-image, not SVG
+        - Maintain backdrop-blur but adjust to Zinc palette
+        - Keep prefers-reduced-motion accessibility
+      - **Reference Sites:** linear.app, vercel.com, 21st.dev
+      - **Priority:** HIGH
+      - **Branch:** `feature/xelora-full-rebrand`
+      - **Assigned:** Gemini
+
+- [x] **Refactor Landing Page Theme** 🎨 ✅
+      - **Goal:** Update the public Landing Page components (Hero, Features, Pricing) to use semantic theme variables.
+      - **Action:**
+        - Audit `ModernHero.tsx`, `ModernFeatures.tsx`, etc. for hardcoded dark/tron colors.
+        - Replace specific hexes with `bg-background`, `text-foreground`, `primary`, etc.
+        - Ensure Landing Page looks good in both Light and Dark modes.
+      - **Assigned:** Antigravity
+- [x] **Verify Theme Upgrade & UI Polish** ✅
+      - **Goal:** Ensure new XELORA premium theme is applied correctly across known UI components.
+      - **Action:**
+        - Check landing page, dashboard, and campaign wizard for visual regressions.
+        - Verify dark mode/light mode consistency (if applicable).
+        - Update any hardcoded colors found during audit.
+      - **Completion Notes:**
+        - Refactored `PortalLayout` and `CampaignsClient` to use semantic theme variables.
+        - Standardized Campaign Wizard (Cards 1-6) on the new "Primary/Card" theme, removing legacy Tron/Coral hexes.
+        - Configured `BGPattern` to adapt to theme context.
 - [x] **Configure Apify Viral Data Collector** ✅
       - **Goal:** Switch from raw scraping to "Safe" Apify API integration.
       - **Results:**
@@ -373,16 +762,11 @@ This file lists XELORA product-specific tasks only.
       - **Status:** WORKING - Test payments now successfully upgrade user tier
       - **Reference:** See `docs/SYSTEM/STRIPE_TESTING.md` for full details
 
-- [x] **Standardize Spinner: Use BouncingDots Everywhere** ✅
-      - **Problem:** Multiple spinner styles exist (rotating circles with fire, etc.). Inconsistent UX.
-      - **Solution:** Replace ALL loading spinners with the BouncingDots component (three bouncing dots)
-      - **Component:** `components/ui/bouncing-dots.tsx`
-      - **Files to Audit:**
-        - Campaign creation wizard (loading states)
-        - Trend discovery loading
-        - Content generation loading
-        - Any other loading states throughout the app
-      - **Requirement:** BouncingDots is the ONLY spinner for user-facing loading states
+- [x] **Standardize Spinner: Use OrbitalLoader Everywhere** ✅
+      - **Problem:** Multiple spinner styles exist. Inconsistent UX.
+      - **Solution:** Replaced BouncingDots with the premium OrbitalLoader component.
+      - **Component:** `components/ui/orbital-loader.tsx`
+      - **Action:** Migrated all instances of BouncingDots to OrbitalLoader.
 
 - [x] **Campaign Creation Aesthetics Upgrade** ✅
       - **Problem:** Campaign wizard needed capitalization on premium SaaS feel.
@@ -422,24 +806,6 @@ This file lists XELORA product-specific tasks only.
       - Added Promote as 3rd option on Card 3 ("Which direction do you want to go?")
       - Added Card 8 for PromoteInput wizard
       - Updated generateContent() and saveCampaign() for promote campaigns
-- [x] **Landing Page Copy Update: Align with Current Product Reality** ✅
-      - **Problem:** Landing page makes publishing promises that are currently DISABLED. Missing new features (Promote, Google Drive).
-      - **Files to Update:**
-        - `components/sections/StatsSection.tsx`
-        - `components/sections/FAQSection.tsx`
-        - `components/sections/ModernFeatures.tsx`
-        - `components/sections/ModernHero.tsx`
-      - **Requirements:**
-        - [x] **StatsSection.tsx:** Change "100% Automated Publishing" to something honest (e.g., "100% AI-Powered" or "Full Campaign Creation")
-        - [x] **FAQSection.tsx:** Update "Which platforms does it support?" answer - remove publishing claims, focus on content creation + scheduling coming soon
-        - [x] **FAQSection.tsx:** Update "Can I schedule content in advance?" - soften to "coming soon" or remove
-        - [x] **FAQSection.tsx:** Review all answers for publishing promises and update to reflect current reality
-        - [x] **ModernFeatures.tsx:** ContentFlow™ claims "One-click publishing to 6 platforms" - mark as "Coming Soon" or update description
-        - [x] **ModernHero.tsx:** Consider adding "Promote" feature mention (AI-powered content creation with media analysis)
-        - [x] **Optional:** Add Google Drive integration / media analysis as a feature highlight
-        - [x] **Optional:** Mention guided wizard UX as a selling point
-      - **Guiding Principle:** Be honest about current capabilities. Use "Coming Soon" badges where appropriate. Highlight what DOES work: trend discovery, AI content generation, Promote feature, Viral Score predictions.
-      - **Reference:** See `docs/SYSTEM/VISION.md` for current feature status
 
 - [x] **Promote UX: Target Audience Preset Options** ✅
       - **File:** `app/(portal)/campaigns/create/components/PromoteInput.tsx`
@@ -447,12 +813,12 @@ This file lists XELORA product-specific tasks only.
       - **Problem:** User has to type audience manually - friction and requires thinking
       - **Solution:** Add clickable preset chips/buttons that auto-fill the field, plus manual entry option
       - **Requirements:**
-        - [x] Add preset audience options as clickable chips (e.g., "Professionals", "Small Business Owners", "Entrepreneurs", "Marketers", "Developers", "Creatives", "Students", "Gen Z", "Parents", etc.)
-        - [x] Clicking a chip inserts that value into the Target Audience field
-        - [x] Allow selecting multiple chips (comma-separated in field)
-        - [x] Keep the text input for custom/manual entry
-        - [x] Chips should have selected/unselected visual states
-        - [x] Consider a "Custom" chip that focuses the text input
+        - [] Add preset audience options as clickable chips (e.g., "Professionals", "Small Business Owners", "Entrepreneurs", "Marketers", "Developers", "Creatives", "Students", "Gen Z", "Parents", etc.)
+        - [] Clicking a chip inserts that value into the Target Audience field
+        - [] Allow selecting multiple chips (comma-separated in field)
+        - [] Keep the text input for custom/manual entry
+        - [] Chips should have selected/unselected visual states
+        - [] Consider a "Custom" chip that focuses the text input
       - **Design:** Match existing Tron theme - chips with cyan/magenta accent on select
       - **Reference:** Similar to tag selection UIs
 
@@ -526,8 +892,6 @@ This file lists XELORA product-specific tasks only.
 ---
 
 ## LATER (Vision-aligned, not urgent)
-- [ ] AI Studio (brand-trained agents per customer)
-- [ ] Workflow automation & scheduling
 - [ ] White-label / middleware APIs for SMBs
 - [ ] Local / private AI option for businesses
 
@@ -542,3 +906,21 @@ This file lists XELORA product-specific tasks only.
 - [ ] Marketplace for agents / workflows
 - [ ] Agency reseller program
 - [ ] Hardware appliance for local AI
+- [ ] **Re-evaluate Command Center Implementation Strategy** 🔄
+      - **Problem:** Command Center replaced entire wizard instead of enhancing it, making product unusable
+      - **Goal:** Determine proper integration strategy for Command Center features
+      - **Options:**
+        1. Add as optional "Advanced Mode" toggle in final editing step
+        2. Create separate `/campaigns/command-center` route for power users
+        3. Integrate specific features (live preview, viral score) into existing wizard steps
+      - **Current Status:** Wizard restored to working state, Command Center components preserved in codebase
+      - **Priority:** MEDIUM
+      - **Assigned:** TBD
+      - [ ] **AI Studio (brand-trained agents per customer)**
+      - **Goal:** Implement brand-specific AI agents for customers.
+      - **Action:**
+        - Create `AIStudio` component.
+        - Implement custom model training/fine-tuning interface.
+        - Integrate with Vertex AI/OpenRouter.
+      - **Priority:** MEDIUM
+      - **Assigned:** TBD

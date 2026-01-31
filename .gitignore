@@ -40,40 +40,67 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
+# ============================================
+# ENVIRONMENT & SECRETS - CRITICAL
+# ============================================
+# All .env variants (local development, vercel, production, etc.)
 .env
-.env.*
 .env.local
 .env.*.local
 .env.development
 .env.production
-.env.vercel
 .env.test
 .env.staging
+.env.vercel
+.env.vercel.*
+# Backup env files (SECURITY: Never commit backups)
+.env*.backup
+.env.*.backup
+*.env.backup
+.env.backup.*
 
-# secrets and sensitive data
+# Stripe CLI & Secrets
+.stripeclitorc
+stripe.json
+.stripe/
+stripe-debug.log
+
+# SSH, PEM, and Cryptographic Keys
 *.pem
 *.key
 *.cert
 *.secret
 *_TOKEN
 *_KEY
-*HANDOFF*.md
-*SECRET*
+*_SECRET
+id_rsa
+id_rsa.pub
+
+# API Keys & Credentials (by name pattern)
+*.apikey
+*.token
+.token
+.apikey
+config/secrets.json
+firebase-adminsdk-*.json
+service-account-key.json
 credentials.json
 service-account*.json
+.google-credentials.json
+.gcloud-credentials.json
+
+# Cloud provider credentials
+.aws/
+.gcloud/
+~/.aws/credentials
+
+# Sensitive documentation
+*HANDOFF*.md
+*SECRET*
+*-secrets.md
 
 # vercel
 .vercel
-
-# secrets and tokens
-*.key
-*.pem
-*.cert
-*.secret
-*_TOKEN
-*_KEY
-*HANDOFF*.md
 
 # typescript
 *.tsbuildinfo
@@ -88,7 +115,6 @@ nul
 
 # MCP servers (external projects)
 DEVapimatic-validator-mcp/
-.env.vercel
 
 # Playwright test results and reports
 /test-results/

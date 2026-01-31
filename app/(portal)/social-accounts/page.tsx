@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { BouncingDots } from "@/components/ui/bouncing-dots";
+import { OrbitalLoader } from "@/components/ui/orbital-loader";
 
 export default function SocialAccountsPage() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function SocialAccountsPage() {
   return (
     <div className="min-h-screen bg-transparent flex items-center justify-center">
       <div className="text-center">
-        <BouncingDots className="bg-tron-cyan" />
+        <OrbitalLoader className="w-10 h-10 text-tron-cyan" />
         <p className="text-tron-text-muted">Redirecting to Settings...</p>
       </div>
     </div>
