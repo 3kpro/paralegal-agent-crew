@@ -1,0 +1,40 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend
+plugins: anyio-4.11.0, base-url-2.1.0, playwright-0.7.2
+collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_bottlenecks_endpoint.py _____________
+tests\test_bottlenecks_endpoint.py:14: in <module>
+    from src.main import app
+src\main.py:26: in <module>
+    app.include_router(settings.router)
+                       ^^^^^^^^^^^^^^^
+E   AttributeError: 'Settings' object has no attribute 'router'
+============================== warnings summary ===============================
+src\database.py:15
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\database.py:15: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72: DeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'escChar' argument is deprecated, use 'esc_char'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+src\routers\reports.py:23
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\routers\reports.py:23: FastAPIDeprecationWarning: `regex` has been deprecated, please use `pattern` instead
+    format: str = Query(..., regex="^(pdf|csv)$"),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR tests/test_bottlenecks_endpoint.py - AttributeError: 'Settings' object ...
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+======================== 5 warnings, 1 error in 14.45s ========================

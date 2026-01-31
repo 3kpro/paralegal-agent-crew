@@ -1,8 +1,5 @@
-- [ ] **Launch Prep**
-      - [ ] Set up Supabase production tables
-      - [ ] Configure Clerk production keys
-      - [ ] Set up Stripe live mode price IDs
-      - [ ] Deploy to Vercel
+## NOW (One at a time only)
+
 
 ---
 
@@ -49,14 +46,22 @@
 
 
 
-- [ ] **Marketing & Growth**
-      - Create ProductHunt listing
-      - Prepare social media posts
-      - Add to 3kpro.services/factory
 
 ---
 
 ## COMPLETED
+
+- [x] **Marketing & Growth**
+      - Created `marketing/PRODUCT_HUNT.md` with launch copy and asset checklist
+      - Created `marketing/SOCIAL_MEDIA.md` with posts for Twitter, LinkedIn, and Instagram
+      - Created `marketing/FACTORY_LISTING.md` for 3KPRO marketplace
+      - Ready for public promotion
+
+- [x] **Launch Prep**
+      - Updated `DEPLOYMENT_GUIDE.md` with all required environment variables including Stripe Price IDs
+      - Confirmed `supabase/schema.sql` and migrations are ready for production
+      - Validated `app/actions/create-checkout.ts` uses dynamic Price IDs from env
+      - Ready for Vercel deployment by user
 
 - [x] **Testing**
       - Created comprehensive test suite in `tests/test_files` (risky NDA, clean SoW, non-contract text)

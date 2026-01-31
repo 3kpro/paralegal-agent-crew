@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Blackjack Helper</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 12px;
+      background: #111;
+      color: #f5f5f5;
+    }
+    h2 {
+      margin: 4px 0 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: 14px;
+      margin: 10px 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.8;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .btn {
+      flex: 1 0 18%;
+      min-width: 48px;
+      border-radius: 999px;
+      border: none;
+      padding: 10px 4px;
+      font-size: 16px;
+      text-align: center;
+      background: #222;
+      color: #f5f5f5;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.12s ease, transform 0.05s ease, box-shadow 0.12s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+    .btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 0 0 rgba(0,0,0,0.0);
+    }
+    .btn.selected {
+      background: #0a84ff;
+      color: #fff;
+      box-shadow: 0 0 0 2px rgba(10,132,255,0.4);
+    }
+    .btn.small {
+      flex: 1 0 30%;
+      min-width: 80px;
+      font-size: 15px;
+    }
+    .pill-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .pill {
+      flex: 1;
+      border-radius: 999px;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 14px;
+      border: 1px solid #444;
+      opacity: 0.8;
+    }
+    .pill span {
+      font-weight: 600;
+      color: #0a84ff;
+    }
+    #actionBar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 16px 18px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.75));
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    #actionCard {
+      max-width: 420px;
+      width: 100%;
+      border-radius: 999px;
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    #actionCard.hit    { background: #b00020; }
+    #actionCard.stand  { background: #1b5e20; }
+    #actionCard.double { background: #ff8f00; }
+    #actionCard.split  { background: #4a148c; }
+
+    #statusText {
+      font-size: 12px;
+      text-align: center;
+      margin-top: 4px;
+      opacity: 0.75;
+    }
+
+    * {
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+  </style>
+</head>
+<body>
+  <h2>Blackjack Helper</h2>
+
+  <div class="pill-row">
+    <div class="pill">Hand: <span id="handSummary">–</span></div>
+    <div class="pill">Dealer: <span id="dealerSummary">–</span></div>
+  </div>
+
+  <div class="section-title">1. Hand type</div>
+  <div class="btn-row" id="handTypeRow">
+    <button class="btn small" data-handtype="hard">Hard</button>
+    <button class="btn small" data-handtype="soft">Soft</button>
+    <button class="btn small" data-handtype="pair">Pair</button>
+  </div>
+
+  <div class="section-title">2. Your hand</div>
+  <div class="btn-row" id="playerRow">
+    <!-- totals / ranks: 2–11 (11 = A), 12–21 for totals -->
+    <button class="btn" data-value="2">2</button>
+    <button class="btn" data-value="3">3</button>
+    <button class="btn" data-value="4">4</button>
+    <button class="btn" data-value="5">5</button>
+    <button class="btn" data-value="6">6</button>
+    <button class="btn" data-value="7">7</button>
+    <button class="btn" data-value="8">8</button>
+    <button class="btn" data-value="9">9</button>
+    <button class="btn" data-value="10">10</button>
+    <button class="btn" data-value="11">11</button>
+    <button class="btn" data-value="12">12</button>
+    <button class="btn" data-value="13">13</button>
+    <button class="btn" data-value="14">14</button>
+    <button class="btn" data-value="15">15</button>
+    <button class="btn" data-value="16">16</button>
+    <button class="btn" data-value="17">17</button>
+    <button class="btn" data-value="18">18</button>
+    <button class="btn" data-value="19">19</button>
+    <button class="btn" data-value="20">20</button>
+    <button class="btn" data-value="21">21</button>
+  </div>
+
+  <div class="section-title">3. Dealer upcard</div>
+  <div class="btn-row" id="dealerRow">
+    <button class="btn" data-dealer="2">2</button>
+    <button class="btn" data-dealer="3">3</button>
+    <button class="btn" data-dealer="4">4</button>
+    <button class="btn" data-dealer="5">5</button>
+    <button class="btn" data-dealer="6">6</button>
+    <button class="btn" data-dealer="7">7</button>
+    <button class="btn" data-dealer="8">8</button>
+    <button class="btn" data-dealer="9">9</button>
+    <button class="btn" data-dealer="10">10</button>
+    <button class="btn" data-dealer="11">A</button>
+  </div>
+
+  <div id="statusText">Tap hand type → hand → dealer to get a play.</div>
+
+  <div id="actionBar">
+    <div id="actionCard" class="">ACTION</div>
+  </div>
+
+<script>
+  let handType = null;   // 'hard' | 'soft' | 'pair'
+  let playerVal = null;  // 2–21
+  let dealerVal = null;  // 2–11
+
+  const handTypeRow   = document.getElementById('handTypeRow');
+  const playerRow     = document.getElementById('playerRow');
+  const dealerRow     = document.getElementById('dealerRow');
+  const handSummary   = document.getElementById('handSummary');
+  const dealerSummary = document.getElementById('dealerSummary');
+  const statusText    = document.getElementById('statusText');
+  const actionBar     = document.getElementById('actionBar');
+  const actionCard    = document.getElementById('actionCard');
+
+  handTypeRow.addEventListener('click', (e) => {
+    if (!e.target.dataset.handtype) return;
+    selectButton(handTypeRow, e.target);
+    handType = e.target.dataset.handtype;
+    updateSummaries();
+    maybeRecommend();
+  });
+
+  playerRow.addEventListener('click', (e) => {
+    if (!e.target.dataset.value) return;
+    selectButton(playerRow, e.target);
+    playerVal = parseInt(e.target.dataset.value, 10);
+    updateSummaries();
+    maybeRecommend();
+  });
+
+  dealerRow.addEventListener('click', (e) => {
+    if (!e.target.dataset.dealer) return;
+    selectButton(dealerRow, e.target);
+    dealerVal = parseInt(e.target.dataset.dealer, 10);
+    updateSummaries();
+    maybeRecommend();
+  });
+
+  function selectButton(row, btn) {
+    Array.from(row.querySelectorAll('.btn')).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function updateSummaries() {
+    const typeLabel = handType === 'hard' ? 'Hard'
+                     : handType === 'soft' ? 'Soft'
+                     : handType === 'pair' ? 'Pair'
+                     : '–';
+
+    let playerLabel = '–';
+    if (playerVal !== null) {
+      if (handType === 'pair') {
+        playerLabel = (playerVal === 11 ? 'A,A' : playerVal + ',' + playerVal);
+      } else if (handType === 'soft') {
+        playerLabel = 'A+' + (playerVal - 11);
+      } else {
+        playerLabel = String(playerVal);
+      }
+    }
+    handSummary.textContent = typeLabel + ' ' + playerLabel;
+
+    let dLabel = '–';
+    if (dealerVal !== null) {
+      dLabel = dealerVal === 11 ? 'A' : String(dealerVal);
+    }
+    dealerSummary.textContent = dLabel;
+  }
+
+  function maybeRecommend() {
+    if (!handType || playerVal === null || dealerVal === null) {
+      hideAction();
+      statusText.textContent = 'Tap hand type, your hand, and dealer upcard.';
+      return;
+    }
+    const action = decide(handType, playerVal, dealerVal);
+    showAction(action);
+    statusText.textContent = 'Play for this hand only. Never take insurance.';
+  }
+
+  function showAction(action) {
+    actionCard.textContent = action.toUpperCase();
+    actionCard.className = '';
+    if (action === 'Hit')    actionCard.classList.add('hit');
+    if (action === 'Stand')  actionCard.classList.add('stand');
+    if (action === 'Double') actionCard.classList.add('double');
+    if (action === 'Split')  actionCard.classList.add('split');
+
+    actionBar.style.opacity = '1';
+    actionBar.style.transform = 'translateY(0)';
+  }
+
+  function hideAction() {
+    actionBar.style.opacity = '0';
+    actionBar.style.transform = 'translateY(12px)';
+  }
+
+  function decide(type, player, dealer) {
+    if (type === 'pair') return pairDecision(player, dealer);
+    if (type === 'soft') return softDecision(player, dealer);
+    return hardDecision(player, dealer);
+  }
+
+  // --- Basic strategy logic (H17 multi-deck style) ---
+
+  function hardDecision(total, dealer) {
+    if (total <= 8) return 'Hit';
+
+    if (total === 9) {
+      if (dealer >= 3 && dealer <= 6) return 'Double';
+      return 'Hit';
+    }
+
+    if (total === 10) {
+      if (dealer >= 2 && dealer <= 9) return 'Double';
+      return 'Hit';
+    }
+
+    if (total === 11) return 'Double';
+
+    if (total === 12) {
+      if (dealer >= 4 && dealer <= 6) return 'Stand';
+      return 'Hit';
+    }
+
+    if (total >= 13 && total <= 16) {
+      if (dealer >= 2 && dealer <= 6) return 'Stand';
+      return 'Hit';
+    }
+
+    if (total >= 17) return 'Stand';
+
+    return 'Hit';
+  }
+
+  function softDecision(total, dealer) {
+    if (total === 13 || total === 14) {
+      if (dealer >= 5 && dealer <= 6) return 'Double';
+      return 'Hit';
+    }
+
+    if (total === 15 || total === 16) {
+      if (dealer >= 4 && dealer <= 6) return 'Double';
+      return 'Hit';
+    }
+
+    if (total === 17) {
+      if (dealer >= 3 && dealer <= 6) return 'Double';
+      return 'Hit';
+    }
+
+    if (total === 18) {
+      if (dealer >= 3 && dealer <= 6) return 'Double';
+      if (dealer === 2 || dealer === 7 || dealer === 8) return 'Stand';
+      return 'Hit';
+    }
+
+    if (total >= 19) return 'Stand';
+
+    return 'Hit';
+  }
+
+  function pairDecision(rank, dealer) {
+    if (rank === 11) return 'Split';
+
+    if (rank === 2 || rank === 3) {
+      if (dealer >= 2 && dealer <= 7) return 'Split';
+      return 'Hit';
+    }
+
+    if (rank === 4) {
+      if (dealer === 5 || dealer === 6) return 'Split';
+      return 'Hit';
+    }
+
+    if (rank === 5) {
+      return hardDecision(10, dealer);
+    }
+
+    if (rank === 6) {
+      if (dealer >= 2 && dealer <= 6) return 'Split';
+      return 'Hit';
+    }
+
+    if (rank === 7) {
+      if (dealer >= 2 && dealer <= 7) return 'Split';
+      return 'Hit';
+    }
+
+    if (rank === 8) return 'Split';
+
+    if (rank === 9) {
+      if ((dealer >= 2 && dealer <= 6) || dealer === 8 || dealer === 9) return 'Split';
+      return 'Stand';
+    }
+
+    if (rank === 10) return 'Stand';
+
+    return 'Hit';
+  }
+</script>
+</body>
+</html>

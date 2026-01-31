@@ -17,7 +17,7 @@ class AutoFiller:
         self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
         self.client = anthropic.Anthropic(api_key=self.api_key) if self.api_key else None
 
-    def generate_answer(self, question: str, context_chunks: List[str]) -> Answer:
+    def generate_answer(self, question: str, context_chunks: List[str], guidance: Optional[str] = None) -> Answer:
         """
         Generates an answer to a security questionnaire question using the provided context chunks.
         """
@@ -33,6 +33,8 @@ class AutoFiller:
         # Construct Prompt
         context_str = "\n\n".join([f"Source [{i+1}]: {chunk}" for i, chunk in enumerate(context_chunks)])
         
+        guidance_text = f"\nGUIDANCE:\n{guidance}\n" if guidance else ""
+        
         prompt = f"""You are a security compliance expert assisting with a vendor risk assessment. 
 Your task is to answer the following security questionnaire question based ONLY on the provided context snippets from the vendor's documentation.
 
@@ -41,7 +43,7 @@ CONTEXT:
 
 QUESTION:
 {question}
-
+{guidance_text}
 INSTRUCTIONS:
 1. Answer the question directly (Yes/No/Partial) followed by a concise explanation.
 2. If the context does not contain the answer, state "Insufficient information provided in documents."

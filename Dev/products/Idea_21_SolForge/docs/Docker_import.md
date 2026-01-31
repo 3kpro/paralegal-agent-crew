@@ -108,7 +108,7 @@ If you specified `-TargetHost` during export, the script handles this automatica
 1. **USB Drive/Network Share:**
    ```batch
    # Copy the archive to USB drive
-   copy solforge_migration_20241213_120000.zip E:\
+   copy solforge_migration_20241213_120000.zip d:\
    ```
 
 2. **Cloud Storage:**

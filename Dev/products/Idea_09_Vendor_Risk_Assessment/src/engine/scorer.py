@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from .framework import RiskFramework, RiskControl, STANDARD_FRAMEWORK
+from .mitigation import MitigationGenerator
 
 @dataclass
 class Finding:
@@ -8,6 +9,7 @@ class Finding:
     is_satisfied: bool
     confidence: float
     evidence: str  # Snippet or Source
+    mitigation_plan: Optional[str] = None
 
 @dataclass
 class ScoreResult:
@@ -17,8 +19,10 @@ class ScoreResult:
     framework_name: str
 
 class RiskScorer:
-    def __init__(self, framework: RiskFramework = STANDARD_FRAMEWORK):
+    def __init__(self, framework: RiskFramework = STANDARD_FRAMEWORK, use_ai: bool = False):
         self.framework = framework
+        self.use_ai = use_ai
+        self.mitigation_gen = MitigationGenerator()
 
     def evaluate(self, 
                  certs: List[str], 
@@ -38,6 +42,7 @@ class RiskScorer:
             satisfied = False
             evidence = ""
             confidence = 0.0
+            mitigation_plan = None
             
             # Check Certs first (High Confidence)
             for cert in certs_lower:
@@ -60,12 +65,22 @@ class RiskScorer:
             
             if satisfied:
                 earned_score += control.weight
+            else:
+                # Generate mitigation suggestion if AI enabled and control failed
+                if self.use_ai:
+                    mitigation_plan = self.mitigation_gen.suggest_mitigation(
+                        control.name, 
+                        control.description
+                    )
+                else:
+                    mitigation_plan = f"Remediate {control.name} to improve security posture."
             
             findings.append(Finding(
                 control_id=control.id,
                 is_satisfied=satisfied,
                 confidence=confidence,
-                evidence=evidence
+                evidence=evidence,
+                mitigation_plan=mitigation_plan
             ))
 
         final_score = (earned_score / total_possible * 100.0) if total_possible > 0 else 0.0

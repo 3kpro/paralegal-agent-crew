@@ -16,6 +16,8 @@ Copy these into your Vercel Project Settings. You will need to get the real keys
 | `STRIPE_SECRET_KEY` | [Stripe Dashboard](https://dashboard.stripe.com/) | `sk_live_...` |
 | `STRIPE_WEBHOOK_SECRET` | Stripe (Developers -> Webhooks) | `whsec_...` |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe Dashboard | `pk_live_...` |
+| `NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY` | Stripe Dashboard (Products) | `price_...` |
+| `NEXT_PUBLIC_STRIPE_PRICE_ID_LIFETIME` | Stripe Dashboard (Products) | `price_...` |
 | `NEXT_PUBLIC_BASE_URL` | Your Domain | `https://contractguard-ai.vercel.app` |
 
 ## 2. Supabase Setup

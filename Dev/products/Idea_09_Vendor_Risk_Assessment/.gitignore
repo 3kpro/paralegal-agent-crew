@@ -1,0 +1,47 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+
+# Reports
+reports/
+dist/reports/
+dist/reports_test/

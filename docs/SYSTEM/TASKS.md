@@ -7,9 +7,9 @@ Last Updated: 2026-01-11
 - **Company Tasks:** `3kpro-website/docs/SYSTEM/TASKS.md` (Website, marketplace, SEO)
 - **Dev/Products:** `Dev/products/[product]/TASKS.md` (Per-product tasks)
 
----
+## NOW
 
-## DEVELOPMENT WORKFLOW
+- [ ] **XELORA Full Rebrand - Linear/Vercel Aesthetic** 🎨 (See `landing-page/docs/SYSTEM/TASKS.md`)
 
 **Critical: Human-Controlled Dev Servers**
 
@@ -31,17 +31,18 @@ All agents (Gemini, Claude, opencode, etc.) MUST follow these rules:
 After completing requested work, agents MUST follow this workflow:
 
 1. **Complete the work** - Make all requested code changes
-2. **Verify the result** - Review changes to ensure they match requirements
-3. **Ask for approval** - Present summary and ask: "Work complete. Ready to commit and push to production? (Y/N)"
-4. **On "Y" confirmation:**
+2. **Verify build** - Run `npm run build` to catch any build errors
+3. **Fix if needed** - If build fails, fix errors and repeat step 2
+4. **Ask for approval** - Present summary and ask: "Work complete. Build passed. Ready to commit and push to production? (Y/N)"
+5. **On "Y" confirmation:**
    - Run `git status` to show what changed
    - Run `git add -A` to stage all changes
    - Run `git commit -m "descriptive message"` (message based on work completed)
    - Run `git push` to current branch
    - Report success with commit hash and branch
-5. **On "N":** Wait for further instructions or clarifications
+6. **On "N":** Wait for further instructions or clarifications
 
-**Why:** This keeps human in control of production deployments while reducing friction. Agent handles git mechanics after receiving explicit approval.
+**Why:** This keeps human in control of production deployments while reducing friction. Build verification prevents broken code from reaching production. Agent handles git mechanics after receiving explicit approval.
 
 ---
 
@@ -99,6 +100,11 @@ This file lists XELORA product-specific tasks only.
 
 
 ## COMPLETED
+
+- [x] **Fix Build Error localdev:3001** ✅
+      - **Completion Date:** 2026-01-26
+      - **Details:** Fixed Tailwind v4 `CssSyntaxError` by migrating theme to `@theme` block in `globals.css`.
+      - **Result:** Production build passing.
 
 - [x] **Update 3KPRO.Services Business profile** ✅
       - **Account:** james.lawson@gmail.com

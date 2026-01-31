@@ -1,0 +1,101 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0 -- C:\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend
+plugins: anyio-4.11.0, base-url-2.1.0, playwright-0.7.2
+collecting ... collected 1 item
+
+tests/test_health_check.py::test_get_health_check_metrics FAILED         [100%]
+
+================================== FAILURES ===================================
+________________________ test_get_health_check_metrics ________________________
+
+mock_db = <MagicMock id='1970024686864'>
+
+    def test_get_health_check_metrics(mock_db):
+        service = AnalysisService(mock_db)
+        repo_name = "test-repo"
+    
+        # Mock Data
+        now = datetime.now()
+    
+        # PR 1: Created 2 hours ago, first comment 1 hour ago (Pickup: 1 hour)
+        pr1 = PullRequest(
+            repo_name=repo_name,
+            created_at=now - timedelta(hours=2),
+            author_login="author1",
+            comments=[] # Will fill below
+        )
+    
+        # PR 2: Created 5 hours ago, first comment 2 hours ago (Pickup: 3 hours)
+        pr2 = PullRequest(
+            repo_name=repo_name,
+            created_at=now - timedelta(hours=5),
+            author_login="author2",
+            comments=[]
+        )
+    
+        # Comments
+        c1 = Comment(
+            category="nitpick",
+            author_login="reviewer1",
+            created_at=now - timedelta(hours=1)
+        )
+        pr1.comments = [c1] # Attach to PR for pickup calc
+    
+        c2 = Comment(
+            category="question",
+            author_login="reviewer1",
+            created_at=now - timedelta(hours=2)
+        )
+        pr2.comments = [c2]
+    
+        c3 = Comment(
+            category="nitpick",
+            author_login="reviewer2",
+            created_at=now - timedelta(hours=0.5)
+        )
+        # Just a standalone comment for stats
+    
+        all_prs = [pr1, pr2]
+        all_comments = [c1, c2, c3]
+    
+        # Mock DB Query results
+        # Query(PullRequest)
+        mock_db.query.return_value.filter.return_value.all.side_effect = [all_prs, all_comments]
+        # Note: verify implementation query order.
+        # AnalysisService.get_health_check_metrics calls:
+        # 1. prs = self.db.query(PullRequest)...
+        # 2. comments = self.db.query(Comment)...
+    
+        # So side_effect order [all_prs, all_comments] should work if the query objects are distinct enough
+        # or if we mock the chain better.
+        # Let's mock properly based on the class types if possible, or just be simple.
+    
+        # Simpler Mocking Strategy relying on call order which we saw in source:
+        # prs = ... .all()
+        # comments = ... .all()
+        mock_query = mock_db.query.return_value
+        mock_filter = mock_query.filter.return_value
+        mock_filter.all.side_effect = [all_prs, all_comments]
+    
+        # Execute
+        metrics = service.get_health_check_metrics(repo_name)
+    
+        # Assertions
+    
+        # Nitpick %
+        # Total comments: 3. Nitpicks: 2. % = 66.67
+>       assert metrics["nitpick_percentage"] == 66.67
+E       assert 0 == 66.67
+
+tests\test_health_check.py:86: AssertionError
+============================== warnings summary ===============================
+src\database.py:15
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\database.py:15: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_health_check.py::test_get_health_check_metrics - assert 0 == 66.67
+======================== 1 failed, 1 warning in 1.75s =========================

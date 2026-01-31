@@ -9,5 +9,11 @@ pdfplumber
 anthropic
 streamlit
 pandas
-
-
+pinecone-client
+numpy
+reportlab
+sentry-sdk
+jira
+fastapi
+uvicorn
+httpx

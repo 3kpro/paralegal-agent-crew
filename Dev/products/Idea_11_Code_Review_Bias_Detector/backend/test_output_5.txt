@@ -1,0 +1,43 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend
+plugins: anyio-4.11.0, base-url-2.1.0, playwright-0.7.2
+collected 1 item
+
+tests\test_bottlenecks_endpoint.py .                                     [100%]
+
+============================== warnings summary ===============================
+src\database.py:15
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\database.py:15: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72: DeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'escChar' argument is deprecated, use 'esc_char'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+src\routers\reports.py:23
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\routers\reports.py:23: FastAPIDeprecationWarning: `regex` has been deprecated, please use `pattern` instead
+    format: str = Query(..., regex="^(pdf|csv)$"),
+
+tests/test_bottlenecks_endpoint.py::test_get_stale_prs
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\tests\test_bottlenecks_endpoint.py:50: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/test_bottlenecks_endpoint.py::test_get_stale_prs
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\routers\bottlenecks.py:25: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    cutoff_time = datetime.utcnow() - timedelta(hours=hours_threshold)
+
+tests/test_bottlenecks_endpoint.py::test_get_stale_prs
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\routers\bottlenecks.py:46: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    time_diff = datetime.utcnow() - pr.created_at
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 passed, 8 warnings in 4.53s ========================

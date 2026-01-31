@@ -17,6 +17,7 @@ class Document(TimeStampedModel):
     __tablename__ = 'documents'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    organization_id = Column(UUID(as_uuid=True), ForeignKey('organizations.id'), nullable=False)
     vendor_id = Column(UUID(as_uuid=True), ForeignKey('vendors.id'), nullable=False)
     
     doc_type = Column(Enum(DocumentType), nullable=False, default=DocumentType.OTHER)

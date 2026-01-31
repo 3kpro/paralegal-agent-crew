@@ -1,0 +1,21 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend
+plugins: anyio-4.11.0, base-url-2.1.0, playwright-0.7.2
+collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_bottlenecks_endpoint.py _____________
+ImportError while importing test module 'C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\tests\test_bottlenecks_endpoint.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+C:\Python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_bottlenecks_endpoint.py:7: in <module>
+    from backend.src.main import app
+E   ModuleNotFoundError: No module named 'backend'
+=========================== short test summary info ===========================
+ERROR tests/test_bottlenecks_endpoint.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+============================== 1 error in 0.60s ===============================

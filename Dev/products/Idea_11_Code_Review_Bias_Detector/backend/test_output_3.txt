@@ -1,0 +1,48 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.0.2, pluggy-1.6.0 -- C:\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend
+plugins: anyio-4.11.0, base-url-2.1.0, playwright-0.7.2
+collecting ... collected 0 items / 1 error
+
+=================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_bottlenecks_endpoint.py _____________
+tests\test_bottlenecks_endpoint.py:7: in <module>
+    from src.main import app
+src\main.py:3: in <module>
+    from .routers import auth, ingestion, analysis, classification, reports, settings, bottlenecks
+src\routers\ingestion.py:6: in <module>
+    from ..dependencies import verify_subscription
+src\dependencies.py:6: in <module>
+    supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\supabase\_sync\client.py:378: in create_client
+    return Client.create(
+C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\supabase\_sync\client.py:109: in create
+    client = cls(supabase_url, supabase_key, options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\supabase\_sync\client.py:57: in __init__
+    raise SupabaseException("supabase_url is required")
+E   supabase._sync.client.SupabaseException: supabase_url is required
+============================== warnings summary ===============================
+src\database.py:15
+  C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector\backend\src\database.py:15: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:72: DeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'escChar' argument is deprecated, use 'esc_char'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+..\..\..\..\..\..\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85
+  C:\Users\mark\AppData\Roaming\Python\Python313\site-packages\pyiceberg\expressions\parser.py:85: DeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+ERROR tests/test_bottlenecks_endpoint.py - supabase._sync.client.SupabaseException: supabase_url is required
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+======================== 4 warnings, 1 error in 4.51s =========================

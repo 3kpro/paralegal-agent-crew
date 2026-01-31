@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Dad Arsenal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0a0a0b;
+            color: #e4e4e7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .slang-card {
+            background: linear-gradient(145deg, #18181b, #09090b);
+            border: 1px solid #27272a;
+            transition: all 0.2s ease;
+        }
+        .slang-card:active {
+            transform: scale(0.95);
+            border-color: #3b82f6;
+        }
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="p-4 pb-20">
+
+    <header class="mb-8 text-center pt-6">
+        <h1 class="text-3xl font-bold tracking-tight text-blue-500 mb-2 uppercase italic">Tactical Slang Arsenal</h1>
+        <p class="text-zinc-500 text-sm">Objective: Maximum Embarrassment. Deployment: Casual.</p>
+    </header>
+
+    <div id="app-container" class="space-y-8">
+        <!-- Categories will be injected here -->
+    </div>
+
+    <!-- Rule #1 Banner -->
+    <div class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-4 text-center">
+        <p class="text-xs text-zinc-400 font-mono">
+            <span class="text-red-500 font-bold">CORE RULE:</span> Say it like you don't care. Performance = Failure.
+        </p>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="modal" class="modal-overlay fixed inset-0 hidden flex items-center justify-center p-6 z-50">
+        <div class="bg-zinc-900 border border-zinc-700 w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+            <div id="modal-content">
+                <!-- Content injected here -->
+            </div>
+            <button onclick="closeModal()" class="mt-6 w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl font-bold">CLOSE</button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold opacity-0 transition-opacity duration-300 pointer-events-none">
+        Copied to clipboard
+    </div>
+
+    <script>
+        const slangData = [
+            {
+                category: "The Essentials (High Usage)",
+                items: [
+                    { term: "rizz", def: "Charisma / flirting skill", example: "Bro’s got rizz." },
+                    { term: "no cap", def: "No lie / For real", example: "That movie was good, no cap." },
+                    { term: "cap", def: "A lie / Exaggeration", example: "That’s cap." },
+                    { term: "bet", def: "Okay / Agreed", example: "Bet. See you at 6." },
+                    { term: "say less", def: "Got it, stop talking", example: "You want fries? Say less." }
+                ]
+            },
+            {
+                category: "Social Media Brainrot",
+                items: [
+                    { term: "based", def: "Respectable / Bold take", example: "That’s based." },
+                    { term: "cringe", def: "Embarrassing / Try-hard", example: "That’s cringe." },
+                    { term: "mid", def: "Mediocre / Average", example: "That pizza was mid." },
+                    { term: "W / L", def: "Win or Loss", example: "That's a W." },
+                    { term: "ratio", def: "When you lose a public argument", example: "He got ratio'd." }
+                ]
+            },
+            {
+                category: "Vibe & Energy",
+                items: [
+                    { term: "vibe check", def: "Judging the mood", example: "You failed the vibe check." },
+                    { term: "main character", def: "Acting like life revolves around you", example: "Main character energy." },
+                    { term: "NPC", def: "Acting basic or robotic", example: "He’s moving like an NPC." },
+                    { term: "it’s giving...", def: "It feels like / The vibe is...", example: "It’s giving 'forgot homework'." },
+                    { term: "aura", def: "Your vibe points / Presence", example: "You just lost aura for that." }
+                ]
+            },
+            {
+                category: "Passive Aggressive",
+                items: [
+                    { term: "delulu", def: "Delusional", example: "You’re being delulu." },
+                    { term: "pick me", def: "Attention seeker", example: "Total pick-me behavior." },
+                    { term: "yapping", def: "Talking too much", example: "He’s just yapping." },
+                    { term: "doing too much", def: "Overreacting", example: "Relax, you’re doing too much." }
+                ]
+            },
+            {
+                category: "Nuclear Options (Maximum Cringe)",
+                items: [
+                    { term: "skibidi", def: "Nonsense / Meme chaos", example: "That's so skibidi." },
+                    { term: "sigma", def: "Lone wolf cool guy", example: "That's sigma of you." },
+                    { term: "fanum tax", def: "Stealing a friend's food", example: "I'm taking my fanum tax." },
+                    { term: "ohio", def: "Weird or cursed", example: "Only in Ohio." },
+                    { term: "sus", def: "Suspicious", example: "That's sus." }
+                ]
+            }
+        ];
+
+        function init() {
+            const container = document.getElementById('app-container');
+            slangData.forEach(cat => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <h2 class="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-3 px-1">${cat.category}</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${cat.items.map(item => `
+                            <button onclick='showDetails(${JSON.stringify(item)})' class="slang-card h-20 rounded-xl flex items-center justify-center text-lg font-bold text-white shadow-lg">
+                                ${item.term}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        function showDetails(item) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="text-center">
+                    <span class="text-blue-500 text-xs font-mono uppercase">Term Analysis</span>
+                    <h3 class="text-4xl font-black text-white mt-1 mb-4">${item.term}</h3>
+                    <div class="bg-black rounded-lg p-4 mb-4 text-left border border-zinc-800">
+                        <p class="text-zinc-400 text-xs uppercase mb-1">Definition</p>
+                        <p class="text-zinc-200">${item.def}</p>
+                    </div>
+                    <div class="bg-black rounded-lg p-4 mb-6 text-left border border-zinc-800 cursor-pointer active:bg-zinc-800" onclick="copyText('${item.example}')">
+                        <p class="text-zinc-400 text-xs uppercase mb-1">Deployment (Tap to Copy)</p>
+                        <p class="text-blue-400 font-mono italic">"${item.example}"</p>
+                    </div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function copyText(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2000);
+        }
+
+        // Close modal on click outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) closeModal();
+        }
+
+        init();
+    </script>
+</body>
+</html>
