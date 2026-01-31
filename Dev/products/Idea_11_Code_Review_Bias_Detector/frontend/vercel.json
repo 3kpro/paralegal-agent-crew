@@ -7,5 +7,11 @@
   "env": {
     "VITE_SUPABASE_URL": "@fairmerge-supabase-url",
     "VITE_SUPABASE_ANON_KEY": "@fairmerge-supabase-anon-key"
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
