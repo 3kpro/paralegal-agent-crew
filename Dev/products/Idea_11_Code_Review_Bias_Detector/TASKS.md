@@ -1,6 +1,32 @@
 # TASKS - Idea 11: Code Review Bias Detector (ReviewLens)
 
 ## NOW
+- [ ] **Fix GitHub OAuth "Connect GitHub" Button** 🐙 (2026-01-31)
+      - **Goal:** Complete the GitHub OAuth flow so users can authorize repository access
+      - **Problem:** Clicking "Connect GitHub" button on dashboard doesn't redirect to GitHub
+      - **Current Status:**
+        - Frontend deployed to Vercel: `https://frontend-psi-jade-94.vercel.app`
+        - Backend deployed to Railway: `https://striking-liberation-production.up.railway.app`
+        - Backend `/auth/login` endpoint exists and works
+        - VITE_API_URL env var set on Vercel, frontend rebuilt
+      - **Investigation Needed:**
+        1. Verify frontend is actually sending requests to Railway backend (check Network tab in DevTools)
+        2. Test clicking "Connect GitHub" and report what URL it attempts to navigate to
+        3. Check if Railway backend `/auth/login` returns proper GitHub OAuth redirect
+        4. Verify GitHub OAuth app callback URL is still configured correctly
+        5. Test full OAuth flow: click button → GitHub login → redirect back to dashboard with token
+      - **Success Criteria:**
+        - Button click redirects to GitHub authorization page
+        - After authorization, redirects back to dashboard with `token` and `platform` URL params
+        - Token stored in localStorage and user can analyze repositories
+      - **Files:**
+        - Frontend: `frontend/src/pages/Dashboard.tsx` (line 315, "Connect GitHub" button)
+        - Backend: `backend/src/routers/auth.py` (/auth/login endpoint)
+        - Config: Check Railway env vars (GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, API_URL, FRONTEND_URL)
+      - **Priority:** HIGH (blocks all repository analysis)
+      - **Assigned:** Gemini
+      - **Notes:** Database transaction bug in `github_service.py` was fixed (commit 8cc96457). This is separate OAuth connection issue.
+
 - [x] **Build "Bottleneck" List** 🚨 ✅ (2026-01-31)
       - **Goal:** Table of PRs open >48 hours without review
       - **Action Items:**
