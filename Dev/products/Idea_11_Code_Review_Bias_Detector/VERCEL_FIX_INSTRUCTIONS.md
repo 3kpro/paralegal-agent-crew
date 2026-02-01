@@ -11,6 +11,9 @@
 2. Deployed via Vercel CLI directly from frontend directory (bypassed Root Directory issues)
 3. Client-side routing rewrites now working - /dashboard route loads correctly
 4. Added environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) via Vercel CLI
+5. Added auth state detection in Landing.tsx - redirects logged-in users to dashboard
+6. Fixed Dashboard.tsx to use VITE_API_URL env var instead of hardcoded localhost
+7. Final deployment (commit 573da349)
 
 ## Test in the Morning
 
