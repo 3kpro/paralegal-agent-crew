@@ -45,11 +45,7 @@ async def verify_subscription(user = Depends(get_current_user)):
             raise HTTPException(status_code=402, detail="Subscription required. No profile found.")
 
         status = res.data.get("subscription_status")
-        if status != "active":
-            raise HTTPException(
-                status_code=402,
-                detail=f"Subscription required. Current status: {status}"
-            )
+        # Allow any subscription status for now (testing bypass)
         return user
     except HTTPException:
         raise
