@@ -5,6 +5,8 @@ import ReviewStatsCharts from "../components/ReviewStatsCharts";
 import InteractionHeatmap from "../components/InteractionHeatmap";
 import VelocityKillerGauge from "../components/VelocityKillerGauge";
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 function Dashboard() {
   const navigate = useNavigate();
   const { user, session, profile, loading: authLoading, signOut } = useAuth();
@@ -60,7 +62,7 @@ function Dashboard() {
 
   const fetchHealthCheck = async (repo: string) => {
       try {
-          const response = await fetch(`http://localhost:8000/reports/health-check/${encodeURIComponent(repo)}`, {
+          const response = await fetch(`${API_URL}/reports/health-check/${encodeURIComponent(repo)}`, {
               headers: { 
                 'Authorization': `Bearer ${session?.access_token}`,
               }
@@ -80,7 +82,7 @@ function Dashboard() {
 
   const fetchAnalysis = async (repo: string) => {
       try {
-          const response = await fetch(`http://localhost:8000/analysis/${repo}`, {
+          const response = await fetch(`${API_URL}/analysis/${repo}`, {
             headers: { 
               'Authorization': `Bearer ${session?.access_token}`,
               'X-GitHub-Token': platform === 'github' ? token || '' : '',
@@ -108,7 +110,7 @@ function Dashboard() {
     
     setLoadingAnalysis(true);
     try {
-        const response = await fetch('http://localhost:8000/classify/', {
+        const response = await fetch(`${API_URL}/classify/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -162,7 +164,7 @@ function Dashboard() {
     setHealthCheckResult(null);
 
     try {
-      const response = await fetch('http://localhost:8000/ingest/', {
+      const response = await fetch(`${API_URL}/ingest/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -203,7 +205,7 @@ function Dashboard() {
       // ... (existing export logic)
       if (!repoName) return;
       try {
-          const response = await fetch(`http://localhost:8000/reports/export?repo_name=${encodeURIComponent(repoName)}&format=${format}`, {
+          const response = await fetch(`${API_URL}/reports/export?repo_name=${encodeURIComponent(repoName)}&format=${format}`, {
               headers: { 
                 'Authorization': `Bearer ${session?.access_token}`,
                 'X-GitHub-Token': platform === 'github' ? token || '' : '',
@@ -245,7 +247,7 @@ function Dashboard() {
     }
 
     try {
-        const response = await fetch('http://localhost:8000/settings/nuke', {
+        const response = await fetch(`${API_URL}/settings/nuke`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${session?.access_token}`
@@ -310,10 +312,10 @@ function Dashboard() {
              <div style={{ marginTop: '2rem', padding: '2rem', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.1)', textAlign: 'center' }}>
                 <p style={{ color: '#f87171', marginBottom: '1.5rem' }}>⚠️ You are not connected to a code provider. Connect to start analyzing reviews.</p>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                    <button className="btn btn-primary" onClick={() => window.location.href = 'http://localhost:8000/auth/login'}>
+                    <button className="btn btn-primary" onClick={() => window.location.href = `${API_URL}/auth/login`}>
                         Connect GitHub
                     </button>
-                    <button className="btn btn-primary" style={{ background: '#fc6d26' }} onClick={() => window.location.href = 'http://localhost:8000/auth/gitlab/login'}>
+                    <button className="btn btn-primary" style={{ background: '#fc6d26' }} onClick={() => window.location.href = `${API_URL}/auth/gitlab/login`}>
                         Connect GitLab
                     </button>
                 </div>
@@ -354,7 +356,7 @@ function Dashboard() {
                                 onClick={() => {
                                     const t = localStorage.getItem('github_token');
                                     if (t) { setToken(t); setPlatform('github'); localStorage.setItem('active_platform', 'github'); }
-                                    else { window.location.href = 'http://localhost:8000/auth/login'; }
+                                    else { window.location.href = `${API_URL}/auth/login`; }
                                 }}
                                 style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer', background: platform === 'github' ? 'var(--color-primary)' : 'transparent', color: 'white' }}
                             >
@@ -364,7 +366,7 @@ function Dashboard() {
                                 onClick={() => {
                                     const t = localStorage.getItem('gitlab_token');
                                     if (t) { setToken(t); setPlatform('gitlab'); localStorage.setItem('active_platform', 'gitlab'); }
-                                    else { window.location.href = 'http://localhost:8000/auth/gitlab/login'; }
+                                    else { window.location.href = `${API_URL}/auth/gitlab/login`; }
                                 }}
                                 style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer', background: platform === 'gitlab' ? '#fc6d26' : 'transparent', color: 'white' }}
                             >
