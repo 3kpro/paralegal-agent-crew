@@ -32,22 +32,7 @@ async def get_current_user(authorization: str = Header(None)):
 
 async def verify_subscription(user = Depends(get_current_user)):
     """
-    Checks if the user has an active subscription in the shared profiles table.
-    For local development without Supabase, skips subscription check.
+    Skipped for testing - allows all users to access analysis endpoints.
+    TODO: Restore subscription check after testing phase.
     """
-    if not supabase:
-        # Local development mode - skip subscription check
-        return user
-
-    try:
-        res = supabase.table("profiles").select("subscription_status").eq("id", user.id).single().execute()
-        if not res.data:
-            raise HTTPException(status_code=402, detail="Subscription required. No profile found.")
-
-        status = res.data.get("subscription_status")
-        # Allow any subscription status for now (testing bypass)
-        return user
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to verify subscription: {str(e)}")
+    return user
