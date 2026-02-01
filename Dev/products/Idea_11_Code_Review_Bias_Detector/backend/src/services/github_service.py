@@ -10,21 +10,20 @@ class GitHubIngestionService:
 
     def ingest_repo_history(self, repo_name: str, limit: int = 50):
         """
-        Fetches PRs, Reviews, and Comments from a GitHub repo using parallelism.
+        Fetches PRs, Reviews, and Comments from a GitHub repo sequentially.
         """
         repo = self.github.get_repo(repo_name)
         prs = repo.get_pulls(state='closed', sort='created', direction='desc')[:limit]
-        
-        ingested_count = 0
-        from concurrent.futures import ThreadPoolExecutor, as_completed
 
-        # Define processing function for a single PR
-        def process_pr(pr_data):
+        ingested_count = 0
+
+        # Process PRs sequentially to avoid session conflicts
+        for pr_data in prs:
             try:
                 # Check exist strictly to avoid constraint errors
                 exists = self.db.query(PullRequest).filter(PullRequest.github_id == pr_data.id).first()
                 if exists:
-                    return 0
+                    continue
 
                 # Create PR
                 pr = PullRequest(
@@ -39,12 +38,8 @@ class GitHubIngestionService:
                     merged_at=pr_data.merged_at
                 )
                 self.db.add(pr)
-                self.db.commit() 
-                self.db.refresh(pr)
+                self.db.flush()
 
-                # Fetch Reviews & Comments in parallel if needed, or just fetch them here linearly per PR
-                # Linear per PR is fine if we parallelize across PRs
-                
                 # Reviews
                 reviews = pr_data.get_reviews()
                 for review_data in reviews:
@@ -66,18 +61,11 @@ class GitHubIngestionService:
                         body=comment_data.body,
                         created_at=comment_data.created_at
                     ))
-                
+
                 self.db.commit()
-                return 1
+                ingested_count += 1
             except Exception as e:
                 print(f"Error processing PR {pr_data.number}: {e}")
                 self.db.rollback()
-                return 0
 
-        # Execute in parallel
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            futures = [executor.submit(process_pr, pr) for pr in prs]
-            for future in as_completed(futures):
-                ingested_count += future.result()
-            
         return {"features": ingested_count, "repo": repo_name}
