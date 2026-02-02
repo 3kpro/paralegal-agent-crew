@@ -20,13 +20,13 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 @router.get("/export")
 def export_report(
     repo_name: str,
-    format: str = Query(..., regex="^(pdf|csv)$"),
+    format: str = Query(..., regex="^(pdf|csv|md)$"),
     db: Session = Depends(get_db),
     user = Depends(verify_subscription)
 ):
     """
     Exports analysis report for a repository.
-    Format: 'pdf' or 'csv'.
+    Format: 'pdf', 'csv', or 'md'.
     """
     analysis_service = AnalysisService(db)
     data = analysis_service.analyze_repo(repo_name)
@@ -38,6 +38,8 @@ def export_report(
         return export_csv(repo_name, data)
     elif format == "pdf":
         return export_pdf(repo_name, data)
+    elif format == "md":
+        return export_markdown(repo_name, data)
 
 @router.get("/health-check/{repo_name:path}")
 def get_health_check(
@@ -155,4 +157,62 @@ def export_pdf(repo_name: str, data: dict):
     
     response = StreamingResponse(buffer, media_type="application/pdf")
     response.headers["Content-Disposition"] = f"attachment; filename=report_{repo_name.replace('/', '_')}.pdf"
+    return response
+
+def export_markdown(repo_name: str, data: dict):
+    output = io.StringIO()
+    
+    # Title
+    output.write(f"# ReviewLens Report: {repo_name}\n")
+    output.write(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
+    
+    # Summary
+    output.write("## Summary\n")
+    output.write("| Metric | Value |\n")
+    output.write("|---|---|\n")
+    output.write(f"| Total PRs | {data['summary']['total_prs']} |\n")
+    output.write(f"| Merged PRs | {data['summary']['merged_prs']} |\n")
+    output.write(f"| Merge Rate | {data['summary']['merge_rate'] * 100}% |\n")
+    output.write(f"| Avg Merge Time | {data['summary']['avg_merge_time_hours']} hours |\n\n")
+    
+    # Top Reviewers
+    output.write("## Top Reviewers\n")
+    if data["top_reviewers"]:
+        output.write("| Login | Reviews |\n")
+        output.write("|---|---|\n")
+        for r in data["top_reviewers"]:
+            output.write(f"| {r['login']} | {r['reviews']} |\n")
+    else:
+        output.write("No reviewer data available.\n")
+    output.write("\n")
+    
+    # Comment Stats
+    if data.get("comment_stats"):
+        output.write("## Comment Statistics\n")
+        
+        if data["comment_stats"].get("categories"):
+            output.write("### Categories\n")
+            output.write("| Category | Count |\n")
+            output.write("|---|---|\n")
+            for cat, count in data["comment_stats"]["categories"].items():
+                output.write(f"| {cat} | {count} |\n")
+            output.write("\n")
+            
+        if data["comment_stats"].get("tones"):
+            output.write("### Tone Analysis\n")
+            output.write("| Tone | Count |\n")
+            output.write("|---|---|\n")
+            for tone, count in data["comment_stats"]["tones"].items():
+                output.write(f"| {tone} | {count} |\n")
+            output.write("\n")
+
+    # Bias Alerts
+    if data.get("bias_alerts"):
+        output.write("## Bias Detection Alerts ⚠️\n")
+        for alert in data["bias_alerts"]:
+            output.write(f"- **{alert['type']}** ({alert['severity']}): {alert['message']}\n")
+    
+    output.seek(0)
+    response = StreamingResponse(iter([output.getvalue()]), media_type="text/markdown")
+    response.headers["Content-Disposition"] = f"attachment; filename=report_{repo_name.replace('/', '_')}.md"
     return response

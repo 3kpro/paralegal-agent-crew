@@ -330,7 +330,7 @@ function Dashboard() {
     }
   };
 
-  const handleExport = async (format: 'pdf' | 'csv') => {
+  const handleExport = async (format: 'pdf' | 'csv' | 'md') => {
       if (!repoName) return;
       try {
           const response = await fetch(`${API_URL}/reports/export?repo_name=${encodeURIComponent(repoName)}&format=${format}`, {
@@ -678,6 +678,13 @@ function Dashboard() {
                         onClick={() => handleExport('pdf')}
                     >
                         📑 Export PDF
+                    </button>
+                    <button 
+                        className="btn" 
+                        style={{ border: '1px solid var(--color-border)', background: 'transparent' }}
+                        onClick={() => handleExport('md')}
+                    >
+                        📝 Export Markdown
                     </button>
                 </div>
             )}
