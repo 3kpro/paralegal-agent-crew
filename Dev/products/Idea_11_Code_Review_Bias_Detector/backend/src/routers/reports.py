@@ -39,7 +39,7 @@ def export_report(
     elif format == "pdf":
         return export_pdf(repo_name, data)
 
-@router.get("/health-check/{repo_name}")
+@router.get("/health-check/{repo_name:path}")
 def get_health_check(
     repo_name: str,
     db: Session = Depends(get_db),

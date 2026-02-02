@@ -2,6 +2,40 @@
 
 
 
+## 2026-02-01 — Phase 2: Data Enrichment 📊
+- **Bug Fix**: Fixed "Black Screen" crash on analysis start.
+  - Updated `reports.router` to correctly handle repository names with slashes (e.g. `owner/repo`) using `:path` converter.
+  - Hardened `MetricCard` component to handle undefined/null values gracefully.
+- **Feature**: Time-Series Analysis.
+  - Implemented `MetricsService` to calculate Cycle Time (time from PR creation to merge) and Review Velocity (reviews per day) over time.
+  - Added `/analysis/metrics/cycle-time/{repo}` and `/analysis/metrics/velocity/{repo}` endpoints.
+- **Frontend**:
+  - Added `CycleTimeChart` and `ReviewVelocityChart` using Recharts to visualize engineering velocity.
+  - Added `VelocityKillerGauge` to surface the "Nitpick Ratio" metric.
+- **Integration**:
+  - Updated `Dashboard.tsx` to fetch and display these new velocity metrics alongside AI insights.
+
+## 2026-02-01 — Phase 3: AI Integration 🤖
+- **Feature**: AI Insights & "Ask AI".
+  - Implemented `AIInsightPanel` to display auto-generated insights about the repo.
+  - Added "Ask AI" floating button for ad-hoc questions about the codebase stats.
+  - created `InsightsService` in backend to generate structured insights using Gemini.
+- **Backend**:
+  - Added `/analysis/insights/{repo}` and `/analysis/insights/ask` endpoints.
+  - Extended `AIService` to support JSON-structured insight generation.
+
+## 2026-02-01 — Phase 1: Dashboard UI/UX Foundation 🎨
+- **Feature**: Implemented Trend Analysis.
+  - Added `GET /analysis/trends/{repo}` endpoint in backend to track metrics over 7 days.
+  - Added support for fetching and displaying trend data in frontend.
+- **UI Improvements**:
+  - Replaced standard metric cards with premium `MetricCard` components.
+  - Added `Sparkline.tsx` to visualize trends directly on the dashboard.
+  - Added `InfoTooltip.tsx` and `HelpModal.tsx` for contextual help.
+  - Added explanatory text to charts in `ReviewStatsCharts.tsx`.
+- **Backend**:
+  - Implemented `get_trends` in `AnalysisService` to calculate daily snapshots for PRs opened, merged, and average merge time.
+
 ## 2026-01-31
 - **Security**: Verified OAuth scopes are minimal (`repo`, `user:email`, `read:org`) and do not include high-risk write permissions.
 - **Feature**: Implemented "Nuke Data" functionality.
