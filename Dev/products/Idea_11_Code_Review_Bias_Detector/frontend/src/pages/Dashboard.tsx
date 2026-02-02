@@ -677,6 +677,7 @@ function Dashboard() {
             )}
 
             {/* AI Deep Analysis Section - Appeared Sequentially */}
+            {analysisResult && (
             <div style={{ marginTop: '3rem' }}>
                 <div className="card" style={{ 
                     marginTop: '2rem', 
@@ -738,6 +739,7 @@ function Dashboard() {
                     )}
                 </div>
             </div>
+            )}
 
             {/* Export Actions (Moved to bottom) */}
             {analysisResult && (
