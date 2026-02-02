@@ -32,3 +32,11 @@ class CacheService:
             self.client.setex(f"analysis:{repo_name}", ttl, json.dumps(data))
         except Exception as e:
             print(f"Cache set error: {e}")
+
+    def clear_analysis(self, repo_name: str):
+        if not self.client:
+            return
+        try:
+            self.client.delete(f"analysis:{repo_name}")
+        except Exception as e:
+            print(f"Cache delete error: {e}")

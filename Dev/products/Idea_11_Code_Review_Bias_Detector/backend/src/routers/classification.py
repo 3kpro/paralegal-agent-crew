@@ -23,6 +23,12 @@ def trigger_classification(
     try:
         service = AIService(db)
         result = service.classify_comments(request.repo_name, request.limit)
+        
+        # Invalidate cache so fresh analysis (w/ stats) is fetched
+        from ..services.cache_service import CacheService
+        cache = CacheService()
+        cache.clear_analysis(request.repo_name)
+        
         return {"status": "success", "data": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

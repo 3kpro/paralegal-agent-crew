@@ -46,7 +46,9 @@ function Dashboard() {
     return (localStorage.getItem('active_platform') || 'github') as 'github' | 'gitlab';
   });
   
-  const [repoName, setRepoName] = useState("");
+  const [repoName, setRepoName] = useState(() => {
+    return localStorage.getItem('last_repo_name') || "";
+  });
   const [loading, setLoading] = useState(false);
   const [ingestResult, setIngestResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +62,14 @@ function Dashboard() {
   const [isAskModalOpen, setIsAskModalOpen] = useState(false);
   const [cycleTimeData, setCycleTimeData] = useState<any[]>([]);
   const [velocityData, setVelocityData] = useState<any[]>([]);
+
+  // Auto-fetch analysis if restoring session
+  useEffect(() => {
+    if (token && repoName && !analysisResult && !loading) {
+       console.log("Restoring session for:", repoName);
+       handleIngest(); // Re-trigger ingestion check (safe, idempotent) + analysis
+    }
+  }, []); // Run once on mount
 
   // Effect to persist URL params to localStorage and clear URL
   useEffect(() => {
@@ -319,6 +329,7 @@ function Dashboard() {
       }
 
       setIngestResult(data.data);
+      localStorage.setItem('last_repo_name', repoName);
       // Fetch analysis immediately after ingestion
       await fetchAnalysis(repoName);
       await fetchHealthCheck(repoName);
