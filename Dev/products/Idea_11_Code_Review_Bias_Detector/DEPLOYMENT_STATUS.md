@@ -27,6 +27,17 @@
    - `Procfile` - Process definition for Railway
    - `DEPLOYMENT.md` - Comprehensive deployment guide
 
+4. **Phase 2.1 Fixes Deployed** (2026-02-01) 🚀
+   - **Backend**: Fixed `reports/health-check` 404 error (pushed to main).
+   - **Frontend**: Hardened Dashboard and Charts against non-array data and API errors (deployed to Vercel).
+     - **Inspect URL**: https://vercel.com/3kpros-projects/frontend/
+   - **Status**: Backend auto-deploying on Railway, Frontend deployed and hardening confirmed.
+
+5. **Phase 2.2 UX Improvements Deployed** (2026-02-02) 🤖
+   - **Frontend**: Improved Deep Analysis UX with sequential display and dedicated charts (exported to `DeepAnalysisCharts.tsx`).
+   - **Fixes**: Fixed dashboard crash by wrapping deep analysis section in null checks. Restored "Danger Zone".
+   - **Status**: Deployed to Vercel and verified.
+
 ---
 
 ## 🔄 Next Steps (Manual Actions Required)
