@@ -35,10 +35,10 @@ export default function DataDeletionStatus({
           <p className="text-sm text-tron-text-muted mt-6">
             If you have questions, contact us at{" "}
             <a
-              href="mailto:support@xelora.app"
+              href="mailto:support@getxelora.com"
               className="text-tron-cyan hover:underline"
             >
-              support@xelora.app
+              support@getxelora.com
             </a>
           </p>
         </div>

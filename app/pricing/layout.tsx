@@ -7,10 +7,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Pricing | XELORA",
     description: "Choose the perfect plan for your content creation needs.",
-    url: "https://xelora.app/pricing",
+    url: "https://getxelora.com/pricing",
   },
   alternates: {
-    canonical: "https://xelora.app/pricing",
+    canonical: "https://getxelora.com/pricing",
   },
   robots: {
     index: false, // Requires authentication, so don't index

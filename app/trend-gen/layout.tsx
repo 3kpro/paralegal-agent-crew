@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: "Trend Discovery | XELORA - Find Rising Trends",
     description:
       "Discover emerging trends before they go viral with XELORA's AI-powered signal intelligence.",
-    url: "https://xelora.app/trend-gen",
+    url: "https://getxelora.com/trend-gen",
   },
   alternates: {
-    canonical: "https://xelora.app/trend-gen",
+    canonical: "https://getxelora.com/trend-gen",
   },
 };
 

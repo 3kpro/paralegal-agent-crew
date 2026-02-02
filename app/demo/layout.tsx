@@ -8,10 +8,10 @@ export const metadata: Metadata = {
     title: "Demo | XELORA - See Predictive Intelligence in Action",
     description:
       "Watch XELORA's AI-powered trend prediction and content generation in action.",
-    url: "https://xelora.app/demo",
+    url: "https://getxelora.com/demo",
   },
   alternates: {
-    canonical: "https://xelora.app/demo",
+    canonical: "https://getxelora.com/demo",
   },
 };
 

@@ -189,7 +189,7 @@ export default function FAQSection() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => {
-                  window.location.href = "mailto:support@xelora.app";
+                  window.location.href = "mailto:support@getxelora.com";
                 }}
                 className="px-10 py-4 bg-foreground text-background font-bold text-lg border border-foreground hover:bg-background hover:text-foreground transition-all duration-200 uppercase tracking-tighter"
               >

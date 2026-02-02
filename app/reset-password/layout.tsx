@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://xelora.app/reset-password",
+    canonical: "https://getxelora.com/reset-password",
   },
 };
 
