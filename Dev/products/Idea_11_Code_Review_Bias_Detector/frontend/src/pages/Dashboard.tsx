@@ -10,6 +10,7 @@ import AskAIButton from "../components/AskAIButton";
 import AIExplanationModal from "../components/AIExplanationModal";
 import CycleTimeChart from "../components/CycleTimeChart";
 import ReviewVelocityChart from "../components/ReviewVelocityChart";
+import DeepAnalysisCharts from "../components/DeepAnalysisCharts";
 
 // Smart API_URL resolution: Use env var if present, otherwise fallback based on hostname
 const API_URL = import.meta.env.VITE_API_URL || 
@@ -668,15 +669,80 @@ function Dashboard() {
                 <InteractionHeatmap matrix={analysisResult.interaction_matrix} />
             )}
 
-            {/* Visual Charts (Reviewers, Categories, Tones) */}
+
+
+            {/* Visual Charts (Reviewers) */}
             {analysisResult && (
                 <ReviewStatsCharts data={analysisResult} />
             )}
 
-            {/* Export Actions */}
+            {/* AI Deep Analysis Section - Appeared Sequentially */}
+            <div style={{ marginTop: '3rem' }}>
+                <div className="card" style={{ 
+                    marginTop: '2rem', 
+                    background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0) 100%)', 
+                    border: '1px solid rgba(99, 102, 241, 0.2)',
+                    minHeight: '200px'
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <div>
+                            <h3 style={{ color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.5rem' }}>
+                                ✨ AI-Powered Deep Analysis
+                            </h3>
+                            <p style={{ fontSize: '0.9rem', opacity: 0.8, marginTop: '0.5rem' }}>
+                                Use AI to classify comments, detect sentiment, and uncover hidden patterns.
+                            </p>
+                        </div>
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={handleDeepAnalysis}
+                            disabled={loadingAnalysis}
+                            style={{ 
+                                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                                border: 'none',
+                                padding: '0.75rem 1.5rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            {loadingAnalysis ? (
+                                <>
+                                    <span className="spinner"></span> Analyzing...
+                                </>
+                            ) : (
+                                <>
+                                    🤖 Run Deep Analysis
+                                </>
+                            )}
+                        </button>
+                    </div>
+
+                    {classificationResult && (
+                         <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(74, 222, 128, 0.1)', borderRadius: '8px', border: '1px solid rgba(74, 222, 128, 0.2)' }}>
+                            <p style={{ color: '#4ade80', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                ✅ Successfully classified <strong>{classificationResult.classified}</strong> comments using Gemini AI.
+                            </p>
+                        </div>
+                    )}
+
+                    {!classificationResult && (!analysisResult.comment_stats?.categories || Object.keys(analysisResult.comment_stats.categories).length === 0) ? (
+                        <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.6, border: '2px dashed rgba(99, 102, 241, 0.2)', borderRadius: '12px' }}>
+                            <p style={{ fontSize: '1.1rem' }}>No deep analysis data yet.</p>
+                            <p style={{ fontSize: '0.9rem' }}>Click "Run Deep Analysis" to unlock insights into comment tone and categories.</p>
+                        </div>
+                    ) : (
+                        <div style={{ animation: 'fadeIn 0.5s ease-in' }}>
+                            <DeepAnalysisCharts data={analysisResult} />
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Export Actions (Moved to bottom) */}
             {analysisResult && (
                 <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                    <button 
+                     <button 
                         className="btn" 
                         style={{ border: '1px solid var(--color-border)', background: 'transparent' }}
                         onClick={() => handleExport('csv')}
@@ -697,68 +763,6 @@ function Dashboard() {
                     >
                         📝 Export Markdown
                     </button>
-                </div>
-            )}
-
-            {/* Danger Zone */}
-            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                <h3 style={{ color: '#ef4444', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    ⛔ Danger Zone
-                </h3>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.05)' }}>
-                    <div>
-                        <strong style={{ color: '#fca5a5' }}>Nuke All Data</strong>
-                        <p style={{ fontSize: '0.9rem', color: '#fca5a5', opacity: 0.8, marginTop: '0.25rem' }}>
-                            Permanently delete all ingested PRs, reviews, and comments. This cannot be undone.
-                        </p>
-                    </div>
-                    <button 
-                        onClick={handleNukeData}
-                        style={{ 
-                            background: '#ef4444', 
-                            color: 'white', 
-                            border: 'none', 
-                            padding: '0.75rem 1.5rem', 
-                            borderRadius: '6px', 
-                            cursor: 'pointer',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        🔥 Nuke Data
-                    </button>
-                </div>
-            </div>
-
-            {/* AI Analysis Section */}
-            {analysisResult && (
-                <div className="card" style={{ marginTop: '2rem', background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0) 100%)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div>
-                            <h3 style={{ color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                🧠 AI Comment Classifier
-                            </h3>
-                            <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>Classify comments to detect nitpicks vs. blocking issues.</p>
-                        </div>
-                        <button 
-                            className="btn btn-primary" 
-                            onClick={handleDeepAnalysis}
-                            disabled={loadingAnalysis}
-                        >
-                            {loadingAnalysis ? 'Analyzing...' : 'Run Deep Analysis'}
-                        </button>
-                    </div>
-
-                    {classificationResult && (
-                         <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(74, 222, 128, 0.1)', borderRadius: '8px', border: '1px solid rgba(74, 222, 128, 0.2)' }}>
-                            <p style={{ color: '#4ade80' }}>Successfully classified <strong>{classificationResult.classified}</strong> comments using Claude.</p>
-                        </div>
-                    )}
-
-                    {!classificationResult && (!analysisResult.comment_stats?.categories || Object.keys(analysisResult.comment_stats.categories).length === 0) && (
-                        <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.5 }}>
-                            <p>No comments classified yet. Run Deep Analysis to categorize feedback and see charts.</p>
-                        </div>
-                    )}
                 </div>
             )}
             
