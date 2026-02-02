@@ -765,6 +765,35 @@ function Dashboard() {
                     </button>
                 </div>
             )}
+
+            {/* Danger Zone */}
+            <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                <h3 style={{ color: '#ef4444', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    ⛔ Danger Zone
+                </h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.05)' }}>
+                    <div>
+                        <strong style={{ color: '#fca5a5' }}>Nuke All Data</strong>
+                        <p style={{ fontSize: '0.9rem', color: '#fca5a5', opacity: 0.8, marginTop: '0.25rem' }}>
+                            Permanently delete all ingested PRs, reviews, and comments. This cannot be undone.
+                        </p>
+                    </div>
+                    <button 
+                        onClick={handleNukeData}
+                        style={{ 
+                            background: '#ef4444', 
+                            color: 'white', 
+                            border: 'none', 
+                            padding: '0.75rem 1.5rem', 
+                            borderRadius: '6px', 
+                            cursor: 'pointer',
+                            fontWeight: 'bold'
+                        }}
+                    >
+                        🔥 Nuke Data
+                    </button>
+                </div>
+            </div>
             
             </>
           )}
