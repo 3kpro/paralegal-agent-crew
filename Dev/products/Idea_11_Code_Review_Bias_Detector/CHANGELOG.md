@@ -3,6 +3,7 @@
 
 
 ## 2026-02-01 — Phase 2: Data Enrichment 📊
+- **Feature**: Improved Deep Analysis UX with sequential display and dedicated charts.
 - **Feature**: Added Markdown (.md) report export.
 - **Bug Fix**: Dashboard now survives page refreshes (persists repo name).
 - **Bug Fix**: "Run Deep Analysis" now auto-refreshes charts (invalidates backend cache).

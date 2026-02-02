@@ -1,6 +1,15 @@
 # TASKS - Idea 11: Code Review Bias Detector (ReviewLens)
 
 ## NOW
+- [x] **Improve Deep Analysis UX - Sequential Display** ✨ (2026-02-02)
+      - **Goal:** Show Deep Analysis results in a new section below basic analysis instead of replacing data
+      - **Completed:**
+        - Created `DeepAnalysisCharts` component for dedicated visualization.
+        - Updated `Dashboard.tsx` to display Deep Analysis results in a separate, sequentially appearing section.
+        - Improved success message to be accurate ("using Gemini AI").
+        - Ensures basic stats (Reviewers, etc.) remain visible while adding new insights below.
+      - **Assigned:** Gemini
+
 - [x] **Fix Dashboard State Persistence and Deep Analysis Auto-Refresh** 🔄 (2026-02-01)
       - **Fixed:** Dashboard now restores session from `localStorage` on load.
       - **Fixed:** `classify` endpoint invalidates analysis cache, ensuring fresh data on frontend refresh.
