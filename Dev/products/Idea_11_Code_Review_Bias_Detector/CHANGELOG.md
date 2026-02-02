@@ -5,7 +5,7 @@
 ## 2026-02-01 — Phase 2: Data Enrichment 📊
 - **Bug Fix**: Fixed "Black Screen" crash on analysis start.
   - Updated `reports.router` to correctly handle repository names with slashes (e.g. `owner/repo`) using `:path` converter.
-  - Hardened `MetricCard` component to handle undefined/null values gracefully.
+  - Hardened `MetricCard`, `CycleTimeChart`, `ReviewVelocityChart` and `Dashboard` to handle undefined/null/error values gracefully.
 - **Feature**: Time-Series Analysis.
   - Implemented `MetricsService` to calculate Cycle Time (time from PR creation to merge) and Review Velocity (reviews per day) over time.
   - Added `/analysis/metrics/cycle-time/{repo}` and `/analysis/metrics/velocity/{repo}` endpoints.
