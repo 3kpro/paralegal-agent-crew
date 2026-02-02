@@ -1,30 +1,10 @@
 # TASKS - Idea 11: Code Review Bias Detector (ReviewLens)
 
 ## NOW
-## Task: Fix Dashboard State Persistence and Deep Analysis Auto-Refresh
-
-**Issues:**
-
-1. **Dashboard loses state on page refresh**
-   - When user refreshes the page, all analysis results disappear
-   - User has to re-enter repo and re-run analysis
-   - Need to persist current repo name (at minimum) in localStorage or URL params
-
-2. **"Run Deep Analysis" doesn't update charts**
-   - User clicks "Run Deep Analysis" button
-   - Gets success message: "Successfully classified comments using Claude"
-   - But Comment Categories and Comment Tone sections still show "No data available"
-   - Dashboard needs to auto-refetch analysis results after classification completes
-
-**Expected Behavior:**
-- After page refresh: Dashboard should remember the last analyzed repo and show results
-- After "Run Deep Analysis": Comment Categories and Tone charts should populate with classification data
-
-**Files to Modify:**
-- `frontend/src/pages/Dashboard.tsx` - Add localStorage persistence and post-classification refetch
-- Consider: Store `repoName` in localStorage on analysis, restore on mount
-
-**Priority:** MEDIUM (UX improvement)
+- [x] **Fix Dashboard State Persistence and Deep Analysis Auto-Refresh** 🔄 (2026-02-01)
+      - **Fixed:** Dashboard now restores session from `localStorage` on load.
+      - **Fixed:** `classify` endpoint invalidates analysis cache, ensuring fresh data on frontend refresh.
+      - **Assigned:** Gemini
 
 
 

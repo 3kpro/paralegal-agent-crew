@@ -4,6 +4,8 @@
 
 ## 2026-02-01 — Phase 2: Data Enrichment 📊
 - **Feature**: Added Markdown (.md) report export.
+- **Bug Fix**: Dashboard now survives page refreshes (persists repo name).
+- **Bug Fix**: "Run Deep Analysis" now auto-refreshes charts (invalidates backend cache).
 - **Bug Fix**: Fixed "Black Screen" crash on analysis start.
   - Updated `reports.router` to correctly handle repository names with slashes (e.g. `owner/repo`) using `:path` converter.
   - Hardened `MetricCard`, `CycleTimeChart`, `ReviewVelocityChart` and `Dashboard` to handle undefined/null/error values gracefully.
