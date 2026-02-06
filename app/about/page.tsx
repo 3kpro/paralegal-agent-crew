@@ -103,7 +103,7 @@ export default function AboutPage() {
               <div className="grid md:grid-cols-2 gap-10 text-sm">
                 <div>
                   <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Primary Channel</div>
-                  <a href="mailto:info@3kpro.services" className="text-lg text-foreground hover:opacity-80 transition-opacity font-bold">info@3kpro.services</a>
+                  <a href="mailto:james@3kpro.services" className="text-lg text-foreground hover:opacity-80 transition-opacity font-bold">james@3kpro.services</a>
                 </div>
                 <div>
                   <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground mb-3 opacity-60">Geographic Node</div>

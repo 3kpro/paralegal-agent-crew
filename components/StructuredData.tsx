@@ -90,7 +90,8 @@ export function StructuredData() {
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "Customer Support",
-      "email": "info@3kpro.services"
+      "email": "james@3kpro.services",
+      "telephone": "+1-918-816-8832"
     }
   };
 

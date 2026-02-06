@@ -69,7 +69,7 @@ export const Footer: React.FC = () => {
              <a href="https://linkedin.com/company/3k-pro-services" target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
                Direct_In
              </a>
-             <a href="mailto:info@3kpro.services" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
+             <a href="mailto:james@3kpro.services" className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity">
                Secure_Mail
              </a>
           </div>
