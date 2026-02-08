@@ -807,12 +807,38 @@ function Dashboard() {
         <AskAIButton onClick={() => setIsAskModalOpen(true)} />
       )}
       
-      <AIExplanationModal 
-        isOpen={isAskModalOpen} 
-        onClose={() => setIsAskModalOpen(false)} 
+      <AIExplanationModal
+        isOpen={isAskModalOpen}
+        onClose={() => setIsAskModalOpen(false)}
         repoName={repoName}
         onAsk={handleAskAI}
       />
+
+      {/* Footer */}
+      <footer style={{
+        marginTop: '4rem',
+        paddingTop: '2rem',
+        paddingBottom: '2rem',
+        borderTop: '1px solid var(--color-border)',
+        textAlign: 'center',
+        color: 'var(--color-text-secondary)',
+        fontSize: '0.875rem'
+      }}>
+        <div style={{ marginBottom: '1rem' }}>
+          <a href="/privacy" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', marginRight: '2rem' }}>
+            Privacy Policy
+          </a>
+          <a href="/terms" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none', marginRight: '2rem' }}>
+            Terms of Service
+          </a>
+          <a href="mailto:support@3kpro.services" style={{ color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+            Support
+          </a>
+        </div>
+        <p style={{ margin: 0, opacity: 0.7 }}>
+          © 2026 3K Pro Services LLC. All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }
