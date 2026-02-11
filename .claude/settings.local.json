@@ -127,7 +127,15 @@
       "Bash(if exist .next rmdir /s /q .next)",
       "Bash(stripe:*)",
       "Bash(where:*)",
-      "Bash(scoop install:*)"
+      "Bash(scoop install:*)",
+      "Bash(gcloud:*)",
+      "Bash(pip install:*)",
+      "Bash(chcp:*)",
+      "Bash(playwright install:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(if not exist archive mkdir archive)",
+      "Bash(move enrich-viral-data-vertex.ts archive )",
+      "Bash(move:*)"
     ],
     "deny": [],
     "ask": []

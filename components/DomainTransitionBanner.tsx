@@ -28,7 +28,7 @@ export function DomainTransitionBanner() {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-gradient-to-r from-tron-cyan/10 via-tron-magenta/10 to-tron-cyan/10 border-b border-tron-cyan/20"
+          className="bg-gradient-to-r from-tron-cyan/10 via-tron-magenta/10 to-tron-cyan/10 border-b border-tron-cyan/20 relative z-50"
         >
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">

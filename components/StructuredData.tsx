@@ -56,17 +56,17 @@ export function StructuredData() {
     "url": "https://getxelora.com",
     "author": {
       "@type": "Organization",
-      "name": "3KPRO.SERVICES",
+      "name": "3K Pro Services",
       "url": "https://3kpro.services"
     },
     "creator": {
       "@type": "Organization",
-      "name": "3KPRO.SERVICES",
+      "name": "3K Pro Services",
       "url": "https://3kpro.services"
     },
     "provider": {
       "@type": "Organization",
-      "name": "3KPRO.SERVICES",
+      "name": "3K Pro Services",
       "url": "https://3kpro.services"
     }
   };
@@ -84,7 +84,7 @@ export function StructuredData() {
     ],
     "parentOrganization": {
       "@type": "Organization",
-      "name": "3KPRO.SERVICES",
+      "name": "3K Pro Services",
       "url": "https://3kpro.services"
     },
     "contactPoint": {
