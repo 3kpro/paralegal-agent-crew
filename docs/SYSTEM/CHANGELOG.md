@@ -1,3 +1,60 @@
+## 2026-02-16 — UX: Progressive Disclosure — ValidationDataForm Rewrite 🧠
+
+**Replaced flat multi-field form with a one-question-at-a-time animated step flow.**
+
+**Summary of Actions:**
+- **Pattern**: Adopted progressive disclosure (Typeform-style) — one question per screen with fade/slide transitions, reducing cognitive load and increasing completion momentum.
+- **`buildSteps()` function**: Computes an ordered `FormStep[]` array dynamically from `validationType`. Required fields come first; optional follow. Steps are type-aware (saas gets pricing/trial URL steps, new launch gets problem/market steps, custom gets free-text steps).
+- **Animations**: `AnimatePresence` + `motion.div` with `slideVariants` (enter: `y: 28, opacity: 0` → exit: `y: -20, opacity: 0`) gives a natural upward scroll feel.
+- **UX details**: Auto-focus on each step transition (120ms delay), `↵ Enter` to advance, `Skip →` for optional fields, progress dot bar at top (active dot wider), `Previous` / `Go Back` back button.
+- **Final step CTA**: "Generate Campaign" with arrow-up icon instead of "Continue".
+- **Removed**: All imports no longer needed (Package, Rocket, Briefcase, Sparkle, Globe, PencilSimple, TYPE_CONFIG object, framer motion nav buttons).
+
+**Status:** ✅ **Shipped**
+
+---
+
+## 2026-02-16 — UX: Campaign Wizard Card 3 Alignment Fix 🎯
+
+**Fixed vertical text misalignment across the three Card 3 option cards (Discover Viral, Validate Idea, Promote).**
+
+**Summary of Actions:**
+- **Root cause**: `flex items-center` on the icon+title row caused the icon to vertically center against wrapped text, shifting descriptions and preview boxes out of alignment across cards.
+- **Fix**: Changed to `flex items-start` so icon pins to the top of the title zone.
+- **Title zone reserve**: Added `min-h-[3.5rem] flex items-center` to all three `h3` elements so single-word ("Promote") and two-word titles occupy identical vertical space.
+- **Icon stability**: Added `flex-shrink-0` to all three icon containers to prevent flex compression.
+
+**Status:** ✅ **Fixed**
+
+---
+
+## 2026-02-14 — Fix Stripe IDE Extension Error 🐛
+
+**Resolved "properly configured" Stripe API key error in VS Code.**
+
+**Summary of Actions:**
+- **Investigation**: Confirmed project `.env` keys are correct and functional via test script.
+- **Diagnosis**: Identified issue as VS Code Stripe Extension configuration drift (local CLI/Extension mismatch).
+- **Resolution**: Created `IDE_FIX.md` with instructions to upgrade CLI and refresh extension credentials.
+- **Verification**: Verified Stripe CLI version and API connectivity.
+
+**Status:** ✅ **Diagnosed & Guide Provided**
+
+---
+
+## 2026-02-11 — Fix Stripe CLI Configuration 🐛
+
+**Resolved Stripe CLI and VS Code extension configuration issues by ensuring API keys are correctly set in the environment.**
+
+**Summary of Actions:**
+- **Configuration Fix**: Added `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and `STRIPE_WEBHOOK_SECRET` to `.env` file to enable the VS Code Stripe extension to find credentials without interactive login.
+- **Verification**: Verified Stripe API key validity using `stripe webhook_endpoints list` with explicit key.
+- **Cleanup**: Updated `config.toml` to remove stale account ID references.
+
+**Status:** ✅ **Fixed**
+
+---
+
 ## 2026-01-28 — UX: Mobile Responsiveness Audit 📱
 
 **Optimized typography and touch targets across the landing page for better mobile usability.**

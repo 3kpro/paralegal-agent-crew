@@ -589,24 +589,37 @@ function getPromptForFormat(
   const focusDesc = focusDescriptions[focus] || focusDescriptions.informative;
   const ctaDesc = ctaDescriptions[cta] || ctaDescriptions.engage;
 
+  // Anti-hallucination rules injected into ALL prompts
+  const ANTI_HALLUCINATION_RULES = `
+CRITICAL CONTENT RULES (MUST FOLLOW):
+- NEVER reference articles, blog posts, guides, or content that does not exist
+- NEVER include placeholder text like "[Insert Link Here]", "[Your Name]", or "[Company]"
+- NEVER say "Click link in bio", "Check out my latest article", or "Read the full guide"
+- NEVER promise upcoming content ("Stay tuned for...", "Coming soon...")
+- The post itself IS the content — deliver ALL value directly IN the post
+- Only mention URLs if one is explicitly provided in the CONTEXT section below
+- Content must be SELF-CONTAINED and immediately valuable to readers
+- Do NOT invent product names, company names, or statistics not provided in context
+`;
+
   const promoteContext = promoteData ? `
-CONTEXT - PRODUCT/SERVICE DETAILS:
+CONTEXT - USE ONLY THIS INFORMATION (do not invent additional details):
 Name: ${promoteData.productName}
 Type: ${promoteData.productType}
 Description: ${promoteData.description}
-Key Features: ${promoteData.keyFeatures?.join(', ') || ''}
-Unique Selling Points: ${promoteData.uniqueSellingPoints?.join(', ') || ''}
+Key Features: ${promoteData.keyFeatures?.join(', ') || 'Not provided'}
+Unique Selling Points: ${promoteData.uniqueSellingPoints?.join(', ') || 'Not provided'}
 Target Audience: ${promoteData.targetAudience}
-Website: ${promoteData.websiteUrl || ''}
-Drive Link: ${promoteData.driveLink || ''}
+${promoteData.websiteUrl ? `Website: ${promoteData.websiteUrl}` : 'NO URL PROVIDED — DO NOT MENTION ANY LINKS OR WEBSITES'}
+${promoteData.driveLink ? `Drive Link: ${promoteData.driveLink}` : ''}
 ` : "";
 
   const promptSubject = promoteData ? `"${promoteData.productName}"` : `"${topic}"`;
   const actionVerb = promoteData ? "promoting" : "about";
 
   const prompts: Record<string, string> = {
-    twitter: `Create a ${toneDesc} Twitter/X post ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    twitter: `Create a ${toneDesc} Twitter/X post ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - STRICT LIMIT: Maximum ${limits.twitter} characters total (including spaces and hashtags)
 - Include 2-3 relevant hashtags (these count toward the ${limits.twitter} character limit)
@@ -618,8 +631,8 @@ Requirements:
 
 Return only the tweet text that can be posted directly, nothing else.`,
 
-    linkedin: `Create a ${toneDesc} LinkedIn post ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    linkedin: `Create a ${toneDesc} LinkedIn post ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - STRICT LIMIT: Maximum 3000 characters (LinkedIn's limit)
 - ${limits.words}
@@ -631,8 +644,8 @@ Requirements:
 
 Return only the LinkedIn post text that can be posted directly, nothing else.`,
 
-    email: `Create a ${toneDesc} promotional email ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    email: `Create a ${toneDesc} promotional email ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - Subject line: Compelling and clear (50 chars max)
 - Body: ${limits.words}
@@ -643,8 +656,8 @@ Return in format:
 SUBJECT: [subject line]
 BODY: [email body]`,
 
-    facebook: `Create a ${toneDesc} Facebook post ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    facebook: `Create a ${toneDesc} Facebook post ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - STRICT LIMIT: Maximum 63,206 characters (but keep it under ${limits.other} for engagement)
 - ${limits.words}
@@ -656,9 +669,8 @@ Requirements:
 
 Return only the Facebook post text that can be posted directly, nothing else.`,
 
-    instagram: `Create a ${toneDesc} Instagram caption for ${audienceDesc} ${actionVerb} ${promptSubject}. 
-${promoteContext}
-
+    instagram: `Create a ${toneDesc} Instagram caption for ${audienceDesc} ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Purpose: ${focusDesc} "${topic}" 
 Audience: ${audienceDesc}
 Goal: ${ctaDesc}
@@ -675,8 +687,8 @@ Requirements:
 
 Return only the Instagram caption that can be posted directly, nothing else.`,
 
-    reddit: `Create a ${toneDesc} Reddit post ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    reddit: `Create a ${toneDesc} Reddit post ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - STRICT LIMIT: Maximum 40,000 characters (Reddit's limit for text posts)
 - ${limits.words}
@@ -688,8 +700,8 @@ Requirements:
 
 Return only the Reddit post text that can be posted directly, nothing else.`,
 
-    tiktok: `Create a ${toneDesc} TikTok caption/text post ${actionVerb} ${promptSubject}. 
-${promoteContext}
+    tiktok: `Create a ${toneDesc} TikTok caption/text post ${actionVerb} ${promptSubject}.
+${promoteContext}${ANTI_HALLUCINATION_RULES}
 Requirements:
 - STRICT LIMIT: Maximum 2,200 characters (TikTok's caption limit)
 - ${limits.words} for caption text
@@ -757,12 +769,36 @@ type FormattedContent =
   | RedditContent
   | DefaultContent;
 
+/**
+ * Remove common AI hallucination patterns from generated content
+ */
+function sanitizeHallucinations(text: string): string {
+  const HALLUCINATION_PATTERNS = [
+    /\[insert link.*?\]/gi,
+    /\[your (?:name|company|brand|website|url).*?\]/gi,
+    /\[(?:link|url|website).*?\]/gi,
+    /click (?:the )?link (?:in (?:my )?bio|below|here)/gi,
+    /(?:read|check out|see) (?:my|the|our) (?:latest|full|new|recent) (?:article|guide|blog(?: post)?|post|piece)/gi,
+    /stay tuned for (?:my|the|our|more)/gi,
+    /link in (?:my )?bio/gi,
+    /swipe up to/gi,
+  ];
+
+  let result = text;
+  for (const pattern of HALLUCINATION_PATTERNS) {
+    result = result.replace(pattern, '').trim();
+  }
+  // Clean up double spaces/newlines left after removal
+  result = result.replace(/  +/g, ' ').replace(/\n{3,}/g, '\n\n');
+  return result;
+}
+
 function formatContent(
   format: string,
   generatedText: string,
   topic: string,
 ): FormattedContent {
-  const cleaned = generatedText.trim();
+  const cleaned = sanitizeHallucinations(generatedText.trim());
 
   switch (format) {
     case "twitter": {

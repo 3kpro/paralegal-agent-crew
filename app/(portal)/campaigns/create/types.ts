@@ -187,6 +187,46 @@ export interface PromoteData {
 
 
 /**
+ * Validation type for "Validate Idea" structured flow
+ */
+export type ValidationType =
+  | "physical-existing"
+  | "physical-new"
+  | "saas-existing"
+  | "saas-new"
+  | "service-existing"
+  | "service-new"
+  | "custom";
+
+/**
+ * Data collected during validation flow
+ */
+export interface ValidationContext {
+  type: ValidationType;
+  productName?: string;
+  productUrl?: string;
+  description?: string;
+  targetAudience?: string;
+  uniqueValue?: string;
+  launchDate?: string;
+  targetMarket?: string;
+  problemSolved?: string;
+  keyDifferentiators?: string[];
+  customQuery?: string;
+  pricingModel?: string;
+  freeTrialUrl?: string;
+}
+
+/**
+ * Niche category for "Discover Viral" topic selection
+ */
+export interface NicheCategory {
+  id: string;
+  label: string;
+  color: string;
+}
+
+/**
  * Content Template for reusable content
  */
 export interface ContentTemplate {

@@ -1,5 +1,5 @@
 # TASKS.md - XELORA Product
-Last Updated: 2026-02-06
+Last Updated: 2026-02-11
 
 This file lists XELORA product-specific tasks only.
 
@@ -11,7 +11,10 @@ This file lists XELORA product-specific tasks only.
 
 ## NOW
 
+STRIPE
 
+## DEVELOPMENT WORKFLOW
+------------------------------
 
 ## DEVELOPMENT WORKFLOW
 
@@ -50,6 +53,30 @@ After completing requested work, agents MUST follow this workflow:
 ---
 
 ## COMPLETED
+
+- [x] **Fix Stripe IDE Extension Error** 🐛 ✅ (2026-02-14)
+      - **Problem:** VS Code error "Failed to get all webhookendpoints. you have not configured API keys yet".
+      - **Root Cause:** Local VS Code Extension/CLI mismatch or configuration drift. Project `.env` keys were verified correct and functional.
+      - **Fix:** Provided `IDE_FIX.md` to guide user through CLI upgrade and re-authentication.
+      - **Assigned:** Antigravity
+
+- [x] **Fix Stripe CLI Configuration** 🐛 ✅ (2026-02-11)
+      - **Problem:** Stripe CLI and IDE extension failing with "Failed to get all webhookendpoints. you have not configured API keys yet".
+      - **Root Cause:** Missing or incorrect API keys in `.env` for VS Code extension, and `config.toml` referencing stale account ID.
+      - **Fix:** Added Stripe keys to `.env`. Verified with CLI.
+      - **Assigned:** Antigravity
+
+- [x] **Fix Vercel Auto-Deploy from GitHub** 🚀 ✅ (2026-02-11)
+      - **Problem:** Git pushes not triggering Vercel deployments. GitHub webhook broken.
+      - **Root Cause:** Local git config had `antigravity@google.com` as author — not a Vercel team member, blocking CLI deploys. Deploy hook built but served stale code.
+      - **Fix:** Changed git config to `james@3kpro.services`, deployed via `vercel deploy --prod`. Also created Deploy Hook as backup trigger.
+      - **Deploy Hook URL:** `https://api.vercel.com/v1/integrations/deploy/prj_AQl8FdSzVdBBB3ORZti2pxDZsDSP/4pBzZP3DW4`
+      - **Assigned:** Claude
+
+- [x] **Google Search Console Verification for getxelora.com** 🔍 ✅ (2026-02-11)
+      - **Problem:** getxelora.com not verified. Meta tag in code but live site served old verification code due to stale Vercel deployment.
+      - **Fix:** After Vercel deploy fix (above), fresh production build served correct meta tag (`Yl16_c5k1ifJGYWUuy5Tmh2uShFD1COlwAsalez_e4c`). Verified successfully in Google Search Console.
+      - **Assigned:** Claude
 
 - [x] **Consolidate Landing Page Configuration** 🏗️ ✅
       - **Goal:** Point `app/page.tsx` to the updated `ModernHero`, `ModernFeatures`, `StatsSection`, and `FAQSection` to reflect the full rebrand.

@@ -44,6 +44,7 @@ import {
   Home,
   RefreshCw,
   Bookmark,
+  Rocket,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LoadingState } from "@/components/LoadingStates";
@@ -67,8 +68,13 @@ import {
   CampaignPayload,
   ScheduledPost,
   PromoteData,
+  ValidationType,
+  ValidationContext,
 } from "./types";
 import PromoteInput from "./components/PromoteInput";
+import NicheSelector from "./components/NicheSelector";
+import ValidationTypeSelector from "./components/ValidationTypeSelector";
+import ValidationDataForm from "./components/ValidationDataForm";
 import { TransferMasterclass } from "@/components/TransferMasterclass";
 import ControlOptionButton from "./components/ControlOptionButton";
 
@@ -148,6 +154,14 @@ export default function NewCampaignPage() {
   const [selectedTrend, setSelectedTrend] = useState<Trend | null>(null);
   const [loadingTrends, setLoadingTrends] = useState(false);
   const [_hasSearched, setHasSearched] = useState(false);
+
+  // Discovery mode: "viral" (niche selection) or "validate" (structured validation)
+  const [trendDiscoveryMode, setTrendDiscoveryMode] = useState<"viral" | "validate" | "promote">("viral");
+  const [selectedNiches, setSelectedNiches] = useState<string[]>([]);
+  const [customNiche, setCustomNiche] = useState("");
+  const [validationType, setValidationType] = useState<ValidationType | null>(null);
+  const [validationData, setValidationData] = useState<ValidationContext>({ type: "custom" });
+  const [validationStep, setValidationStep] = useState<"type" | "data">("type");
 
   // Generate button motivational messages
   const [generateButtonText] = useState(() => {
@@ -910,6 +924,46 @@ export default function NewCampaignPage() {
           cache: "no-store",
         }
       );
+
+      const data = await response.json();
+      if (data.success) {
+        setTrends(data.data?.trending || []);
+      } else {
+        console.error("Trends API error:", data.error);
+        setTrends([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch trends:", error);
+      setTrends([]);
+    } finally {
+      setLoadingTrends(false);
+    }
+  }, [trendSource, goToCard]);
+
+  /**
+   * Load trending topics filtered by niche keywords
+   * Used by the NicheSelector on Card 4 (Discover Viral path)
+   */
+  const loadTrendingTopicsWithNiche = useCallback(async (nicheKeywords: string) => {
+    setLoadingTrends(true);
+    setHasSearched(true);
+    setSearchQuery(nicheKeywords);
+    goToCard(5);
+
+    try {
+      const params = new URLSearchParams({
+        mode: "trending",
+        source: trendSource,
+        ...(nicheKeywords && { keyword: nicheKeywords }),
+      });
+      const response = await fetch(`/api/trends?${params.toString()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+        cache: "no-store",
+      });
 
       const data = await response.json();
       if (data.success) {
@@ -1920,10 +1974,10 @@ export default function NewCampaignPage() {
                 </div>
               </div>
 
-              <div className="relative z-10 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Discover Viral Button */}
                 <motion.button
-                  onClick={loadTrendingTopics}
+                  onClick={() => { setTrendDiscoveryMode("viral"); goToNextCard(); }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
@@ -1931,11 +1985,11 @@ export default function NewCampaignPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
                         <Flame className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors min-h-[3.5rem] flex items-center">
                         Discover Viral
                       </h3>
                     </div>
@@ -1971,7 +2025,7 @@ export default function NewCampaignPage() {
 
                 {/* Validate Idea Button */}
                 <motion.button
-                  onClick={() => goToNextCard()}
+                  onClick={() => { setTrendDiscoveryMode("validate"); goToNextCard(); }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
                   className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
@@ -1979,11 +2033,11 @@ export default function NewCampaignPage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative z-10 flex flex-col h-full">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
                         <Search className="w-6 h-6 text-white group-hover:text-white transition-colors" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors">
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors min-h-[3.5rem] flex items-center">
                         Validate Idea
                       </h3>
                     </div>
@@ -2016,6 +2070,54 @@ export default function NewCampaignPage() {
                     </div>
                   </div>
                 </motion.button>
+
+                {/* Promote Product/Service Button */}
+                <motion.button
+                  onClick={() => { setTrendDiscoveryMode("promote"); setValidationStep("type"); setValidationType(null); goToNextCard(); }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-coral-500 group-hover:text-white transition-colors duration-300">
+                        <Rocket className="w-6 h-6 text-white group-hover:text-white transition-colors" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white group-hover:text-white transition-colors min-h-[3.5rem] flex items-center">
+                        Promote
+                      </h3>
+                    </div>
+
+                    <p className="text-gray-200 text-sm leading-relaxed mb-6 flex-grow">
+                      Launch a product or service campaign. We'll create <strong>tailored content</strong> designed to convert based on your offering's unique value.
+                    </p>
+
+                    {/* Example Output Preview */}
+                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                      <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Content Focus</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-zinc-100">Positioning</span>
+                           <span className="text-white">"Value-first approach"</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-zinc-100">CTA Strategy</span>
+                           <span className="text-white">"Drive signups"</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                           <span className="text-zinc-100">Platform Mix</span>
+                           <span className="text-white">"Multi-channel"</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center text-sm font-medium text-white/40 group-hover:text-white transition-colors mt-auto">
+                       Launch Campaign <ChevronRight className="w-4 h-4 ml-1" />
+                    </div>
+                  </div>
+                </motion.button>
               </div>
 
               <div className="relative z-10 mt-12 text-center">
@@ -2031,7 +2133,7 @@ export default function NewCampaignPage() {
             </motion.div>
           )}
 
-          {/* CARD 4: Custom Trend Search */}
+          {/* CARD 4: Direction Refinement (Niche Selection OR Structured Validation) */}
           {currentCard === 4 && (
             <motion.div
               key="card-4"
@@ -2042,78 +2144,158 @@ export default function NewCampaignPage() {
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-3xl p-4 md:p-8 shadow-2xl"
             >
-              <div className="text-center mb-12">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring" }}
-                  className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-white/10 mb-6"
-                >
-                  <TrendingUp className="w-10 h-10 text-white" />
-                </motion.div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  What is the focus of your campaign?
-                </h2>
-                <p className="text-zinc-300 text-lg">
-                  Search for topics, keywords, or niches that matter to you
-                </p>
-              </div>
+              {/* VIRAL PATH: Niche Selector */}
+              {trendDiscoveryMode === "viral" && (
+                <NicheSelector
+                  selectedNiches={selectedNiches}
+                  customNiche={customNiche}
+                  onNichesChange={setSelectedNiches}
+                  onCustomNicheChange={setCustomNiche}
+                  onContinue={() => {
+                    const keywords = [
+                      ...selectedNiches,
+                      ...(customNiche.trim() ? [customNiche.trim()] : []),
+                    ].join(", ");
+                    loadTrendingTopicsWithNiche(keywords);
+                  }}
+                  onBack={goToPrevCard}
+                />
+              )}
 
-              <div className="max-w-xl mx-auto">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && searchQuery.trim()) {
-                        searchTrends();
-                        goToNextCard();
-                      }
-                    }}
-                    placeholder="e.g., artificial intelligence, sustainable fashion, gaming..."
-                    autoFocus
-                    className="w-full px-8 py-6 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
-                  />
-                  {searchQuery && (
-                    <motion.button
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
+              {/* VALIDATE PATH: Keyword Search */}
+              {trendDiscoveryMode === "validate" && (
+                <div className="space-y-8">
+                  <div className="text-center">
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ delay: 0.2, type: "spring" }}
+                      className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-tron-cyan/20 to-tron-magenta/20 border-2 border-white/10 mb-6"
                     >
-                      <X className="w-5 h-5 text-zinc-300" />
-                    </motion.button>
-                  )}
-                </div>
+                      <TrendingUp className="w-10 h-10 text-white" />
+                    </motion.div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                      What topic do you want to validate?
+                    </h2>
+                    <p className="text-zinc-300 text-lg">
+                      Enter a keyword or topic to discover its viral potential
+                    </p>
+                  </div>
 
-                <div className="flex gap-4 mt-8">
-                  <motion.button
-                    onClick={goToPrevCard}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
-                  >
-                    ← Back
-                  </motion.button>
-                  <motion.button
-                    onClick={async () => {
-                      if (searchQuery.trim()) {
-                        setHasSearched(true);
-                        goToNextCard();
-                        await searchTrends();
-                      }
-                    }}
-                    disabled={!searchQuery.trim()}
-                    whileHover={{ scale: !searchQuery.trim() ? 1 : 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
-                  >
-                    Search Trends
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
+                  <div className="max-w-xl mx-auto">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && searchQuery.trim()) {
+                            searchTrends();
+                            goToNextCard();
+                          }
+                        }}
+                        placeholder="e.g., artificial intelligence, sustainable fashion, remote work..."
+                        autoFocus
+                        className="w-full px-8 py-6 bg-zinc-950/50 backdrop-blur-xl border-2 border-white/10 rounded-2xl focus:ring-4 focus:ring-white/10 focus:border-white text-white text-xl text-center font-light placeholder-tron-text-muted/50 transition-all"
+                      />
+                      {searchQuery && (
+                        <motion.button
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-full transition-colors"
+                        >
+                          <X className="w-5 h-5 text-zinc-300" />
+                        </motion.button>
+                      )}
+                    </div>
+
+                    <div className="flex gap-4 mt-8">
+                      <motion.button
+                        onClick={goToPrevCard}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="px-8 py-5 bg-zinc-950/50 border-2 border-white/10 rounded-2xl font-semibold text-white hover:bg-white/10 transition-all text-lg"
+                      >
+                        ← Back
+                      </motion.button>
+                      <motion.button
+                        onClick={async () => {
+                          if (searchQuery.trim()) {
+                            setHasSearched(true);
+                            goToNextCard();
+                            await searchTrends();
+                          }
+                        }}
+                        disabled={!searchQuery.trim()}
+                        whileHover={{ scale: !searchQuery.trim() ? 1 : 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="flex-1 px-8 py-5 bg-gradient-to-r from-tron-cyan to-tron-magenta rounded-2xl font-semibold text-white shadow-lg shadow-tron-cyan/30 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all text-lg"
+                      >
+                        Search Trends
+                        <ChevronRight className="w-6 h-6" />
+                      </motion.button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* PROMOTE PATH: Type Selection → Data Form */}
+              {trendDiscoveryMode === "promote" && (
+                <>
+                  {validationStep === "type" && (
+                    <ValidationTypeSelector
+                      onTypeSelect={(type) => {
+                        setValidationType(type);
+                        setValidationData({ type });
+                        setValidationStep("data");
+                      }}
+                      onBack={goToPrevCard}
+                    />
+                  )}
+                  {validationStep === "data" && validationType && (
+                    <ValidationDataForm
+                      validationType={validationType}
+                      data={validationData}
+                      onChange={setValidationData}
+                      onContinue={() => {
+                        // Map ValidationContext to PromoteData
+                        const productType = validationType.startsWith("physical")
+                          ? "product"
+                          : validationType.startsWith("saas")
+                          ? "saas"
+                          : validationType.startsWith("service")
+                          ? "service"
+                          : "other";
+
+                        const mappedPromoteData: PromoteData = {
+                          productName: validationData.productName || "",
+                          productType,
+                          description: validationData.description || "",
+                          keyFeatures: validationData.pricingModel
+                            ? [validationData.pricingModel]
+                            : [],
+                          targetAudience: validationData.targetAudience || "",
+                          uniqueSellingPoints: validationData.uniqueValue
+                            ? [validationData.uniqueValue]
+                            : validationData.problemSolved
+                            ? [validationData.problemSolved]
+                            : [],
+                          websiteUrl:
+                            validationData.productUrl ||
+                            validationData.freeTrialUrl ||
+                            "",
+                        };
+
+                        setPromoteData(mappedPromoteData);
+                        setCampaignType("promote");
+                        goToCard(6);
+                      }}
+                      onBack={() => setValidationStep("type")}
+                    />
+                  )}
+                </>
+              )}
             </motion.div>
           )}
 
@@ -2164,7 +2346,7 @@ export default function NewCampaignPage() {
                             </div>
                           </div>
                           <motion.button
-                            onClick={searchQuery.trim() ? searchTrends : loadTrendingTopics}
+                            onClick={searchQuery.trim() ? () => loadTrendingTopicsWithNiche(searchQuery) : loadTrendingTopics}
                             disabled={loadingTrends}
                             whileHover={{ scale: loadingTrends ? 1 : 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -2302,7 +2484,7 @@ export default function NewCampaignPage() {
                       ← Back
                     </motion.button>
                     <motion.button
-                      onClick={goToNextCard}
+                      onClick={() => { setCampaignType("trending"); goToNextCard(); }}
                       disabled={selectedTrends.length === 0}
                       whileHover={{ scale: selectedTrends.length === 0 ? 1 : 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -2331,16 +2513,18 @@ export default function NewCampaignPage() {
             >
               <div className="text-center mb-6">
                 <h2 className="text-3xl font-bold text-white mb-2">
-                  Shape your content
+                  {campaignType === "promote" ? "Customize your promotion" : "Shape your content"}
                 </h2>
                 <p className="text-zinc-300">
-                  Customize how your content will be generated
+                  {campaignType === "promote"
+                    ? "Tailor how your product will be presented across platforms"
+                    : "Customize how your content will be generated"}
                 </p>
 
               </div>
 
               <div className="max-w-4xl mx-auto space-y-6">
-                {/* AI Optimize & Viral Score Section */}
+                {/* AI Optimize & Viral Score Section (only for trending campaigns) */}
                 <div className="flex items-center gap-4 mb-4">
                   <motion.button
                     onClick={handleAIOptimize}
@@ -2352,22 +2536,40 @@ export default function NewCampaignPage() {
                     AI Optimize (A)
                   </motion.button>
 
-                  <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-2.5 shadow-xl">
-                    <div className="p-2 bg-white/5 rounded-lg">
-                      <Flame className={`w-5 h-5 ${
-                        (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
-                        (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-zinc-400"
-                      }`} />
-                    </div>
-                    <div>
-                      <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-black mb-0.5">
-                        {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
+                  {campaignType !== "promote" && (
+                    <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-2.5 shadow-xl">
+                      <div className="p-2 bg-white/5 rounded-lg">
+                        <Flame className={`w-5 h-5 ${
+                          (selectedTrends[0]?.viralScore || predictedViralScore) > 80 ? "text-green-400" :
+                          (selectedTrends[0]?.viralScore || predictedViralScore) > 60 ? "text-yellow-400" : "text-zinc-400"
+                        }`} />
                       </div>
-                      <div className="text-2xl font-black text-white font-mono leading-none">
-                        {selectedTrends[0]?.viralScore || predictedViralScore}
+                      <div>
+                        <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-black mb-0.5">
+                          {selectedTrends.length > 0 ? "Trend Viral Score" : "Predicted Viral Score"}
+                        </div>
+                        <div className="text-2xl font-black text-white font-mono leading-none">
+                          {selectedTrends[0]?.viralScore || predictedViralScore}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {campaignType === "promote" && (
+                    <div className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-2.5 shadow-xl">
+                      <div className="p-2 bg-white/5 rounded-lg">
+                        <Rocket className="w-5 h-5 text-coral-400" />
+                      </div>
+                      <div>
+                        <div className="text-[9px] text-zinc-400 uppercase tracking-widest font-black mb-0.5">
+                          Campaign Type
+                        </div>
+                        <div className="text-lg font-bold text-white leading-none">
+                          Product Promotion
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <motion.button
                     type="button"
@@ -3714,13 +3916,14 @@ export default function NewCampaignPage() {
                 <ContentSettings
                   controls={controls}
                   onControlsChange={handleControlsChange}
+                  mode={campaignType === "promote" ? "promote" : "trending"}
                 />
               </ErrorBoundary>
 
               {/* Generate Button */}
               <motion.button
                 onClick={generateContent}
-                disabled={generatingContent || selectedTrends.length === 0}
+                disabled={generatingContent || (campaignType !== "promote" && selectedTrends.length === 0)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-8 py-6 bg-white text-tron-dark font-bold rounded-xl hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg flex items-center justify-center gap-3"
