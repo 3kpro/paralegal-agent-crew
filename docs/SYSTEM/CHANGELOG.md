@@ -1,3 +1,16 @@
+## 2026-02-16 — Fix Saved Campaigns Styling (Tron Theme) 🎨
+
+**Resolved visual bug where saved campaigns had black text on black background.**
+
+**Summary of Actions:**
+- **Theme Config**: Added missing `tron` color palette (`tron-text`, `tron-cyan`, etc.) to `landing-page/tailwind.config.js`.
+- **Root Cause**: The component `CampaignDetailClient.tsx` used custom utility classes that were undefined in the Tailwind config, causing text to fall back to black while the background was hardcoded to dark.
+- **Verification**: Verified build passed successfully. This ensures saved campaigns now correctly display white text and cyan accents on the dark background.
+
+**Status:** ✅ **Fixed**
+
+---
+
 ## 2026-02-16 — UX: Progressive Disclosure — ValidationDataForm Rewrite 🧠
 
 **Replaced flat multi-field form with a one-question-at-a-time animated step flow.**
