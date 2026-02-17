@@ -51,6 +51,17 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        tron: {
+          text: {
+            DEFAULT: "#ffffff",
+            muted: "#cccccc",
+          },
+          cyan: "#00ffff",
+          green: "#00ff00",
+          magenta: "#ff00ff",
+          dark: "#0f0f1e",
+          grid: "#1a1a2e",
+        },
       },
       borderRadius: {
         lg: `var(--radius)`,

@@ -135,7 +135,22 @@
       "Bash(vercel whoami:*)",
       "Bash(if not exist archive mkdir archive)",
       "Bash(move enrich-viral-data-vertex.ts archive )",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Bash(git status:*)",
+      "WebFetch(domain:getxelora.com)",
+      "WebFetch(domain:landing-page-cujkin90v-3kpros-projects.vercel.app)",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" log --oneline -5)",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" config user.email)",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" log --oneline --format=\"%h %ae %s\" -5)",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" log --oneline -1 origin/main)",
+      "Bash(powershell -File - <<'PS1'\n$html = \\(Invoke-WebRequest -Uri \"https://getxelora.com\" -UseBasicParsing\\).Content\nif \\($html -match 'google-site-verification.*?content=\"\\([^\"]+\\)\"'\\) {\n    Write-Output \"Verification code: $\\($Matches[1]\\)\"\n} else {\n    Write-Output \"No google-site-verification tag found\"\n}\nPS1)",
+      "Bash(powershell:*)",
+      "Bash(del \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\\\\check-verification.ps1\")",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" config user.email \"james@3kpro.services\")",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" commit --allow-empty -m \"chore: trigger Vercel production deploy\")",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" push origin main)",
+      "Bash(git -C \"c:\\\\DEV\\\\3K-Pro-Services\\\\landing-page\" commit --allow-empty -m \"chore: remove Vertex AI credential from production\")",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []
