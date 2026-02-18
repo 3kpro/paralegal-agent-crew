@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://3kpro.services/marketplace/xelora',
+    canonical: 'https://getxelora.com',
   },
 };
 

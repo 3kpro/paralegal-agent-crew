@@ -27,7 +27,6 @@ export default function robots(): MetadataRoute.Robots {
         "/login",
         "/signup",
         "/oauth-success",
-        "/pricing", // Requires authentication
 
         // Utility/callback pages with dynamic tokens - never index
         "/connect/",

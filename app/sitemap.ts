@@ -51,18 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.5,
     },
-    // Utility pages (lower priority, but should be indexed)
+    // Pricing page
     {
-      url: `${baseUrl}/forgot-password`,
+      url: `${baseUrl}/pricing`,
       lastModified,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/reset-password`,
-      lastModified,
-      changeFrequency: "yearly",
-      priority: 0.3,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
   ];
 }
