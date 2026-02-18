@@ -1,3 +1,43 @@
+## 2026-02-17 — feat: Free Wedge — "Predict Your Viral Post in 60 Seconds" 🚀
+
+**Built the ungated PLG "reverse demo" at `/try` — visitors can predict viral potential and generate content without signing up.**
+
+**Summary of Actions:**
+- **Shared library extraction**: Moved 500+ lines of prompt templates, formatting, and generation logic from `app/api/generate/route.ts` into `lib/content-generation.ts`. Both authenticated and ungated endpoints now import from this shared module.
+- **Rate limit presets**: Added `FREE_PREDICT` (10/day per IP) and `FREE_GENERATE` (5/day per IP) to `lib/rate-limit.ts`.
+- **Ungated predict API** (`/api/try/predict`): Takes a keyword, generates a focused trend angle via Gemini, scores it with the full Viral Score™ engine, caches by keyword (30-min TTL).
+- **Ungated generate API** (`/api/try/generate`): Generates content for up to 3 platforms with server-side content gating — Platform 1: full, Platform 2: 60% visible, Platform 3: 30% (blurred on client).
+- **6-card progressive flow**: Topic input → Platform selection → Analyzing animation → Viral score reveal (animated counter + DNA cards) → Gated content preview → Signup gate.
+- **Hero CTA updated**: "Join the Beta" → "Predict Your Viral Post" linking to `/try`.
+- **Navigation**: Added "Try Free" link.
+- **Sitemap**: Added `/try` at priority 0.9.
+- **SEO**: Title "Predict Your Viral Post in 60 Seconds | XELORA" with OpenGraph metadata.
+- **Retry flow**: "Try a different topic" button on viral score reveal resets and returns to step 1.
+- **Value prop honesty**: Signup gate text reflects actual capabilities (copy/paste, tone/style, audience tuning) — no overpromised features.
+
+**New Files:** `lib/content-generation.ts`, `app/try/layout.tsx`, `app/try/page.tsx`, 6 step components + `GatedContentCard.tsx`, `app/api/try/predict/route.ts`, `app/api/try/generate/route.ts`
+
+**Modified Files:** `app/api/generate/route.ts`, `lib/rate-limit.ts`, `app/sitemap.ts`, `components/sections/ModernHero.tsx`, `components/Navigation.tsx`
+
+**Status:** ✅ **Shipped**
+
+---
+
+## 2026-02-17 — fix(ui): Domain banner readability + Card 3 preview spacing
+
+**Fixed DomainTransitionBanner contrast and Campaign Wizard Card 3 key-value alignment.**
+
+**Summary of Actions:**
+- **DomainTransitionBanner**: Replaced transparent gradient background (`from-tron-cyan/10`) with solid `bg-gray-950` for guaranteed contrast on both light landing page and dark `/try` page. Text hierarchy: cyan "New Domain:" label, bold white domain, gray body.
+- **Card 3 preview boxes**: Reduced card padding (`p-8` → `p-5 md:p-6`), preview box padding (`p-4` → `p-3`), grid gap (`gap-6` → `gap-4`) to give key-value rows enough horizontal space for `justify-between` to create visible gaps.
+- **Key-value rows**: Added `whitespace-nowrap` to prevent wrapping, `items-baseline` for text alignment, `text-[11px]` for compact fit.
+
+**Modified Files:** `components/DomainTransitionBanner.tsx`, `app/(portal)/campaigns/create/page.tsx`
+
+**Status:** ✅ **Shipped**
+
+---
+
 ## 2026-02-16 — Fix Saved Campaigns Styling (Tron Theme) 🎨
 
 **Resolved visual bug where saved campaigns had black text on black background.**

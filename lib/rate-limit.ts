@@ -32,6 +32,14 @@ export const RateLimitPresets = {
     limit: 30,
     window: "1m" as const,
   },
+  FREE_PREDICT: {
+    limit: 10,
+    window: "1d" as const,
+  },
+  FREE_GENERATE: {
+    limit: 5,
+    window: "1d" as const,
+  },
 } as const;
 
 export type RateLimitPreset = typeof RateLimitPresets[keyof typeof RateLimitPresets];

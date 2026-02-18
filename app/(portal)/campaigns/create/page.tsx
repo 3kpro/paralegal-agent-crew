@@ -1974,13 +1974,13 @@ export default function NewCampaignPage() {
                 </div>
               </div>
 
-              <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Discover Viral Button */}
                 <motion.button
                   onClick={() => { setTrendDiscoveryMode("viral"); goToNextCard(); }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
+                  className="group relative p-5 md:p-6 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -1999,18 +1999,18 @@ export default function NewCampaignPage() {
                     </p>
 
                     {/* Example Output Preview */}
-                    <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                    <div className="mb-6 p-3 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
                       <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Example Output</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs">
+                      <div className="space-y-1.5">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Hook Strategy</span>
                            <span className="text-white">"Contrarian Truth"</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Primary Emotion</span>
                            <span className="text-white">"Curiosity"</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Value Prop</span>
                            <span className="text-white">"Insider Knowledge"</span>
                         </div>
@@ -2028,7 +2028,7 @@ export default function NewCampaignPage() {
                   onClick={() => { setTrendDiscoveryMode("validate"); goToNextCard(); }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
+                  className="group relative p-5 md:p-6 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -2047,18 +2047,18 @@ export default function NewCampaignPage() {
                     </p>
 
                     {/* Example Output Preview */}
-                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                     <div className="mb-6 p-3 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
                       <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Analysis Preview</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs">
+                      <div className="space-y-1.5">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Viral Prediction</span>
                            <span className="text-white font-mono font-bold">76/100</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Optimization</span>
-                           <span className="text-white">"Make hook more urgent"</span>
+                           <span className="text-white">"Add urgency to hook"</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Format Match</span>
                            <span className="text-white">"Perfect for LinkedIn"</span>
                         </div>
@@ -2076,7 +2076,7 @@ export default function NewCampaignPage() {
                   onClick={() => { setTrendDiscoveryMode("promote"); setValidationStep("type"); setValidationType(null); goToNextCard(); }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group relative p-8 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
+                  className="group relative p-5 md:p-6 text-left bg-gray-800/60 border border-coral-500/20 rounded-3xl overflow-hidden hover:border-coral-500/40 hover:shadow-2xl hover:shadow-coral-500/10 transition-all duration-300 h-full flex flex-col"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-coral-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -2095,18 +2095,18 @@ export default function NewCampaignPage() {
                     </p>
 
                     {/* Example Output Preview */}
-                     <div className="mb-6 p-4 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
+                     <div className="mb-6 p-3 bg-black/40 rounded-xl border border-white/5 group-hover:border-coral-500/20 transition-colors">
                       <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold mb-2">Content Focus</p>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between text-xs">
+                      <div className="space-y-1.5">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Positioning</span>
                            <span className="text-white">"Value-first approach"</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">CTA Strategy</span>
                            <span className="text-white">"Drive signups"</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
+                        <div className="flex items-baseline justify-between whitespace-nowrap text-[11px]">
                            <span className="text-zinc-100">Platform Mix</span>
                            <span className="text-white">"Multi-channel"</span>
                         </div>

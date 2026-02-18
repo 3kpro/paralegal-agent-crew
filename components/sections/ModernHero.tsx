@@ -141,10 +141,10 @@ export default function ModernHero() {
                 className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
               >
                 <Link
-                  href="/signup"
+                  href="/try"
                   className="px-12 py-5 bg-foreground text-background font-bold text-lg border-2 border-foreground hover:bg-background hover:text-foreground transition-all duration-200 uppercase tracking-tighter"
                 >
-                  Join the Beta
+                  Predict Your Viral Post
                 </Link>
 
                 <button

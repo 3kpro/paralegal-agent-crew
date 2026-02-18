@@ -17,7 +17,10 @@ export const Navigation = () => {
           </span>
         </Link>
 
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
+          <Link href="/try" className="hidden sm:inline-flex text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors">
+            Try Free
+          </Link>
           <Link href="/login">
             <button className="hidden sm:inline-flex text-xs font-bold uppercase tracking-widest text-black/60 hover:text-black transition-colors">
               Sign In

@@ -35,33 +35,32 @@ export function DomainTransitionBanner() {
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className={`bg-gradient-to-r from-tron-cyan/10 via-tron-magenta/10 to-tron-cyan/10 border-b border-tron-cyan/20 relative z-50 ${
+          className={`bg-gray-950 border-b border-tron-cyan/30 relative z-50 ${
             isAppPage ? "md:ml-56" : ""
           }`}
         >
-          <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="max-w-7xl mx-auto px-4 py-2.5">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 flex-1">
-                <div className="hidden sm:flex w-8 h-8 rounded-lg bg-tron-cyan/20 items-center justify-center flex-shrink-0">
+                <div className="hidden sm:flex w-7 h-7 rounded-md bg-tron-cyan/15 items-center justify-center flex-shrink-0">
                   <ArrowSquareOut className="w-4 h-4 text-tron-cyan" weight="duotone" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-tron-text">
-                    <span className="font-semibold text-tron-cyan">New Domain:</span>{" "}
-                    <span className="text-tron-text-muted">
-                      We've moved to{" "}
-                      <span className="font-semibold text-white">getxelora.com</span>{" "}
-                      for better brand protection. Update your bookmarks!
-                    </span>
+                  <p className="text-sm text-gray-300">
+                    <span className="font-bold text-tron-cyan">New Domain:</span>{" "}
+                    We&apos;ve moved to{" "}
+                    <span className="font-bold text-white">getxelora.com</span>
+                    <span className="hidden sm:inline"> for better brand protection.</span>{" "}
+                    Update your bookmarks!
                   </p>
                 </div>
               </div>
               <button
                 onClick={handleDismiss}
-                className="p-1.5 hover:bg-tron-cyan/10 rounded-lg transition-colors flex-shrink-0"
+                className="p-1.5 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
                 aria-label="Dismiss banner"
               >
-                <X className="w-4 h-4 text-tron-text-muted hover:text-tron-text" />
+                <X className="w-4 h-4 text-gray-500 hover:text-white" />
               </button>
             </div>
           </div>

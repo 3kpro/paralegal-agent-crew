@@ -12,6 +12,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    // Free wedge — high conversion page
+    {
+      url: `${baseUrl}/try`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
     // Main public pages
     {
       url: `${baseUrl}/about`,
