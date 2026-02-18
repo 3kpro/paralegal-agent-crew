@@ -23,9 +23,7 @@ export default function robots(): MetadataRoute.Robots {
         "/search",
         "/onboarding",
 
-        // Auth pages - never index (users find via UI)
-        "/login",
-        "/signup",
+        // Auth callback only - login/signup use noindex meta tag instead
         "/oauth-success",
 
         // Utility/callback pages with dynamic tokens - never index

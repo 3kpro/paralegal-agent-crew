@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { BGPattern } from "@/components/ui/bg-pattern";
+
+// Tell Google: crawl these pages but don't list them in search results
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 // Auth Layout - For login, signup pages (dark theme)
 export default function AuthLayout({
