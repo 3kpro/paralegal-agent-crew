@@ -48,18 +48,18 @@ Working directory: C:\DEV\3K-Pro-Services\Dev\docs\SYSTEM
 
 ---
 
-PRODUCT TASK (Individual Product)
-Name Chat: 
-**  * -
+PRODUCT TASK (Idea_11_Code_Review_Bias_Detector)
+Name Chat: ** Idea_11_Code_Review_Bias_Detector * -
 
-Working directory: C:\DEV\3K-Pro-Services\landing-page\Dev\products\
+Working directory:
+C:\DEV\3K-Pro-Services\Dev\products\Idea_11_Code_Review_Bias_Detector
 
 Instructions:
 1. Read TRUTH.md for product vision
 3. When done, follow AGENT_CONTRACT.md exit requirements
 2. Read TASKS.md - work on the task in ## NOW section
 
-C:\DEV\3K-Pro-Services\Dev\products\
+Idea_11_Code_Review_Bias_Detector
 
 Stripe Webhook Secret
 whsec_W5QFmZ9IqyIhDWxe1ScQDfYzTP41tABw

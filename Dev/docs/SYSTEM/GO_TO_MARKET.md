@@ -114,7 +114,7 @@ Launching 21 products simultaneously creates:
 **Content:**
 - [ ] Demo video recorded (2-3 minutes showing bias detection)
 - [ ] Product screenshots (dashboard, reports, key features)
-- [ ] Launch blog post drafted ("Introducing FairMerge")
+- [x] Launch blog post drafted ("Introducing FairMerge") ✅
 - [ ] Launch tweet thread (10 tweets with key insights)
 - [ ] LinkedIn announcement post
 

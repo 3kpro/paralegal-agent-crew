@@ -155,3 +155,56 @@ class AnalysisService:
             "average_pickup_time": round(average_pickup_time, 2)
         }
 
+    def get_trends(self, repo_name: str, days: int = 7):
+        """
+        Calculates daily metrics for the last N days.
+        """
+        end_date = datetime.utcnow()
+        start_date = end_date - pd.Timedelta(days=days)
+        
+        # Fetch all data once (optimization: filter by date range if DB large, but for MVP fetch all is fine or filter created_at >= start_date)
+        # We need data slightly before start_date for pickup time calc, but simple is fine.
+        prs = self.db.query(PullRequest).filter(
+            PullRequest.repo_name == repo_name,
+            PullRequest.created_at >= start_date
+        ).all()
+        
+        # We also need merged PRs in that range, even if created earlier
+        merged_prs_query = self.db.query(PullRequest).filter(
+            PullRequest.repo_name == repo_name,
+            PullRequest.merged_at >= start_date
+        ).all()
+        
+        # Convert to pandas for easier resampling
+        dates = pd.date_range(end=end_date, periods=days, freq='D').normalize()
+        trends = {
+            "dates": [d.strftime("%Y-%m-%d") for d in dates],
+            "prs_opened": [],
+            "prs_merged": [],
+            "avg_merge_time": []
+        }
+        
+        # Pre-process data
+        pr_created_dates = [pr.created_at.date() for pr in prs if pr.created_at]
+        pr_merged_data = [(pr.merged_at.date(), (pr.merged_at - pr.created_at).total_seconds() / 3600) 
+                          for pr in merged_prs_query if pr.merged_at and pr.created_at]
+        
+        for date in dates:
+            d = date.date()
+            
+            # PRs Opened
+            opened_count = sum(1 for pd_date in pr_created_dates if pd_date == d)
+            trends["prs_opened"].append(opened_count)
+            
+            # PRs Merged & Merge Time
+            merged_on_day = [m for m in pr_merged_data if m[0] == d]
+            trends["prs_merged"].append(len(merged_on_day))
+            
+            if merged_on_day:
+                avg_time = np.mean([m[1] for m in merged_on_day])
+                trends["avg_merge_time"].append(round(avg_time, 2))
+            else:
+                trends["avg_merge_time"].append(0)
+                
+        return trends
+

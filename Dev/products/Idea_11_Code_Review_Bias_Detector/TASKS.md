@@ -10,6 +10,18 @@
 (empty)
 
 ## COMPLETED
+- [x] **Implement Unit Tests for AI Service** 🧠 ✅ (2026-02-06)
+      - **Goal:** Verify AI parsing and insight generation logic.
+      - **Action:** Created `backend/tests/test_ai_service.py` with mocks for Google Generative AI.
+      - **Result:** all 4 tests passed. "Comment Quality Scoring" is now verifiable.
+      - **Assigned:** Antigravity
+
+- [x] **Implement Unit Tests for Bias Service** 🧪 ✅ (2026-02-06)
+      - **Goal:** Verify statistical anomaly detection logic (Z-score algorithm).
+      - **Action:** Created `backend/tests/test_bias_service.py` with 95% coverage for `detect_anomalies`.
+      - **Verified:** All tests passing.
+      - **Assigned:** Antigravity
+
 - [x] **Improve Deep Analysis UX - Sequential Display** ✨ (2026-02-02)
       - **Goal:** Show Deep Analysis results in a new section below basic analysis instead of replacing data
       - **Completed:**

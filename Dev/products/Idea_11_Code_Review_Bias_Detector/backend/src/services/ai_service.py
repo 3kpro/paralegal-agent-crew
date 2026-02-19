@@ -73,3 +73,63 @@ class AIService:
 
         except Exception as e:
             return {"error": str(e)}
+
+    def generate_insights(self, repo_name: str, context_data: dict):
+        """
+        Generates structured insights based on repo metrics.
+        """
+        prompt = f"""
+        Analyze the following code review metrics for repository '{repo_name}' and identify the top 3-5 most critical insights or patterns.
+        Focus on:
+        - Bottlenecks (slow merge times, stale PRs)
+        - Reviewer load imbalance
+        - Nitpicky behavior vs value-add
+        - Bias or unfair patterns
+        
+        Metrics:
+        {json.dumps(context_data, indent=2)}
+        
+        Output strictly as a JSON list of objects with the following schema:
+        [
+            {{
+                "type": "alert" | "opportunity" | "praise",
+                "title": "Short title",
+                "message": "One sentence explanation",
+                "severity": "high" | "medium" | "low"
+            }}
+        ]
+        """
+        
+        try:
+            full_prompt = f"You are an expert engineering management consultant.\n\n{prompt}"
+            message = self.model.generate_content(
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.2,
+                    response_mime_type="application/json"
+                )
+            )
+            return json.loads(message.text)
+        except Exception as e:
+            print(f"AI Insight Generation Error: {e}")
+            return []
+
+    def ask_question(self, repo_name: str, question: str, context_data: dict):
+        """
+        Answers a user question based on repo metrics.
+        """
+        prompt = f"""
+        Context (Metrics for {repo_name}):
+        {json.dumps(context_data, indent=2)}
+        
+        User Question: "{question}"
+        
+        Answer the question concisely based on the data provided. If the data doesn't support an answer, say so.
+        """
+        
+        try:
+            full_prompt = f"You are a helpful data analyst for engineering teams.\n\n{prompt}"
+            message = self.model.generate_content(full_prompt)
+            return {"answer": message.text}
+        except Exception as e:
+            return {"error": str(e)}

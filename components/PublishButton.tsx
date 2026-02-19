@@ -50,11 +50,11 @@ export default function PublishButton({
         const response = await fetch("/api/social-accounts");
         const data = await response.json();
 
-        if (data.success && data.connections) {
-          const tiktokAccount = data.connections.find(
-            (conn: any) =>
-              socialAccountIds.includes(conn.id) &&
-              conn.social_providers?.provider_key === "tiktok"
+        if (data.success && data.accounts) {
+          const tiktokAccount = data.accounts.find(
+            (acc: any) =>
+              socialAccountIds.includes(acc.id) &&
+              acc.platform === "tiktok"
           );
 
           if (tiktokAccount) {
@@ -96,6 +96,8 @@ export default function PublishButton({
     }
 
     // Otherwise, proceed with normal publishing
+    // We need to iterate through selected accounts and publish to each one
+    // The new API endpoint handles one platform at a time
     await performPublish();
   };
 
@@ -108,27 +110,68 @@ export default function PublishButton({
     setLoading(true);
     try {
       console.log("Sending publish request...");
-      const response = await fetch("/api/social-publishing", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content,
-          campaign_id: campaignId,
-          social_account_ids: socialAccountIds,
-          tiktok_metadata: tiktokMetadata, // Include TikTok metadata if present
-        }),
-      });
-
-      const data = await response.json();
-      console.log("Publish response:", data);
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to publish");
+      
+      // Get account details to know the platform
+      const accountsResponse = await fetch("/api/social-accounts");
+      const accountsData = await accountsResponse.json();
+      
+      if (!accountsData.success || !accountsData.accounts) {
+        throw new Error("Failed to fetch account details");
       }
 
-      onPublishSuccess?.(data);
+      const results = [];
+      const errors = [];
+
+      // Iterate through each selected account ID
+      for (const accountId of socialAccountIds || []) {
+        const account = accountsData.accounts.find((c: any) => c.id === accountId);
+        
+        if (!account) {
+          console.error(`Account not found: ${accountId}`);
+          errors.push(`Account ${accountId} not found`);
+          continue;
+        }
+
+        const platform = account.platform; // e.g., 'twitter', 'linkedin'
+        
+        if (!platform) {
+          errors.push(`Unknown platform for account ${accountId}`);
+          continue;
+        }
+
+        console.log(`Publishing to ${platform}...`);
+
+        const response = await fetch("/api/social/post", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            platform, // Required by new API
+            content,
+            campaignId: campaignId,
+            // social_account_ids is NOT sent; auth is handled by backend using user session + platform
+            // mediaUrls: [] // Add if we have media support in this button later
+            tiktok_metadata: platform === 'tiktok' ? tiktokMetadata : undefined,
+          }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          errors.push(`${platform}: ${data.error || "Failed"}`);
+        } else {
+          results.push(data);
+        }
+      }
+
+      console.log("Publish results:", results);
+
+      if (errors.length > 0) {
+        throw new Error(errors.join(", "));
+      }
+
+      onPublishSuccess?.({ success: true, results });
 
     } catch (error) {
       console.error("Publish error:", error);

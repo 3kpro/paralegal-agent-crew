@@ -12,9 +12,7 @@ This file lists XELORA product-specific tasks only.
 ## NOW
 
 STRIPE
-
-## DEVELOPMENT WORKFLOW
-------------------------------
+> ⚠️ Getting Stripe API errors that webhooks are not configured. Check 3kpro.services project to see if this is related to this project.
 
 ## DEVELOPMENT WORKFLOW
 
@@ -53,12 +51,27 @@ After completing requested work, agents MUST follow this workflow:
 ---
 
 ## COMPLETED
+- [x] **Fix getxelora.com SEO Indexing** 🔍 ✅ (2026-02-19)
+      - **Problem:** Google Search Console reporting pages not indexed; `/login` blocked by robots.txt; canonical URL misconfigured.
+      - **Root Cause:** Global `canonical: 'https://3kpro.services/marketplace/xelora'` in `app/layout.tsx` told Google all getxelora.com content was a duplicate.
+      - **Fix:**
+        - Removed bad global canonical; set `canonical: 'https://getxelora.com'`.
+        - Removed `/login`, `/signup`, `/pricing` from robots.txt disallow list.
+        - Added `noindex` metadata export to `app/(auth)/layout.tsx` (covers both login + signup).
+        - Removed `/forgot-password` and `/reset-password` from sitemap (no SEO value).
+        - Added `/pricing` to sitemap at priority 0.8.
+      - **Assigned:** Claude
+
+- [x] **Free Wedge /try Flow + UI Polish** 🚀 ✅ (2026-02-18)
+      - **Problem:** No ungated interactive demo to convert top-of-funnel visitors.
+      - **Fix:** Built `/try` — 6-card progressive viral score prediction flow (topic → platforms → analyzing → reveal → preview → gate). Hero CTA updated.
+      - **Assigned:** Claude
+
 - [x] **Fix Saved Campaigns Styling (Tron Theme)** 🎨 ✅ (2026-02-16)
       - **Problem:** Saved campaigns displayed black text on black background due to missing theme configuration.
       - **Root Cause:** `CampaignDetailClient.tsx` used custom `tron` utility classes that were undefined in `tailwind.config.js`.
       - **Fix:** Added missing `tron` color palette to `tailwind.config.js`.
       - **Assigned:** Antigravity
-
 
 - [x] **Fix Stripe IDE Extension Error** 🐛 ✅ (2026-02-14)
       - **Problem:** VS Code error "Failed to get all webhookendpoints. you have not configured API keys yet".
@@ -83,7 +96,6 @@ After completing requested work, agents MUST follow this workflow:
       - **Problem:** getxelora.com not verified. Meta tag in code but live site served old verification code due to stale Vercel deployment.
       - **Fix:** After Vercel deploy fix (above), fresh production build served correct meta tag (`Yl16_c5k1ifJGYWUuy5Tmh2uShFD1COlwAsalez_e4c`). Verified successfully in Google Search Console.
       - **Assigned:** Claude
-
 - [x] **Consolidate Landing Page Configuration** 🏗️ ✅
       - **Goal:** Point `app/page.tsx` to the updated `ModernHero`, `ModernFeatures`, `StatsSection`, and `FAQSection` to reflect the full rebrand.
       - **Action:** Update imports in `app/page.tsx`. Ensure all page metadata and routing is correct.

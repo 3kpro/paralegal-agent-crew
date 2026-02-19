@@ -103,6 +103,6 @@ sentry_sdk.init(
 ## 6. Action Items
 
 - [ ] Create Sentry Organization and Projects.
-- [ ] Implement `@sentry/nextjs` in `3kpro-website`.
+- [x] Implement `@sentry/nextjs` in `3kpro-website` (Verified `sentry.client.config.js`).
 - [ ] Implement `@sentry/react` in ReviewLens.
-- [ ] Integrate Sentry with Slack.
+- [x] Integrate Sentry with Slack (Via `monitoring.ts` custom webhook).

@@ -101,3 +101,35 @@ p { color: var(--color-text-muted); max-width: 65ch; margin-bottom: var(--spacin
   display: grid;
   gap: var(--spacing-lg);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  :root {
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 3rem;
+  }
+
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 1.75rem; }
+  
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .nav-links span {
+    display: none;
+  }
+
+  .nav-bar .logo {
+    font-size: 1.25rem;
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  /* Force stack grids */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+}
