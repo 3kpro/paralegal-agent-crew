@@ -1,3 +1,10 @@
+import resource
+try:
+    soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+    resource.setrlimit(resource.RLIMIT_NOFILE, (min(hard, 65536), hard))
+except Exception:
+    pass
+
 import nest_asyncio
 nest_asyncio.apply()
 
