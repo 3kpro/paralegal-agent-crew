@@ -1,3 +1,8 @@
+import sys
+import os
+# Ensure src/ and config/ are importable when app.py runs from a monorepo subdirectory
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import resource
 try:
     soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
