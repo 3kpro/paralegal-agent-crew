@@ -295,10 +295,25 @@ with col1:
             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                 <span style="color: #999; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Powered by</span>
                 <div style="display: flex; align-items: center; gap: 16px;">
-                    <a href="https://3kpro.services" target="_blank" style="display: inline-block; vertical-align: middle;">
-                        <span style="color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; font-family: monospace;">3KPRO</span>
+                    <a href="https://3kpro.services" target="_blank" style="display: inline-block; vertical-align: middle; text-decoration: none;">
+                        <span style="
+                            display: inline-block;
+                            background: linear-gradient(135deg, #ffffff 0%, #aaaaaa 100%);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                            font-size: 15px;
+                            font-weight: 900;
+                            letter-spacing: 0.25em;
+                            text-transform: uppercase;
+                            font-family: 'Helvetica Neue', Arial, sans-serif;
+                            border: 1px solid #333;
+                            border-radius: 3px;
+                            padding: 3px 8px;
+                            background-color: transparent;
+                        ">3KPRO</span>
                     </a>
-                    <span style="color: #444; font-size: 12px;">|</span>
+                    <span style="color: #333; font-size: 12px;">|</span>
                     <a href="#" style="display: inline-block; vertical-align: middle;">
                         <img src="https://images.seeklogo.com/logo-png/61/2/crew-ai-logo-png_seeklogo-619843.png"
                              alt="CrewAI" style="height: 70px; filter: grayscale(100%);">
