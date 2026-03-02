@@ -46,8 +46,8 @@ data/*.db.lock
 *.sqlite
 *.sqlite3
 
-# Streamlit
-.streamlit/
+# Streamlit (secrets only — config.toml is intentionally committed)
+.streamlit/secrets.toml
 
 # Env files / secrets
 .env
