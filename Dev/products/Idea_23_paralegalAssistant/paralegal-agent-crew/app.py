@@ -295,6 +295,10 @@ with col1:
             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
                 <span style="color: #999; font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Powered by</span>
                 <div style="display: flex; align-items: center; gap: 16px;">
+                    <a href="https://3kpro.services" target="_blank" style="display: inline-block; vertical-align: middle;">
+                        <span style="color: #fff; font-size: 13px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; font-family: monospace;">3KPRO</span>
+                    </a>
+                    <span style="color: #444; font-size: 12px;">|</span>
                     <a href="#" style="display: inline-block; vertical-align: middle;">
                         <img src="https://images.seeklogo.com/logo-png/61/2/crew-ai-logo-png_seeklogo-619843.png"
                              alt="CrewAI" style="height: 70px; filter: grayscale(100%);">
@@ -451,7 +455,7 @@ st.markdown("---")
 st.markdown(
     "<p style='text-align: center; color: #999; font-size: 10px; font-weight: 700; "
     "letter-spacing: 0.2em; text-transform: uppercase;'>"
-    "Parascan &nbsp;•&nbsp; AI Legal Document Analysis &nbsp;•&nbsp; Powered by CrewAI &amp; FAISS"
+    "Parascan &nbsp;•&nbsp; AI Legal Document Analysis &nbsp;•&nbsp; A 3KPRO Product &nbsp;•&nbsp; Powered by CrewAI &amp; FAISS"
     "</p>",
     unsafe_allow_html=True
 )
