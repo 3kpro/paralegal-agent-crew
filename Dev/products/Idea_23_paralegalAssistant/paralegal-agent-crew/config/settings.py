@@ -3,9 +3,9 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # API Keys
-    openai_api_key: str
-    firecrawl_api_key: str
+    # API Keys (optional at startup — entered via UI or Streamlit secrets)
+    openai_api_key: str = ""
+    firecrawl_api_key: str = ""
     
     # Model Configuration
     embedding_model: str = "BAAI/bge-large-en-v1.5"
