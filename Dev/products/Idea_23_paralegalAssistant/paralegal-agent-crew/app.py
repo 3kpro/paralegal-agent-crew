@@ -220,18 +220,12 @@ def cleanup_resources():
 with st.sidebar:
     st.header("🔧 Configuration")
     
-    # st.subheader("API Keys")
-    # openai_key = st.text_input("OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", ""))
-    ollama_model = st.text_input("Ollama Model", value="gpt-oss:20b")
-    firecrawl_key = st.text_input("Firecrawl API Key", type="password", value=os.getenv("FIRECRAWL_API_KEY", ""))
-    
-    # if openai_key:
-        # os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-        # st.success("✅ OpenAI API Key set!")
-    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-    if firecrawl_key:
-        os.environ["FIRECRAWL_API_KEY"] = firecrawl_key
-        st.success("✅ Firecrawl API Key set!")
+    # API keys are loaded from Streamlit secrets / environment variables
+    # Users do not enter keys — Parascan provides the AI service
+    if not os.getenv("OPENAI_API_KEY"):
+        st.warning("⚠️ Service configuration pending. Please check back shortly.")
+    if not os.getenv("FIRECRAWL_API_KEY"):
+        st.warning("⚠️ Search service configuration pending.")
     
     st.markdown("---")
     
