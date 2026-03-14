@@ -11,13 +11,16 @@ except Exception:
     pass
 
 try:
+    import asyncio
     import nest_asyncio
+    # Force standard asyncio policy before applying nest_asyncio.
+    # Streamlit Cloud uses uvloop which nest_asyncio cannot patch directly.
+    asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
     nest_asyncio.apply()
 except Exception:
     pass
 
 import os
-import asyncio
 import streamlit as st
 import base64
 import gc
