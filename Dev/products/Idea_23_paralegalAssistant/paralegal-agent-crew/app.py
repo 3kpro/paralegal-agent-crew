@@ -3,8 +3,8 @@ import os
 # Ensure src/ and config/ are importable when app.py runs from a monorepo subdirectory
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-import resource
 try:
+    import resource
     soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (min(hard, 65536), hard))
 except Exception:
@@ -62,6 +62,47 @@ if "vector_db" not in st.session_state:
     st.session_state.vector_db = None
 
 session_id = st.session_state.id
+
+# ---------------------------------------------------------------------------
+# Compliance guardrails (ported from Parascan v1-core Parlant guidelines)
+# Deterministic keyword intercept — fires before the AI workflow so these
+# responses are never subject to LLM drift.
+# ---------------------------------------------------------------------------
+_LEGAL_ADVICE_PATTERNS = [
+    r"\brepresent\s+me\b", r"\brepresent\s+us\b", r"\bmy\s+(lawyer|attorney|counsel)\b",
+    r"\blegal\s+advice\b", r"\byour\s+legal\s+opinion\b", r"\badvise\s+me\s+(on\s+)?legally\b",
+    r"\bam\s+i\s+liable\b", r"\bshould\s+i\s+sue\b",
+]
+_LEGAL_ACTION_PATTERNS = [
+    r"\bfile\s+a\s+lawsuit\b", r"\bfile\s+suit\b", r"\bsend\s+a\s+demand\s+letter\b",
+    r"\btake\s+legal\s+action\b", r"\bsue\s+(them|him|her|the)\b", r"\bpress\s+charges\b",
+    r"\bfiling\s+on\s+my\s+behalf\b",
+]
+
+_ADVICE_RESPONSE = (
+    "I'm an AI assistant, not a barred attorney. I can help you understand and analyze "
+    "the contents of your document, but I'm not able to provide legal advice or act as "
+    "your legal counsel. Please consult a qualified lawyer for advice specific to your situation."
+)
+_ACTION_RESPONSE = (
+    "I'm not able to take legal action on your behalf — filing lawsuits, sending demand "
+    "letters, or initiating legal proceedings falls outside what I can do as an AI document "
+    "analysis tool. Please work with a licensed attorney for those steps."
+)
+
+def check_compliance(query: str) -> str | None:
+    """
+    Returns a canned compliance response if the query triggers a guardrail,
+    or None if the query is safe to pass to the workflow.
+    """
+    q = query.lower()
+    if any(re.search(p, q) for p in _LEGAL_ADVICE_PATTERNS):
+        return _ADVICE_RESPONSE
+    if any(re.search(p, q) for p in _LEGAL_ACTION_PATTERNS):
+        return _ACTION_RESPONSE
+    return None
+
+# ---------------------------------------------------------------------------
 
 def reset_chat():
     """Reset chat history and clear memory."""
@@ -376,8 +417,15 @@ if prompt := st.chat_input("Ask a question about your document..."):
     # Run the workflow and get response
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
-        
+
         try:
+            # Compliance intercept — check before hitting the AI workflow
+            compliance_response = check_compliance(prompt)
+            if compliance_response:
+                message_placeholder.markdown(compliance_response)
+                st.session_state.messages.append({"role": "assistant", "content": compliance_response})
+                st.stop()
+
             with st.spinner("🔄 Processing your query..."):
                 # Measure end-to-end workflow time
                 workflow_start = time.perf_counter()
